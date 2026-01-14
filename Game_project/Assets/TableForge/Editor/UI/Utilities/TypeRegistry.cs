@@ -60,7 +60,7 @@ namespace TableForge.Editor.UI
             {
                 foreach (var type in assembly.GetTypes())
                 {
-                    if(IsTypeInvalid(type)) continue;
+                    if(IsTypeInvalid(type) || IsNameSpaceInvalid(type.Namespace)) continue;   //네임스페이스 필터 추가
 
                     string assetNamespace = type.Namespace;
                     if (string.IsNullOrEmpty(assetNamespace))
@@ -89,6 +89,11 @@ namespace TableForge.Editor.UI
                    type.Assembly == Assembly.GetAssembly(typeof(TypeRegistry)) ||
                    type.IsNotPublic ||
                    IsUnityType(type);
+        }
+
+        private static bool IsNameSpaceInvalid(string name)
+        {
+            return name.Split(".")[0] == "DG";
         }
 
         private static bool IsUnityType(Type type)

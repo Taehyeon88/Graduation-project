@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b79e36b3a8534235852035ac7e993606, type: 3}
-  m_Name: DOTweenComponentInspector
+  m_Name: CharacterStats
   m_EditorClassIdentifier: 
   expandedTables:
     values: 
@@ -24,10 +24,10 @@ MonoBehaviour:
   itemGUIDs:
     values: []
   cellAnchorMetadata:
-    mKeys: c5e15b0ba4cdda7ded20738cf6cf4d5f27ccda4b8b968f167118d9bf8aab6349345076d7a57a1fd1afc8b2877599090a25a007d09a7a7fa106ca628c922b9d1ce042296bdf66fd7c4d2b6d1da6fa2a6acf4e3e28a8938e370e5ccd3ba5bb9ddce977f425
+    mKeys: c5e15b0ba4cdda7ded20738cf6cf4d5f27ccda4b8b968f167118d9bf8aab6349345076d7a57a1fd1afc8b2877599090a25a007d09a7a7fa106ca628c922b9d1ce042296bdf66fd7c4d2b6d1da6fa2a6acf4e3e28a8938e370e5ccd3ba5bb9ddce977f42541d0f2b5b52f1d54d100fc42a3bdffb3646446ef
     mValues:
     - position: 1
-      size: {x: 0, y: 0}
+      size: {x: 0, y: 24.799995}
     - position: 2
       size: {x: 0, y: 0}
     - position: 3
@@ -75,6 +75,16 @@ MonoBehaviour:
     - position: 24
       size: {x: 0, y: 0}
     - position: 25
+      size: {x: 0, y: 0}
+    - position: 0
+      size: {x: 121.599976, y: 0}
+    - position: 0
+      size: {x: 76.79999, y: 0}
+    - position: 0
+      size: {x: 0, y: 24.800003}
+    - position: 0
+      size: {x: 70.39996, y: 0}
+    - position: 1
       size: {x: 0, y: 0}
   functions:
     mKeys: 

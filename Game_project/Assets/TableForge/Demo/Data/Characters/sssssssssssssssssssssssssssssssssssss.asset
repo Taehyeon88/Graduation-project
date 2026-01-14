@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a5a729831d3e9ce4a811bcede823895d, type: 3}
-  m_Name: Arin the Brave
+  m_Name: sssssssssssssssssssssssssssssssssssss
   m_EditorClassIdentifier: 
-  characterName: Arin the Brave
-  level: 1
-  health: 110
-  skinColor: {r: 0.9169811, g: 0.7724674, b: 0.15744391, a: 1}
+  characterName: sssssssssssssssssssssssssssssssssssss
+  level: 5
+  health: 120
+  skinColor: {r: 0.56, g: 0.82, b: 0.45, a: 1}
   staminaOverTime:
     serializedVersion: 2
     m_Curve:
@@ -29,8 +29,8 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 0.99002075
-      value: 0.97737503
+      time: 1
+      value: 5.5
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -40,24 +40,24 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  spawnPosition: {x: 1, y: 2, z: 3}
+  spawnPosition: {x: 11, y: 0, z: 5}
   abilities:
-  - abilityName: Sword Slash
-    cooldown: 1.5
-    power: 10
+  - abilityName: Nature's Grasp
+    cooldown: 2
+    power: 12
     details:
-      baseAttack: 2
-      baseCastingTime: 1.5
-  - abilityName: Shield Bash
-    cooldown: 3
+      baseAttack: 3
+      baseCastingTime: 2
+  - abilityName: Healing Bloom
+    cooldown: 4.2
     power: 20
     details:
       baseAttack: 4
-      baseCastingTime: 3
-  - abilityName: Rallying Cry
-    cooldown: 4.5
-    power: 30
+      baseCastingTime: 3.2
+  - abilityName: Thorn Barrage
+    cooldown: 6.5
+    power: 25
     details:
-      baseAttack: 6
-      baseCastingTime: 4.5
-  weapon: {fileID: 11400000, guid: fbc0e025f9c177443bed6a2697cfa7f6, type: 2}
+      baseAttack: 7
+      baseCastingTime: 5
+  weapon: {fileID: 11400000, guid: 0b0ae6a7dde293d43831628ece5362cf, type: 2}
