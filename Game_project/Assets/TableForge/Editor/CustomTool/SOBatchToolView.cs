@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
@@ -23,13 +24,12 @@ public class SOBatchToolView : EditorWindow
     public static void ShowEditor()
     {
         GetWindow<SOBatchToolView>("SO_BatchTool");
-
-        Debug.Log(string.Join(",", TypeRegistry.TypeNames));
     }
 
     private void OnEnable()
     {
-        _viewModel = new SOBatchToolViewModel();
+        if(_viewModel == null)
+            _viewModel = new SOBatchToolViewModel();
     }
 
     private void OnGUI()
@@ -51,7 +51,7 @@ public class SOBatchToolView : EditorWindow
         EditorGUILayout.BeginVertical(GUILayout.Width(250));
         leftScroll = EditorGUILayout.BeginScrollView(leftScroll);
 
-        var soGuids = AssetDatabase.FindAssets($"t:{_viewModel.selectedSOType}");
+        var soGuids = AssetDatabase.FindAssets($"t:{_viewModel.selectedSOTypeName}");
         var allTypeNames = new List<string>();
         var allTypes = new List<ScriptableObject>();
         foreach (var guid in soGuids)
@@ -229,4 +229,4 @@ public class SOBatchToolView : EditorWindow
         }
     }
 }
-
+#endif
