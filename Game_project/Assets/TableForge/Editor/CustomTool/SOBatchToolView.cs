@@ -1,45 +1,42 @@
 using UnityEditor;
 using UnityEngine;
-using UnityEditor.UIElements;
 using System.Collections.Generic;
 using System.Linq;
 using TableForge.Editor.UI;
-using UnityEngine.UIElements;
 
-public enum SOBatchType
+public class SOBatchToolView : EditorWindow
 {
-    Add, Remove, NonSelected
-}
+    private SOBatchToolViewModel _viewModel;
 
-public class ScriptableObjectBatchTool : EditorWindow
-{
-    private SOBatchType _batchType = SOBatchType.NonSelected;
-
-    private int nameSpaceIndex = 0;     //선택된 nameSpace 인덱스
-    private int typeIndex = 0;          //선택된 SO타입 인덱스
-    private string selectedSOType;      //선택된 SO타입
-    private List<ScriptableObject> selectedSOs = new List<ScriptableObject>(); //선택된 SO
-
-    private bool showLeftPanel = false; //삭제용 패널 사용여부
     private Vector2 leftScroll;
     private Vector2 rightScroll;
-    private int selectedIndex = 0;      //삭제 선택 SO
+    private int selectedIndex;
 
-    int addCount = 0;
+    const float CHIP_WIDTH = 140f;
+    const float CHIP_HEIGHT = 26f;
+    const float CHIP_MARGIN = 6f;
+
+    const float CONT_HEIGHT = 200f;
+    float c_y_Max = CONT_HEIGHT;
 
     [MenuItem("Tools/ScriptableObjectBatchTool")]
     public static void ShowEditor()
     {
-        GetWindow<ScriptableObjectBatchTool>("SO_BatchTool");
+        GetWindow<SOBatchToolView>("SO_BatchTool");
 
         Debug.Log(string.Join(",", TypeRegistry.TypeNames));
+    }
+
+    private void OnEnable()
+    {
+        _viewModel = new SOBatchToolViewModel();
     }
 
     private void OnGUI()
     {
         EditorGUILayout.BeginHorizontal();
 
-        if(showLeftPanel)
+        if(_viewModel.showLeftPanel)
             DrawLeftPanel();
 
         DrawDivider(1);
@@ -54,7 +51,7 @@ public class ScriptableObjectBatchTool : EditorWindow
         EditorGUILayout.BeginVertical(GUILayout.Width(250));
         leftScroll = EditorGUILayout.BeginScrollView(leftScroll);
 
-        var soGuids = AssetDatabase.FindAssets($"t:{selectedSOType}");
+        var soGuids = AssetDatabase.FindAssets($"t:{_viewModel.selectedSOType}");
         var allTypeNames = new List<string>();
         var allTypes = new List<ScriptableObject>();
         foreach (var guid in soGuids)
@@ -74,10 +71,10 @@ public class ScriptableObjectBatchTool : EditorWindow
 
             if (GUILayout.Button(allTypeNames[i], style))
             {
-                if (selectedSOs.Contains(allTypes[i])) continue;
+                if (_viewModel.SelectedSOs.Contains(allTypes[i])) continue;
 
                 selectedIndex = i;
-                selectedSOs.Add(allTypes[i]);
+                _viewModel.AddSelectedSO(allTypes[i]);
             }
         }
 
@@ -94,35 +91,28 @@ public class ScriptableObjectBatchTool : EditorWindow
         GUILayout.Label("ScriptableObjectBatchTool", EditorStyles.boldLabel);
         EditorGUILayout.Space();
 
-        nameSpaceIndex = EditorGUILayout.Popup("NameSpace", nameSpaceIndex, TypeRegistry.Namespaces.ToArray());
-        var soTypeNames = TypeRegistry.TypesByNamespaceAndName[TypeRegistry.Namespaces[nameSpaceIndex]].Keys.ToList();
-        typeIndex = EditorGUILayout.Popup("SOType", typeIndex, soTypeNames.ToArray());
-        selectedSOType = soTypeNames[typeIndex];
+        _viewModel.nameSpaceIndex = EditorGUILayout.Popup("NameSpace", _viewModel.nameSpaceIndex, _viewModel.nameSpaces);
+        _viewModel.typeIndex = EditorGUILayout.Popup("SOType", _viewModel.typeIndex, _viewModel.soTypesNameByNameSpace);
 
         EditorGUILayout.Space();
-        _batchType = (SOBatchType)EditorGUILayout.EnumPopup("BatchType", _batchType);
+        _viewModel.batchType = (SOBatchType)EditorGUILayout.EnumPopup("BatchType", _viewModel.batchType);
 
 
-        if (_batchType == SOBatchType.Remove)
+        if (_viewModel.batchType == SOBatchType.Remove)
         {
-            showLeftPanel = true;
-
             EditorGUILayout.Space(5);
             DrawSelectedChips();
         }
-        else if (_batchType == SOBatchType.Add)
+        else if (_viewModel.batchType == SOBatchType.Add)
         {
-            showLeftPanel = false;
-
             EditorGUILayout.Space();
-            addCount = EditorGUILayout.IntField("Count", addCount);
+            _viewModel.addCount = EditorGUILayout.IntField("Count", _viewModel.addCount);
             if (GUILayout.Button("Confirm"))
             {
-                Debug.Log($"{addCount}개수만큼 추가되었습니다.");
+                _viewModel.AddScriptableObjects();
             }
 
         }
-        else showLeftPanel = false;
 
         EditorGUILayout.EndScrollView();
         EditorGUILayout.EndVertical();
@@ -137,13 +127,6 @@ public class ScriptableObjectBatchTool : EditorWindow
 
         EditorGUI.DrawRect(rect, new Color(0.25f, 0.25f, 0.25f));
     }
-
-    const float CHIP_WIDTH = 140f;
-    const float CHIP_HEIGHT = 26f;
-    const float CHIP_MARGIN = 6f;
-
-    const float CONT_HEIGHT = 200f;
-    float c_y_Max = CONT_HEIGHT;
 
     private void DrawSelectedChips()
     {
@@ -166,7 +149,7 @@ public class ScriptableObjectBatchTool : EditorWindow
 
         float maxX = container.xMax - CHIP_MARGIN;
 
-        foreach (var so in selectedSOs.ToList())
+        foreach (var so in _viewModel.SelectedSOs.ToList())
         {
             if (x + CHIP_WIDTH > maxX)
             {
@@ -223,7 +206,7 @@ public class ScriptableObjectBatchTool : EditorWindow
 
         if (GUI.Button(closeRect, "X"))
         {
-            selectedSOs.Remove(so);
+            _viewModel.CancelSelectedObject(so);
             GUI.FocusControl(null);
         }
     }
@@ -242,8 +225,7 @@ public class ScriptableObjectBatchTool : EditorWindow
 
         if (GUI.Button(rect, "Confirm"))
         {
-            Debug.Log("삭제 성공");
-            selectedSOs.Clear();
+            _viewModel.RemoveScriptableObjects();
         }
     }
 }
