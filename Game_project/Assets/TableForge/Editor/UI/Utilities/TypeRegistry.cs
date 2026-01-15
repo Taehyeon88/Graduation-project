@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.Playables;
 
 namespace TableForge.Editor.UI
 {
-    internal static class TypeRegistry
+    public static class TypeRegistry
     {
         private static readonly Dictionary<string, Dictionary<string, Type>> _typesByNamespaceAndName = new(); 
         private static readonly Dictionary<string, HashSet<string>> _typeNamesByNamespace = new();
@@ -94,8 +95,7 @@ namespace TableForge.Editor.UI
 
         private static bool IsNameSpaceInvalid(string name)
         {
-            if(string.IsNullOrEmpty(name)) return false;
-            return name.Split(".").Length > 0 ? name.Split(".")[0] == "DG" : false;
+            return name != "GameData.SO";
         }
 
         private static bool IsUnityType(Type type)
