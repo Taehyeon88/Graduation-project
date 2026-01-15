@@ -2,7 +2,7 @@ using UnityEngine;
 using TableForge.DataStructures;
 using TableForge.Attributes;
 
-namespace TableForge.Demo
+namespace GameData.SO
 {
     [CreateAssetMenu(fileName = "WeaponStats", menuName = "TableForge/Demo/Weapon Stats")]
     public class WeaponStats : ScriptableObject

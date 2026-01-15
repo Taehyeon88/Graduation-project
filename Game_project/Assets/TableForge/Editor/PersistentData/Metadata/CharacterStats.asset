@@ -24,7 +24,7 @@ MonoBehaviour:
   itemGUIDs:
     values: []
   cellAnchorMetadata:
-    mKeys: c5e15b0ba4cdda7ded20738cf6cf4d5f27ccda4b8b968f167118d9bf8aab6349345076d7a57a1fd1afc8b2877599090a25a007d09a7a7fa106ca628c922b9d1ce042296bdf66fd7c4d2b6d1da6fa2a6acf4e3e28a8938e370e5ccd3ba5bb9ddce977f42541d0f2b5b52f1d54d100fc42a3bdffb3646446efae2f039b00000000
+    mKeys: c5e15b0ba4cdda7ded20738cf6cf4d5f27ccda4b8b968f167118d9bf8aab6349345076d7a57a1fd1afc8b2877599090a25a007d09a7a7fa106ca628c922b9d1ce042296bdf66fd7c4d2b6d1da6fa2a6acf4e3e28a8938e370e5ccd3ba5bb9ddce977f42541d0f2b5b52f1d54d100fc42a3bdffb3646446efae2f039b00000000a25bf33b5609b7437b5a53296c6b887789e2d332
     mValues:
     - position: 1
       size: {x: 0, y: 24.799995}
@@ -90,6 +90,16 @@ MonoBehaviour:
       size: {x: 0, y: 25}
     - position: 0
       size: {x: 154.4, y: 0}
+    - position: 26
+      size: {x: 0, y: 0}
+    - position: 27
+      size: {x: 0, y: 0}
+    - position: 28
+      size: {x: 0, y: 0}
+    - position: 29
+      size: {x: 0, y: 0}
+    - position: 30
+      size: {x: 0, y: 0}
   functions:
     mKeys: 
     mValues: []

@@ -111,6 +111,13 @@ public class SOBatchToolView : EditorWindow
             }
 
         }
+        else if (_viewModel.batchType == SOBatchType.Initialize)
+        {
+            if (GUILayout.Button("Confirm"))
+            {
+                _viewModel.InitializeSODatabase();
+            }
+        }
 
         EditorGUILayout.EndScrollView();
         EditorGUILayout.EndVertical();

@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace TableForge.Demo
+namespace GameData.SO
 {
     [CreateAssetMenu(fileName = "EnemyStats", menuName = "TableForge/Demo/Enemy Stats")]
     public class EnemyStats : CharacterStats

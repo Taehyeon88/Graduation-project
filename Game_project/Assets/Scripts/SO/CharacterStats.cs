@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace TableForge.Demo
+namespace GameData.SO
 {
     [CreateAssetMenu(fileName = "CharacterStats", menuName = "TableForge/Demo/Character Stats")]
     public class CharacterStats : ScriptableObject
