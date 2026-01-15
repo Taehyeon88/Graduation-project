@@ -60,7 +60,8 @@ namespace TableForge.Editor.UI
             {
                 foreach (var type in assembly.GetTypes())
                 {
-                    if(IsTypeInvalid(type) || IsNameSpaceInvalid(type.Namespace)) continue;   //네임스페이스 필터 추가
+                    if(IsTypeInvalid(type)) continue;
+                    if (IsNameSpaceInvalid(type.Namespace)) continue;  //네임스페이스 필터 추가
 
                     string assetNamespace = type.Namespace;
                     if (string.IsNullOrEmpty(assetNamespace))
@@ -93,7 +94,8 @@ namespace TableForge.Editor.UI
 
         private static bool IsNameSpaceInvalid(string name)
         {
-            return name.Split(".")[0] == "DG";
+            if(string.IsNullOrEmpty(name)) return false;
+            return name.Split(".").Length > 0 ? name.Split(".")[0] == "DG" : false;
         }
 
         private static bool IsUnityType(Type type)

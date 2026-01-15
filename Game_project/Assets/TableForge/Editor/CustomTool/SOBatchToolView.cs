@@ -28,8 +28,7 @@ public class SOBatchToolView : EditorWindow
 
     private void OnEnable()
     {
-        if(_viewModel == null)
-            _viewModel = new SOBatchToolViewModel();
+         _viewModel = new SOBatchToolViewModel();
     }
 
     private void OnGUI()
@@ -90,7 +89,6 @@ public class SOBatchToolView : EditorWindow
 
         GUILayout.Label("ScriptableObjectBatchTool", EditorStyles.boldLabel);
         EditorGUILayout.Space();
-
         _viewModel.nameSpaceIndex = EditorGUILayout.Popup("NameSpace", _viewModel.nameSpaceIndex, _viewModel.nameSpaces);
         _viewModel.typeIndex = EditorGUILayout.Popup("SOType", _viewModel.typeIndex, _viewModel.soTypesNameByNameSpace);
 
@@ -171,7 +169,10 @@ public class SOBatchToolView : EditorWindow
 
         if (Event.current.type == EventType.Repaint)
         {
+            float current = c_y_Max;
             c_y_Max = Mathf.Max(CONT_HEIGHT, Mathf.Abs(y - container.y) + CHIP_HEIGHT + CHIP_MARGIN);
+
+            if (current != c_y_Max) Repaint();
         }
     }
 
