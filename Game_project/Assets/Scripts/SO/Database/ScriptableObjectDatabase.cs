@@ -5,19 +5,25 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEditor;
+using System.Data.SqlTypes;
 
 [CreateAssetMenu(fileName = "SODatabase", menuName = "ScriptableObject/Database")]
 public class ScriptableObjectDatabase : ScriptableObject
 {
     string path = "Assets/ScriptableObjects";
 
-    Dictionary<string, List<ScriptableObject>> sosBySoType = new Dictionary<string, List<ScriptableObject>>();
-
-    [SerializeField] List<VisualList> visuals = new List<VisualList>();
+    [SerializeField]
+    CustomDictionary<string, List<ScriptableObject>> soCustomDic = new CustomDictionary<string, List<ScriptableObject>>();  //SOType이름 | 해당 타입의 SO들
+    Dictionary<string, List<ScriptableObject>> runTimeDic = new Dictionary<string, List<ScriptableObject>>();  //런타임용
 
     public ScriptableObject FindSODataByName(string type, string name)
     {
-        var target = sosBySoType[type];
+        if (!runTimeDic.TryGetValue(type, out var target))
+        {
+            InitialRunTimeDictionary();
+            target = runTimeDic[type];
+        }
+
         if (target == null)
         {
             Debug.LogWarning($"{type}타입의 SO데이터를 찾을 수 없습니다.");
@@ -33,6 +39,13 @@ public class ScriptableObjectDatabase : ScriptableObject
         return so;
     }
 
+    public void InitialRunTimeDictionary()
+    {
+        runTimeDic.Clear();
+        foreach (var key in soCustomDic.Keys)
+            runTimeDic.Add(key, soCustomDic[key]);
+    }
+
 #if UNITY_EDITOR
     public void Intialize(Type type)
     {
@@ -43,13 +56,15 @@ public class ScriptableObjectDatabase : ScriptableObject
         }
 
         string soTypeName = type.Name;
+        //Debug.Log($"초기화대상 타입: {soTypeName}");
 
-        if (!sosBySoType.ContainsKey(soTypeName))
+        if (!soCustomDic.ContainsKey(soTypeName))
         {
-            sosBySoType.Add(soTypeName, new List<ScriptableObject>());
+            soCustomDic.Add(soTypeName, new List<ScriptableObject>());
         }
 
-        sosBySoType[soTypeName].Clear();
+        soCustomDic[soTypeName].Clear();
+        //soCustomDic.
         string[] guids = AssetDatabase.FindAssets($"t:{soTypeName}", new[] { path });
 
         foreach (string guid in guids)
@@ -58,19 +73,18 @@ public class ScriptableObjectDatabase : ScriptableObject
             var so = AssetDatabase.LoadAssetAtPath<ScriptableObject>(assetPath);
             if (so != null)
             {
-                sosBySoType[soTypeName].Add(so);
+                soCustomDic[soTypeName].Add(so);
             }
         }
 
-        if (sosBySoType[soTypeName].Count == 0)
-            sosBySoType.Remove(soTypeName);
+        if (soCustomDic[soTypeName].Count == 0)
+            soCustomDic.Remove(soTypeName);
 
-        visuals.Clear();
-        foreach (var key in sosBySoType.Keys)
-            visuals.Add(new VisualList(sosBySoType[key]));
+        //Debug.Log($"현재 데이터베이스Key: {string.Join(",", soCustomDic.Keys)}");
 
-        if (SOKeyType.types.Length != sosBySoType.Keys.Count)
-            CreateSOKeyTypeCS(sosBySoType.Keys.ToArray());
+
+        if (SOKeyType.types.Length != soCustomDic.Keys.Count)
+            CreateSOKeyTypeCS(soCustomDic.Keys.ToArray());
     }
     public void IntializeSODatabase()
     {
@@ -79,7 +93,7 @@ public class ScriptableObjectDatabase : ScriptableObject
             Debug.LogWarning($"{path}해당 경로의 폴더가 존재하지 않습니다.");
             return;
         }
-        sosBySoType.Clear();
+        soCustomDic.Clear();
 
         string[] guids = AssetDatabase.FindAssets("t:ScriptableObject", new[] {path});
 
@@ -93,23 +107,19 @@ public class ScriptableObjectDatabase : ScriptableObject
 
                 string soTypeName = so.GetType().Name;
 
-                if (!sosBySoType.ContainsKey(soTypeName))
+                if (!soCustomDic.ContainsKey(soTypeName))
                 {
-                    sosBySoType.Add(soTypeName, new List<ScriptableObject>() {so});
+                    soCustomDic.Add(soTypeName, new List<ScriptableObject>() {so});
                 }
                 else
                 {
-                    sosBySoType[soTypeName].Add(so);
+                    soCustomDic[soTypeName].Add(so);
                 }
             }
         }
 
-        visuals.Clear();
-        foreach (var key in sosBySoType.Keys)
-            visuals.Add(new VisualList(sosBySoType[key]));
-
-        if (SOKeyType.types.Length != sosBySoType.Keys.Count)
-            CreateSOKeyTypeCS(sosBySoType.Keys.ToArray());
+        if (SOKeyType.types.Length != soCustomDic.Count)
+            CreateSOKeyTypeCS(soCustomDic.Keys.ToArray());
     }
 
     private void CreateSOKeyTypeCS(string[] keys)
@@ -127,7 +137,7 @@ public class ScriptableObjectDatabase : ScriptableObject
             content += "using System;" + '\n' + '\n';
             content += $"public static class {fileName}" + '\n' + "{" + '\n';
 
-            string keystring = "{" + string.Format("{0}", string.Join(",", sosBySoType.Keys.ToArray())) + "}";
+            string keystring = "{" + string.Format("{0}", string.Join(",", keys)) + "}";
             content += $"    public static string[] types = new string[]{keystring};" + '\n';
             foreach (string key in keys)
             {
@@ -144,15 +154,4 @@ public class ScriptableObjectDatabase : ScriptableObject
         else Debug.LogWarning($"{path}경로에 폴더가 존재하지 않습니다.");
     }
 #endif
-}
-
-[System.Serializable]
-public class VisualList
-{
-    [SerializeField] List<ScriptableObject> list = new List<ScriptableObject>();
-
-    public VisualList(List<ScriptableObject> list)
-    {
-        this.list = list;
-    }
 }
