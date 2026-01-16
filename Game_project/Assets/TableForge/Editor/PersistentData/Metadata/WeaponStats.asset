@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: WeaponStats
   m_EditorClassIdentifier: 
   expandedTables:
-    values: 
+    values: b32d50d7
   transposedTables:
     values: 
   hiddenFields:
@@ -24,10 +24,10 @@ MonoBehaviour:
   itemGUIDs:
     values: []
   cellAnchorMetadata:
-    mKeys: c467a68e29032d074ac10eaffd449a9a0cffcd103959720edcead800cf26f7a5106bfe72e1b0730e0536c9437d786380e75e9f9a3aa1ba82642f07430a6f59c99f47d9402a7e3f6ebd2178e2
+    mKeys: c467a68e29032d074ac10eaffd449a9a0cffcd103959720edcead800cf26f7a5106bfe72e1b0730e0536c9437d786380e75e9f9a3aa1ba82642f07430a6f59c99f47d9402a7e3f6ebd2178e2539b05a8
     mValues:
     - position: 1
-      size: {x: 0, y: 0}
+      size: {x: 0, y: 74.4}
     - position: 2
       size: {x: 0, y: 0}
     - position: 3
@@ -64,6 +64,8 @@ MonoBehaviour:
       size: {x: 0, y: 0}
     - position: 19
       size: {x: 0, y: 0}
+    - position: 0
+      size: {x: 128, y: 0}
   functions:
     mKeys: 
     mValues: []

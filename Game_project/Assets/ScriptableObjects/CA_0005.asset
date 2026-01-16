@@ -9,11 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5aed1aa2fa6549839b890a9568e3421c, type: 3}
-  m_Name: TableSettings
+  m_Script: {fileID: 11500000, guid: e14f05af6403fc44682245840419bd3e, type: 3}
+  m_Name: CA_0005
   m_EditorClassIdentifier: 
-  pollingInterval: 0.5
-  enablePolling: 0
-  removeFormulaOnCellValueChange: 0
-  rowHeaderVisibility: 2
-  columnHeaderVisibility: 6
+  cardAbilityId: 5
+  descriptionForDeveloper: "\uD604\uC7AC \uD134\uC5D0\uC11C \uB2E4\uC74C\uC73C\uB85C
+    \uC0AC\uC6A9\uD560 \uACF5\uACA9\uCE74\uB4DC 2\uBC88 \uC0AC\uC6A9"

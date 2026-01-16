@@ -10,26 +10,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b79e36b3a8534235852035ac7e993606, type: 3}
-  m_Name: EnemyStats
+  m_Name: CardAbilityStats
   m_EditorClassIdentifier: 
   expandedTables:
-    values: eb480a62
+    values: 
   transposedTables:
     values: 
   hiddenFields:
     values: 
-  itemsTypeName: TableForge.Demo.EnemyStats, TableForge.Demo, Version=0.0.0.0, Culture=neutral,
-    PublicKeyToken=null
-  bindingTypeName: EnemyStats
+  itemsTypeName: GameData.SO.CardAbilityStats, Assembly-CSharp, Version=0.0.0.0,
+    Culture=neutral, PublicKeyToken=null
+  bindingTypeName: CardAbilityStats
   itemGUIDs:
     values: []
   cellAnchorMetadata:
-    mKeys: afc8b2877599090a25a007d09a7a7fa106ca628c922b9d1ce042296bdf66fd7c4d2b6d1da6fa2a6acf4e3e28a8938e370e5ccd3ba5bb9ddce977f425b8fe42b497dd2a4b6f19eacbfb394cf036925fab68c33e88b056af0915e55fb4944f431a73834663
+    mKeys: 5b215633fcbaefe98359bb122f1b80dc6dfe3a476da6006482e2f59396530e4d2d1fb6eecc14c159de37dd483a96ff683fa9a27f90da1316
     mValues:
     - position: 1
-      size: {x: 0, y: 75}
+      size: {x: 0, y: 0}
     - position: 2
-      size: {x: 0, y: 25.59999}
+      size: {x: 0, y: 0}
     - position: 3
       size: {x: 0, y: 0}
     - position: 4
@@ -37,7 +37,7 @@ MonoBehaviour:
     - position: 5
       size: {x: 0, y: 0}
     - position: 6
-      size: {x: 0, y: 24.800018}
+      size: {x: 0, y: 0}
     - position: 7
       size: {x: 0, y: 0}
     - position: 8
@@ -54,28 +54,6 @@ MonoBehaviour:
       size: {x: 0, y: 0}
     - position: 14
       size: {x: 0, y: 0}
-    - position: 15
-      size: {x: 0, y: 0}
-    - position: 16
-      size: {x: 0, y: 0}
-    - position: 17
-      size: {x: 0, y: 0}
-    - position: 18
-      size: {x: 0, y: 0}
-    - position: 19
-      size: {x: 0, y: 0}
-    - position: 0
-      size: {x: 77.599976, y: 0}
-    - position: 0
-      size: {x: 0, y: 24.800003}
-    - position: 0
-      size: {x: 66.39996, y: 0}
-    - position: 0
-      size: {x: 94.400024, y: 0}
-    - position: 0
-      size: {x: 128, y: 0}
-    - position: 0
-      size: {x: 59.19995, y: 0}
   functions:
     mKeys: 
     mValues: []

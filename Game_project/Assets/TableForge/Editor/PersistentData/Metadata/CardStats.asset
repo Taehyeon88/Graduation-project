@@ -1,0 +1,99 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b79e36b3a8534235852035ac7e993606, type: 3}
+  m_Name: CardStats
+  m_EditorClassIdentifier: 
+  expandedTables:
+    values: 505f4a7166e5da52ed14db52c371aa274aa1aa27241ec257caef0f11511f10110c66af509395af50a111ad151ae2ac15ab4dc25794fe83091b2e8409f18a53de78ba53de52376b0ed9666b0ef808b9c73a7f580748fb55cc
+  transposedTables:
+    values: 
+  hiddenFields:
+    values: 
+  itemsTypeName: GameData.SO.CardStats, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  bindingTypeName: CardStats
+  itemGUIDs:
+    values: []
+  cellAnchorMetadata:
+    mKeys: fbde2e0410d8897be1c1f7c1c7cf70d751640d0567c9999d00000000e03947c3059142d6310156181c9142d64cda2af379703fc5a1b1f6c9686d0d69b8b1f6c95c4086cb42d37ce102132424a2edf4da213c52a59725941bb434d80bb42db3cf734086cbc73f8c2777fba751ae675fa288cdce1ae8e74614dd1fe654fa2e2a4567a1360038af1f71
+    mValues:
+    - position: 1
+      size: {x: 0, y: 24.800003}
+    - position: 2
+      size: {x: 0, y: 25.59999}
+    - position: 3
+      size: {x: 0, y: 24.800003}
+    - position: 4
+      size: {x: 0, y: 24.800003}
+    - position: 5
+      size: {x: 0, y: 24.800003}
+    - position: 6
+      size: {x: 0, y: 25.59999}
+    - position: 0
+      size: {x: 114.4, y: 0}
+    - position: 0
+      size: {x: 75.19998, y: 0}
+    - position: 1
+      size: {x: 0, y: 50}
+    - position: 0
+      size: {x: 179, y: 0}
+    - position: 2
+      size: {x: 0, y: 49.59999}
+    - position: 0
+      size: {x: 236.79993, y: 0}
+    - position: 7
+      size: {x: 0, y: 0}
+    - position: 0
+      size: {x: 0, y: 49.600006}
+    - position: 0
+      size: {x: 179.20001, y: 0}
+    - position: 0
+      size: {x: 0, y: 49.599976}
+    - position: 0
+      size: {x: 0, y: 50}
+    - position: 0
+      size: {x: 179.20001, y: 0}
+    - position: 1
+      size: {x: 0, y: 50.399963}
+    - position: 0
+      size: {x: 179, y: 0}
+    - position: 1
+      size: {x: 0, y: 50.400024}
+    - position: 0
+      size: {x: 179, y: 0}
+    - position: 0
+      size: {x: 179, y: 0}
+    - position: 1
+      size: {x: 0, y: 50.400024}
+    - position: 0
+      size: {x: 0, y: 50}
+    - position: 0
+      size: {x: 84.80005, y: 0}
+    - position: 0
+      size: {x: 125, y: 0}
+    - position: 0
+      size: {x: 125, y: 0}
+    - position: 0
+      size: {x: 125, y: 0}
+    - position: 0
+      size: {x: 124.80005, y: 0}
+    - position: 0
+      size: {x: 124.80005, y: 0}
+    - position: 0
+      size: {x: 124.80005, y: 0}
+    - position: 0
+      size: {x: 53.599976, y: 0}
+    - position: 0
+      size: {x: 96.80002, y: 0}
+  functions:
+    mKeys: 
+    mValues: []
