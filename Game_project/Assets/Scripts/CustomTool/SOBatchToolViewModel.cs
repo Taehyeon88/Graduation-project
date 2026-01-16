@@ -54,9 +54,11 @@ public class SOBatchToolViewModel
 
     public void RemoveScriptableObjects()
     {
+        var temp = new List<Type>();
         foreach (var so in selectedSOs)
         {
-            if (so == null) continue;
+            Type type = so.GetType();
+            if (!temp.Contains(type)) temp.Add(type);
 
             string assetPath = AssetDatabase.GetAssetPath(so);
             if (string.IsNullOrEmpty(assetPath)) continue;
@@ -67,7 +69,8 @@ public class SOBatchToolViewModel
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
-        soDatabase.Intialize(selectedSOType);
+        foreach(var type in temp)
+            soDatabase.Intialize(type);
 
         Debug.Log("삭제 성공");
         selectedSOs.Clear();
@@ -106,5 +109,6 @@ public class SOBatchToolViewModel
         soDatabase.IntializeSODatabase();
         Debug.Log($"모든 SO에 대한 데이터베이스 초기화 성공.");
     }
+
 }
 #endif
