@@ -1,11 +1,11 @@
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using UnityEngine;
-using UnityEditor;
-using System.Data.SqlTypes;
 
 [CreateAssetMenu(fileName = "SODatabase", menuName = "ScriptableObject/Database")]
 public class ScriptableObjectDatabase : ScriptableObject
@@ -13,7 +13,8 @@ public class ScriptableObjectDatabase : ScriptableObject
     string path = "Assets/ScriptableObjects";
 
     [SerializeField]
-    CustomDictionary<string, List<ScriptableObject>> soCustomDic = new CustomDictionary<string, List<ScriptableObject>>();  //SOType이름 | 해당 타입의 SO들
+    CustomDictionary soCustomDic;  //SOType이름 | 해당 타입의 SO들
+    [NonSerialized]
     Dictionary<string, List<ScriptableObject>> runTimeDic = new Dictionary<string, List<ScriptableObject>>();  //런타임용
 
     public ScriptableObject FindSODataByName(string type, string name)
@@ -46,6 +47,12 @@ public class ScriptableObjectDatabase : ScriptableObject
             runTimeDic.Add(key, soCustomDic[key]);
     }
 
+    public void OnEnable()
+    {
+        if (soCustomDic == null)
+            soCustomDic = new CustomDictionary();
+    }
+
 #if UNITY_EDITOR
     public void Intialize(Type type)
     {
@@ -64,7 +71,7 @@ public class ScriptableObjectDatabase : ScriptableObject
         }
 
         soCustomDic[soTypeName].Clear();
-        //soCustomDic.
+
         string[] guids = AssetDatabase.FindAssets($"t:{soTypeName}", new[] { path });
 
         foreach (string guid in guids)
@@ -80,8 +87,9 @@ public class ScriptableObjectDatabase : ScriptableObject
         if (soCustomDic[soTypeName].Count == 0)
             soCustomDic.Remove(soTypeName);
 
-        //Debug.Log($"현재 데이터베이스Key: {string.Join(",", soCustomDic.Keys)}");
-
+        EditorUtility.SetDirty(this);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
 
         if (SOKeyType.types.Length != soCustomDic.Keys.Count)
             CreateSOKeyTypeCS(soCustomDic.Keys.ToArray());
@@ -117,6 +125,10 @@ public class ScriptableObjectDatabase : ScriptableObject
                 }
             }
         }
+
+        EditorUtility.SetDirty(this);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
 
         if (SOKeyType.types.Length != soCustomDic.Count)
             CreateSOKeyTypeCS(soCustomDic.Keys.ToArray());

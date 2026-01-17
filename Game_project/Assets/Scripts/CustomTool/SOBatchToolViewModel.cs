@@ -66,9 +66,6 @@ public class SOBatchToolViewModel
             AssetDatabase.DeleteAsset(assetPath);
         }
 
-        AssetDatabase.SaveAssets();
-        AssetDatabase.Refresh();
-
         foreach(var type in temp)
             soDatabase.Intialize(type);
 
@@ -98,9 +95,6 @@ public class SOBatchToolViewModel
             EditorUtility.SetDirty(so);
             PlayerPrefs.SetInt("si", si + 1 == int.MaxValue ? 0 : si + 1);
         }
-
-        AssetDatabase.SaveAssets();
-        AssetDatabase.Refresh();
 
         soDatabase.Intialize(selectedSOType);
     }

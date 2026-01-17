@@ -12,3 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9586aec3eb623a04a819d2e8bc499326, type: 3}
   m_Name: SODatabase
   m_EditorClassIdentifier: 
+  soCustomDic:
+    entries:
+    - type: CardStats
+      assets:
+      - {fileID: 11400000, guid: b1a80180971b77d4dbf1049768948335, type: 2}
+      - {fileID: 11400000, guid: 4df543122de0be4478448d85a2c5165a, type: 2}
+      - {fileID: 11400000, guid: 48849c884e4895c489397d5becf8c900, type: 2}
+      - {fileID: 11400000, guid: 81f8b41588742484283eeb0cb822356c, type: 2}
+      - {fileID: 11400000, guid: 46dca88cd4050384c957efad27da5f7c, type: 2}
+      - {fileID: 11400000, guid: a51c8822e498e1d49b793b74bb1f843d, type: 2}
+    - type: CardAbilityStats
+      assets:
+      - {fileID: 11400000, guid: 02fdaac5923847140ab17729ca73929f, type: 2}
+      - {fileID: 11400000, guid: 5d4246fcabf0d954d8155175fbd8466e, type: 2}
+      - {fileID: 11400000, guid: f014e3a344c7a774a9a228d92b1ed580, type: 2}
+      - {fileID: 11400000, guid: d95708587c085cc4d859ebdded01b070, type: 2}
+      - {fileID: 11400000, guid: 34ab4d500d138f342b730c68ddbd5b7d, type: 2}
+      - {fileID: 11400000, guid: 5d8573ca0cf63db468da07977ba94c9f, type: 2}

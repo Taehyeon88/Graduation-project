@@ -2,63 +2,68 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [System.Serializable]
-public class SerializableEntry<TKey, TValue>
+public class SOGroup
 {
-    public TKey Key;
-    public TValue Value;
+    public string type;
+    [SerializeField]
+    public List<ScriptableObject> assets = new();
 }
 
 [System.Serializable]
-public class CustomDictionary<TKey, TValue>
+public class CustomDictionary
 {
     [SerializeField]
-    private List<SerializableEntry<TKey, TValue>> entries = new();
+    private List<SOGroup> entries = new();
     public int Count => entries.Count;
-    public List<TKey> Keys
+    public List<string> Keys
     {
         get
         {
-            List<TKey> list = new List<TKey>();
+            List<string> list = new List<string>();
             foreach (var entry in entries)
             {
-                list.Add(entry.Key);
+                list.Add(entry.type);
             }
             return list;
         }
     }
-    public TValue this[TKey key]
+    public List<ScriptableObject> this[string type]
     {
         get
         {
             foreach (var entry in entries)
             {
-                if(EqualityComparer<TKey>.Default.Equals(entry.Key, key))
-                    return entry.Value;
+                if(type == entry.type)
+                    return entry.assets;
             }
-            throw new KeyNotFoundException($"Key not found: {key}");
+            throw new KeyNotFoundException($"Key not found: {type}");
         }
         set
         {
             for (int i = 0; i < entries.Count; i++)
             {
-                if (EqualityComparer<TKey>.Default.Equals(entries[i].Key, key))
-                    entries[i].Value = value;
-                return;
+                if (type == entries[i].type)
+                {
+                    entries[i].assets.Clear();
+                    entries[i].assets.AddRange(value);
+                    return;
+                }
             }
 
-            entries.Add(new SerializableEntry<TKey, TValue> { Key = key, Value = value });
+            entries.Add(new SOGroup { type = type, assets = value });
         }
     }
 
-    public bool TryGetValue(TKey key, out TValue value)
+    public bool TryGetValue(string key, out List<ScriptableObject> value)
     {
         foreach (var entry in entries)
         {
-            if (EqualityComparer<TKey>.Default.Equals(entry.Key, key))
+            if (entry.type == key)
             {
-                value = entry.Value;
+                value = entry.assets;
                 return true;
             }
         }
@@ -66,43 +71,41 @@ public class CustomDictionary<TKey, TValue>
         return false;
     }
 
-    public TValue Get(TKey key)
+    public List<ScriptableObject> Get(string key)
     {
         foreach (var entry in entries)
         {
-            if (EqualityComparer<TKey>.Default.Equals(entry.Key, key))
-                return entry.Value;
+            if (key == entry.type)
+                return entry.assets;
         }
 
         throw new KeyNotFoundException($"Key not found: {key}");
     }
 
-    public bool ContainsKey(TKey key)
+    public bool ContainsKey(string key)
     {
         foreach (var entry in entries)
         {
-            if (EqualityComparer<TKey>.Default.Equals(entry.Key, key))
+            if (key == entry.type)
                 return true;
         }
         return false;
     }
 
-    public void Add(TKey key, TValue value)
+    public void Add(string key, List<ScriptableObject> value)
     {
         if (ContainsKey(key))
             throw new ArgumentException($"Key already exists: {key}");
 
-        entries.Add(new SerializableEntry<TKey, TValue>
-        {
-            Key = key,
-            Value = value
-        });
+        var group = new SOGroup { type = key};
+        group.assets.AddRange(value);
+        entries.Add(group);
     }
 
-    public bool Remove(TKey key)
+    public bool Remove(string key)
     {
         int index = entries.FindIndex(e => 
-             EqualityComparer<TKey>.Default.Equals(e.Key, key));
+                e.type == key);
 
         if (index < 0)
             return false;
