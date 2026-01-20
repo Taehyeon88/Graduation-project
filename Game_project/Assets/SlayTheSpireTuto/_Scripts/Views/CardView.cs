@@ -10,6 +10,7 @@ public class CardView : MonoBehaviour
     [SerializeField] private TMP_Text mana;
     [SerializeField] private SpriteRenderer imageSR;
     [SerializeField] private GameObject wrapper;
+    [SerializeField] private LayerMask dropLayer;
 
     private Vector3 dragStartPosition;
     private Quaternion dragStartRotation;
@@ -56,9 +57,10 @@ public class CardView : MonoBehaviour
     void OnMouseUp()
     {
         if (!Interactions.Instance.PlayerCanInteract()) return;
-        if (Physics.Raycast(transform.position, Vector3.forward, out RaycastHit hitInfo, 10f))
+        if (Physics.Raycast(transform.position, Vector3.forward, out RaycastHit hitInfo, 10f, dropLayer))
         {
-            // Play Card
+            PlayCardGA playCardGA = new(card);
+            ActionSystem.Instance.Perform(playCardGA);
         }
         else
         {
