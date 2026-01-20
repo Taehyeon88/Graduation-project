@@ -14,6 +14,19 @@ public class HandView : MonoBehaviour
         cards.Add(cardView);
         yield return UpdateCardPositions(0.15f);
     }
+
+    public CardView RemoveCard(Card card)
+    {
+        CardView cardView = GetCardView(card);
+        if (cardView == null) return null;
+        cards.Remove(cardView);
+        StartCoroutine(UpdateCardPositions(0.15f));
+        return cardView;
+    }
+    private CardView GetCardView(Card card)
+    {
+        return cards.Find(cardView => cardView.card == card);
+    }
     private IEnumerator UpdateCardPositions(float duration)
     {
         if (cards.Count == 0) yield break;
