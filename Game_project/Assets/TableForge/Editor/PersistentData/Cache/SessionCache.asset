@@ -14,5 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   openTabs:
     values:
-    - {fileID: 11400000, guid: 214e609acbb79734bb2050de97362d71, type: 2}
-    - {fileID: 11400000, guid: dce3be111adf9594c848a78f5a76b76b, type: 2}
+    - {fileID: 11400000, guid: 3504ece966d1a3c4e939466dd3eb4c6e, type: 2}

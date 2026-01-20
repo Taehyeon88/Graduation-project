@@ -95,7 +95,8 @@ namespace TableForge.Editor.UI
 
         private static bool IsNameSpaceInvalid(string name)
         {
-            return name != "GameData.SO";
+            if (string.IsNullOrEmpty(name)) return false;
+            else return true;
         }
 
         private static bool IsUnityType(Type type)
