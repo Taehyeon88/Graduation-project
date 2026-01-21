@@ -9,6 +9,8 @@ public class ManaSystem : Singleton<ManaSystem>
 
     private void OnEnable()
     {
+        manaUI.UpdateManaText(currentMana);
+
         ActionSystem.AttachPerformer<SpendManaGA>(SpendManaPerformer);
         ActionSystem.AttachPerformer<RefillManaGA>(RefillManaPerformer);
         ActionSystem.SubscribeReaction<EnemyTurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
