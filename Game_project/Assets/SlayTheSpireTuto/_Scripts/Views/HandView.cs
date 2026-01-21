@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
-using GameData.SO;
 using UnityEngine;
 using UnityEngine.Splines;
 
