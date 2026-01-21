@@ -206,6 +206,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4382307133896606745, guid: 296d8e78ff2395748b1e1d3bb452ad78, type: 3}
   m_PrefabInstance: {fileID: 9207013396323782283}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &171656630 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4819093266047866604, guid: 296d8e78ff2395748b1e1d3bb452ad78, type: 3}
+  m_PrefabInstance: {fileID: 9207013396323782283}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ada84e00e3d1ba419ea95d06f731541, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &298275705
 GameObject:
   m_ObjectHideFlags: 0
@@ -552,6 +563,51 @@ MonoBehaviour:
   - {x: 0.5, y: -0.5, z: 0}
   - {x: 0.5, y: 0.5, z: 0}
   - {x: -0.5, y: 0.5, z: 0}
+--- !u!1 &567127653
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 567127654}
+  - component: {fileID: 567127655}
+  m_Layer: 0
+  m_Name: HeroSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &567127654
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 567127653}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1646912783}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &567127655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 567127653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5efeab7bc04212444b0beb85bcdc79f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <HeroView>k__BackingField: {fileID: 171656630}
 --- !u!1 &685215571
 GameObject:
   m_ObjectHideFlags: 0
@@ -744,20 +800,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf353f2626345d8459c0995088eb4082, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deckData:
-  - {fileID: 11400000, guid: 06f0b7ee253e47042bfb81e2a630f9cc, type: 2}
-  - {fileID: 11400000, guid: 06f0b7ee253e47042bfb81e2a630f9cc, type: 2}
-  - {fileID: 11400000, guid: 06f0b7ee253e47042bfb81e2a630f9cc, type: 2}
-  - {fileID: 11400000, guid: 06f0b7ee253e47042bfb81e2a630f9cc, type: 2}
-  - {fileID: 11400000, guid: 06f0b7ee253e47042bfb81e2a630f9cc, type: 2}
-  - {fileID: 11400000, guid: 06f0b7ee253e47042bfb81e2a630f9cc, type: 2}
-  - {fileID: 11400000, guid: 06f0b7ee253e47042bfb81e2a630f9cc, type: 2}
-  - {fileID: 11400000, guid: de1fc53ff3369344180e46794b3816d8, type: 2}
-  - {fileID: 11400000, guid: de1fc53ff3369344180e46794b3816d8, type: 2}
-  - {fileID: 11400000, guid: de1fc53ff3369344180e46794b3816d8, type: 2}
-  - {fileID: 11400000, guid: de1fc53ff3369344180e46794b3816d8, type: 2}
-  - {fileID: 11400000, guid: de1fc53ff3369344180e46794b3816d8, type: 2}
-  - {fileID: 11400000, guid: de1fc53ff3369344180e46794b3816d8, type: 2}
+  heroData: {fileID: 11400000, guid: e93bb81975e21af4ba578505a4b474fe, type: 2}
 --- !u!1 &854652888
 GameObject:
   m_ObjectHideFlags: 0
@@ -1669,6 +1712,7 @@ Transform:
   - {fileID: 1239867795}
   - {fileID: 340145137}
   - {fileID: 755873344}
+  - {fileID: 567127654}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1766576378
