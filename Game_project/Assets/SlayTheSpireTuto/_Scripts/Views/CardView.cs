@@ -57,7 +57,8 @@ public class CardView : MonoBehaviour
     void OnMouseUp()
     {
         if (!Interactions.Instance.PlayerCanInteract()) return;
-        if (Physics.Raycast(transform.position, Vector3.forward, out RaycastHit hitInfo, 10f, dropLayer))
+        if (ManaSystem.Instance.HasEnoughMana(card.Mana)
+            && Physics.Raycast(transform.position, Vector3.forward, out RaycastHit hitInfo, 10f, dropLayer))
         {
             PlayCardGA playCardGA = new(card);
             ActionSystem.Instance.Perform(playCardGA);
