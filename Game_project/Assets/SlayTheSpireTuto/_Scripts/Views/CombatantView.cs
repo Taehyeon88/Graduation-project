@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
@@ -18,5 +19,11 @@ public class CombatantView : MonoBehaviour
     public void UpdateHealthText()
     {
         healthText.text = $"HP : {CurrentHealth}";
+    }
+    public void Damage(int amount)
+    {
+        CurrentHealth = Mathf.Max(CurrentHealth - amount, 0);
+        transform.DOShakePosition(0.2f, 0.5f);
+        UpdateHealthText();
     }
 }
