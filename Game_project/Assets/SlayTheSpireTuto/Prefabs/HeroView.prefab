@@ -47,6 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthText: {fileID: 431866994216827157}
   spriteRenderer: {fileID: 4701201096659209219}
+  statusEffectsUI: {fileID: 8561197878494044035}
 --- !u!1001 &8018977425381356980
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -125,3 +126,14 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4265433113066331884, guid: 888032aeab9a6884482de47824ac3084, type: 3}
   m_PrefabInstance: {fileID: 8018977425381356980}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8561197878494044035 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1839260195240045111, guid: 888032aeab9a6884482de47824ac3084, type: 3}
+  m_PrefabInstance: {fileID: 8018977425381356980}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d3cb6af67ec5fd458bddb8668c126c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

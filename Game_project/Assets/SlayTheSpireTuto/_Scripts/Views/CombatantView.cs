@@ -8,6 +8,10 @@ public class CombatantView : MonoBehaviour
 {
     [SerializeField] private TMP_Text healthText;
     [SerializeField] private SpriteRenderer spriteRenderer;
+
+    [SerializeField] private StatusEffectsUI statusEffectsUI;
+    private Dictionary<StatusEffectType, int> statusEffectUIs = new();
+
     public int MaxHealth { get; private set; }
     public int CurrentHealth { get; private set; }
     public void SetUpBase(int health, Sprite image)
@@ -25,5 +29,34 @@ public class CombatantView : MonoBehaviour
         CurrentHealth = Mathf.Max(CurrentHealth - amount, 0);
         transform.DOShakePosition(0.2f, 0.5f);
         UpdateHealthText();
+    }
+    public void AddStatusEffect(StatusEffectType type, int stackCount)
+    {
+        if (statusEffectUIs.ContainsKey(type))
+        {
+            statusEffectUIs[type] += stackCount;
+        }
+        else
+        {
+            statusEffectUIs.Add(type, stackCount);
+        }
+        statusEffectsUI.UpdateStatusEffect(type, GetStatusEffectStacks(type));
+    }
+    public void RemoveStatusEffect(StatusEffectType type, int stackCount)
+    {
+        if (statusEffectUIs.ContainsKey(type))
+        {
+            statusEffectUIs[type] -= stackCount;
+            if (statusEffectUIs[type] <= 0)
+            {
+                statusEffectUIs.Remove(type);
+            }
+            statusEffectsUI.UpdateStatusEffect(type, GetStatusEffectStacks(type));
+        }
+    }
+    private int GetStatusEffectStacks(StatusEffectType type)
+    {
+        if(statusEffectUIs.ContainsKey(type)) return statusEffectUIs[type];
+        else return 0;
     }
 }
