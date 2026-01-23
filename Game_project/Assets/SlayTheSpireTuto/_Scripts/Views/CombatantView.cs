@@ -26,7 +26,25 @@ public class CombatantView : MonoBehaviour
     }
     public void Damage(int amount)
     {
-        CurrentHealth = Mathf.Max(CurrentHealth - amount, 0);
+        int remainingDamage = amount;
+        int currentArmor = GetStatusEffectStacks(StatusEffectType.ARMOR);
+        if (currentArmor > 0)
+        {
+            if (currentArmor >= remainingDamage)
+            {
+                RemoveStatusEffect(StatusEffectType.ARMOR, remainingDamage);
+                remainingDamage = 0;
+            }
+            else if (currentArmor < remainingDamage)
+            {
+                RemoveStatusEffect(StatusEffectType.ARMOR, currentArmor);
+                remainingDamage -= currentArmor;
+            }
+        }
+        if (remainingDamage > 0)
+        {
+            CurrentHealth = Mathf.Max(CurrentHealth - remainingDamage, 0);
+        }
         transform.DOShakePosition(0.2f, 0.5f);
         UpdateHealthText();
     }
