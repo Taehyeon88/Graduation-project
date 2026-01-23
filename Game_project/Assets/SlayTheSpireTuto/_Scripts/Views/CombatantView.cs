@@ -72,7 +72,7 @@ public class CombatantView : MonoBehaviour
             statusEffectsUI.UpdateStatusEffect(type, GetStatusEffectStacks(type));
         }
     }
-    private int GetStatusEffectStacks(StatusEffectType type)
+    public int GetStatusEffectStacks(StatusEffectType type)
     {
         if(statusEffectUIs.ContainsKey(type)) return statusEffectUIs[type];
         else return 0;
