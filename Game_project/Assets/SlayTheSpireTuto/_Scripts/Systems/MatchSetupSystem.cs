@@ -6,6 +6,7 @@ using UnityEngine;
 public class MatchSetupSystem : MonoBehaviour
 {
     [SerializeField] private HeroData heroData;
+    [SerializeField] private PerkData perkData;
     [SerializeField] private List<EnemyData> enemyDatas;
     private readonly int drawCount = 5;
     private void Start()
@@ -23,6 +24,7 @@ public class MatchSetupSystem : MonoBehaviour
         EnemySystem.Instance.SetUp(enemyDatas);
         HeroSystem.Instance.SetUp(heroData);
         CardSystem.Instance.SetUp(heroData.Deck.ToList());
+        PerkSystem.Instance.AddPerk(new(perkData));
         DrawCardsGA drawCardsGA = new(drawCount);
         ActionSystem.Instance.Perform(drawCardsGA);
     }
