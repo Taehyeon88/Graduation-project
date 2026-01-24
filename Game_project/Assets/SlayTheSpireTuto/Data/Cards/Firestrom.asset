@@ -12,25 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b09712139b554e24aab009fef279cf29, type: 3}
   m_Name: Firestrom
   m_EditorClassIdentifier: 
-  <Description>k__BackingField: Add 3 burn to all enemy
+  <Description>k__BackingField: Add 3 burn to a enemy
   <Mana>k__BackingField: 1
   <Image>k__BackingField: {fileID: 21300000, guid: 8c58399c69d72f74b9ad362d4c29ab5c, type: 3}
-  <ManualTargetEffect>k__BackingField:
-    rid: -2
+  <ManualTargetEffects>k__BackingField: []
   <OtherEffects>k__BackingField:
   - <TargetMode>k__BackingField:
-      rid: 2003717527031513099
+      rid: 2003717550773895170
     <Effect>k__BackingField:
-      rid: 2003717527031513100
+      rid: 2003717550773895171
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
-    - rid: 2003717527031513099
+    - rid: 2003717550773895170
       type: {class: AllEnemiesTM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 2003717527031513100
+    - rid: 2003717550773895171
       type: {class: AddStatusEffectEffect, ns: , asm: Assembly-CSharp}
       data:
         statusEffectType: 1

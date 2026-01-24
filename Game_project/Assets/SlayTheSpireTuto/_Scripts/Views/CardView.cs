@@ -42,7 +42,7 @@ public class CardView : MonoBehaviour
     void OnMouseDown()
     {
         if (!Interactions.Instance.PlayerCanInteract()) return;
-        if (card.ManualTargetEffect != null)
+        if (card.ManualTargetEffects != null && card.ManualTargetEffects.Count > 0)
         {
             ManualTargetSystem.Instance.StartTargeting(transform.position);
         }
@@ -60,13 +60,13 @@ public class CardView : MonoBehaviour
     void OnMouseDrag()
     {
         if (!Interactions.Instance.PlayerCanInteract()) return;
-        if (card.ManualTargetEffect != null) return;
+        if (card.ManualTargetEffects != null && card.ManualTargetEffects.Count > 0) return;
         transform.position = MouseUtil.GetMousePositionInWorldSpace(-1);
     }
     void OnMouseUp()
     {
         if (!Interactions.Instance.PlayerCanInteract()) return;
-        if (card.ManualTargetEffect != null)
+        if (card.ManualTargetEffects != null && card.ManualTargetEffects.Count > 0)
         {
             EnemyView target = ManualTargetSystem.Instance.EndTargeting(MouseUtil.GetMousePositionInWorldSpace(-1));
             if (target != null && ManaSystem.Instance.HasEnoughMana(card.Mana))
