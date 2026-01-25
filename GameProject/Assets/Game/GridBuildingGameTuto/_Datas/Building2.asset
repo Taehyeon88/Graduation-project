@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4ef1baeb68c2ee4bbb8f4063b0cada4, type: 3}
+  m_Name: Building2
+  m_EditorClassIdentifier: 
+  <Description>k__BackingField: Building2
+  <Cost>k__BackingField: 2
+  <buildingModel>k__BackingField: {fileID: 5515802121524174564, guid: 23d9927a88d19a74fafbfd05b399f088,
+    type: 3}
