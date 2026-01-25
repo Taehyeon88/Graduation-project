@@ -10,8 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 15ecb23d4f55996479d80b8135290e46, type: 3}
-  m_Name: Slime
+  m_Name: TurtleSlime
   m_EditorClassIdentifier: 
-  <Image>k__BackingField: {fileID: 21300000, guid: c059d54e0d2331240a901b25363d2c28, type: 3}
+  <TokenModel>k__BackingField: {fileID: 7546274242891863984, guid: e2aafa8770d34a9591b41bedf4e318ba,
+    type: 3}
   <Health>k__BackingField: 12
   <AttackPower>k__BackingField: 4

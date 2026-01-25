@@ -4,20 +4,23 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
-public class CombatantView : MonoBehaviour
+public class CombatantView : Token
 {
     [SerializeField] private TMP_Text healthText;
-    [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private Transform wrapper;
 
     [SerializeField] private StatusEffectsUI statusEffectsUI;
     private Dictionary<StatusEffectType, int> statusEffectUIs = new();
 
     public int MaxHealth { get; private set; }
     public int CurrentHealth { get; private set; }
-    public void SetUpBase(int health, Sprite image)
+    public void SetUpBase(int health, TokenModel combatantPrefab)
     {
         MaxHealth = CurrentHealth = health;
-        spriteRenderer.sprite = image;
+
+        foreach (Transform child in wrapper)
+            Destroy(child.gameObject);
+        Instantiate(combatantPrefab, transform.position, transform.rotation, wrapper);    // 3D 몬스터 오브젝트 프리팹 생성
         UpdateHealthText();
     }
     public void UpdateHealthText()

@@ -82,8 +82,7 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
         }
         else
         {
-            if (ManaSystem.Instance.HasEnoughMana(card.Mana)
-            && Physics.Raycast(transform.position, Vector3.forward, out RaycastHit hitInfo, 10f, dropLayer))
+            if (ManaSystem.Instance.HasEnoughMana(card.Mana) && rectTransform.anchoredPosition.y > -200f) //카드가 y좌표 -200를 넘었음 = DropArea
             {
                 PlayCardGA playCardGA = new(card);
                 ActionSystem.Instance.Perform(playCardGA);

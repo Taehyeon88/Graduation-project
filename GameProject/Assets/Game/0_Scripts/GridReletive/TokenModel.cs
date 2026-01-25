@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class BuildingModel : MonoBehaviour
+public class TokenModel : MonoBehaviour   //캐릭터 프리팹
 {
-    [SerializeField] private Transform wrapper;
-    public float Rotation => wrapper.transform.eulerAngles.y;
-    private BuildingShapeUnit[] shapeUnits;
+    public float Rotation => transform.eulerAngles.y;
+    private TokenShapeUnit[] shapeUnits;
     private void Awake()
     {
-        shapeUnits = GetComponentsInChildren<BuildingShapeUnit>();
+        shapeUnits = GetComponentsInChildren<TokenShapeUnit>();
     }
     public void Rotate(float rotationStep)
     {
-        wrapper.Rotate(new Vector3(0, rotationStep, 0));
+        transform.Rotate(new Vector3(0, rotationStep, 0));
     }
     public List<Vector3> GetAllBuildingPositions()
     {

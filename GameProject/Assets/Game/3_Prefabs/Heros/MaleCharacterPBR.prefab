@@ -2070,6 +2070,50 @@ Transform:
   - {fileID: 2453676338479414451}
   m_Father: {fileID: 3268184483685122933}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6965402706378417184
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 774366756226881202}
+  - component: {fileID: 8239506791119390191}
+  m_Layer: 0
+  m_Name: TokenShapeUnit
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &774366756226881202
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6965402706378417184}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8855052669661678444}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8239506791119390191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6965402706378417184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 408cfdb670ae5cf479a50faf24211763, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6994056667336740262
 GameObject:
   m_ObjectHideFlags: 0
@@ -2366,6 +2410,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8855052669661678444}
   - component: {fileID: 9036980633323257398}
+  - component: {fileID: -1712440596165283781}
   m_Layer: 0
   m_Name: MaleCharacterPBR
   m_TagString: Untagged
@@ -2391,6 +2436,7 @@ Transform:
   - {fileID: 4052450133362360554}
   - {fileID: 4651028323595200166}
   - {fileID: 4682473949907222776}
+  - {fileID: 774366756226881202}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &9036980633323257398
@@ -2414,6 +2460,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &-1712440596165283781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8189980434977739222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83f117060139f454bb7e2a37aad566a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8206070634150816031
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,34 +2,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BuildingPreview : MonoBehaviour
+public class TokenPreview : MonoBehaviour
 {
-    public enum BuildingPreViewState
+    public enum TokenPreViewState
     {
         Positive, Negative
     }
     [SerializeField] private Material positiveMaterial;
     [SerializeField] private Material negativeMaterial;
 
-    public BuildingPreViewState State { get; private set; } = BuildingPreViewState.Negative;
-    public BuildingData Data { get; private set; }
-    public BuildingModel BuildingModel { get; private set; }
+    public TokenPreViewState State { get; private set; } = TokenPreViewState.Negative;
+    public TokenData Data { get; private set; }
+    public TokenModel TokenModel { get; private set; }
     private List<Renderer> renderers = new();
     private List<Collider> colliders = new();
 
-    public void SetUp(BuildingData data)
+    public void SetUp(TokenData data)
     {
         Data = data;
-        BuildingModel = Instantiate(data.buildingModel, transform.position, Quaternion.identity, transform);
-        renderers.AddRange(BuildingModel.GetComponentsInChildren<Renderer>());
-        colliders.AddRange(BuildingModel.GetComponentsInChildren<Collider>());
+        TokenModel = Instantiate(data.TokenModel, transform.position, Quaternion.identity, transform);
+        renderers.AddRange(TokenModel.GetComponentsInChildren<Renderer>());
+        colliders.AddRange(TokenModel.GetComponentsInChildren<Collider>());
         foreach (var col in colliders)
         {
             col.enabled = false;
         }
         SetPreViewMaterial(State);
     }
-    public void ChangeState(BuildingPreViewState newState)
+    public void ChangeState(TokenPreViewState newState)
     {
         if (State == newState) return;
         State = newState;
@@ -37,11 +37,11 @@ public class BuildingPreview : MonoBehaviour
     }
     public void Rotate(float rotationStep)
     {
-        BuildingModel.Rotate(rotationStep);
+        TokenModel.Rotate(rotationStep);
     }
-    private void SetPreViewMaterial(BuildingPreViewState newState)
+    private void SetPreViewMaterial(TokenPreViewState newState)
     {
-        Material previewMat = newState == BuildingPreViewState.Positive ? positiveMaterial : negativeMaterial;
+        Material previewMat = newState == TokenPreViewState.Positive ? positiveMaterial : negativeMaterial;
         foreach (var rend in renderers)
         {
             Material[] mats = new Material[rend.sharedMaterials.Length];
