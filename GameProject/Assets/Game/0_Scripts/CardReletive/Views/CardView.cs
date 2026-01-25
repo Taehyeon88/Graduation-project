@@ -2,17 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-public class CardView : MonoBehaviour
+public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private TMP_Text title;
     [SerializeField] private TMP_Text description;
     [SerializeField] private TMP_Text mana;
-    [SerializeField] private SpriteRenderer imageSR;
+    [SerializeField] private Image image;
     [SerializeField] private GameObject wrapper;
     [SerializeField] private LayerMask dropLayer;
 
+    private RectTransform rectTransform;
     private Vector3 dragStartPosition;
     private Quaternion dragStartRotation;
     public Card card { get; private set; }
@@ -22,24 +24,26 @@ public class CardView : MonoBehaviour
         title.text = card.Title;
         description.text = card.Description;
         mana.text = card.Mana.ToString();
-        imageSR.sprite = card.Image;
+        image.sprite = card.Image;
+        rectTransform = GetComponent<RectTransform>();
     }
 
-    private void OnMouseEnter()
+    public void OnPointerEnter(PointerEventData eventData)
     {
         if (!Interactions.Instance.PlayerCanHover()) return;
         wrapper.SetActive(false);
-        Vector3 pos = new(transform.position.x, -2, 0);
+        Vector2 pos = rectTransform.anchoredPosition + Vector2.up * 120f;
         CardViewHoverSystem.Instance.Show(card, pos);
     }
-    private void OnMouseExit()
+
+    public void OnPointerExit(PointerEventData eventData)
     {
-        if(!Interactions.Instance.PlayerCanHover()) return;
+        if (!Interactions.Instance.PlayerCanHover()) return;
         CardViewHoverSystem.Instance.Hide();
         wrapper.SetActive(true);
     }
 
-    void OnMouseDown()
+    public void OnBeginDrag(PointerEventData eventData)
     {
         if (!Interactions.Instance.PlayerCanInteract()) return;
         if (card.ManualTargetEffects != null && card.ManualTargetEffects.Count > 0)
@@ -54,21 +58,22 @@ public class CardView : MonoBehaviour
             dragStartPosition = transform.position;
             dragStartRotation = transform.rotation;
             transform.rotation = Quaternion.Euler(0, 0, 0);
-            transform.position = MouseUtil.GetMousePositionInWorldSpace(-1);
+            transform.position = eventData.position;
         }
     }
-    void OnMouseDrag()
+
+    public void OnDrag(PointerEventData eventData)
     {
         if (!Interactions.Instance.PlayerCanInteract()) return;
         if (card.ManualTargetEffects != null && card.ManualTargetEffects.Count > 0) return;
-        transform.position = MouseUtil.GetMousePositionInWorldSpace(-1);
+        transform.position = eventData.position;
     }
-    void OnMouseUp()
+    public void OnEndDrag(PointerEventData eventData)
     {
         if (!Interactions.Instance.PlayerCanInteract()) return;
         if (card.ManualTargetEffects != null && card.ManualTargetEffects.Count > 0)
         {
-            EnemyView target = ManualTargetSystem.Instance.EndTargeting(MouseUtil.GetMousePositionInWorldSpace(-1));
+            EnemyView target = ManualTargetSystem.Instance.EndTargeting(eventData.position);
             if (target != null && ManaSystem.Instance.HasEnoughMana(card.Mana))
             {
                 PlayCardGA playCardGA = new(card, target);

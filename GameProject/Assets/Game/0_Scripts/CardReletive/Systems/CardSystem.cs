@@ -7,8 +7,9 @@ using UnityEngine;
 public class CardSystem : Singleton<CardSystem>
 {
     [SerializeField] private HandView handView;
-    [SerializeField] private Transform drawPilePoint;
-    [SerializeField] private Transform discardPilePoint;
+    [SerializeField] private RectTransform handTransform;
+    [SerializeField] private RectTransform drawPilePoint;
+    [SerializeField] private RectTransform discardPilePoint;
 
     private readonly List<Card> drawPile = new();
     private readonly List<Card> discardPile = new();
@@ -93,7 +94,7 @@ public class CardSystem : Singleton<CardSystem>
     {
         Card card = drawPile.Draw();
         hand.Add(card);
-        CardView cardView = CardViewCreator.Instance.CreatCardView(card, drawPilePoint.position, drawPilePoint.rotation);
+        CardView cardView = CardViewCreator.Instance.CreatCardView(card, drawPilePoint, handTransform);
         yield return handView.AddCard(cardView);
     }
     private void RefillDect() => drawPile.AddRange(discardPile.Shuffle());
