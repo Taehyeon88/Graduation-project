@@ -10,7 +10,7 @@ public class EnemyBoardView : MonoBehaviour
     public void AddEnemyView(EnemyData enemyData)
     {
         Transform slot = slots[EnemyViews.Count];
-        EnemyView enemyView = EnemyViewCreator.Instance.CreateEnemyView(enemyData, slot.position, slot.rotation);
+        EnemyView enemyView = TokenCreator.Instance.CreateEnemyView(enemyData, slot.position, slot.rotation);
         enemyView.transform.parent = slot;
         EnemyViews.Add(enemyView);
     }
