@@ -5,8 +5,7 @@ using UnityEngine;
 
 public class EnemySystem : Singleton<EnemySystem>
 {
-    [SerializeField] private EnemyBoardView enemyBoardView;
-    public List<EnemyView> Enemise => enemyBoardView.EnemyViews;
+    public List<EnemyView> Enemise => TokenSystem.Instance.EnemyViews;
     void OnEnable()
     {
         ActionSystem.AttachPerformer<EnemyTurnGA>(EnemyTurnPerformer);
@@ -20,18 +19,10 @@ public class EnemySystem : Singleton<EnemySystem>
         ActionSystem.DetachPerformer<KillEnemyGA>();
     }
 
-    public void SetUp(List<EnemyData> enemyDatas)
-    {
-        foreach (var enemyData in enemyDatas)
-        {
-            enemyBoardView.AddEnemyView(enemyData);
-        }
-    }
-
-    //Performers
+   //Performers
     private IEnumerator EnemyTurnPerformer(EnemyTurnGA enemyTurn)
     {
-        foreach (EnemyView enemy in enemyBoardView.EnemyViews)
+        foreach (EnemyView enemy in Enemise)
         {
             int burnStack = enemy.GetStatusEffectStacks(StatusEffectType.BURN);
             if (burnStack > 0)
@@ -56,6 +47,6 @@ public class EnemySystem : Singleton<EnemySystem>
 
     private IEnumerator KillEnemyPerformer(KillEnemyGA killEnemyGA)
     {
-        yield return enemyBoardView.RemoveEnemy(killEnemyGA.EnemyView);
+        yield return TokenSystem.Instance.RemoveEnemy(killEnemyGA.EnemyView);
     }
 }

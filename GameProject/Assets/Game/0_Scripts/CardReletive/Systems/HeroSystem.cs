@@ -4,12 +4,7 @@ using UnityEngine;
 
 public class HeroSystem : Singleton<HeroSystem>
 {
-    public HeroView HeroView => TokenManager.Instance.HeroView;
-
-    public void SetUp(HeroData heroData)
-    {
-        HeroView.SetUp(heroData);
-    }
+    public HeroView HeroView => TokenSystem.Instance.HeroView;
 
     private void OnEnable()
     {

@@ -7,11 +7,11 @@ public class EnemyView : CombatantView
 {
     [SerializeField] private TMP_Text attackText;
     public int AttackPower { get; set; }
-    public void SetUp(EnemyData enemyData)
+    public void SetUp(EnemyData enemyData, float rotationStep)
     {
         AttackPower = enemyData.AttackPower;
         UpdateAttckText();
-        SetUpBase(enemyData.Health, enemyData.TokenModel);
+        SetUpBase(enemyData.Health, enemyData, rotationStep);
     }
     private void UpdateAttckText()
     {

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class HeroView : CombatantView
 {
-    public void SetUp(HeroData heroData)
+    public void SetUp(HeroData heroData, float rotationStep)
     {
-        SetUpBase(heroData.Health, heroData.TokenModel);
+        SetUpBase(heroData.Health, heroData, rotationStep);
     }
 }

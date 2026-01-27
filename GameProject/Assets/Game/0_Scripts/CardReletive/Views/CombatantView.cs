@@ -14,14 +14,16 @@ public class CombatantView : Token
 
     public int MaxHealth { get; private set; }
     public int CurrentHealth { get; private set; }
-    public void SetUpBase(int health, TokenModel combatantPrefab)
+    public void SetUpBase(int health, TokenData tokenData, float rotationStep)
     {
-        MaxHealth = CurrentHealth = health;
-
-        foreach (Transform child in wrapper)
-            Destroy(child.gameObject);
-        Instantiate(combatantPrefab, transform.position, transform.rotation, wrapper);    // 3D 몬스터 오브젝트 프리팹 생성
+        MaxHealth = CurrentHealth = health;     //몬스터 & 플레이어 체력 셋업
         UpdateHealthText();
+
+        foreach (Transform child in wrapper)     //몬스터 & 플레이어 모델 셋업
+            Destroy(child.gameObject);
+        this.TokenData = tokenData;
+        TokenModel = Instantiate(tokenData.TokenModel, transform.position, Quaternion.identity, wrapper);
+        TokenModel.Rotate(rotationStep);
     }
     public void UpdateHealthText()
     {

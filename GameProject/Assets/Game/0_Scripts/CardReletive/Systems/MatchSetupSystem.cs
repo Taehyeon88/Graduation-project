@@ -27,12 +27,16 @@ public class MatchSetupSystem : MonoBehaviour
             yield break;
         }
 
-        TokenManager.Instance.StartSetting(heroData);
+        //건물 배치
+        //몬스터 배치
+        TokenSystem.Instance.StartSettingEnemys(new(enemyDatas));
+        //아이템 배치
 
-        yield return new WaitUntil(() => !TokenManager.Instance.startSetting);
+        //영웅 배치
+        TokenSystem.Instance.StartSetting(heroData);
+        yield return new WaitUntil(() => !TokenSystem.Instance.startSetting);
 
-        EnemySystem.Instance.SetUp(enemyDatas);
-        HeroSystem.Instance.SetUp(heroData);
+        //기타
         CardSystem.Instance.SetUp(heroData.Deck.ToList());
         PerkSystem.Instance.AddPerk(new(perkData));
         DrawCardsGA drawCardsGA = new(drawCount);
