@@ -6,18 +6,23 @@ public static class FindPathBFS
     static int[,] map;
     public static void SetGrid(TokenGirdCell[,] grid)    //플레이어 혹은 몬스터 각각의 이동 턴에 한번 실행
     {
-        int[,] map = new int[grid.GetLength(0), grid.GetLength(1)];
+        map = new int[grid.GetLength(0), grid.GetLength(1)];
 
         for (int x = 0; x < grid.GetLength(0); x++)
         {
             for (int y = 0; y < grid.GetLength(1); y++)
             {
-                map[x, y] = grid[x, y].IsEmpty() ? 1 : 0;   //1 - 이동 불가 | 0 - 이동 가능
+                map[x, y] = grid[x, y].IsEmpty() ? 0 : 1;   //1 - 이동 불가 | 0 - 이동 가능
             }
         }
+
     }
     public static List<Vector2Int> FindPath(Vector2Int start, Vector2Int goal)
     {
+        if (map == null)
+        {
+            Debug.Log("map 이 없음");
+        }
         map[start.x, start.y] = 0;
         var path = _FindPathBFS(map, start, goal);
 
@@ -135,8 +140,8 @@ public static class FindPathBFS
 
         while (cur.HasValue)
         {
-            path.Add(cur.Value);
             if (cur.Value == start) break;
+            path.Add(cur.Value);
             cur = parent[cur.Value.x, cur.Value.y];
         }
 
