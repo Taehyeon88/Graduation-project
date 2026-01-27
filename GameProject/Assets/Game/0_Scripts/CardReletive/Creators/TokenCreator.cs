@@ -2,21 +2,50 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum TokenType
+{
+    Hero, Enemy, Builing
+}
+
 public class TokenCreator : Singleton<TokenCreator>
 {
-    [SerializeField] private EnemyView enemyViewPrefab;
+    [SerializeField] private TokenPreview previewPrefab;
+    [SerializeField] private Token heroTokenPrefab;
+    [SerializeField] private Token enemyTokenPrefab;
+    [SerializeField] private Transform tokenView;      //토큰들을 생성할 부모 오브젝트
 
-    public EnemyView CreateEnemyView(EnemyData enemyData, Vector3 position, Quaternion rotation)
+    private Token tokenPrefab;
+
+    public Token CreateToken(TokenData data, TokenType tokenType, Vector3 position, float rotationStep)
     {
-        EnemyView enemyView = Instantiate(enemyViewPrefab, position, rotation);
-        enemyView.SetUp(enemyData);
-        return enemyView;
+        switch(tokenType)
+        {
+            case TokenType.Hero: tokenPrefab = heroTokenPrefab; break;
+            case TokenType.Enemy: tokenPrefab = enemyTokenPrefab; break;
+            default: tokenPrefab = null; break;
+        }
+        if (tokenPrefab == null) return null;
+
+        Token token = Instantiate(tokenPrefab, position, Quaternion.identity, tokenView);
+
+        switch (tokenType)
+        {
+            case TokenType.Hero: 
+                HeroView heroView = token as HeroView;
+                heroView.SetUp(data as HeroData, rotationStep);
+                break;
+            case TokenType.Enemy: 
+                EnemyView enemyView = token as EnemyView;
+                enemyView.SetUp(data as EnemyData, rotationStep);
+                break;
+        }
+        return token;
     }
 
-    public Token CreateToken(TokenData data, Token tokenPrefab, Vector3 position, float rotationStep)
+    public TokenPreview CreateTokenPreview(TokenData data, Vector3 position)
     {
-        Token token = Instantiate(tokenPrefab, position, Quaternion.identity, transform);
-        token.SetUp(data, rotationStep);
-        return token;
+        TokenPreview preview = Instantiate(previewPrefab, position, Quaternion.identity);
+        preview.SetUp(data);
+        return preview;
     }
 }

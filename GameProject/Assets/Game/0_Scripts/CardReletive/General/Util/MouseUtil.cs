@@ -15,4 +15,15 @@ public static class MouseUtil
         }
         return Vector3.zero;
     }
+
+    public static Vector3 GetMousePositionInWorldSpace()
+    {
+        Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (groundPlane.Raycast(ray, out float distance))
+        {
+            return ray.GetPoint(distance);
+        }
+        return Vector3.zero;
+    }
 }

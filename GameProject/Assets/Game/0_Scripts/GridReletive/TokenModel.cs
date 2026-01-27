@@ -6,17 +6,17 @@ using UnityEngine;
 public class TokenModel : MonoBehaviour   //캐릭터 프리팹
 {
     public float Rotation => transform.eulerAngles.y;
-    private TokenShapeUnit[] shapeUnits;
+    private TokenShapeUnit shapeUnit;
     private void Awake()
     {
-        shapeUnits = GetComponentsInChildren<TokenShapeUnit>();
+        shapeUnit = GetComponentInChildren<TokenShapeUnit>();
     }
     public void Rotate(float rotationStep)
     {
         transform.Rotate(new Vector3(0, rotationStep, 0));
     }
-    public List<Vector3> GetAllBuildingPositions()
+    public Vector3 GetTokenPosition()
     {
-        return shapeUnits.Select(unit => unit.transform.position).ToList();
+        return shapeUnit.transform.position;
     }
 }
