@@ -33,8 +33,10 @@ public class MatchSetupSystem : MonoBehaviour
         //아이템 배치
 
         //영웅 배치
-        TokenSystem.Instance.StartSetting(heroData);
-        yield return new WaitUntil(() => !TokenSystem.Instance.startSetting);
+        TokenSystem.Instance.StartSetHero(heroData);
+        yield return new WaitUntil(() => TokenSystem.Instance.HeroView != null);
+        //영웅 이동
+        TokenSystem.Instance.StartHeroMove();
 
         //기타
         CardSystem.Instance.SetUp(heroData.Deck.ToList());

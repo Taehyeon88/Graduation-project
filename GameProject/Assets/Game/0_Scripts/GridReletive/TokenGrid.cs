@@ -48,6 +48,12 @@ public class TokenGrid : MonoBehaviour
         remainCells.Remove(pos);
         return pos;
     }
+    public Vector2Int SetTokenByGridPos(Token token, Vector2Int pos)
+    {
+        grid[pos.x, pos.y].SetToken(token);
+        remainCells.Remove(pos);
+        return pos;
+    }
     public void ResetToken(Vector2Int pos)
     {
         grid[pos.x, pos.y].ResetToken();

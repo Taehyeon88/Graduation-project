@@ -7,25 +7,22 @@ using UnityEngine;
 public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터, 건물 추가 및 삭제 (게임 중) | 토큰 이동, 등
 {
     public const float CellSize = 1f;
-    [SerializeField] private TokenPreview previewPrefab;
     [SerializeField] private TokenGrid grid;
 
     public HeroView HeroView { get; private set; }
     public List<EnemyView> EnemyViews { get; private set; } = new();
-    public bool startSetting { get; private set; } = false;
 
     private Dictionary<Token, Vector2Int> gridPosByToken = new();
     private TokenPreview preview;
     private TokenData tokenData;
-    public void StartSetting(TokenData tokenData)
-    {
-        this.tokenData = tokenData;
-        startSetting = true;
-    }
+    private bool tokenIsMoving = false;
 
-    public void StartSettingEnemys(List<TokenData> tokenDatas)  //턴 종료시, HeroToke 혹은 EnemyTokens, 등 초기화 기능 미구현 상태
+
+    /// </summary>
+    /// <param name="tokenDatas"></param>
+    /// 전투 시작시, 모든 몬스터들 비어있는 그리드에 랜덤 배치 함수
+    public void StartSettingEnemys(List<TokenData> tokenDatas)
     {
-        Debug.Log($"적 생성 시작");
         foreach (TokenData tokenData in tokenDatas)
         {
             EnemyData enemyData = tokenData as EnemyData;
@@ -49,6 +46,11 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
         }
     }
 
+    /// <summary>
+    /// 전투 중, 지정된 위치로 몬스터 배치 함수
+    /// </summary>
+    /// <param name="enemyData"></param>
+    /// <param name="position"></param>
     public void AddEnemy(EnemyData enemyData, Vector3 position)
     {
         Vector3 snappedPos = GetSnappedCenterPosition(position);
@@ -57,15 +59,13 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
             Debug.Log("해당 위치에는 적을 생성할 수 없습니다.");
             return;
         }
-        Token token = TokenCreator.Instance.CreateToken(enemyData, TokenType.Enemy, snappedPos, 180f);
-        Vector2Int gridPos = grid.SetToken(token, snappedPos);
-        if (token is EnemyView enemyToken)
-        {
-            EnemyViews.Add(enemyToken);
-            gridPosByToken.Add(token, gridPos);
-        }
+        PlaceToken(snappedPos, enemyData, TokenType.Enemy);
     }
-
+    /// <summary>
+    /// 특정 몬스터를 그리드에서 제거하는 함수
+    /// </summary>
+    /// <param name="enemyView"></param>
+    /// <returns></returns>
     public IEnumerator RemoveEnemy(EnemyView enemyView)
     {
         EnemyViews.Remove(enemyView);
@@ -75,99 +75,136 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
         Destroy(enemyView.gameObject);
     }
 
-    private void Update()
-    {
-        if (startSetting)
-        {
-            Vector3 mousePosition = MouseUtil.GetMousePositionInWorldSpace();
-            if (preview != null)
-            {
-                HandlePreView(mousePosition);
-            }
-            else
-            {
-                preview = TokenCreator.Instance.CreateTokenPreview(tokenData, mousePosition);
-            }
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                preview.Rotate(90f);
-            }
-        }
-        else   //토큰 이동
-        {
-            //Vector3 mousePosition = GetMouseWorldPosition();
-            //if (Input.GetKeyDown(KeyCode.Space))
-            //{
-            //    Vector2Int start = gridPosByToken[HeroView];
-            //    Vector2Int end = grid.WorldToGirdPosition(mousePosition);
-            //    FindPathBFS.SetGrid(grid.grid);
-            //    List<Vector2Int> path = FindPathBFS.FindPath(start, end);
 
-            //    if (path != null)
-            //    {
-            //        StartCoroutine(StartMove(HeroView, path));
-            //    }
-            //}
-        }
+    /// <summary>
+    /// 전투 시작시, 영웅 배치를 위해서 실행되는 함수
+    /// </summary>
+    /// <param name="tokenData"></param>
+    public void StartSetHero(TokenData tokenData)
+    {
+        this.tokenData = tokenData;
+        InteractionSystem.Instance.SetInteraction(InteractionCase.SetHero, UpdateHeroPreview);
     }
-    private void HandlePreView(Vector3 mouseWorldPosition)   //플레이어 배치 (현재)
+
+    /// <summary>
+    /// 영웅 프리뷰를 업데이트할 함수
+    /// </summary>
+    /// <param name="tokenData"></param>
+    private void UpdateHeroPreview(bool isSelect)
+    {
+        Vector3 mousePosition = MouseUtil.GetMousePositionInWorldSpace();
+        if (preview != null)
+            HandlePreView(mousePosition, isSelect);
+        else
+            preview = TokenCreator.Instance.CreateTokenPreview(tokenData, mousePosition);
+    }
+
+    /// <summary>
+    /// 현재 영웅 프리뷰의 위치에 영웅을 설정 여부를 체크 및 생성하는 함수
+    /// </summary>
+    /// <param name="mouseWorldPosition"></param>
+    /// <param name="isSelect"></param>
+    private void HandlePreView(Vector3 mouseWorldPosition, bool isSelect)
     {
         preview.transform.position = mouseWorldPosition;
         Vector3 TokenPosition = preview.TokenModel.GetTokenPosition();
         bool canSet = grid.CanSet(TokenPosition);
         if (canSet)
         {
-            preview.transform.position = GetSnappedCenterPosition(TokenPosition);
+            TokenPosition = preview.transform.position = GetSnappedCenterPosition(TokenPosition);
             preview.ChangeState(TokenPreview.TokenPreViewState.Positive);
-            if (Input.GetMouseButtonDown(0))
+            if (isSelect)
             {
-                PlaceToken(TokenPosition);
+                PlaceToken(TokenPosition, preview.Data, TokenType.Hero);
+                Destroy(preview.gameObject);
+                tokenData = null;
+                preview = null;
             }
         }
     }
-    private void PlaceToken(Vector3 setPosition)    //플레이어용 (현재)
+
+    /// <summary>
+    /// 영웅 이동 시작 처리하는 함수
+    /// </summary>
+    public void StartHeroMove()
+    {
+        InteractionSystem.Instance.SetInteraction(InteractionCase.HeroMove, UpdateHeroMove);
+    }
+
+    /// <summary>
+    /// 영웅 토큰 이동 업데이트 함수
+    /// </summary>
+    /// <param name="isSelect"></param>
+    private void UpdateHeroMove(bool isSelect)
+    {
+        if (tokenIsMoving) return;
+
+        Vector3 mousePosition = MouseUtil.GetMousePositionInWorldSpace();
+        if (isSelect)
+        {
+            Vector2Int start = gridPosByToken[HeroView];
+            Vector2Int end = grid.WorldToGirdPosition(mousePosition);
+            FindPathBFS.SetGrid(grid.grid);
+            List<Vector2Int> path = FindPathBFS.FindPath(start, end);
+
+            if (path != null)
+            {
+                StartCoroutine(MoveToken(HeroView, path));
+            }
+        }
+    }
+
+
+
+    /// <summary>
+    /// 특정 위치에 토큰(영웅, 적, 건물)을 생성하는 함수
+    /// </summary>
+    /// <param name="setPosition"></param>
+    private void PlaceToken(Vector3 setPosition, TokenData data, TokenType tokenType)
     {
         Token token = TokenCreator.Instance.CreateToken(
-                preview.Data, 
-                TokenType.Hero, 
+                data,
+                tokenType, 
                 preview.transform.position, 
-                preview.TokenModel.Rotation
+                0f
             );
-        Destroy(preview.gameObject);
 
-        Vector2Int girdPos = grid.SetToken(token, setPosition);
-        if (girdPos != null)
-        {
-            gridPosByToken.TryAdd(token, girdPos);
-        }
+        Vector2Int gridPos = grid.SetToken(token, setPosition);
+        if (gridPos != null)
+            gridPosByToken.TryAdd(token, gridPos);
 
         if (token is HeroView heroView)
-            this.HeroView = heroView;
+            HeroView = heroView;
         else if (token is EnemyView enemyView)
             EnemyViews.Add(enemyView);
-
-        ResetValue();
     }
-    private void HandleMoveToken(Token token)
-    {
 
-    }
-    private IEnumerator StartMove(Token token, List<Vector2Int> path)
+    /// <summary>
+    /// 토큰(영웅, 적, 건물) 이동 함수
+    /// </summary>
+    /// <param name="token"></param>
+    /// <param name="path"></param>
+    /// <returns></returns>
+    private IEnumerator MoveToken(Token token, List<Vector2Int> path)
     {
+        tokenIsMoving = true;
         foreach (var p in path)
         {
-            yield return MoveToken(token, p);
+            grid.SetTokenByGridPos(token, p);
+            grid.ResetToken(gridPosByToken[token]);
+            gridPosByToken[token] = p;
+            Vector3 targetPost = grid.GridToWorldPosition(p);
+            Tween tween = token.gameObject.transform.DOMove(targetPost, 1f);
+            yield return tween.WaitForCompletion();
         }
-    }
-    private IEnumerator MoveToken(Token token, Vector2Int gridPosition)
-    {
-        gridPosByToken[token] = gridPosition;
-        Vector3 targetPost = grid.GridToWorldPosition(gridPosition);
-        Tween tween = token.gameObject.transform.DOMove(targetPost, 1f);
-        yield return tween.WaitForCompletion();
+        tokenIsMoving = false;
     }
 
-
+    /// <summary>
+    /// Global 좌표계 위치에서 Grid 위치에 맞게 snap 해주는 함수
+    /// </summary>
+    /// <param name="tokenPosition"></param>
+    /// <returns></returns>
     private Vector3 GetSnappedCenterPosition(Vector3 tokenPosition)
     {
         int sx = Mathf.FloorToInt(tokenPosition.x);
@@ -176,13 +213,5 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
         float centerX = sx + CellSize / 2f;
         float centerz = sz + CellSize / 2f;
         return new Vector3(centerX, 0, centerz);
-    }
-
-    private void ResetValue()
-    {
-        tokenData = null;
-        startSetting = false;
-        preview = null;
-
     }
 }
