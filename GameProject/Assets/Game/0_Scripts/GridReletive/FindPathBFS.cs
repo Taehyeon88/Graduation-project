@@ -56,10 +56,8 @@ public static class FindPathBFS
 
         Vector2Int[] dirs =
         {
-            new Vector2Int(1,0),
-            new Vector2Int(-1,0),
-            new Vector2Int(0,1),
-            new Vector2Int(0,-1),
+            new Vector2Int(1,0), new Vector2Int(-1,0), new Vector2Int(0,1), new Vector2Int(0,-1),
+            new Vector2Int(1,1), new Vector2Int(-1,1), new Vector2Int(-1,-1), new Vector2Int(1,-1)
         };
 
         List<Vector2Int> open = new List<Vector2Int>();
@@ -118,7 +116,7 @@ public static class FindPathBFS
 
     static int H(Vector2Int a, Vector2Int b)
     {
-        return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
+        return Mathf.Max(Mathf.Abs(a.x - b.x), Mathf.Abs(a.y - b.y));
     }
 
     static int TileCost(int tile)
