@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,6 +33,7 @@ public class TokenGrid : MonoBehaviour
 
         endInitialize = true;
     }
+
     public Vector2Int SetTokenRendomly(Token token)
     {
         if (grid == null) Initialize();
@@ -38,6 +41,17 @@ public class TokenGrid : MonoBehaviour
         int randomValue = UnityEngine.Random.Range(0, remainCells.Count);
         Vector2Int pos = remainCells[randomValue];
         grid[pos.x, pos.y].SetToken(token);
+        remainCells.Remove(pos);
+        return pos;
+    }
+    public Vector2Int SetTokenRendomly(Token token, List<Vector2Int> canSetPositions)
+    {
+        if (grid == null) Initialize();
+
+        int randomValue = UnityEngine.Random.Range(0, canSetPositions.Count);
+        Vector2Int pos = canSetPositions[randomValue];
+        grid[pos.x, pos.y].SetToken(token);
+        canSetPositions.Remove(pos);
         remainCells.Remove(pos);
         return pos;
     }
@@ -66,6 +80,46 @@ public class TokenGrid : MonoBehaviour
         if (x < 0 || x >= width || y < 0 || y >= height) return false;
         if (!grid[x, y].IsEmpty()) return false;
         return true;
+    }
+    public bool CanSetByGridPos(Vector2Int pos)
+    {
+        int x = pos.x; int y = pos.y;
+        if (x < 0 || x >= width || y < 0 || y >= height) return false;
+        if (!grid[x, y].IsEmpty()) return false;
+        return true;
+    }
+    public bool CanSet(Vector3 position, List<Vector2Int> canSetupPoisitions)
+    {
+        Vector2Int pos = WorldToGirdPosition(position);
+        int x = pos.x; int y = pos.y;
+        if(!canSetupPoisitions.Contains(pos)) return false;
+        if (x < 0 || x >= width || y < 0 || y >= height) return false;
+        if (!grid[x, y].IsEmpty()) return false;
+        return true;
+    }
+    public List<Vector2Int> GetCanSetPositions(List<Vector2Int> positions = null)
+    {
+        if (grid == null) Initialize();
+
+        if (positions != null)
+        {
+            int[,] temp = new int[width, height];
+            foreach (Vector2Int pos in positions)
+                temp[pos.x, pos.y] += 1;
+            foreach (Vector2Int pos in remainCells)
+                temp[pos.x, pos.y] += 1;
+            positions.Clear();
+            for (int x = 0; x < temp.GetLength(0); x++)
+            {
+                for (int y = 0; y < temp.GetLength(1); y++)
+                {
+                    if (temp[x, y] == 2)
+                        positions.Add(new(x, y));
+                }
+            }
+            return positions.ToList();
+        }
+        return null;
     }
 
     private void OnDrawGizmos()

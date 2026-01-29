@@ -15,14 +15,15 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
     private Dictionary<Token, Vector2Int> gridPosByToken = new();
     private TokenPreview preview;
     private TokenData tokenData;
+    private List<Vector2Int> heroSetupPositions = new();
     private bool tokenIsMoving = false;
-
 
     /// </summary>
     /// <param name="tokenDatas"></param>
     /// 전투 시작시, 모든 몬스터들 비어있는 그리드에 랜덤 배치 함수
-    public void StartSettingEnemys(List<TokenData> tokenDatas)
+    public void StartSettingEnemys(List<TokenData> tokenDatas, List<Vector2Int> canSetupPositions)
     {
+        canSetupPositions = grid.GetCanSetPositions(canSetupPositions);
         foreach (TokenData tokenData in tokenDatas)
         {
             EnemyData enemyData = tokenData as EnemyData;
@@ -33,13 +34,12 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
                     transform.position,
                     0f
                 );
-            Vector2Int gridPosition = grid.SetTokenRendomly(token);
+            Vector2Int gridPosition = grid.SetTokenRendomly(token, canSetupPositions);
             Vector3 position = grid.GridToWorldPosition(gridPosition);
             token.transform.position = position;
 
             if (token is EnemyView enemyToken)
             {
-                Debug.Log($"적 토큰 이름: {enemyToken.name}");
                 EnemyViews.Add(enemyToken);
                 gridPosByToken.Add(token, gridPosition);
             }
@@ -80,9 +80,18 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
     /// 전투 시작시, 영웅 배치를 위해서 실행되는 함수
     /// </summary>
     /// <param name="tokenData"></param>
-    public void StartSetHero(TokenData tokenData)
+    public void StartSetHero(TokenData tokenData, List<Vector2Int> heroSetupPositions)
     {
         this.tokenData = tokenData;
+        this.heroSetupPositions = heroSetupPositions;
+        foreach (var gridPos in heroSetupPositions)
+        {
+            Vector3 position = grid.GridToWorldPosition(gridPos);
+            if (grid.CanSetByGridPos(gridPos))
+                VisualGridCreator.Instance.CreateHeroVisualGrid(position, Color.green);
+            else
+                VisualGridCreator.Instance.CreateHeroVisualGrid(position, Color.red);
+        }
         InteractionSystem.Instance.SetInteraction(InteractionCase.SetHero, UpdateHeroPreview);
     }
 
@@ -108,7 +117,7 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
     {
         preview.transform.position = mouseWorldPosition;
         Vector3 TokenPosition = preview.TokenModel.GetTokenPosition();
-        bool canSet = grid.CanSet(TokenPosition);
+        bool canSet = grid.CanSet(TokenPosition, heroSetupPositions);
         if (canSet)
         {
             TokenPosition = preview.transform.position = GetSnappedCenterPosition(TokenPosition);
@@ -116,11 +125,14 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
             if (isSelect)
             {
                 PlaceToken(TokenPosition, preview.Data, TokenType.Hero);
+                VisualGridCreator.Instance.RemoveHeroVisualGrid();
                 Destroy(preview.gameObject);
                 tokenData = null;
                 preview = null;
+                heroSetupPositions = null;
             }
         }
+        else preview.ChangeState(TokenPreview.TokenPreViewState.Negative);
     }
 
     /// <summary>

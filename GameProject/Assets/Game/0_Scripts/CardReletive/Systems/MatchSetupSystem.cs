@@ -8,6 +8,8 @@ public class MatchSetupSystem : MonoBehaviour
     [SerializeField] private HeroData heroData;
     [SerializeField] private PerkData perkData;
     [SerializeField] private List<EnemyData> enemyDatas;
+    [SerializeField] private List<Vector2Int> heroSetUpPositions;
+    [SerializeField] private List<Vector2Int> enemySetUpPositions;
     private readonly int drawCount = 5;
     private void Start()
     {
@@ -29,11 +31,11 @@ public class MatchSetupSystem : MonoBehaviour
 
         //건물 배치
         //몬스터 배치
-        TokenSystem.Instance.StartSettingEnemys(new(enemyDatas));
+        TokenSystem.Instance.StartSettingEnemys(new(enemyDatas), enemySetUpPositions);
         //아이템 배치
 
         //영웅 배치
-        TokenSystem.Instance.StartSetHero(heroData);
+        TokenSystem.Instance.StartSetHero(heroData, heroSetUpPositions);
         yield return new WaitUntil(() => TokenSystem.Instance.HeroView != null);
         //영웅 이동
         TokenSystem.Instance.StartHeroMove();
