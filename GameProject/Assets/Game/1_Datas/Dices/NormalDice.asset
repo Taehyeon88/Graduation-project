@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b26427fa5e2a1544e951d8274f352332, type: 3}
+  m_Name: NormalDice
+  m_EditorClassIdentifier: 
+  <Description>k__BackingField: this is a normalDice
+  <DiceModel>k__BackingField: {fileID: 1165664036036603153, guid: 2d63344385127534cae57774380d2de0,
+    type: 3}
+  <NumberPerFace>k__BackingField: 010000000100000001000000020000000300000004000000

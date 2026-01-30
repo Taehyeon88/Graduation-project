@@ -7,6 +7,7 @@ public class MatchSetupSystem : MonoBehaviour
 {
     [SerializeField] private HeroData heroData;
     [SerializeField] private PerkData perkData;
+    [SerializeField] private DiceData diceData;
     [SerializeField] private List<EnemyData> enemyDatas;
     [SerializeField] private List<Vector2Int> heroSetUpPositions;
     [SerializeField] private List<Vector2Int> enemySetUpPositions;
@@ -31,19 +32,21 @@ public class MatchSetupSystem : MonoBehaviour
 
         //건물 배치
         //몬스터 배치
-        TokenSystem.Instance.StartSettingEnemys(new(enemyDatas), enemySetUpPositions);
+        //TokenSystem.Instance.StartSettingEnemys(new(enemyDatas), enemySetUpPositions);
         //아이템 배치
 
         //영웅 배치
-        TokenSystem.Instance.StartSetHero(heroData, heroSetUpPositions);
-        yield return new WaitUntil(() => TokenSystem.Instance.HeroView != null);
+        //TokenSystem.Instance.StartSetHero(heroData, heroSetUpPositions);
+        //yield return new WaitUntil(() => TokenSystem.Instance.HeroView != null);
+        //InteractionSystem.Instance.EndInteraction();
         //영웅 이동
-        TokenSystem.Instance.StartHeroMove();
+        //TokenSystem.Instance.StartHeroMove();
 
         //기타
-        CardSystem.Instance.SetUp(heroData.Deck.ToList());
-        PerkSystem.Instance.AddPerk(new(perkData));
-        DrawCardsGA drawCardsGA = new(drawCount);
-        ActionSystem.Instance.Perform(drawCardsGA);
+        DiceSystem.Instance.SetDice(new(diceData));
+        //CardSystem.Instance.SetUp(heroData.Deck.ToList());
+        //PerkSystem.Instance.AddPerk(new(perkData));
+        //DrawCardsGA drawCardsGA = new(drawCount);
+        //ActionSystem.Instance.Perform(drawCardsGA);
     }
 }

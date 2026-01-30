@@ -24,6 +24,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "RollDice",
+                    "type": "Button",
+                    "id": "6bcd4cec-db0b-42c4-bf37-6ae24be16496",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "SelectCard",
                     "type": "Button",
                     "id": "9cce85ec-c880-472a-a763-276ed0c047d9",
@@ -164,6 +173,28 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "SelectCardWithNumber5",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0805f850-7523-43bb-8180-6d3d539f3f90",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "RollDice",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "088538e9-38b2-43c7-bc82-5ec219b19a5b",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "RollDice",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

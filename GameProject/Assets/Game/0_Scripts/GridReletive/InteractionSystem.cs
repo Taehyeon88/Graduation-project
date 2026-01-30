@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 public enum InteractionCase
 {
-    None, SetHero, UseCard, HeroMove
+    None, SetHero, UseCard, HeroMove, RollDice
 }
 public class InteractionSystem : Singleton<InteractionSystem>
 {
@@ -14,6 +14,7 @@ public class InteractionSystem : Singleton<InteractionSystem>
     [SerializeField] private PlayerInput playerInput;
 
     private InputAction m_SelectGrid;
+    private InputAction m_RollDice;
     private InteractionCase currentInteraction;
 
     private event Action<bool> updatedAction;
@@ -24,6 +25,7 @@ public class InteractionSystem : Singleton<InteractionSystem>
     private void Initialze()
     {
         m_SelectGrid = playerInput.actions["SelectGrid"];
+        m_RollDice = playerInput.actions["RollDice"];
     }
 
     private void Update()
@@ -39,7 +41,11 @@ public class InteractionSystem : Singleton<InteractionSystem>
                 break;
 
             case InteractionCase.UseCard:
+                
+                break;
 
+            case InteractionCase.RollDice:
+                updatedAction?.Invoke(m_RollDice.WasPressedThisFrame());
                 break;
         }
     }
