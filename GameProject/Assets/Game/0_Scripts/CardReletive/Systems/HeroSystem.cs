@@ -33,6 +33,8 @@ public class HeroSystem : Singleton<HeroSystem>
             ApplyBurnGA applyBurnGA = new(burnStacks, HeroView);
             ActionSystem.Instance.AddReaction(applyBurnGA);
         }
+        RollDiceGA rollDiceGA = new();
+        ActionSystem.Instance.AddReaction(rollDiceGA);
     }
 
     private void RollDicePostReaction(RollDiceGA rollDiceGA)
