@@ -44,9 +44,9 @@ public class MatchSetupSystem : MonoBehaviour
 
         //±‚≈∏
         DiceSystem.Instance.SetDice(new(diceData));
-        //CardSystem.Instance.SetUp(heroData.Deck.ToList());
+        CardSystem.Instance.SetUp(heroData.Deck.ToList());
         //PerkSystem.Instance.AddPerk(new(perkData));
-        //DrawCardsGA drawCardsGA = new(drawCount);
-        //ActionSystem.Instance.Perform(drawCardsGA);
+        RollDiceGA rollDiceGA = new();
+        ActionSystem.Instance.Perform(rollDiceGA);
     }
 }

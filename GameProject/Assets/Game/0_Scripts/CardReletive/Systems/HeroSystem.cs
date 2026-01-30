@@ -10,11 +10,13 @@ public class HeroSystem : Singleton<HeroSystem>
     {
         ActionSystem.SubscribeReaction<EnemyTurnGA>(EnemyTurnPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<EnemyTurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
+        ActionSystem.SubscribeReaction<RollDiceGA>(RollDicePostReaction, ReactionTiming.POST);
     }
     private void OnDisable()
     {
         ActionSystem.UnsubscribeReaction<EnemyTurnGA>(EnemyTurnPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<EnemyTurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
+        ActionSystem.UnsubscribeReaction<RollDiceGA>(RollDicePostReaction, ReactionTiming.POST);
     }
 
     //Reactions
@@ -31,6 +33,10 @@ public class HeroSystem : Singleton<HeroSystem>
             ApplyBurnGA applyBurnGA = new(burnStacks, HeroView);
             ActionSystem.Instance.AddReaction(applyBurnGA);
         }
+    }
+
+    private void RollDicePostReaction(RollDiceGA rollDiceGA)
+    {
         DrawCardsGA drawCardsGA = new DrawCardsGA(5);
         ActionSystem.Instance.AddReaction(drawCardsGA);
     }

@@ -58,6 +58,7 @@ public class DiceSystem : Singleton<DiceSystem>
         startRolling = true;
         InteractionSystem.Instance.SetInteraction(InteractionCase.RollDice, RollDice);
         yield return new WaitUntil(() => !startRolling);
+        InteractionSystem.Instance.EndInteraction();
 
         //주사위 랜덤 난수 생성
         int randomValue = UnityEngine.Random.Range(0, dice.FaceCount);
@@ -74,7 +75,6 @@ public class DiceSystem : Singleton<DiceSystem>
         while (timeScale > 0)
         {
             timeScale = Mathf.Clamp01(timeScale - (Time.deltaTime / 3f));
-            Debug.Log(timeScale);
             rollingSquence.timeScale = timeScale;
 
             if (timeScale < 0.2)
@@ -86,6 +86,7 @@ public class DiceSystem : Singleton<DiceSystem>
 
                 squ.Append(diceObject.DORotateQuaternion(targetRot, 0.8f))
                    .Append(diceObject.DOPunchScale(Vector3.one / 2f, 0.8f))
+                   .AppendInterval(1.5f)
                    .OnComplete(() => diceObject.localPosition = Vector3.zero);
                 break;
             }
@@ -93,12 +94,15 @@ public class DiceSystem : Singleton<DiceSystem>
             yield return null;
         }
 
-
-        //플레이어 이동 스태미너에 값 전달.
-        //1.25초 주사위 치움.
+        //플레이어 이동 스태미너에 값 갱신
+        AddSPDGA addSPDGA = new(result);
+        ActionSystem.Instance.AddReaction(addSPDGA);
     }
     private void RollDice(bool isSelect)
     {
-        startRolling = false;
+        if (isSelect)
+        {
+            startRolling = false;
+        }
     }
 }
