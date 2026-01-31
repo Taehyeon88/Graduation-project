@@ -14,7 +14,7 @@ public class DiceSystem : Singleton<DiceSystem>
     public void SetDice(Dice dice)
     {
         this.dice = dice;
-        diceObject = dice.CreateDice(diceView.position, diceView);
+        diceObject = DiceCreator.Instance.CreateDice(dice.data, diceView.position, diceView);
 
         SetTweens();
     }
