@@ -3,21 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 public static class FindPathBFS
 {
-    static int[,] map;
-    public static void SetGrid(TokenGirdCell[,] grid)    //플레이어 혹은 몬스터 각각의 이동 턴에 한번 실행
-    {
-        map = new int[grid.GetLength(0), grid.GetLength(1)];
-
-        for (int x = 0; x < grid.GetLength(0); x++)
+    static Vector2Int[] dirs =
         {
-            for (int y = 0; y < grid.GetLength(1); y++)
-            {
-                map[x, y] = grid[x, y].IsEmpty() ? 0 : 1;   //1 - 이동 불가 | 0 - 이동 가능
-            }
-        }
+            new Vector2Int(1,0), new Vector2Int(-1,0), new Vector2Int(0,1), new Vector2Int(0,-1),
+            new Vector2Int(1,1), new Vector2Int(-1,1), new Vector2Int(-1,-1), new Vector2Int(1,-1)
+        };
 
-    }
-    public static List<Vector2Int> FindPath(Vector2Int start, Vector2Int goal)
+    public static List<Vector2Int> FindPath(int[,] map, Vector2Int start, Vector2Int goal)
     {
         if (map == null)
         {
@@ -28,9 +20,9 @@ public static class FindPathBFS
 
         if(path != null)
         {
-            Debug.Log($"경로 길이: {path.Count}");
-            foreach (var p in path)
-                Debug.Log(p);
+            //Debug.Log($"경로 길이: {path.Count}");
+            //foreach (var p in path)
+            //    Debug.Log(p);
 
             return path;
         }
@@ -38,7 +30,60 @@ public static class FindPathBFS
         Debug.Log("경로 없음");
         return null;
     }
+    public static List<Vector2Int> FindAllPath(int[,] map, Vector2Int start, int distance)
+    {
+        if (map == null)
+        {
+            Debug.Log("map 이 없음");
+        }
+        var path = _FindAllPath(map, start, distance);
 
+        if (path != null)
+        {
+            //foreach (var p in path)
+            //    Debug.Log(p);
+
+            return path;
+        }
+
+        Debug.Log("경로 없음");
+        return null;
+    }
+    static List<Vector2Int> _FindAllPath(int[,] map, Vector2Int start, int maxDistance)
+    {
+        Queue<Vector2Int> queue = new Queue<Vector2Int>();
+        List<Vector2Int> list = new List<Vector2Int>();
+        bool[,] visited = new bool[map.GetLength(0), map.GetLength(1)];
+
+        queue.Enqueue(start);
+        while (queue.Count > 0)
+        {
+            Vector2Int current = queue.Dequeue();
+            int dis = Mathf.Max(Mathf.Abs(start.x - current.x), Mathf.Abs(start.y - current.y));
+            if (dis > maxDistance) break;
+
+            if (current != start)
+                list.Add(current);
+
+            visited[current.x, current.y] = true;
+
+            foreach (var dir in dirs)
+            {
+                int nx = current.x + dir.x;
+                int ny = current.y + dir.y;
+                Vector2Int target = new(nx, ny);
+
+                if (!InBounds(map, nx, ny)) continue;
+                if (map[nx, ny] == 1) continue;
+                if (visited[nx, ny]) continue;
+
+                if(!queue.Contains(target))
+                    queue.Enqueue(target);
+            }
+        }
+
+        return list;
+    }
     static List<Vector2Int> _FindPathBFS(int[,] map, Vector2Int start, Vector2Int goal)
     {
         int w = map.GetLength(0);
@@ -53,12 +98,6 @@ public static class FindPathBFS
                 gCost[x, y] = int.MaxValue;
 
         gCost[start.x, start.y] = 0;
-
-        Vector2Int[] dirs =
-        {
-            new Vector2Int(1,0), new Vector2Int(-1,0), new Vector2Int(0,1), new Vector2Int(0,-1),
-            new Vector2Int(1,1), new Vector2Int(-1,1), new Vector2Int(-1,-1), new Vector2Int(1,-1)
-        };
 
         List<Vector2Int> open = new List<Vector2Int>();
         open.Add(start);

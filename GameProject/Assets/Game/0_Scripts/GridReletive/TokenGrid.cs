@@ -9,6 +9,7 @@ public class TokenGrid : MonoBehaviour
     [SerializeField] private int width;
     [SerializeField] private int height;
     public TokenGirdCell[,] grid { get; private set; }
+    public int[,] simpleGrid { get; private set; }   //0 - 토큰 없음 | 1 - 토큰 있음 (토큰 존재여부 확인용)
 
     private List<Vector2Int> remainCells = new();
 
@@ -22,11 +23,13 @@ public class TokenGrid : MonoBehaviour
         if (endInitialize) return;
 
         grid = new TokenGirdCell[width, height];
+        simpleGrid = new int[width, height];
         for (int x = 0; x < grid.GetLength(0); x++)
         {
             for (int y = 0; y < grid.GetLength(1); y++)
             {
                 grid[x, y] = new();
+                simpleGrid[x, y] = 0;
                 remainCells.Add(new(x, y));
             }
         }
@@ -41,6 +44,7 @@ public class TokenGrid : MonoBehaviour
         int randomValue = UnityEngine.Random.Range(0, remainCells.Count);
         Vector2Int pos = remainCells[randomValue];
         grid[pos.x, pos.y].SetToken(token);
+        simpleGrid[pos.x, pos.y] = 1;
         remainCells.Remove(pos);
         return pos;
     }
@@ -51,6 +55,7 @@ public class TokenGrid : MonoBehaviour
         int randomValue = UnityEngine.Random.Range(0, canSetPositions.Count);
         Vector2Int pos = canSetPositions[randomValue];
         grid[pos.x, pos.y].SetToken(token);
+        simpleGrid[pos.x, pos.y] = 1;
         canSetPositions.Remove(pos);
         remainCells.Remove(pos);
         return pos;
@@ -59,18 +64,21 @@ public class TokenGrid : MonoBehaviour
     {
         Vector2Int pos = WorldToGirdPosition(position);
         grid[pos.x, pos.y].SetToken(token);
+        simpleGrid[pos.x, pos.y] = 1;
         remainCells.Remove(pos);
         return pos;
     }
     public Vector2Int SetTokenByGridPos(Token token, Vector2Int pos)
     {
         grid[pos.x, pos.y].SetToken(token);
+        simpleGrid[pos.x, pos.y] = 1;
         remainCells.Remove(pos);
         return pos;
     }
     public void ResetToken(Vector2Int pos)
     {
         grid[pos.x, pos.y].ResetToken();
+        simpleGrid[pos.x, pos.y] = 0;
         remainCells.Add(pos);
     }
     public bool CanSet(Vector3 position)

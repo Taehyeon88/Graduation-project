@@ -78,4 +78,17 @@ public class VisualGridCreator : Singleton<VisualGridCreator>
         }
         heroSetupVisuals.Clear();
     }
+
+    public void ChangeHeroVisualGrid(Vector3 position, Color color)
+    {
+        var target = heroSetupVisuals.Find(t => t.position == position);
+        if (target != null)
+        {
+            target.GetComponent<SpriteRenderer>().color = color;
+        }
+        else
+        {
+            CreateHeroVisualGrid(position, color);
+        }
+    }
 }

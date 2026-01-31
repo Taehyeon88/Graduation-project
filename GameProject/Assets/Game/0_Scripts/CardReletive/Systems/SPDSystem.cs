@@ -6,7 +6,7 @@ public class SPDSystem : Singleton<SPDSystem>
 {
     [SerializeField] private SPDUI spdUI;
     int maxSPD = 0;
-    int currentSPD = 0;
+    private int currentSPD = 0;
     private void OnEnable()
     {
         ActionSystem.AttachPerformer<AddSPDGA>(AddSPDPerformer);
@@ -21,6 +21,7 @@ public class SPDSystem : Singleton<SPDSystem>
     {
         return currentSPD >= amount;
     }
+    public int RemainSPD() => currentSPD;
     private IEnumerator AddSPDPerformer(AddSPDGA addSPDGA)
     {
         currentSPD = maxSPD = addSPDGA.Amount;
