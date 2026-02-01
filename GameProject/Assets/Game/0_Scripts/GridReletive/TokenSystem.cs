@@ -147,13 +147,17 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
     {
         Vector2Int start = gridPosByToken[token];
         var girds = FindPathBFS.FindAllPath(grid.simpleGrid, start, maxDistance);
-        List<Vector3> list = new();
-        foreach (var gird in girds)
+        if (girds != null)
         {
-            Vector3 pos = grid.GridToWorldPosition(gird);
-            list.Add(pos);
+            List<Vector3> list = new();
+            foreach (var gird in girds)
+            {
+                Vector3 pos = grid.GridToWorldPosition(gird);
+                list.Add(pos);
+            }
+            return list;
         }
-        return list;
+        else return null;
     }
     /// <summary>
     /// 영웅 혹은 몬스터가 현재 이동가능 범위내에서 목표지점까지의 최단 거리 전달 함수
@@ -202,8 +206,9 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
     /// </summary>
     public void ResetMovedPath()
     {
-        for (int i = 0; i < movedPath.Count - 1; i++)
+        for (int i = 0; i < movedPath.Count; i++)
         {
+            Debug.Log($"플레이어 이동한 그리드: {movedPath[i]}");
             grid.ResetToken(movedPath[i]);
         }
         movedPath.Clear();
@@ -224,7 +229,7 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
     public Vector2Int GetTokenGridPosition(Token token) => gridPosByToken[token];
     public Vector3 GetTokenWorldPosition(Token token) => grid.GridToWorldPosition(gridPosByToken[token]);
 
-    public int GetDistacne(Token token, Vector3 endPos)
+    public int GetDistance(Token token, Vector3 endPos)
     {
         Vector2Int current = gridPosByToken[token];
         Vector2Int target = grid.WorldToGirdPosition(endPos);

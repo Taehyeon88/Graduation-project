@@ -43,7 +43,7 @@ public class MatchSetupSystem : MonoBehaviour
         //±‚≈∏
         DiceSystem.Instance.SetDice(new(diceData));
         CardSystem.Instance.SetUp(heroData.Deck.ToList());
-        //PerkSystem.Instance.AddPerk(new(perkData));
+        PerkSystem.Instance.AddPerk(new(perkData));
         RollDiceGA rollDiceGA = new();
         ActionSystem.Instance.Perform(rollDiceGA);
     }

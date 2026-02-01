@@ -38,18 +38,10 @@ public class DiceSystem : Singleton<DiceSystem>
     void OnEnable()
     {
         ActionSystem.AttachPerformer<RollDiceGA>(RollDicePerformer);
-        ActionSystem.SubscribeReaction<EnemyTurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
     }
     void OnDisable()
     {
         ActionSystem.DetachPerformer<RollDiceGA>();
-        ActionSystem.UnsubscribeReaction<EnemyTurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
-    }
-
-    private void EnemyTurnPostReaction(EnemyTurnGA enemyTurnGA)
-    {
-        RollDiceGA rollDiceGA = new();
-        ActionSystem.Instance.AddReaction(rollDiceGA);
     }
 
     private IEnumerator RollDicePerformer(RollDiceGA rollDiceGA)
@@ -68,7 +60,7 @@ public class DiceSystem : Singleton<DiceSystem>
         Vector3 startPos = diceObject.transform.position;
         float rotateTime = 1.5f;
 
-        rollingSquence.Play();
+        rollingSquence.Restart();
         yield return new WaitForSeconds(rotateTime);
 
         float timeScale = 1f;
@@ -81,6 +73,7 @@ public class DiceSystem : Singleton<DiceSystem>
             {
                 Quaternion targetRot = dice.rotationPerFace[randomValue];
                 rollingSquence.Pause();
+                rollingSquence.timeScale = 1f;
 
                 Sequence squ = DOTween.Sequence();
 

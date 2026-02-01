@@ -129,7 +129,7 @@ public static class FindPathBFS
                 int ny = cur.y + d.y;
 
                 if (!InBounds(map, nx, ny)) continue;
-                if (map[nx, ny] == 1) continue;        //º®
+                if (map[nx, ny] == 1) continue;
                 if (visited[nx, ny]) continue;
 
                 int moveCost = TileCost(map[nx, ny]);  //cur -> (nx, my) ºñ¿ë
