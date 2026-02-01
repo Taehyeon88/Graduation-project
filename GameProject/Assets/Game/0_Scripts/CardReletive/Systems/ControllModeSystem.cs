@@ -84,8 +84,10 @@ public class ControllModeSystem : Singleton<ControllModeSystem>
         if (isSelect)
         {
             CombatantView heroView = HeroSystem.Instance.HeroView;
+            Vector2Int gridPos = TokenSystem.Instance.WorldToGridPosition(mousePosition);
+            if (TokenSystem.Instance.CheckContainMovedPath(gridPos)) return;
 
-            int distance = TokenSystem.Instance.GetDistacne(heroView, mousePosition);
+            int distance = TokenSystem.Instance.GetDistance(heroView, mousePosition);
             if (SPDSystem.Instance.HasEnoughSPD(distance))
             {
                 var path = TokenSystem.Instance.GetShortestPath(heroView, mousePosition);

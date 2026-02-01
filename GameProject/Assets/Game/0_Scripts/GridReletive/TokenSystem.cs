@@ -194,25 +194,26 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
     /// <returns></returns>
     public IEnumerator MoveToken(Token token, Vector2Int p)
     {
+        if(token is HeroView) movedPath.Add(gridPosByToken[token]);    //이동한 경로 저장 (영웅 한정)
+        
+        grid.ResetToken(gridPosByToken[token]);
         grid.SetTokenByGridPos(token, p);
-        movedPath.Add(gridPosByToken[token]);
         gridPosByToken[token] = p;
         Vector3 targetPost = grid.GridToWorldPosition(p);
         Tween tween = token.gameObject.transform.DOMove(targetPost, 1f);
         yield return tween.WaitForCompletion();
     }
     /// <summary>
-    /// 영웅 혹은 몬스터 이동 턴 종료후, 필수!! 실행 초기화 함수
+    /// 영웅만 이동 턴 종료후, 필수!! 실행 초기화 함수
     /// </summary>
-    public void ResetMovedPath()
-    {
-        for (int i = 0; i < movedPath.Count; i++)
-        {
-            Debug.Log($"플레이어 이동한 그리드: {movedPath[i]}");
-            grid.ResetToken(movedPath[i]);
-        }
-        movedPath.Clear();
-    }
+    public void ResetMovedPath() => movedPath.Clear();
+    /// <summary>
+    /// 영웅만 이동한 경로에 포함 되는 그리드 존재 여부 확인 함수
+    /// </summary>
+    /// <param name="pos"></param>
+    /// <returns></returns>
+    public bool CheckContainMovedPath(Vector2Int pos) => movedPath.Contains(pos);
+
     /// <summary>
     /// 좌표변환해서 받는 함수 : 그리드 -> 월드 or 월드 -> 그리드
     /// </summary>
