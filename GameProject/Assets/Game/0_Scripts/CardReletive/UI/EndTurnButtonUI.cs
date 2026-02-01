@@ -6,7 +6,7 @@ public class EndTurnButtonUI : MonoBehaviour
 {
     public void OnClick()
     {
-        EnemyTurnGA enemyTurnGA = new();
+        EnemysTurnGA enemyTurnGA = new();
         ActionSystem.Instance.Perform(enemyTurnGA);
     }
 }

@@ -13,13 +13,13 @@ public class ManaSystem : Singleton<ManaSystem>
 
         ActionSystem.AttachPerformer<SpendManaGA>(SpendManaPerformer);
         ActionSystem.AttachPerformer<RefillManaGA>(RefillManaPerformer);
-        ActionSystem.SubscribeReaction<EnemyTurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
+        ActionSystem.SubscribeReaction<EnemysTurnGA>(EnemysTurnPostReaction, ReactionTiming.POST);
     }
     private void OnDisable()
     {
         ActionSystem.DetachPerformer<SpendManaGA>();
         ActionSystem.DetachPerformer<RefillManaGA>();
-        ActionSystem.UnsubscribeReaction<EnemyTurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
+        ActionSystem.UnsubscribeReaction<EnemysTurnGA>(EnemysTurnPostReaction, ReactionTiming.POST);
     }
     public bool HasEnoughMana(int mana)
     {
@@ -39,7 +39,7 @@ public class ManaSystem : Singleton<ManaSystem>
     }
 
     //ReActions
-    private void EnemyTurnPostReaction(EnemyTurnGA enemyTurnGA)
+    private void EnemysTurnPostReaction(EnemysTurnGA enemyTurnGA)
     {
         RefillManaGA refillManaGA = new();
         ActionSystem.Instance.AddReaction(refillManaGA);

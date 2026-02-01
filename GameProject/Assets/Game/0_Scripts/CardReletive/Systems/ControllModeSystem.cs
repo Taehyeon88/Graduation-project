@@ -21,7 +21,7 @@ public class ControllModeSystem : Singleton<ControllModeSystem>
 
     private void OnEnable()
     {
-        ActionSystem.SubscribeReaction<EnemyTurnGA>(EnemyTurnPreReaction, ReactionTiming.PRE);
+        ActionSystem.SubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
 
         moveButton.onClick.AddListener(() => ChangeControllMode(ControllMode.Move));
         actionButton.onClick.AddListener(() => ChangeControllMode(ControllMode.Action));
@@ -30,7 +30,7 @@ public class ControllModeSystem : Singleton<ControllModeSystem>
 
     private void OnDisable()
     {
-        ActionSystem.UnsubscribeReaction<EnemyTurnGA>(EnemyTurnPreReaction, ReactionTiming.PRE);
+        ActionSystem.UnsubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
 
         moveButton.onClick.RemoveAllListeners();
         actionButton.onClick.RemoveAllListeners();
@@ -96,7 +96,7 @@ public class ControllModeSystem : Singleton<ControllModeSystem>
                 {
                     tokenIsMoving = true;
                     PerformMoveGA performMoveGA = new(heroView, path);
-                    MoveSystem.Instance.PerformMoveToken(performMoveGA, FinishedPerformer);
+                    MoveSystem.Instance.PlayPerformMoveToken(performMoveGA, FinishedPerformer);
                 }
             }
             else
@@ -145,7 +145,7 @@ public class ControllModeSystem : Singleton<ControllModeSystem>
     }
 
     //Subscribers
-    private void EnemyTurnPreReaction(EnemyTurnGA enemyTurnGA)
+    private void EnemysTurnPreReaction(EnemysTurnGA enemyTurnGA)
     {
         //플레이어 턴 종료시, Action모드 혹은 Move모드일 경우, 초기화. 
         VisualGridCreator.Instance.RemoveHeroVisualGrid();

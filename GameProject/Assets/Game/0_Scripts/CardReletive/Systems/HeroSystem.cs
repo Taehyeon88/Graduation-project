@@ -8,25 +8,29 @@ public class HeroSystem : Singleton<HeroSystem>
 
     private void OnEnable()
     {
-        ActionSystem.SubscribeReaction<EnemyTurnGA>(EnemyTurnPreReaction, ReactionTiming.PRE);
-        ActionSystem.SubscribeReaction<EnemyTurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
+        ActionSystem.SubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
+        ActionSystem.SubscribeReaction<EnemysTurnGA>(EnemysTurnPostReaction, ReactionTiming.POST);
         ActionSystem.SubscribeReaction<RollDiceGA>(RollDicePostReaction, ReactionTiming.POST);
     }
     private void OnDisable()
     {
-        ActionSystem.UnsubscribeReaction<EnemyTurnGA>(EnemyTurnPreReaction, ReactionTiming.PRE);
-        ActionSystem.UnsubscribeReaction<EnemyTurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
+        ActionSystem.UnsubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
+        ActionSystem.UnsubscribeReaction<EnemysTurnGA>(EnemysTurnPostReaction, ReactionTiming.POST);
         ActionSystem.UnsubscribeReaction<RollDiceGA>(RollDicePostReaction, ReactionTiming.POST);
     }
 
     //Reactions
-    private void EnemyTurnPreReaction(EnemyTurnGA enemyTurnGA)
+    private void EnemysTurnPreReaction(EnemysTurnGA enemyTurnGA)
     {
+        Debug.Log("플레이어 턴 종료");
+
         DiscardAllCardsGA discardAllCardsGA = new();
         ActionSystem.Instance.AddReaction(discardAllCardsGA);
     }
-    private void EnemyTurnPostReaction(EnemyTurnGA enemyTurnGA)
+    private void EnemysTurnPostReaction(EnemysTurnGA enemyTurnGA)
     {
+        Debug.Log("적 턴 종료");
+
         int burnStacks = HeroView.GetStatusEffectStacks(StatusEffectType.BURN);
         if (burnStacks > 0)
         {

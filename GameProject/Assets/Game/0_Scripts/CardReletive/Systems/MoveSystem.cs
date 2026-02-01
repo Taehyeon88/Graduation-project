@@ -8,23 +8,18 @@ public class MoveSystem : Singleton<MoveSystem>
     {
         ActionSystem.AttachPerformer<PerformMoveGA>(PerformMoveGAPerformer);
         ActionSystem.AttachPerformer<MoveGA>(MoveGAPerformer);
-        ActionSystem.SubscribeReaction<EnemyTurnGA>(EnemyTurnPreReaction, ReactionTiming.PRE);
+        ActionSystem.SubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
     }
     private void OnDisable()
     {
         ActionSystem.DetachPerformer<PerformMoveGA>();
         ActionSystem.DetachPerformer<MoveGA>();
-        ActionSystem.UnsubscribeReaction<EnemyTurnGA>(EnemyTurnPreReaction, ReactionTiming.PRE);
+        ActionSystem.UnsubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
     }
 
-    //Perform
-    public void PerformMoveToken(PerformMoveGA performMoveGA, System.Action OnPerformFinished)
+    //Player
+    public void PlayPerformMoveToken(PerformMoveGA performMoveGA, System.Action OnPerformFinished)
     {
-        if (performMoveGA.mover is EnemyView)
-        {
-            OnPerformFinished += TokenSystem.Instance.ResetMovedPath;   //필수 초기화 (플레이어는 밑에 EnemyTurn_Pre때, 초기화되게 구독.)
-        }
-
         ActionSystem.Instance.Perform(performMoveGA, OnPerformFinished);
     }
 
@@ -63,7 +58,7 @@ public class MoveSystem : Singleton<MoveSystem>
     }
 
     //Subscribers
-    private void EnemyTurnPreReaction(EnemyTurnGA enemyTurnGA)
+    private void EnemysTurnPreReaction(EnemysTurnGA enemyTurnGA)   //몬스터 턴 시작 전, 플레이어 이동한 경로 초기화
     {
         TokenSystem.Instance.ResetMovedPath();
     }
