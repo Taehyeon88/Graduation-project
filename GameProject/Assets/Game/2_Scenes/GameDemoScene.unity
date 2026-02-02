@@ -3618,12 +3618,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   heroData: {fileID: 11400000, guid: e93bb81975e21af4ba578505a4b474fe, type: 2}
-  perkData: {fileID: 11400000, guid: ae34697ae107fb7438937877e85703a7, type: 2}
   diceData: {fileID: 11400000, guid: c7545a638004e824989342c27a1ba4e2, type: 2}
   enemyDatas:
   - {fileID: 11400000, guid: 8084f429f7ca2c942ac6d4a239f8fe74, type: 2}
-  - {fileID: 11400000, guid: 86c5cd600aee54a4c8343cb09b4c6459, type: 2}
-  - {fileID: 11400000, guid: 86c5cd600aee54a4c8343cb09b4c6459, type: 2}
+  - {fileID: 11400000, guid: 8084f429f7ca2c942ac6d4a239f8fe74, type: 2}
+  - {fileID: 11400000, guid: 8084f429f7ca2c942ac6d4a239f8fe74, type: 2}
   heroSetUpPositions:
   - {x: 0, y: 0}
   - {x: 0, y: 1}
