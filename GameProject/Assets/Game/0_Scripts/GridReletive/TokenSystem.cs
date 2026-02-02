@@ -238,6 +238,29 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
     }
 
     /// <summary>
+    /// 현재 토큰 주변으로 8방향의 그리드 좌표를 받아가는 함수
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Vector2Int[] GetAroundGrids(Token token)
+    {
+        var dirs = FindPathBFS.dirs;
+        var result = new List<Vector2Int>();
+
+        Vector2Int cur = gridPosByToken[token];
+        for (int i = 0; i < dirs.Length; i++)
+        {
+            int nx = cur.x + dirs[i].x;
+            int ny = cur.y + dirs[i].y;
+
+            if (!grid.IsBound(nx, ny)) continue;
+
+            result.Add(new Vector2Int(nx, ny));
+        }
+        return result.ToArray();
+    }
+
+    /// <summary>
     /// 특정 위치에 토큰(영웅, 적, 건물)을 생성하는 함수
     /// </summary>
     /// <param name="setPosition"></param>

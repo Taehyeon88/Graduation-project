@@ -16,3 +16,12 @@ MonoBehaviour:
     type: 3}
   <Health>k__BackingField: 23
   <AttackPower>k__BackingField: 6
+  <Enemy>k__BackingField:
+    rid: 4818494307731767297
+  references:
+    version: 2
+    RefIds:
+    - rid: 4818494307731767297
+      type: {class: Slime, ns: , asm: Assembly-CSharp}
+      data:
+        Damage: 5

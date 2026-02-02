@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Description>k__BackingField: Add 5 Armor
   <Mana>k__BackingField: 1
-  <Image>k__BackingField: {fileID: 21300000, guid: 42b7675c0b3d6e44092a24dbf9a3405f, type: 3}
+  <Image>k__BackingField: {fileID: 21300000, guid: 42b7675c0b3d6e44092a24dbf9a3405f,
+    type: 3}
   <ManualTargetEffects>k__BackingField: []
   <OtherEffects>k__BackingField:
   - <TargetMode>k__BackingField:

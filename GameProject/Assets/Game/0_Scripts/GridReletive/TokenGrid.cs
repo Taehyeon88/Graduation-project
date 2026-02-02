@@ -81,6 +81,11 @@ public class TokenGrid : MonoBehaviour
         simpleGrid[pos.x, pos.y] = 0;
         remainCells.Add(pos);
     }
+    public bool IsBound(int x, int y)
+    {
+        if (x < 0 || x >= width || y < 0 || y >= height) return false;
+        return true;
+    }
     public bool CanSet(Vector3 position)
     {
         Vector2Int pos = WorldToGirdPosition(position);

@@ -6,7 +6,7 @@ using UnityEngine;
 public class MatchSetupSystem : MonoBehaviour
 {
     [SerializeField] private HeroData heroData;
-    [SerializeField] private PerkData perkData;
+    //[SerializeField] private PerkData perkData;
     [SerializeField] private DiceData diceData;
     [SerializeField] private List<EnemyData> enemyDatas;
     [SerializeField] private List<Vector2Int> heroSetUpPositions;
@@ -43,8 +43,9 @@ public class MatchSetupSystem : MonoBehaviour
         //±‚≈∏
         DiceSystem.Instance.SetDice(new(diceData));
         CardSystem.Instance.SetUp(heroData.Deck.ToList());
-        PerkSystem.Instance.AddPerk(new(perkData));
-        RollDiceGA rollDiceGA = new();
-        ActionSystem.Instance.Perform(rollDiceGA);
+        //PerkSystem.Instance.AddPerk(new(perkData));
+
+        EnemysTurnGA enemysTurnGA = new(true);
+        ActionSystem.Instance.Perform(enemysTurnGA);
     }
 }
