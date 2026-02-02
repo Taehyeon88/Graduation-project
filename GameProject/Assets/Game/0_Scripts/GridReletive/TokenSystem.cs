@@ -2,9 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
-using UnityEditor.Tilemaps;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터, 건물 추가 및 삭제 (게임 중) | 토큰 이동, 등
 {
@@ -72,6 +70,7 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
     {
         EnemyViews.Remove(enemyView);
         grid.ResetToken(gridPosByToken[enemyView]);
+        gridPosByToken.Remove(enemyView);
         Tween tween = enemyView.transform.DOScale(Vector3.zero, 0.25f);
         yield return tween.WaitForCompletion();
         Destroy(enemyView.gameObject);

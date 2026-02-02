@@ -26,6 +26,8 @@ public class MoveSystem : Singleton<MoveSystem>
     //Performer
     private IEnumerator PerformMoveGAPerformer(PerformMoveGA performMoveGA)
     {
+        if (performMoveGA.mover == null) yield break;   //파괴된 몬스터 예외처리
+
         CombatantView mover = performMoveGA.mover;
         List<Vector2Int> path = performMoveGA.path;
 
