@@ -181,6 +181,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7224435754982556125}
   - component: {fileID: 8184131505389806249}
+  - component: {fileID: 6248386982960127024}
   m_Layer: 7
   m_Name: EnemyView
   m_TagString: Untagged
@@ -221,6 +222,22 @@ MonoBehaviour:
   wrapper: {fileID: 7697686970616833351}
   statusEffectsUI: {fileID: 337576740629510527}
   attackText: {fileID: 3815550181580790792}
+--- !u!114 &6248386982960127024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8753523728340980985}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a9c584f9a39449438abc7ba59a68778, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _size: {x: 1, y: 1, z: 1}
+  _position: {x: 0, y: 0, z: 0}
+  _renderersMode: 0
+  _cachedRenderers: 0
 --- !u!1001 &2101225161619116872
 PrefabInstance:
   m_ObjectHideFlags: 0

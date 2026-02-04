@@ -21,7 +21,7 @@ public class DiceSystem : Singleton<DiceSystem>
 
     private void SetTweens()
     {
-        Vector3 startPos = new Vector3(0, 0.8f, -2);
+        Vector3 startPos = new Vector3(0, 13f, -2);
         float jumpDistance = 2.3f;
 
         rollingSquence = DOTween.Sequence();

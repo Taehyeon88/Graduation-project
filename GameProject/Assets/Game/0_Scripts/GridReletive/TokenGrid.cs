@@ -60,13 +60,12 @@ public class TokenGrid : MonoBehaviour
         remainCells.Remove(pos);
         return pos;
     }
-    public Vector2Int SetToken(Token token, Vector3 position)
+    public void SetToken(Token token, Vector2Int pos)
     {
-        Vector2Int pos = WorldToGirdPosition(position);
-        grid[pos.x, pos.y].SetToken(token);
-        simpleGrid[pos.x, pos.y] = 1;
-        remainCells.Remove(pos);
-        return pos;
+        int x = pos.x; int y = pos.y;
+        grid[x, y].SetToken(token);
+        simpleGrid[x, y] = 1;
+        remainCells.Remove(new(x,y));
     }
     public Vector2Int SetTokenByGridPos(Token token, Vector2Int pos)
     {
@@ -133,25 +132,6 @@ public class TokenGrid : MonoBehaviour
             return positions.ToList();
         }
         return null;
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.yellow;
-        if (TokenSystem.CellSize <= 0 || width <= 0 || height <= 0) return;
-        Vector3 origin = transform.position;
-        for (int y = 0; y <= height; y++)
-        {
-            Vector3 start = origin + new Vector3(0, 0.01f, y * TokenSystem.CellSize);
-            Vector3 end = origin + new Vector3(width * TokenSystem.CellSize, 0.01f, y * TokenSystem.CellSize);
-            Gizmos.DrawLine(start, end);
-        }
-        for (int x = 0; x <= width; x++)
-        {
-            Vector3 start = origin + new Vector3(x * TokenSystem.CellSize, 0.01f, 0);
-            Vector3 end = origin + new Vector3(x * TokenSystem.CellSize, 0.01f, height * TokenSystem.CellSize);
-            Gizmos.DrawLine(start, end);
-        }
     }
 
     public Vector2Int WorldToGirdPosition(Vector3 worldPosition)

@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using IsoTools;
 using UnityEngine;
 
-public class TokenPreview : MonoBehaviour
+public class TokenPreview : Token
 {
     public enum TokenPreViewState
     {
@@ -12,15 +13,19 @@ public class TokenPreview : MonoBehaviour
     [SerializeField] private Material negativeMaterial;
 
     public TokenPreViewState State { get; private set; } = TokenPreViewState.Negative;
-    public TokenData Data { get; private set; }
-    public TokenModel TokenModel { get; private set; }
     private List<Renderer> renderers = new();
     private List<Collider> colliders = new();
 
-    public void SetUp(TokenData data)
+    public void SetUp(TokenData data, Vector3 isoPosition)
     {
-        Data = data;
-        TokenModel = Instantiate(data.TokenModel, transform.position, Quaternion.identity, transform);
+        IsoObject isObject = GetComponent<IsoObject>();
+        if (isObject == null)
+            isObject = gameObject.AddComponent<IsoObject>();
+
+        TokenTransform = isObject;
+        TokenTransform.position = isoPosition;
+        TokenData = data;
+        TokenModel = Instantiate(data.TokenModel, transform.position + Vector3.up * 1.7f, Quaternion.identity, transform);
         renderers.AddRange(TokenModel.GetComponentsInChildren<Renderer>());
         colliders.AddRange(TokenModel.GetComponentsInChildren<Collider>());
         foreach (var col in colliders)
@@ -34,10 +39,6 @@ public class TokenPreview : MonoBehaviour
         if (State == newState) return;
         State = newState;
         SetPreViewMaterial(State);
-    }
-    public void Rotate(float rotationStep)
-    {
-        TokenModel.Rotate(rotationStep);
     }
     private void SetPreViewMaterial(TokenPreViewState newState)
     {

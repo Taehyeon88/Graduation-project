@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4382307133896606745}
   - component: {fileID: 4819093266047866604}
+  - component: {fileID: 7442290513139583080}
   m_Layer: 0
   m_Name: HeroView
   m_TagString: Untagged
@@ -48,6 +49,22 @@ MonoBehaviour:
   healthText: {fileID: 431866994216827157}
   wrapper: {fileID: 1779909049720243131}
   statusEffectsUI: {fileID: 8561197878494044035}
+--- !u!114 &7442290513139583080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7471812443258948537}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a9c584f9a39449438abc7ba59a68778, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _size: {x: 1, y: 1, z: 1}
+  _position: {x: 0, y: 0, z: 0}
+  _renderersMode: 0
+  _cachedRenderers: 0
 --- !u!1001 &2867029531038789571
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -133,12 +150,12 @@ PrefabInstance:
     - target: {fileID: 327727648021183455, guid: 888032aeab9a6884482de47824ac3084,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 2.27
+      value: 3.5
       objectReference: {fileID: 0}
     - target: {fileID: 3970755361663797731, guid: 888032aeab9a6884482de47824ac3084,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 1.72
+      value: 2.93
       objectReference: {fileID: 0}
     - target: {fileID: 4100594146228531356, guid: 888032aeab9a6884482de47824ac3084,
         type: 3}

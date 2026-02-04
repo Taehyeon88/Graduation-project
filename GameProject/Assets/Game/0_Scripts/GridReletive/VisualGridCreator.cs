@@ -1,16 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using IsoTools;
 using UnityEngine;
 
 public class VisualGridCreator : Singleton<VisualGridCreator>
 {
     [SerializeField] TokenGrid grid;
     [SerializeField] Transform gridVisualView;
-
-    private Dictionary<Token, List<Transform>> visualGridsByToken = new();
-    private List<Transform> heroSetupVisuals = new();
-    private Queue<Transform> visualGrids = new();
+    private Dictionary<Token, List<IsoObject>> visualGridsByToken = new();
+    private List<IsoObject> heroSetupVisuals = new();
+    private Queue<IsoObject> visualGrids = new();
 
     void Start()
     {
@@ -18,7 +18,7 @@ public class VisualGridCreator : Singleton<VisualGridCreator>
     }
     private void Initialize()
     {
-        var temp = gridVisualView.GetComponentsInChildren<Transform>(true);
+        var temp = gridVisualView.GetComponentsInChildren<IsoObject>(true);
         foreach (var t in temp)
         {
             if (t == gridVisualView) continue;
@@ -56,14 +56,14 @@ public class VisualGridCreator : Singleton<VisualGridCreator>
         }
     }
 
-    public void CreateHeroVisualGrid(Vector3 position, Color color)
+    public void CreateHeroVisualGrid(Vector2Int isoPosition, Color color)
     {
         if (visualGrids.Count <= 0) Initialize();
 
         if (visualGrids.TryDequeue(out var vg))
         {
-            vg.GetComponent<SpriteRenderer>().color = color;
-            vg.position = new Vector3(position.x, 0.01f, position.z);
+            vg.GetComponentInChildren<SpriteRenderer>().color = color;
+            vg.position = new Vector3(isoPosition.x, isoPosition.y, 1);
             vg.gameObject.SetActive(true);
             heroSetupVisuals.Add(vg);
         }
@@ -79,16 +79,16 @@ public class VisualGridCreator : Singleton<VisualGridCreator>
         heroSetupVisuals.Clear();
     }
 
-    public void ChangeHeroVisualGrid(Vector3 position, Color color)
+    public void ChangeHeroVisualGrid(Vector2Int isoPosition, Color color)
     {
-        var target = heroSetupVisuals.Find(t => t.position == position);
+        var target = heroSetupVisuals.Find(t => t.positionXY == isoPosition);
         if (target != null)
         {
             target.GetComponent<SpriteRenderer>().color = color;
         }
         else
         {
-            CreateHeroVisualGrid(position, color);
+            CreateHeroVisualGrid(isoPosition, color);
         }
     }
 }

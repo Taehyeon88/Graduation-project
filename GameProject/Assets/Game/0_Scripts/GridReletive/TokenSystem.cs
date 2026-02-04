@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
+using IsoTools;
 using UnityEngine;
 
 public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터, 건물 추가 및 삭제 (게임 중) | 토큰 이동, 등
 {
     public const float CellSize = 1f;
     [SerializeField] private TokenGrid grid;
+    [SerializeField] private IsoWorld isoWorld;
 
     public HeroView HeroView { get; private set; }
     public List<EnemyView> EnemyViews { get; private set; } = new();
@@ -31,12 +33,10 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
             Token token = TokenCreator.Instance.CreateToken(
                     enemyData,
                     TokenType.Enemy,
-                    transform.position,
-                    0f
+                    transform.position
                 );
             Vector2Int gridPosition = grid.SetTokenRendomly(token, canSetupPositions);
-            Vector3 position = grid.GridToWorldPosition(gridPosition);
-            token.transform.position = position;
+            token.TokenTransform.position = new(gridPosition.x, gridPosition.y, 1);
 
             if (token is EnemyView enemyToken)
             {
@@ -53,13 +53,13 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
     /// <param name="position"></param>
     public void AddEnemy(EnemyData enemyData, Vector3 position)
     {
-        Vector3 snappedPos = GetSnappedCenterPosition(position);
-        if (!grid.CanSet(snappedPos))
-        {
-            Debug.Log("해당 위치에는 적을 생성할 수 없습니다.");
-            return;
-        }
-        PlaceToken(snappedPos, enemyData, TokenType.Enemy);
+        //Vector3 snappedPos = GetSnappedCenterPosition(position);
+        //if (!grid.CanSet(snappedPos))
+        //{
+        //    Debug.Log("해당 위치에는 적을 생성할 수 없습니다.");
+        //    return;
+        //}
+        //PlaceToken(snappedPos, enemyData, TokenType.Enemy);
     }
     /// <summary>
     /// 특정 몬스터를 그리드에서 제거하는 함수
@@ -89,9 +89,9 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
         {
             Vector3 position = grid.GridToWorldPosition(gridPos);
             if (grid.CanSetByGridPos(gridPos))
-                VisualGridCreator.Instance.CreateHeroVisualGrid(position, Color.green);
+                VisualGridCreator.Instance.CreateHeroVisualGrid(gridPos, Color.green);
             else
-                VisualGridCreator.Instance.CreateHeroVisualGrid(position, Color.red);
+                VisualGridCreator.Instance.CreateHeroVisualGrid(gridPos, Color.red);
         }
         InteractionSystem.Instance.SetInteraction(InteractionCase.SetHero, UpdateHeroPreview);
     }
@@ -102,30 +102,32 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
     /// <param name="tokenData"></param>
     private void UpdateHeroPreview(bool isSelect)
     {
-        Vector3 mousePosition = MouseUtil.GetMousePositionInWorldSpace();
+        //Vector3 mousePosition = MouseUtil.GetMousePositionInWorldSpace();
+        Vector3 isoPosition = isoWorld.MouseIsoTilePosition(1f);
+
         if (preview != null)
-            HandlePreView(mousePosition, isSelect);
+            HandlePreView(isoPosition, isSelect);
         else
-            preview = TokenCreator.Instance.CreateTokenPreview(tokenData, mousePosition);
+            preview = TokenCreator.Instance.CreateTokenPreview(tokenData, isoPosition);
     }
 
     /// <summary>
     /// 현재 영웅 프리뷰의 위치에 영웅을 설정 여부를 체크 및 생성하는 함수
     /// </summary>
-    /// <param name="mouseWorldPosition"></param>
+    /// <param name="isoPosition"></param>
     /// <param name="isSelect"></param>
-    private void HandlePreView(Vector3 mouseWorldPosition, bool isSelect)
+    private void HandlePreView(Vector3 isoPosition, bool isSelect)
     {
-        preview.transform.position = mouseWorldPosition;
-        Vector3 TokenPosition = preview.TokenModel.GetTokenPosition();
-        bool canSet = grid.CanSet(TokenPosition, heroSetupPositions);
+        preview.TokenTransform.position = isoPosition;
+
+        Vector2Int girdPosition = new Vector2Int((int)isoPosition.x, (int)isoPosition.y);
+        bool canSet = grid.CanSetByGridPos(girdPosition);
         if (canSet)
         {
-            TokenPosition = preview.transform.position = GetSnappedCenterPosition(TokenPosition);
             preview.ChangeState(TokenPreview.TokenPreViewState.Positive);
             if (isSelect)
             {
-                PlaceToken(TokenPosition, preview.Data, TokenType.Hero);
+                PlaceToken(girdPosition, preview.TokenData, TokenType.Hero);
                 VisualGridCreator.Instance.RemoveHeroVisualGrid();
                 Destroy(preview.gameObject);
                 tokenData = null;
@@ -263,16 +265,17 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
     /// 특정 위치에 토큰(영웅, 적, 건물)을 생성하는 함수
     /// </summary>
     /// <param name="setPosition"></param>
-    private void PlaceToken(Vector3 setPosition, TokenData data, TokenType tokenType)
+    private void PlaceToken(Vector2Int setPosition, TokenData data, TokenType tokenType)
     {
         Token token = TokenCreator.Instance.CreateToken(
                 data,
                 tokenType,
-                preview.transform.position,
-                0f
+                preview.TokenTransform.position
             );
 
-        Vector2Int gridPos = grid.SetToken(token, setPosition);
+        grid.SetToken(token, setPosition);
+
+        Vector2Int gridPos = new((int)setPosition.x, (int)setPosition.y);
         if (gridPos != null)
             gridPosByToken.TryAdd(token, gridPos);
 

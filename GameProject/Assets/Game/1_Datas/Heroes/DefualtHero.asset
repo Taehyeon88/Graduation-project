@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 686d73462cd22e841a0c7b6099220021, type: 3}
   m_Name: DefualtHero
   m_EditorClassIdentifier: 
-  <TokenModel>k__BackingField: {fileID: -1712440596165283781, guid: 2dfbb63c9cdf7504faf4ff26b0581598,
+  <TokenModel>k__BackingField: {fileID: 7542742243444305433, guid: 9aabd052a89f6d345a865c8ebf1ed74a,
     type: 3}
   <Health>k__BackingField: 44
   <Deck>k__BackingField:

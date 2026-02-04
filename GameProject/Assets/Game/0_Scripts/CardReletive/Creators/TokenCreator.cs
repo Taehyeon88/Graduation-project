@@ -12,11 +12,11 @@ public class TokenCreator : Singleton<TokenCreator>
     [SerializeField] private TokenPreview previewPrefab;
     [SerializeField] private Token heroTokenPrefab;
     [SerializeField] private Token enemyTokenPrefab;
-    [SerializeField] private Transform tokenView;      //토큰들을 생성할 부모 오브젝트
+    [SerializeField] private Transform isoWorld;      //토큰들을 생성할 부모 오브젝트
 
     private Token tokenPrefab;
 
-    public Token CreateToken(TokenData data, TokenType tokenType, Vector3 position, float rotationStep)
+    public Token CreateToken(TokenData data, TokenType tokenType, Vector3 isoPosition)
     {
         switch(tokenType)
         {
@@ -26,26 +26,29 @@ public class TokenCreator : Singleton<TokenCreator>
         }
         if (tokenPrefab == null) return null;
 
-        Token token = Instantiate(tokenPrefab, position, Quaternion.identity, tokenView);
+        Token token = Instantiate(tokenPrefab, isoWorld);
 
         switch (tokenType)
         {
             case TokenType.Hero: 
                 HeroView heroView = token as HeroView;
-                heroView.SetUp(data as HeroData, rotationStep);
+                heroView.SetUp(data as HeroData);
                 break;
             case TokenType.Enemy: 
                 EnemyView enemyView = token as EnemyView;
-                enemyView.SetUp(data as EnemyData, rotationStep);
+                enemyView.SetUp(data as EnemyData);
                 break;
         }
+
+        token.TokenTransform.position = isoPosition;
+
         return token;
     }
 
-    public TokenPreview CreateTokenPreview(TokenData data, Vector3 position)
+    public TokenPreview CreateTokenPreview(TokenData data, Vector3 isoPosition)
     {
-        TokenPreview preview = Instantiate(previewPrefab, position, Quaternion.identity);
-        preview.SetUp(data);
+        TokenPreview preview = Instantiate(previewPrefab, isoWorld);
+        preview.SetUp(data, isoPosition);
         return preview;
     }
 }

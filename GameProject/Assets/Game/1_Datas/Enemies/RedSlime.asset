@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15ecb23d4f55996479d80b8135290e46, type: 3}
   m_Name: RedSlime
   m_EditorClassIdentifier: 
-  <TokenModel>k__BackingField: {fileID: 8538124156315227913, guid: 928a1377c1cd4515b208fef3a396b8ea,
+  <TokenModel>k__BackingField: {fileID: 8409466067229185608, guid: 5de08ffd89856694dae4de417ccd7dda,
     type: 3}
   <Health>k__BackingField: 23
   <AttackPower>k__BackingField: 6

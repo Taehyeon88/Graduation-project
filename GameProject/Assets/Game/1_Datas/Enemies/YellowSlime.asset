@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 15ecb23d4f55996479d80b8135290e46, type: 3}
-  m_Name: TurtleSlime
+  m_Name: YellowSlime
   m_EditorClassIdentifier: 
-  <TokenModel>k__BackingField: {fileID: 7546274242891863984, guid: e2aafa8770d34a9591b41bedf4e318ba,
+  <TokenModel>k__BackingField: {fileID: 2378948040377817630, guid: a6f7397e5a3e83342a8c37d5db2c902d,
     type: 3}
   <Health>k__BackingField: 12
   <AttackPower>k__BackingField: 4

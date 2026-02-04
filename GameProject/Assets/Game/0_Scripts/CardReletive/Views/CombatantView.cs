@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using IsoTools;
 using TMPro;
 using UnityEngine;
 
@@ -14,16 +15,17 @@ public class CombatantView : Token
 
     public int MaxHealth { get; private set; }
     public int CurrentHealth { get; private set; }
-    public void SetUpBase(int health, TokenData tokenData, float rotationStep)
+    public void SetUpBase(int health, TokenData tokenData, IsoObject isoObject)
     {
         MaxHealth = CurrentHealth = health;     //몬스터 & 플레이어 체력 셋업
         UpdateHealthText();
 
-        foreach (Transform child in wrapper)     //몬스터 & 플레이어 모델 셋업
+        foreach (Transform child in wrapper)    //몬스터 & 플레이어 모델 셋업
             Destroy(child.gameObject);
         this.TokenData = tokenData;
-        TokenModel = Instantiate(tokenData.TokenModel, transform.position, Quaternion.identity, wrapper);
-        TokenModel.Rotate(rotationStep);
+        TokenModel = Instantiate(tokenData.TokenModel, wrapper.transform.position, Quaternion.identity, wrapper);
+
+        TokenTransform = isoObject;             //몬스터 & 플레이어 isomertric용 transform 셋업
     }
     public void UpdateHealthText()
     {
