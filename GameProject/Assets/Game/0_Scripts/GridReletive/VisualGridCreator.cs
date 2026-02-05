@@ -26,15 +26,15 @@ public class VisualGridCreator : Singleton<VisualGridCreator>
         }
     }
 
-    public void CreateVisualGrid(Token token, Vector3 position, Color color)
+    public void CreateVisualGrid(Token token, Vector2Int isoPosition, Color color)
     {
         if (visualGrids.Count <= 0) Initialize();
 
         if (visualGrids.TryDequeue(out var vg))
         {
-            vg.GetComponent<SpriteRenderer>().color = color;
-            vg.position = new Vector3(position.x, 0.01f, position.z);
             vg.gameObject.SetActive(true);
+            vg.GetComponentInChildren<SpriteRenderer>().color = color;
+            vg.position = new Vector3(isoPosition.x, isoPosition.y, 1);
             if (visualGridsByToken.ContainsKey(token))
                 visualGridsByToken[token].Add(vg);
             else
@@ -62,9 +62,9 @@ public class VisualGridCreator : Singleton<VisualGridCreator>
 
         if (visualGrids.TryDequeue(out var vg))
         {
+            vg.gameObject.SetActive(true);
             vg.GetComponentInChildren<SpriteRenderer>().color = color;
             vg.position = new Vector3(isoPosition.x, isoPosition.y, 1);
-            vg.gameObject.SetActive(true);
             heroSetupVisuals.Add(vg);
         }
     }
@@ -84,7 +84,7 @@ public class VisualGridCreator : Singleton<VisualGridCreator>
         var target = heroSetupVisuals.Find(t => t.positionXY == isoPosition);
         if (target != null)
         {
-            target.GetComponent<SpriteRenderer>().color = color;
+            target.GetComponentInChildren<SpriteRenderer>().color = color;
         }
         else
         {

@@ -22,12 +22,10 @@ public class DiceSystem : Singleton<DiceSystem>
     private void SetTweens()
     {
         Vector3 startPos = new Vector3(0, 13f, -2);
-        float jumpDistance = 2.3f;
 
         rollingSquence = DOTween.Sequence();
 
         rollingSquence.Append(diceObject.DOMove(startPos, 1f))
-           .Append(diceObject.DOJump(startPos + Vector3.up * jumpDistance, 1f, 1, 0.6f))
            .Join(diceObject.DORotate(new Vector3(360f, 360f, 360f), 0.5f, RotateMode.LocalAxisAdd)
            .SetLoops(-1, LoopType.Incremental)
            .SetEase(Ease.Linear));

@@ -63,9 +63,9 @@ public class EnemySystem : Singleton<EnemySystem>
     private IEnumerator AttackHeroPerformer(AttackHeroGA attackHeroGA)
     {
         EnemyView attacker = attackHeroGA.Attacker;
-        Tween tween = attacker.transform.DOMoveX(attacker.transform.position.x - 1f, 0.15f);
+        Tween tween = DomoveX(attacker, -1f, 0.15f);
         yield return tween.WaitForCompletion();
-        attacker.transform.DOMoveX(attacker.transform.position.x + 1f, 0.25f);
+        DomoveX(attacker, 1f, 0.25f);
 
         //공격범위에 플레이어 존재 여부 체크
         var heroPos = TokenSystem.Instance.GetTokenGridPosition(HeroSystem.Instance.HeroView);
@@ -106,10 +106,21 @@ public class EnemySystem : Singleton<EnemySystem>
             {
                 foreach (Vector2Int gridPos in attackHeroGA.AttackArea)
                 {
-                    Vector3 pos = TokenSystem.Instance.GridToWorldPosition(gridPos);
-                    VisualGridCreator.Instance.CreateVisualGrid(enemy, pos, Color.red);
+                    VisualGridCreator.Instance.CreateVisualGrid(enemy, gridPos, Color.red);
                 }
             }
         }
+    }
+
+    //privates
+    private Tween DomoveX(Token token, float dis, float duration)
+    {
+        float startX = token.TokenTransform.positionX;
+        return DOTween.To(() =>
+                 token.TokenTransform.positionX,
+                 x => token.TokenTransform.positionX = x,
+                 startX + dis,
+                 duration
+               );
     }
 }

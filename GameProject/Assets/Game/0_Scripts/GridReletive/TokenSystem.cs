@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using DG.Tweening;
 using IsoTools;
 using UnityEngine;
@@ -9,7 +8,7 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
 {
     public const float CellSize = 1f;
     [SerializeField] private TokenGrid grid;
-    [SerializeField] private IsoWorld isoWorld;
+    [field : SerializeField] public IsoWorld IsoWorld { get; private set; }
 
     public HeroView HeroView { get; private set; }
     public List<EnemyView> EnemyViews { get; private set; } = new();
@@ -102,8 +101,7 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
     /// <param name="tokenData"></param>
     private void UpdateHeroPreview(bool isSelect)
     {
-        //Vector3 mousePosition = MouseUtil.GetMousePositionInWorldSpace();
-        Vector3 isoPosition = isoWorld.MouseIsoTilePosition(1f);
+        Vector3 isoPosition = IsoWorld.MouseIsoTilePosition(1f);
 
         if (preview != null)
             HandlePreView(isoPosition, isSelect);
@@ -144,21 +142,10 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
     /// <param name="token"></param>
     /// <param name="maxDistance"></param>
     /// <returns></returns>
-    public List<Vector3> GetCanMovePlace(Token token, int maxDistance)
+    public List<Vector2Int> GetCanMovePlace(Token token, int maxDistance)
     {
         Vector2Int start = gridPosByToken[token];
-        var girds = FindPathBFS.FindAllPath(grid.simpleGrid, start, maxDistance);
-        if (girds != null)
-        {
-            List<Vector3> list = new();
-            foreach (var gird in girds)
-            {
-                Vector3 pos = grid.GridToWorldPosition(gird);
-                list.Add(pos);
-            }
-            return list;
-        }
-        else return null;
+        return FindPathBFS.FindAllPath(grid.simpleGrid, start, maxDistance);
     }
     /// <summary>
     /// 영웅 혹은 몬스터가 현재 이동가능 범위내에서 목표지점까지의 최단 거리 전달 함수
@@ -166,26 +153,17 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
     /// <param name="token"></param>
     /// <param name="endPosition"></param>
     /// <returns></returns>
-    public List<Vector2Int> GetShortestPath(Token token, Vector3 endPosition)
+    public List<Vector2Int> GetShortestPath(Token token, Vector2Int isoPosition)
     {
         Vector2Int start = gridPosByToken[token];
-        Vector2Int end = grid.WorldToGirdPosition(endPosition);
-        return FindPathBFS.FindPath(grid.simpleGrid, start, end);
+        return FindPathBFS.FindPath(grid.simpleGrid, start, isoPosition);
     }
 
     /// <summary>
     ///현재 턴의 영웅 혹은 몬스터가 현재 턴에 이동한 모든 그리드들 받기
     /// </summary>
     /// <returns></returns>
-    public List<Vector3> GetMovedPath()
-    {
-        List<Vector3> list = new();
-        foreach (var pos in movedPath)
-        {
-            list.Add(grid.GridToWorldPosition(pos));
-        }
-        return list;
-    }
+    public List<Vector2Int> GetMovedPath() => movedPath;
 
     /// <summary>
     /// 토큰(영웅, 적, 건물) 이동 함수
@@ -193,15 +171,20 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
     /// <param name="token"></param>
     /// <param name="path"></param>
     /// <returns></returns>
-    public IEnumerator MoveToken(Token token, Vector2Int p)
+    public IEnumerator MoveToken(Token token, Vector2Int targetPos)
     {
         if(token is HeroView) movedPath.Add(gridPosByToken[token]);    //이동한 경로 저장 (영웅 한정)
         
         grid.ResetToken(gridPosByToken[token]);
-        grid.SetTokenByGridPos(token, p);
-        gridPosByToken[token] = p;
-        Vector3 targetPost = grid.GridToWorldPosition(p);
-        Tween tween = token.gameObject.transform.DOMove(targetPost, 1f);
+        grid.SetTokenByGridPos(token, targetPos);
+        gridPosByToken[token] = targetPos;
+
+        Tween tween = DOTween.To(() => 
+                token.TokenTransform.positionXY, 
+                v => token.TokenTransform.positionXY = v, 
+                targetPos, 
+                1f
+            );
         yield return tween.WaitForCompletion();
     }
     /// <summary>
@@ -231,11 +214,10 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
     public Vector2Int GetTokenGridPosition(Token token) => gridPosByToken[token];
     public Vector3 GetTokenWorldPosition(Token token) => grid.GridToWorldPosition(gridPosByToken[token]);
 
-    public int GetDistance(Token token, Vector3 endPos)
+    public int GetDistance(Token token, Vector2Int endPos)
     {
         Vector2Int current = gridPosByToken[token];
-        Vector2Int target = grid.WorldToGirdPosition(endPos);
-        return Mathf.Max(Mathf.Abs(current.x - target.x), Mathf.Abs(current.y - target.y));
+        return Mathf.Max(Mathf.Abs(current.x - endPos.x), Mathf.Abs(current.y - endPos.y));
     }
 
     /// <summary>

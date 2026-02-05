@@ -20,27 +20,32 @@ public class TestCharacter : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            currentX++;
+            currentX += GetRandomValue();
             UpdatePosition();
         }
         else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            currentX--;
+            currentX -= GetRandomValue();
             UpdatePosition();
         }
         else if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            currentY++;
+            currentY += GetRandomValue();
             UpdatePosition();
         }
         else if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            currentY--;
+            currentY -= GetRandomValue();
             UpdatePosition();
         }
     }
     private void UpdatePosition()
     {
         isoObject.position = new Vector3(currentX, currentY, 1);
+    }
+
+    private int GetRandomValue()
+    {
+        return UnityEngine.Random.Range(0, 10);
     }
 }

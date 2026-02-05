@@ -52,9 +52,8 @@ public class MoveSystem : Singleton<MoveSystem>
 
         if (mover is HeroView)
         {
-            Vector3 currentPos = TokenSystem.Instance.GetTokenWorldPosition(mover);
             yield return TokenSystem.Instance.MoveToken(mover, position);
-            //VisualGridCreator.Instance.ChangeHeroVisualGrid(currentPos, Color.gray);
+            VisualGridCreator.Instance.ChangeHeroVisualGrid(position, Color.gray);
         }
         else yield return TokenSystem.Instance.MoveToken(mover, position);
     }

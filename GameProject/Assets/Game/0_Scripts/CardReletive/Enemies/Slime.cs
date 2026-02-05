@@ -26,9 +26,9 @@ public class Slime : Enemy
         //영웅 주변으로 이동 가능 타일 찾기
         var canMovePoses = TokenSystem.Instance.GetCanMovePlace(HeroSystem.Instance.HeroView, attackDistance);
 
-        (int, Vector3) minValues = GetMinValues(canMovePoses, myEnemyView);  //최소 경로의 목표 위치 찾기
+        (int, Vector2Int) minValues = GetMinValues(canMovePoses, myEnemyView);  //최소 경로의 목표 위치 찾기
         int distance = minValues.Item1;
-        Vector3 targetPos = minValues.Item2;
+        Vector2Int targetPos = minValues.Item2;
 
         if (distance == int.MaxValue)  //이동할 경로를 찾을 수 없음. (아무 것도 하지 않음) - 임시
         {
@@ -47,12 +47,12 @@ public class Slime : Enemy
         }
         return null;
     }
-    private (int, Vector3) GetMinValues(List<Vector3> canMovePoses, EnemyView myEnemyView)
+    private (int, Vector2Int) GetMinValues(List<Vector2Int> canMovePoses, EnemyView myEnemyView)
     {
         //해당 타일들 중, 가장 거리가 가까운 타일 선정
         int minDistance = int.MaxValue;
-        Vector3 targetPos = Vector3.zero;
-        foreach (Vector3 pos in canMovePoses)
+        Vector2Int targetPos = Vector2Int.zero;
+        foreach (var pos in canMovePoses)
         {
             var path = TokenSystem.Instance.GetShortestPath(myEnemyView, pos);   //최소 경로 찾기
             if (path == null) continue;

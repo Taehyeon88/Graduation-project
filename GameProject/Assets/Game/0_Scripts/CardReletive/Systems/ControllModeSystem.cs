@@ -61,7 +61,7 @@ public class ControllModeSystem : Singleton<ControllModeSystem>
         var movedPositions = TokenSystem.Instance.GetMovedPath();
         foreach (var pos in movedPositions)
         {
-            //VisualGridCreator.Instance.ChangeHeroVisualGrid(pos, Color.gray);
+            VisualGridCreator.Instance.ChangeHeroVisualGrid(pos, Color.gray);
         }
 
         //현재 SPD가 없어서 이동 불가일 경우, 반환처리
@@ -71,7 +71,7 @@ public class ControllModeSystem : Singleton<ControllModeSystem>
         var positions = TokenSystem.Instance.GetCanMovePlace(HeroSystem.Instance.HeroView, SPDSystem.Instance.RemainSPD());
         foreach (var pos in positions)
         {
-            //VisualGridCreator.Instance.CreateHeroVisualGrid(pos, new Color32(54, 188, 155, 255));
+            VisualGridCreator.Instance.CreateHeroVisualGrid(pos, new Color32(54, 188, 155, 255));
         }
         InteractionSystem.Instance.SetInteraction(InteractionCase.HeroMove, UpdateHeroMove);   //이동 인터렉션 구독
     }
@@ -80,17 +80,17 @@ public class ControllModeSystem : Singleton<ControllModeSystem>
     {
         if (tokenIsMoving) return;
 
-        Vector3 mousePosition = MouseUtil.GetMousePositionInWorldSpace();
+        Vector3 mousePosition = TokenSystem.Instance.IsoWorld.MouseIsoTilePosition(1f);
+        Vector2Int isoPosition = new((int)mousePosition.x, (int)mousePosition.y);
         if (isSelect)
         {
             CombatantView heroView = HeroSystem.Instance.HeroView;
-            Vector2Int gridPos = TokenSystem.Instance.WorldToGridPosition(mousePosition);
-            if (TokenSystem.Instance.CheckContainMovedPath(gridPos)) return;
+            if (TokenSystem.Instance.CheckContainMovedPath(isoPosition)) return;
 
-            int distance = TokenSystem.Instance.GetDistance(heroView, mousePosition);
+            int distance = TokenSystem.Instance.GetDistance(heroView, isoPosition);
             if (SPDSystem.Instance.HasEnoughSPD(distance))
             {
-                var path = TokenSystem.Instance.GetShortestPath(heroView, mousePosition);
+                var path = TokenSystem.Instance.GetShortestPath(heroView, isoPosition);
 
                 if (path != null)
                 {
@@ -120,12 +120,12 @@ public class ControllModeSystem : Singleton<ControllModeSystem>
             var positions = TokenSystem.Instance.GetCanMovePlace(HeroSystem.Instance.HeroView, SPDSystem.Instance.RemainSPD());
             foreach (var pos in positions)
             {
-                //VisualGridCreator.Instance.CreateHeroVisualGrid(pos, new Color32(54, 188, 155, 255));
+                VisualGridCreator.Instance.CreateHeroVisualGrid(pos, new Color32(54, 188, 155, 255));
             }
             var movedPositions = TokenSystem.Instance.GetMovedPath();
             foreach (var pos in movedPositions)
             {
-                //VisualGridCreator.Instance.ChangeHeroVisualGrid(pos, Color.gray);
+                VisualGridCreator.Instance.ChangeHeroVisualGrid(pos, Color.gray);
             }
         }
     }

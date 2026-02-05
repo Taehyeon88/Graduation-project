@@ -41,11 +41,11 @@ public class MatchSetupSystem : MonoBehaviour
         InteractionSystem.Instance.EndInteraction();
 
         //±‚≈∏
-        //DiceSystem.Instance.SetDice(new(diceData));
-        //CardSystem.Instance.SetUp(heroData.Deck.ToList());
+        DiceSystem.Instance.SetDice(new(diceData));
+        CardSystem.Instance.SetUp(heroData.Deck.ToList());
         //PerkSystem.Instance.AddPerk(new(perkData));
 
-        //EnemysTurnGA enemysTurnGA = new(true);
-        //ActionSystem.Instance.Perform(enemysTurnGA);
+        EnemysTurnGA enemysTurnGA = new(true);
+        ActionSystem.Instance.Perform(enemysTurnGA);
     }
 }
