@@ -1,42 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Overlays;
 using UnityEngine;
-using UnityEngine.UI;
+
+public enum ControllMode
+{
+    Move,
+    Action,
+    None
+}
 
 public class ControllModeSystem : Singleton<ControllModeSystem>
 {
-    public enum ControllMode
-    {
-        Move,
-        Action
-    }
-
-    [SerializeField] private Button moveButton;
-    [SerializeField] private Button actionButton;
-
-    private ControllMode currentMode = ControllMode.Action;
+    private ControllMode currentMode = ControllMode.None;
     private bool tokenIsMoving = false;
-
 
     private void OnEnable()
     {
         ActionSystem.SubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
-
-        moveButton.onClick.AddListener(() => ChangeControllMode(ControllMode.Move));
-        actionButton.onClick.AddListener(() => ChangeControllMode(ControllMode.Action));
-
+        ActionSystem.SubscribeReaction<HeroFirstMoveGA>(HeroFirstMovePostReaction, ReactionTiming.POST);
     }
 
     private void OnDisable()
     {
         ActionSystem.UnsubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
-
-        moveButton.onClick.RemoveAllListeners();
-        actionButton.onClick.RemoveAllListeners();
+        ActionSystem.UnsubscribeReaction<HeroFirstMoveGA>(HeroFirstMovePostReaction, ReactionTiming.POST);
     }
 
-    private void ChangeControllMode(ControllMode newMode)
+    public void ChangeControllMode(ControllMode newMode)
     {
         if (currentMode == newMode) return;
 
@@ -50,8 +40,15 @@ public class ControllModeSystem : Singleton<ControllModeSystem>
             EndMoveMode();          //이동 모드 종료
             OnActionControllMode(); //행동 모드로 변경
         }
+        else if (newMode == ControllMode.None)
+        {
+            EndActionMode();        //행동 모든 종료
+            EndMoveMode();          //이동 모드 종료
+        }
         currentMode = newMode;
     }
+
+    public bool CheckControllMode(ControllMode mode) => currentMode == mode;
 
     private void OnMoveControllMode()
     {
@@ -150,7 +147,19 @@ public class ControllModeSystem : Singleton<ControllModeSystem>
         //플레이어 턴 종료시, Action모드 혹은 Move모드일 경우, 초기화. 
         VisualGridCreator.Instance.RemoveVisualGridById(gameObject.GetInstanceID());
         InteractionSystem.Instance.EndInteraction();
+    }
 
-        //+ SPD를 남길 경우, 예외처리
+    //플레이어 첫 필수 이동이 끝날 때까지 대기 후, 카드 드로우
+    private void HeroFirstMovePostReaction(HeroFirstMoveGA heroFirstMoveGA)
+    {
+        StartCoroutine(DrawCardUntilActionMode());
+    }
+
+    private IEnumerator DrawCardUntilActionMode()
+    {
+        yield return new WaitUntil(() => currentMode == ControllMode.Action);
+
+        DrawCardsGA drawCardsGA = new DrawCardsGA(5);
+        ActionSystem.Instance.Perform(drawCardsGA);
     }
 }

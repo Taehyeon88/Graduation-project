@@ -8,16 +8,42 @@ public class HeroSystem : Singleton<HeroSystem>
 
     private void OnEnable()
     {
+        ActionSystem.AttachPerformer<HeroFirstMoveGA>(HeroFirstMoveGAPerformer);
         ActionSystem.SubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<EnemysTurnGA>(EnemysTurnPostReaction, ReactionTiming.POST);
-        ActionSystem.SubscribeReaction<RollDiceGA>(RollDicePostReaction, ReactionTiming.POST);
     }
     private void OnDisable()
     {
+        ActionSystem.DetachPerformer<HeroFirstMoveGA>();
         ActionSystem.UnsubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<EnemysTurnGA>(EnemysTurnPostReaction, ReactionTiming.POST);
-        ActionSystem.UnsubscribeReaction<RollDiceGA>(RollDicePostReaction, ReactionTiming.POST);
     }
+
+    //Performers
+    private IEnumerator HeroFirstMoveGAPerformer(HeroFirstMoveGA heroFristMoveGA)
+    {
+        //플레이어 이동 가능 여부 판단
+        var canMovePlaces = TokenSystem.Instance.GetCanMovePlace(HeroView, heroFristMoveGA.SPD);
+        if (canMovePlaces == null || canMovePlaces.Count == 0)
+        {
+            //false -> 플레이어 피격 및 액션 모드 전환
+            int amount = Mathf.CeilToInt(HeroView.MaxHealth * 0.05f);
+            DealDamageGA dealDamageGA = new(amount, new() { HeroView }, HeroView);
+            ActionSystem.Instance.AddReaction(dealDamageGA);
+
+            ControllModeSystem.Instance.ChangeControllMode(ControllMode.Action);
+        }
+        else
+        {
+            //true -> 플레이어 이동 모드 -> 이동후, 액션모드전환
+            SPDSystem.Instance.AddSPD(heroFristMoveGA.SPD);
+
+            ControllModeSystem.Instance.ChangeControllMode(ControllMode.Move);
+        }
+
+        yield return null;
+    }
+
 
     //Reactions
     private void EnemysTurnPreReaction(EnemysTurnGA enemyTurnGA)
@@ -37,13 +63,8 @@ public class HeroSystem : Singleton<HeroSystem>
             ApplyBurnGA applyBurnGA = new(burnStacks, HeroView);
             ActionSystem.Instance.AddReaction(applyBurnGA);
         }
-        RollDiceGA rollDiceGA = new();
-        ActionSystem.Instance.AddReaction(rollDiceGA);
-    }
 
-    private void RollDicePostReaction(RollDiceGA rollDiceGA)
-    {
-        DrawCardsGA drawCardsGA = new DrawCardsGA(5);
-        ActionSystem.Instance.AddReaction(drawCardsGA);
+        HeroFirstMoveGA heroFristMove = new(1);
+        ActionSystem.Instance.AddReaction(heroFristMove);
     }
 }

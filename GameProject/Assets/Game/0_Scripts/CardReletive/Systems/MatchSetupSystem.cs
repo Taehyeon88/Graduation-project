@@ -41,7 +41,6 @@ public class MatchSetupSystem : MonoBehaviour
         InteractionSystem.Instance.EndInteraction();
 
         //±‚≈∏
-        DiceSystem.Instance.SetDice(new(diceData));
         CardSystem.Instance.SetUp(heroData.Deck.ToList());
         //PerkSystem.Instance.AddPerk(new(perkData));
 

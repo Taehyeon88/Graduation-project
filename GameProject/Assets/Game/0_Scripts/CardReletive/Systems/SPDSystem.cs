@@ -4,34 +4,19 @@ using UnityEngine;
 
 public class SPDSystem : Singleton<SPDSystem>
 {
-    [SerializeField] private SPDUI spdUI;
     int maxSPD = 0;
     private int currentSPD = 0;
-    private void OnEnable()
-    {
-        ActionSystem.AttachPerformer<AddSPDGA>(AddSPDPerformer);
-        ActionSystem.AttachPerformer<SpendSPDGA>(SpendSPDPerformer);
-    }
-    private void OnDisable()
-    {
-        ActionSystem.DetachPerformer<AddSPDGA>();
-        ActionSystem.DetachPerformer<SpendSPDGA>();
-    }
     public bool HasEnoughSPD(int amount)
     {
         return currentSPD >= amount;
     }
     public int RemainSPD() => currentSPD;
-    private IEnumerator AddSPDPerformer(AddSPDGA addSPDGA)
+    public void AddSPD(int amount)
     {
-        currentSPD = maxSPD = addSPDGA.Amount;
-        spdUI.UpdateSPDUI(currentSPD, maxSPD);
-        yield return null;
+        currentSPD = maxSPD = amount;
     }
-    private IEnumerator SpendSPDPerformer(SpendSPDGA spendSPDGA)
+    public void SpendSPD(int amount)
     {
-        currentSPD -= spendSPDGA.Amount;
-        spdUI.UpdateSPDUI(currentSPD, maxSPD);
-        yield return null;
+        currentSPD -= amount;
     }
 }

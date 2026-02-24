@@ -33,8 +33,7 @@ public class MoveSystem : Singleton<MoveSystem>
 
         if (mover is HeroView)
         {
-            SpendSPDGA spendSPDGA = new(path.Count);
-            ActionSystem.Instance.AddReaction(spendSPDGA);
+            SPDSystem.Instance.SpendSPD(path.Count);
         }
 
         foreach (Vector2Int p in path)

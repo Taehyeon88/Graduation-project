@@ -15,4 +15,4 @@ MonoBehaviour:
   <Description>k__BackingField: this is a normalDice
   <DiceModel>k__BackingField: {fileID: 1165664036036603153, guid: 2d63344385127534cae57774380d2de0,
     type: 3}
-  <NumberPerFace>k__BackingField: 010000000100000001000000020000000300000004000000
+  <NumberPerFace>k__BackingField: 020000000200000002000000020000000300000004000000
