@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9473ac8937d88c54b805a05b80f1aac1, type: 3}
+  m_Name: Hero_Attack
+  m_EditorClassIdentifier: 
+  <VisualGridTypes>k__BackingField:
+  - rid: 4818494444620218369
+  layerDepth: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 4818494444620218369
+      type: {class: SymbolType, ns: , asm: Assembly-CSharp}
+      data:
+        sprite: {fileID: 21300000, guid: 3bb89eafbdb5d27428fb731241971ad3, type: 3}

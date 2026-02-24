@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +9,11 @@ public class VisualGridCreator : Singleton<VisualGridCreator>
 {
     [SerializeField] TokenGrid grid;
     [SerializeField] Transform gridVisualView;
+    [SerializeField] VisualGridData[] visualGridDatas;
     private Dictionary<Token, List<IsoObject>> visualGridsByToken = new();
-    private List<IsoObject> heroSetupVisuals = new();
-    private Queue<IsoObject> visualGrids = new();
+
+    private Dictionary<Vector2Int, IsoObject> vGByPosition = new();
+    private Dictionary<(int, string), List<SpriteRenderer>> visualGridsById = new();
 
     void Start()
     {
@@ -18,77 +21,117 @@ public class VisualGridCreator : Singleton<VisualGridCreator>
     }
     private void Initialize()
     {
-        var temp = gridVisualView.GetComponentsInChildren<IsoObject>(true);
-        foreach (var t in temp)
-        {
-            if (t == gridVisualView) continue;
-            visualGrids.Enqueue(t);
-        }
-    }
+        //새로운 방식
+        if (vGByPosition.Count == grid.width * grid.height) return;
 
-    public void CreateVisualGrid(Token token, Vector2Int isoPosition, Color color)
-    {
-        if (visualGrids.Count <= 0) Initialize();
-
-        if (visualGrids.TryDequeue(out var vg))
+        var temp2 = gridVisualView.GetComponentsInChildren<IsoObject>(true);
+        int count = 0;
+        for (int x = 0; x < grid.width; x++)
         {
-            vg.gameObject.SetActive(true);
-            vg.GetComponentInChildren<SpriteRenderer>().color = color;
-            vg.position = new Vector3(isoPosition.x, isoPosition.y, 1);
-            if (visualGridsByToken.ContainsKey(token))
-                visualGridsByToken[token].Add(vg);
-            else
-                visualGridsByToken.Add(token, new() { vg });
-        }
-    }
-
-    public void RemoveVisualGrid(Token token)
-    {
-        if (visualGridsByToken.ContainsKey(token))
-        {
-            var visuals = visualGridsByToken[token];
-            foreach (var v in visuals)
+            for (int y = 0; y < grid.height; y++)
             {
-                visualGrids.Enqueue(v);
-                v.gameObject.SetActive(false);
+                if (count < temp2.Length)
+                {
+                    vGByPosition.TryAdd(new(x, y), temp2[count]);
+                    temp2[count].position = new Vector3(x, y, 1);
+
+                    count++;
+                }
             }
-            visualGridsByToken[token].Clear();
         }
     }
 
-    public void CreateHeroVisualGrid(Vector2Int isoPosition, Color color)
+    public void ChangeVisualGrid(Vector2Int isoPosition, int tokenId, string beforeName, string afterName)
     {
-        if (visualGrids.Count <= 0) Initialize();
+        RemoveVisualGrid(tokenId, beforeName);
+        CreateVisualGrid(tokenId, isoPosition, afterName);
+    }
 
-        if (visualGrids.TryDequeue(out var vg))
+    public void CreateVisualGrid(int tokenId, Vector2Int isoPosition, string vgName)
+    {
+        VisualGridData vgSO = Array.Find(visualGridDatas, v => v.name == vgName);
+
+        if (vgSO == null) return;
+        if (vGByPosition.Count <= 0) Initialize();
+
+        foreach (var vgType in vgSO.VisualGridTypes)
         {
-            vg.gameObject.SetActive(true);
-            vg.GetComponentInChildren<SpriteRenderer>().color = color;
-            vg.position = new Vector3(isoPosition.x, isoPosition.y, 1);
-            heroSetupVisuals.Add(vg);
+            Color color = vgType.GetVGTypeColor();
+            Sprite sprite = vgType.GetVGTypeSprite();
+            float vgTransZ = vgSO.GetVGTransZ(vgType.GetVGTypeTransZ());
+
+            if (vGByPosition.TryGetValue(isoPosition, out var vg))
+            {
+                SpriteRenderer[] spriteRenderers = vg.GetComponentsInChildren<SpriteRenderer>(true);
+                if (spriteRenderers != null)
+                {
+                    foreach (var sr in spriteRenderers)
+                    {
+                        if (sr.gameObject.CompareTag("VG_None"))
+                        {
+                            sr.gameObject.SetActive(true);
+                            sr.sprite = sprite;
+                            sr.color = color;
+                            sr.gameObject.name = vgName;
+
+                            Vector3 cur = sr.transform.localPosition;
+                            sr.gameObject.transform.localPosition = new Vector3(cur.x, cur.y, vgTransZ);
+ 
+
+                            sr.gameObject.tag = "VG_Using";
+
+                            if (visualGridsById.ContainsKey((tokenId, vgName)))
+                                visualGridsById[(tokenId, vgName)].Add(sr);
+                            else
+                                visualGridsById.Add((tokenId, vgName), new() { sr });
+
+                            break;
+                        }
+                    }
+                }
+            }
         }
     }
 
-    public void RemoveHeroVisualGrid()
+    public bool RemoveVisualGrid(int tokenId, string vgName)
     {
-        foreach (var v in heroSetupVisuals)
+        if (visualGridsById.ContainsKey((tokenId, vgName)))
         {
-            visualGrids.Enqueue(v);
-            v.gameObject.SetActive(false);
+            var spriteRenderers = visualGridsById[(tokenId, vgName)];
+            foreach (var sr in spriteRenderers)
+            {
+                sr.gameObject.tag = "VG_None";
+                sr.sprite = null;
+                sr.gameObject.name = "SpriteRenderer_defualt";
+                sr.gameObject.SetActive(false);
+            }
+            visualGridsById[(tokenId, vgName)].Clear();
+
+            return true;
         }
-        heroSetupVisuals.Clear();
+        return false;
     }
 
-    public void ChangeHeroVisualGrid(Vector2Int isoPosition, Color color)
+    public bool RemoveVisualGridById(int tokenId)
     {
-        var target = heroSetupVisuals.Find(t => t.positionXY == isoPosition);
-        if (target != null)
+        bool check = false;
+        foreach (var vg in visualGridsById.ToList())
         {
-            target.GetComponentInChildren<SpriteRenderer>().color = color;
+            if (vg.Key.Item1 == tokenId)
+            {
+                var spriteRenderers = visualGridsById[(tokenId, vg.Key.Item2)];
+                foreach (var sr in spriteRenderers)
+                {
+                    sr.gameObject.tag = "VG_None";
+                    sr.sprite = null;
+                    sr.gameObject.name = "SpriteRenderer_defualt";
+                    sr.gameObject.SetActive(false);
+                }
+                visualGridsById[(tokenId, vg.Key.Item2)].Clear();
+
+                check = true;
+            }
         }
-        else
-        {
-            CreateHeroVisualGrid(isoPosition, color);
-        }
+        return check;
     }
 }

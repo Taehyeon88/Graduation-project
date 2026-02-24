@@ -61,7 +61,7 @@ public class ControllModeSystem : Singleton<ControllModeSystem>
         var movedPositions = TokenSystem.Instance.GetMovedPath();
         foreach (var pos in movedPositions)
         {
-            VisualGridCreator.Instance.ChangeHeroVisualGrid(pos, Color.gray);
+            VisualGridCreator.Instance.ChangeVisualGrid(pos, gameObject.GetInstanceID(), "Hero_Move", "Hero_Moved");
         }
 
         //현재 SPD가 없어서 이동 불가일 경우, 반환처리
@@ -71,7 +71,7 @@ public class ControllModeSystem : Singleton<ControllModeSystem>
         var positions = TokenSystem.Instance.GetCanMovePlace(HeroSystem.Instance.HeroView, SPDSystem.Instance.RemainSPD());
         foreach (var pos in positions)
         {
-            VisualGridCreator.Instance.CreateHeroVisualGrid(pos, new Color32(54, 188, 155, 255));
+            VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), pos, "Hero_Move");
         }
         InteractionSystem.Instance.SetInteraction(InteractionCase.HeroMove, UpdateHeroMove);   //이동 인터렉션 구독
     }
@@ -116,23 +116,23 @@ public class ControllModeSystem : Singleton<ControllModeSystem>
         }
         else  //새로운 비주얼 그리드 그려서 보여주기
         {
-            VisualGridCreator.Instance.RemoveHeroVisualGrid();
+            VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "Hero_Move");
             var positions = TokenSystem.Instance.GetCanMovePlace(HeroSystem.Instance.HeroView, SPDSystem.Instance.RemainSPD());
             foreach (var pos in positions)
             {
-                VisualGridCreator.Instance.CreateHeroVisualGrid(pos, new Color32(54, 188, 155, 255));
+                VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), pos, "Hero_Move");
             }
             var movedPositions = TokenSystem.Instance.GetMovedPath();
             foreach (var pos in movedPositions)
             {
-                VisualGridCreator.Instance.ChangeHeroVisualGrid(pos, Color.gray);
+                VisualGridCreator.Instance.ChangeVisualGrid(pos, gameObject.GetInstanceID(), "Hero_Move", "Hero_Moved");
             }
         }
     }
 
     private void EndMoveMode()
     {
-        VisualGridCreator.Instance.RemoveHeroVisualGrid();
+        VisualGridCreator.Instance.RemoveVisualGridById(gameObject.GetInstanceID());
         InteractionSystem.Instance.EndInteraction();
     }
     private void OnActionControllMode()
@@ -148,7 +148,7 @@ public class ControllModeSystem : Singleton<ControllModeSystem>
     private void EnemysTurnPreReaction(EnemysTurnGA enemyTurnGA)
     {
         //플레이어 턴 종료시, Action모드 혹은 Move모드일 경우, 초기화. 
-        VisualGridCreator.Instance.RemoveHeroVisualGrid();
+        VisualGridCreator.Instance.RemoveVisualGridById(gameObject.GetInstanceID());
         InteractionSystem.Instance.EndInteraction();
 
         //+ SPD를 남길 경우, 예외처리

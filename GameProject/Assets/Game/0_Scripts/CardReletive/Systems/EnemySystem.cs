@@ -85,7 +85,7 @@ public class EnemySystem : Singleton<EnemySystem>
         yield return new WaitForSeconds(0.5f);
 
         //미리 보여준 공격 범위 삭제
-        VisualGridCreator.Instance.RemoveVisualGrid(attacker);
+        VisualGridCreator.Instance.RemoveVisualGrid(attacker.GetInstanceID(), "Enemy_Attack");
     }
 
     private IEnumerator KillEnemyPerformer(KillEnemyGA killEnemyGA)
@@ -106,7 +106,7 @@ public class EnemySystem : Singleton<EnemySystem>
             {
                 foreach (Vector2Int gridPos in attackHeroGA.AttackArea)
                 {
-                    VisualGridCreator.Instance.CreateVisualGrid(enemy, gridPos, Color.red);
+                    VisualGridCreator.Instance.CreateVisualGrid(enemy.GetInstanceID(), gridPos, "Enemy_Attack");
                 }
             }
         }

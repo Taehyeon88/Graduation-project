@@ -6,8 +6,8 @@ using UnityEngine;
 
 public class TokenGrid : MonoBehaviour
 {
-    [SerializeField] private int width;
-    [SerializeField] private int height;
+    [field: SerializeField] public int width { get; private set; }
+    [field: SerializeField] public int height { get; private set; }
     public TokenGirdCell[,] grid { get; private set; }
     public int[,] simpleGrid { get; private set; }   //0 - 토큰 없음 | 1 - 토큰 있음 (토큰 존재여부 확인용)
 

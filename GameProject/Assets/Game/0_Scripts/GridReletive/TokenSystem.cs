@@ -88,9 +88,9 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
         {
             Vector3 position = grid.GridToWorldPosition(gridPos);
             if (grid.CanSetByGridPos(gridPos))
-                VisualGridCreator.Instance.CreateHeroVisualGrid(gridPos, Color.green);
+                VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), gridPos, "Hero_SetUp_True");
             else
-                VisualGridCreator.Instance.CreateHeroVisualGrid(gridPos, Color.red);
+                VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), gridPos, "Hero_SetUp_False");
         }
         InteractionSystem.Instance.SetInteraction(InteractionCase.SetHero, UpdateHeroPreview);
     }
@@ -126,7 +126,7 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
             if (isSelect)
             {
                 PlaceToken(girdPosition, preview.TokenData, TokenType.Hero);
-                VisualGridCreator.Instance.RemoveHeroVisualGrid();
+                VisualGridCreator.Instance.RemoveVisualGridById(gameObject.GetInstanceID());
                 Destroy(preview.gameObject);
                 tokenData = null;
                 preview = null;

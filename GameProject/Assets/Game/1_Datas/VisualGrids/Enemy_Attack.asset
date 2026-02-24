@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9473ac8937d88c54b805a05b80f1aac1, type: 3}
+  m_Name: Enemy_Attack
+  m_EditorClassIdentifier: 
+  <VisualGridTypes>k__BackingField:
+  - rid: 4818494444620218375
+  - rid: 4818494444620218374
+  layerDepth: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: 4818494444620218374
+      type: {class: BorderType, ns: , asm: Assembly-CSharp}
+      data:
+        Color: {r: 1, g: 0.069702804, b: 0, a: 1}
+        sprite: {fileID: 21300000, guid: ed17a2c1d1ed5ae46ad85c7535515a99, type: 3}
+    - rid: 4818494444620218375
+      type: {class: FillType, ns: , asm: Assembly-CSharp}
+      data:
+        Color: {r: 0.79607844, g: 0, b: 0, a: 0.39215687}
+        sprite: {fileID: 21300000, guid: c24597d5a32fc364fba168752f092718, type: 3}

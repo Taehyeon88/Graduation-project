@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9473ac8937d88c54b805a05b80f1aac1, type: 3}
+  m_Name: Hero_WillAttack
+  m_EditorClassIdentifier: 
+  <VisualGridTypes>k__BackingField:
+  - rid: 4818494444620218370
+  - rid: 4818494444620218371
+  layerDepth: 2
+  references:
+    version: 2
+    RefIds:
+    - rid: 4818494444620218370
+      type: {class: FillType, ns: , asm: Assembly-CSharp}
+      data:
+        Color: {r: 1, g: 0.54793787, b: 0, a: 0.6}
+        sprite: {fileID: 21300000, guid: c24597d5a32fc364fba168752f092718, type: 3}
+    - rid: 4818494444620218371
+      type: {class: BorderType, ns: , asm: Assembly-CSharp}
+      data:
+        Color: {r: 1, g: 0.68811125, b: 0, a: 1}
+        sprite: {fileID: 21300000, guid: 4b6b9674e5b1c6140a50ea7b1ffe278f, type: 3}

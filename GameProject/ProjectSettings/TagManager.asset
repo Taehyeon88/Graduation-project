@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - FxTemporaire
+  - VG_None
+  - VG_Using
   layers:
   - Default
   - TransparentFX
