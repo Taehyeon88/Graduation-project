@@ -199,20 +199,26 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
     public bool CheckContainMovedPath(Vector2Int pos) => movedPath.Contains(pos);
 
     /// <summary>
-    /// 좌표변환해서 받는 함수 : 그리드 -> 월드 or 월드 -> 그리드
-    /// </summary>
-    /// <param name="p"></param>
-    /// <returns></returns>
-    public Vector3 GridToWorldPosition(Vector2Int p) => grid.GridToWorldPosition(p);
-    public Vector2Int WorldToGridPosition(Vector3 p) => grid.WorldToGirdPosition(p);
-
-    /// <summary>
     /// 특정 토큰의 현재 위치를 받아가는 함수
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Vector2Int GetTokenGridPosition(Token token) => gridPosByToken[token];
-    public Vector3 GetTokenWorldPosition(Token token) => grid.GridToWorldPosition(gridPosByToken[token]);
+    public Vector2Int GetTokenPosition(Token token) => gridPosByToken[token];
+
+    /// <summary>
+    /// 특정 위치의 토큰을 받아가는 함수
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
+    public Token GetTokenByPosition(Vector2Int position)
+    {
+        foreach (var dic in gridPosByToken)
+        {
+            if (dic.Value == position)
+                return dic.Key;
+        }
+        return null;
+    }
 
     public int GetDistance(Token token, Vector2Int endPos)
     {
@@ -244,6 +250,16 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
     }
 
     /// <summary>
+    /// 해당 그리드 좌표 사용 가능 여부 확인 (범위 안 & 토큰이 없는가 등)
+    /// </summary>
+    /// <param name="isPosition"></param>
+    /// <returns></returns>
+    public bool IsGridEmpty(Vector2Int isPosition)
+    {
+        return grid.CanSetByGridPos(isPosition);
+    }
+
+    /// <summary>
     /// 특정 위치에 토큰(영웅, 적, 건물)을 생성하는 함수
     /// </summary>
     /// <param name="setPosition"></param>
@@ -265,20 +281,5 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
             HeroView = heroView;
         else if (token is EnemyView enemyView)
             EnemyViews.Add(enemyView);
-    }
-
-    /// <summary>
-    /// Global 좌표계 위치에서 Grid 위치에 맞게 snap 해주는 함수
-    /// </summary>
-    /// <param name="tokenPosition"></param>
-    /// <returns></returns>
-    private Vector3 GetSnappedCenterPosition(Vector3 tokenPosition)
-    {
-        int sx = Mathf.FloorToInt(tokenPosition.x);
-        int sz = Mathf.FloorToInt(tokenPosition.z);
-
-        float centerX = sx + CellSize / 2f;
-        float centerz = sz + CellSize / 2f;
-        return new Vector3(centerX, 0, centerz);
     }
 }

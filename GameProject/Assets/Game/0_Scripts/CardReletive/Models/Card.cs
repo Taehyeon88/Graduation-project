@@ -7,7 +7,7 @@ public class Card
     public string Description => data.Description;
     public Sprite Image => data.Image;
     public List<Effect> ManualTargetEffects => data.ManualTargetEffects;
-    public List<AutoTargetEffect> OtherEffects => data.OtherEffects;
+    public List<GridTargetMode> GridTargetMode => data.GridTargetModes;
     public int Mana { get; private set; }
 
     private readonly CardData data;

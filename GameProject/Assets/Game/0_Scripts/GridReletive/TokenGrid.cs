@@ -85,26 +85,10 @@ public class TokenGrid : MonoBehaviour
         if (x < 0 || x >= width || y < 0 || y >= height) return false;
         return true;
     }
-    public bool CanSet(Vector3 position)
-    {
-        Vector2Int pos = WorldToGirdPosition(position);
-        int x = pos.x; int y = pos.y;
-        if (x < 0 || x >= width || y < 0 || y >= height) return false;
-        if (!grid[x, y].IsEmpty()) return false;
-        return true;
-    }
+
     public bool CanSetByGridPos(Vector2Int pos)
     {
         int x = pos.x; int y = pos.y;
-        if (x < 0 || x >= width || y < 0 || y >= height) return false;
-        if (!grid[x, y].IsEmpty()) return false;
-        return true;
-    }
-    public bool CanSet(Vector3 position, List<Vector2Int> canSetupPoisitions)
-    {
-        Vector2Int pos = WorldToGirdPosition(position);
-        int x = pos.x; int y = pos.y;
-        if(!canSetupPoisitions.Contains(pos)) return false;
         if (x < 0 || x >= width || y < 0 || y >= height) return false;
         if (!grid[x, y].IsEmpty()) return false;
         return true;
@@ -129,7 +113,7 @@ public class TokenGrid : MonoBehaviour
                         positions.Add(new(x, y));
                 }
             }
-            return positions.ToList();
+            return positions;
         }
         return null;
     }

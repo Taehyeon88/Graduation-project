@@ -6,10 +6,11 @@ using UnityEngine.InputSystem;
 
 public enum InteractionCase
 {
-    None, SetHero, UseCard, HeroMove, RollDice
+    None, SetHero, UseCard, HeroMove, RollDice, SelectGrid
 }
 public class InteractionSystem : Singleton<InteractionSystem>
 {
+    public static bool GridSelected { get; private set; } = false;
 
     [SerializeField] private PlayerInput playerInput;
 
@@ -40,14 +41,12 @@ public class InteractionSystem : Singleton<InteractionSystem>
                 updatedAction?.Invoke(m_SelectGrid.WasPressedThisFrame());
                 break;
 
-            case InteractionCase.UseCard:
-                
-                break;
-
             case InteractionCase.RollDice:
                 updatedAction?.Invoke(m_RollDice.WasPressedThisFrame());
                 break;
         }
+
+        GridSelected = m_SelectGrid.WasPressedThisFrame();
     }
 
     //void OnMousePosition(InputValue value)

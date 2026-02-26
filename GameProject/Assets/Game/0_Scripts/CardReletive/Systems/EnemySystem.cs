@@ -68,7 +68,7 @@ public class EnemySystem : Singleton<EnemySystem>
         DomoveX(attacker, 1f, 0.25f);
 
         //공격범위에 플레이어 존재 여부 체크
-        var heroPos = TokenSystem.Instance.GetTokenGridPosition(HeroSystem.Instance.HeroView);
+        var heroPos = TokenSystem.Instance.GetTokenPosition(HeroSystem.Instance.HeroView);
         bool isExist = false;
         foreach (var attackPos in attackHeroGA.AttackArea)
         {
