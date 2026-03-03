@@ -55,15 +55,16 @@ public class ConeTM : TargetMode
             Vector2Int dir = (targetPos - currentPos);
             List<Vector2Int> result = new();
 
-            //예시 : 1,1 -> 1,0 | 1,-1 -> 0,-1 | -1,-1 -> -1,0 | -1,1 -> 0,1
-            if (dir == new Vector2Int(1, 1)) dir = new(1, 0);
-            else if (dir == new Vector2Int(1, -1)) dir = new(0, -1);
-            else if (dir == new Vector2Int(-1, -1)) dir = new(-1, 0);
-            else if (dir == new Vector2Int(-1, 1)) dir = new(0, 1);
+            //예시 : 1,1 <- 1,0 | 1,-1 <- 0,-1 | -1,-1 <- -1,0 | -1,1 <- 0,1
+            if (dir == new Vector2Int(1, 0)) dir = new(1, 1);
+            else if (dir == new Vector2Int(0, -1)) dir = new(1, -1);
+            else if (dir == new Vector2Int(-1, 0)) dir = new(-1, -1);
+            else if (dir == new Vector2Int(0, 1)) dir = new(-1, 1);
+
+            Vector2Int target = currentPos + dir;
 
             foreach (var r in range)
             {
-                Vector2Int target = r - currentPos;
                 int dis = Mathf.Max(Mathf.Abs(r.x - target.x), Mathf.Abs(r.y - target.y));
                 if (dis <= 1)
                 {

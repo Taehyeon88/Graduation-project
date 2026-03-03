@@ -100,14 +100,19 @@ public class CardSystem : Singleton<CardSystem>
 
                 while (true)
                 {
-                    Vector3 temp = TokenSystem.Instance.IsoWorld.MouseIsoTilePosition(0);
+                    Vector3 temp = TokenSystem.Instance.IsoWorld.MouseIsoTilePosition(1);
                     Vector2Int gridPosition = new((int)temp.x, (int)temp.y);
 
                     var targets = targetMode.TargetMode.GetTargets(range, gridPosition, currentPos, targetMode.Distance);
+
                     if (targets != null)
                     {
-                        if (currentTargets != targets)
+                        string targetStr = string.Join("", targets);
+                        string curStr = string.Join("", currentTargets);
+
+                        if (curStr != targetStr)
                         {
+                            Debug.Log("이전 대상: " + string.Join(",", currentTargets) + "변경 대상: " + string.Join(",", targets));
                             //비주얼 공격 범위 그리드 업데이트
                             VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "Hero_Attack");
                             foreach (var target in targets)
@@ -120,6 +125,7 @@ public class CardSystem : Singleton<CardSystem>
                     if (InteractionSystem.GridSelected)  //그리드 선택 인터렉션 감지
                     {
                         Debug.Log("그리드 선택됨");
+                        Debug.Log("선택 대상: " + string.Join(",", currentTargets));
                         VisualGridCreator.Instance.RemoveVisualGridById(gameObject.GetInstanceID());
 
                         List<CombatantView> combatants = new();
