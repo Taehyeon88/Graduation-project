@@ -12,10 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29bd87d4b821bdd419a4bafb4b3ce7b9, type: 3}
   m_Name: NormalAttack
   m_EditorClassIdentifier: 
-  <Description>k__BackingField: 
-  <Mana>k__BackingField: 0
+  <Description>k__BackingField: This is base Attack.
+  <Mana>k__BackingField: 1
   <Image>k__BackingField: {fileID: 0}
-  <GridTargetMode>k__BackingField: []
+  <ManualTargetEffects>k__BackingField: []
+  <GridTargetModes>k__BackingField:
+  - <Distance>k__BackingField: 1
+    <TargetMode>k__BackingField:
+      rid: 5842416715637456896
+    <GridRangeMode>k__BackingField:
+      rid: 4818494853736562691
+    <Effects>k__BackingField: []
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 4818494853736562691
+      type: {class: AllAroundRM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 5842416715637456896
+      type: {class: ConeTM, ns: , asm: Assembly-CSharp}
+      data: 
