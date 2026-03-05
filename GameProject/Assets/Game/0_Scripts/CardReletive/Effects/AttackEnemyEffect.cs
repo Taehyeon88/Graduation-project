@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DealDamageEffect : Effect
+public class AttackEnemyEffect : Effect
 {
     [SerializeField] private int amount;
     public override GameAction GetGameAction(EffectInfo effectInfo)
     {
-        DealDamageGA dealDamageGA = new(amount, effectInfo.targets, effectInfo.caster);
-        return dealDamageGA;
+        AttackEnemyGA attackEnemyGA = new(effectInfo.gridTargetMode, amount);
+        return attackEnemyGA;
     }
 }

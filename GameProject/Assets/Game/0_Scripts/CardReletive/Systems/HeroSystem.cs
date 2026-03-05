@@ -30,16 +30,17 @@ public class HeroSystem : Singleton<HeroSystem>
             int amount = Mathf.CeilToInt(HeroView.MaxHealth * 0.05f);
             DealDamageGA dealDamageGA = new(amount, new() { HeroView }, HeroView);
             ActionSystem.Instance.AddReaction(dealDamageGA);
-
-            ControllModeSystem.Instance.ChangeControllMode(ControllMode.Action);
         }
         else
         {
             //true -> 플레이어 이동 모드 -> 이동후, 액션모드전환
             SPDSystem.Instance.AddSPD(heroFristMoveGA.SPD);
-
-            ControllModeSystem.Instance.ChangeControllMode(ControllMode.Move);
+            PlayerMoveGA playerMoveGA = new(null, heroFristMoveGA.SPD, true);
+            ActionSystem.Instance.AddReaction(playerMoveGA);
         }
+
+        DrawCardsGA drawCardGA = new(5);
+        ActionSystem.Instance.AddReaction(drawCardGA);
 
         yield return null;
     }

@@ -6,8 +6,8 @@ public class AddStatusEffectEffect : Effect
 {
     [SerializeField] private StatusEffectType statusEffectType;
     [SerializeField] private int stackCount;
-    public override GameAction GetGameAction(List<CombatantView> targets, CombatantView caster)
+    public override GameAction GetGameAction(EffectInfo effectInfo)
     {
-        return new AddStatusEffectGA(statusEffectType, stackCount, targets);
+        return new AddStatusEffectGA(statusEffectType, stackCount, effectInfo.targets);
     }
 }

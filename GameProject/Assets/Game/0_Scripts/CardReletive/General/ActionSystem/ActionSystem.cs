@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ActionSystem : Singleton<ActionSystem>
 {
-    private List<GameAction> reactions = null;
+    private List<(GameAction, System.Action)> reactions = null;
     public bool IsPerforming { get; private set; } = false;
     private static Dictionary<Type, List<Action<GameAction>>> preSubs = new();
     private static Dictionary<Type, List<Action<GameAction>>> postSubs = new();
@@ -20,9 +20,9 @@ public class ActionSystem : Singleton<ActionSystem>
             OnPerformFinished?.Invoke();
         }));
     }
-    public void AddReaction(GameAction gameAction)
+    public void AddReaction(GameAction gameAction, System.Action OnReactionFinished = null)
     {
-        reactions?.Add(gameAction);
+        reactions?.Add((gameAction, OnReactionFinished));
     }
 
     private IEnumerator Flow(GameAction action, Action OnFlowFinished = null)
@@ -67,7 +67,7 @@ public class ActionSystem : Singleton<ActionSystem>
     {
         foreach (var reaction in reactions)
         {
-            yield return Flow(reaction);
+            yield return Flow(reaction.Item1, reaction.Item2);
         }
     }
 

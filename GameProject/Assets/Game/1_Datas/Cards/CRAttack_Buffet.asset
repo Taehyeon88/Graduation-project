@@ -10,25 +10,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 29bd87d4b821bdd419a4bafb4b3ce7b9, type: 3}
-  m_Name: NormalAttack
+  m_Name: CRAttack_Buffet
   m_EditorClassIdentifier: 
-  <Description>k__BackingField: This is base Attack.
+  <Description>k__BackingField: This is Buffet.
   <Mana>k__BackingField: 1
   <Image>k__BackingField: {fileID: 0}
   <ManualTargetEffects>k__BackingField: []
   <GridTargetModes>k__BackingField:
-  - <Distance>k__BackingField: 1
+  - <Distance>k__BackingField: 2
     <TargetMode>k__BackingField:
-      rid: 5842416715637456896
+      rid: 5842416735594479624
     <GridRangeMode>k__BackingField:
       rid: 4818494853736562691
-    <Effects>k__BackingField: []
+    <Effects>k__BackingField:
+    - rid: 5842416777571074049
   references:
     version: 2
     RefIds:
     - rid: 4818494853736562691
       type: {class: AllAroundRM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 5842416715637456896
-      type: {class: ConeTM, ns: , asm: Assembly-CSharp}
+    - rid: 5842416735594479624
+      type: {class: LineTM, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 5842416777571074049
+      type: {class: AttackEnemyEffect, ns: , asm: Assembly-CSharp}
+      data:
+        amount: 6
