@@ -38,14 +38,7 @@ public class MoveSystem : Singleton<MoveSystem>
         if (currentSPD <= 0) yield break;
 
         //비주얼 그리드 설정
-        VisualGridCreator.Instance.RemoveVisualGridById(gameObject.GetInstanceID());            //이동타일 초기화
-        var movedPositions = TokenSystem.Instance.GetMovedPath();                               //이동한 타일 다시 그리기
-        foreach (var pos in movedPositions)
-        {
-            VisualGridCreator.Instance.ChangeVisualGrid(pos, gameObject.GetInstanceID(), "Hero_Move", "Hero_Moved");
-            Debug.Log($"이동한 범위:{pos}");
-        }
-
+        VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "Hero_Move");            //이동 가능 타일 초기화
         var positions = TokenSystem.Instance.GetCanMovePlace(HeroSystem.Instance.HeroView, currentSPD); //이동 가능 타일 미리 보여주기
         foreach (var pos in positions)
         {
@@ -106,12 +99,7 @@ public class MoveSystem : Singleton<MoveSystem>
         Token mover = moveGA.mover;
         Vector2Int position = moveGA.movePosition;
 
-        if (mover is HeroView)
-        {
-            yield return TokenSystem.Instance.MoveToken(mover, position);
-            VisualGridCreator.Instance.ChangeVisualGrid(position, gameObject.GetInstanceID(), "Hero_Move", "Hero_Moved");
-        }
-        else yield return TokenSystem.Instance.MoveToken(mover, position);
+        yield return TokenSystem.Instance.MoveToken(mover, position);
     }
 
     //Subscribers
@@ -136,6 +124,10 @@ public class MoveSystem : Singleton<MoveSystem>
             {
                 VisualGridCreator.Instance.RemoveVisualGridById(gameObject.GetInstanceID());
                 TokenSystem.Instance.ResetMovedPath();
+            }
+            else
+            {
+                VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "Hero_Move");
             }
         }
     }

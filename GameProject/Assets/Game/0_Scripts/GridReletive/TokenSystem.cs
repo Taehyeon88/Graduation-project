@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using IsoTools;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터, 건물 추가 및 삭제 (게임 중) | 토큰 이동, 등
 {
@@ -145,8 +147,18 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
     public List<Vector2Int> GetCanMovePlace(Token token, int maxDistance)
     {
         Vector2Int start = gridPosByToken[token];
-        return FindPathBFS.FindAllPath(grid.simpleGrid, start, maxDistance);
+        var result = FindPathBFS.FindAllPath(grid.simpleGrid, start, maxDistance);
+        if (token is HeroView)
+        {
+            foreach (var r in result.ToList())
+            {
+                if (movedPath.Contains(r))
+                    result.Remove(r);
+            }
+        }
+        return result;
     }
+
     /// <summary>
     /// 영웅 혹은 몬스터가 현재 이동가능 범위내에서 목표지점까지의 최단 거리 전달 함수
     /// </summary>
@@ -173,7 +185,27 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
     /// <returns></returns>
     public IEnumerator MoveToken(Token token, Vector2Int targetPos)
     {
-        if(token is HeroView) movedPath.Add(gridPosByToken[token]);    //이동한 경로 저장 (영웅 한정)
+        if (token is HeroView)   //이전 위치를 이동한 경로에 저장 (영웅 한정)
+        {
+            if(!movedPath.Contains(gridPosByToken[token]))
+            {
+                movedPath.Add(gridPosByToken[token]);
+                VisualGridCreator.Instance.ChangeVisualGrid(gridPosByToken[token], 
+                    MoveSystem.Instance.gameObject.GetInstanceID(), 
+                    "Hero_Move", 
+                    "Hero_Moved"
+                    );
+            }
+            if (!movedPath.Contains(targetPos))
+            {
+                movedPath.Add(targetPos);
+                VisualGridCreator.Instance.ChangeVisualGrid(targetPos,
+                    MoveSystem.Instance.gameObject.GetInstanceID(), 
+                    "Hero_Move", 
+                    "Hero_Moved"
+                    );
+            }
+        }
         
         grid.ResetToken(gridPosByToken[token]);
         grid.SetTokenByGridPos(token, targetPos);
