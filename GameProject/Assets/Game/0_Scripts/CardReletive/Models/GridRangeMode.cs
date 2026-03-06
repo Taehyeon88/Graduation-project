@@ -22,7 +22,7 @@ public class AllAroundRM : GridRangeMode
             for (int y = minY; y <= maxY; y++)
             {
                 Vector2Int position = new(x, y);
-                if (TokenSystem.Instance.IsGridEmpty(position))
+                if (TokenSystem.Instance.IsGridEmpty(position, true))
                 {
                     result.Add(position);
                 }
@@ -44,7 +44,7 @@ public class PlusRM : GridRangeMode
             for (int i = 1; i <= distance; i++)
             {
                 Vector2Int position = currentPosition + dir * i;
-                if (TokenSystem.Instance.IsGridEmpty(position))
+                if (TokenSystem.Instance.IsGridEmpty(position, true))
                 {
                     result.Add(position);
                 }
@@ -67,7 +67,7 @@ public class CrossRM : GridRangeMode
             for (int i = 1; i <= distance; i++)
             {
                 Vector2Int position = currentPosition + dir * i;
-                if (TokenSystem.Instance.IsGridEmpty(position))
+                if (TokenSystem.Instance.IsGridEmpty(position, true))
                 {
                     result.Add(position);
                 }
@@ -90,7 +90,7 @@ public class SnowRM : GridRangeMode
             for (int i = 1; i <= distance; i++)
             {
                 Vector2Int position = currentPosition + dir * i;
-                if (TokenSystem.Instance.IsGridEmpty(position))
+                if (TokenSystem.Instance.IsGridEmpty(position, true))
                 {
                     result.Add(position);
                 }

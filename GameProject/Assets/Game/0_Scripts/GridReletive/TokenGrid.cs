@@ -93,6 +93,14 @@ public class TokenGrid : MonoBehaviour
         if (!grid[x, y].IsEmpty()) return false;
         return true;
     }
+    public bool CanSetByGridPosEnemyException(Vector2Int pos)
+    {
+        int x = pos.x; int y = pos.y;
+        if (x < 0 || x >= width || y < 0 || y >= height) return false;
+        if (grid[x, y].token is not EnemyView && !grid[x, y].IsEmpty()) return false;
+        return true;
+    }
+
     public List<Vector2Int> GetCanSetPositions(List<Vector2Int> positions = null)
     {
         if (grid == null) Initialize();

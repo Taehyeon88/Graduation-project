@@ -286,9 +286,10 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
     /// </summary>
     /// <param name="isPosition"></param>
     /// <returns></returns>
-    public bool IsGridEmpty(Vector2Int isPosition)
+    public bool IsGridEmpty(Vector2Int isPosition, bool enemyException = false)
     {
-        return grid.CanSetByGridPos(isPosition);
+        if (enemyException) return grid.CanSetByGridPosEnemyException(isPosition);
+        else return grid.CanSetByGridPos(isPosition);
     }
 
     /// <summary>
