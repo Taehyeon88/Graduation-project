@@ -18,6 +18,8 @@ MonoBehaviour:
   <ManualTargetEffects>k__BackingField: []
   <GridTargetModes>k__BackingField:
   - <Distance>k__BackingField: 1
+    TargetModeVGName: Hero_Attack
+    RangeModeVGName: Hero_WillAttack
     <TargetMode>k__BackingField:
       rid: 5842416812980436994
     <GridRangeMode>k__BackingField:

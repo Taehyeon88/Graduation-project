@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class MoveSystem : Singleton<MoveSystem>
 {
-    private int currentSPD;
-
     private void OnEnable()
     {
         ActionSystem.AttachPerformer<PlayerMoveGA>(PlayerMoveGAPerformer);
@@ -32,14 +30,15 @@ public class MoveSystem : Singleton<MoveSystem>
     //Performer
     private IEnumerator PlayerMoveGAPerformer(PlayerMoveGA playerMoveGA)
     {
-        currentSPD = playerMoveGA.Distance;
+        SPDSystem.Instance.AddSPD(playerMoveGA.Distance);
 
         //현재 SPD가 없어서 이동 불가일 경우, 반환처리
-        if (currentSPD <= 0) yield break;
+        int curSPD = SPDSystem.Instance.RemainSPD();
+        if (curSPD <= 0) yield break;
 
         //비주얼 그리드 설정
         VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "Hero_Move");            //이동 가능 타일 초기화
-        var positions = TokenSystem.Instance.GetCanMovePlace(HeroSystem.Instance.HeroView, currentSPD); //이동 가능 타일 미리 보여주기
+        var positions = TokenSystem.Instance.GetCanMovePlace(HeroSystem.Instance.HeroView, curSPD); //이동 가능 타일 미리 보여주기
         foreach (var pos in positions)
         {
             VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), pos, "Hero_Move");
@@ -57,12 +56,12 @@ public class MoveSystem : Singleton<MoveSystem>
 
                 int distance = TokenSystem.Instance.GetDistance(heroView, isoPosition);
 
-                if (currentSPD >= distance)
+                if (SPDSystem.Instance.RemainSPD() >= distance)
                 {
                     var path = TokenSystem.Instance.GetShortestPath(heroView, isoPosition);
                     if (path != null)
                     {
-                        currentSPD -= distance;
+                        SPDSystem.Instance.SpendSPD(distance);
 
                         PerformMoveGA performMoveGA = new(heroView, path);
                         ActionSystem.Instance.AddReaction(performMoveGA);
@@ -113,9 +112,10 @@ public class MoveSystem : Singleton<MoveSystem>
 
     private void PlayerMovePostReaction(PlayerMoveGA _playerMoveGA)
     {
-        if(currentSPD >= 1)  //새로운 비주얼 그리드 그려서 보여주기
+        int curSPD = SPDSystem.Instance.RemainSPD();
+        if (curSPD >= 1)  //새로운 비주얼 그리드 그려서 보여주기
         {
-            PlayerMoveGA playerMoveGA = new(null, currentSPD);
+            PlayerMoveGA playerMoveGA = new(null, curSPD);
             ActionSystem.Instance.AddReaction(playerMoveGA);
         }
         else

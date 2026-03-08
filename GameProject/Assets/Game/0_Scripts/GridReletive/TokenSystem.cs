@@ -21,9 +21,11 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
     private List<Vector2Int> heroSetupPositions = new();
     private List<Vector2Int> movedPath = new();
 
+    /// <summary>
+    /// 전투 시작시, 모든 몬스터들 비어있는 그리드에 랜덤 배치 함수
     /// </summary>
     /// <param name="tokenDatas"></param>
-    /// 전투 시작시, 모든 몬스터들 비어있는 그리드에 랜덤 배치 함수
+    /// <param name="canSetupPositions"></param>
     public void StartSettingEnemys(List<TokenData> tokenDatas, List<Vector2Int> canSetupPositions)
     {
         canSetupPositions = grid.GetCanSetPositions(canSetupPositions);
@@ -62,6 +64,7 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
         //}
         //PlaceToken(snappedPos, enemyData, TokenType.Enemy);
     }
+
     /// <summary>
     /// 특정 몬스터를 그리드에서 제거하는 함수
     /// </summary>
@@ -183,9 +186,9 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
     /// <param name="token"></param>
     /// <param name="path"></param>
     /// <returns></returns>
-    public IEnumerator MoveToken(Token token, Vector2Int targetPos)
+    public IEnumerator MoveToken(Token token, Vector2Int targetPos, bool useAnimation = true, bool useMovedPath = true)
     {
-        if (token is HeroView)   //이전 위치를 이동한 경로에 저장 (영웅 한정)
+        if (token is HeroView && useMovedPath)   //이전 위치를 이동한 경로에 저장 (영웅 한정)
         {
             if(!movedPath.Contains(gridPosByToken[token]))
             {
@@ -211,13 +214,16 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
         grid.SetTokenByGridPos(token, targetPos);
         gridPosByToken[token] = targetPos;
 
-        Tween tween = DOTween.To(() => 
-                token.TokenTransform.positionXY, 
-                v => token.TokenTransform.positionXY = v, 
-                targetPos, 
-                1f
-            );
-        yield return tween.WaitForCompletion();
+        if (useAnimation)
+        {
+            Tween tween = DOTween.To(() =>
+                    token.TokenTransform.positionXY,
+                    v => token.TokenTransform.positionXY = v,
+                    targetPos,
+                    1f
+                    );
+            yield return tween.WaitForCompletion();
+        }
     }
     /// <summary>
     /// 영웅만 이동 턴 종료후, 필수!! 실행 초기화 함수
@@ -252,6 +258,19 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
         return null;
     }
 
+    /// <summary>
+    /// 해당 그리드 위치가 타일 범위 안인지 확인
+    /// </summary>
+    /// <param name="pos"></param>
+    /// <returns></returns>
+    public bool IsBound(Vector2Int pos) => grid.IsBound(pos.x, pos.y);
+
+    /// <summary>
+    /// 해당 Token의 위치에서 목표 지점까지의 거리 계산 함수
+    /// </summary>
+    /// <param name="token"></param>
+    /// <param name="endPos"></param>
+    /// <returns></returns>
     public int GetDistance(Token token, Vector2Int endPos)
     {
         Vector2Int current = gridPosByToken[token];

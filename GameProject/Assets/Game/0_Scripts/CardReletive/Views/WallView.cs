@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TokenShapeUnit : MonoBehaviour
+public class WallView : CombatantView
 {
 
 }

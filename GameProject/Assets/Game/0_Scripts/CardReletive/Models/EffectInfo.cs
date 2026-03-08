@@ -24,3 +24,5 @@ public struct EffectInfo
         this.gridTargetMode = gridTagetMode;
     }
 }
+
+

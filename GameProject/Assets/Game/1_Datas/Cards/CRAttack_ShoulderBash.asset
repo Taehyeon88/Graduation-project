@@ -10,32 +10,32 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 29bd87d4b821bdd419a4bafb4b3ce7b9, type: 3}
-  m_Name: CRAttack_Sting
+  m_Name: CRAttack_ShoulderBash
   m_EditorClassIdentifier: 
-  <Description>k__BackingField: This is sting.
+  <Description>k__BackingField: This is ShoulderBash
   <Mana>k__BackingField: 1
   <Image>k__BackingField: {fileID: 0}
   <ManualTargetEffects>k__BackingField: []
   <GridTargetModes>k__BackingField:
-  - <Distance>k__BackingField: 2
-    TargetModeVGName: Hero_Attack
-    RangeModeVGName: Hero_WillAttack
+  - <Distance>k__BackingField: 1
     <TargetMode>k__BackingField:
-      rid: 5842416765715349505
+      rid: 5842416865367293952
     <GridRangeMode>k__BackingField:
-      rid: 5842416765715349504
+      rid: 5842416865367293953
     <Effects>k__BackingField:
-    - rid: 5842416777571074048
+    - rid: 5842416865367293954
   references:
     version: 2
     RefIds:
-    - rid: 5842416765715349504
-      type: {class: PlusRM, ns: , asm: Assembly-CSharp}
+    - rid: 5842416865367293952
+      type: {class: SingleTM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 5842416765715349505
-      type: {class: LineTM, ns: , asm: Assembly-CSharp}
+    - rid: 5842416865367293953
+      type: {class: AllAroundRM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 5842416777571074048
-      type: {class: AttackEnemyEffect, ns: , asm: Assembly-CSharp}
+    - rid: 5842416865367293954
+      type: {class: ShoulderBashEffect, ns: , asm: Assembly-CSharp}
       data:
-        amount: 8
+        distance: 1
+        attackDistance: 1
+        damage: 6

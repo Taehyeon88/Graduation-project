@@ -17,19 +17,23 @@ MonoBehaviour:
   <Image>k__BackingField: {fileID: 0}
   <ManualTargetEffects>k__BackingField: []
   <GridTargetModes>k__BackingField:
-  - <Distance>k__BackingField: 0
+  - <Distance>k__BackingField: 2
     <TargetMode>k__BackingField:
-      rid: -2
+      rid: 5842416821157494784
     <GridRangeMode>k__BackingField:
-      rid: -2
+      rid: 5842416821157494785
     <Effects>k__BackingField:
     - rid: 5842416777571074051
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
     - rid: 5842416777571074051
       type: {class: PlayerMoveEffect, ns: , asm: Assembly-CSharp}
       data:
         distance: 2
+    - rid: 5842416821157494784
+      type: {class: SingleTM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 5842416821157494785
+      type: {class: AllAroundRM, ns: , asm: Assembly-CSharp}
+      data: 
