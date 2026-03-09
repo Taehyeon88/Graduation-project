@@ -3,14 +3,11 @@ using UnityEngine;
 
 public class ManaSystem : Singleton<ManaSystem>
 {
-    [SerializeField] private ManaUI manaUI;
-    private const int MAX_MANA = 3;
-    private int currentMana = MAX_MANA;
+    public int MaxMana { get; private set; } = 3;
+    public int CurrentMana { get; private set; }
 
     private void OnEnable()
     {
-        manaUI.UpdateManaText(currentMana);
-
         ActionSystem.AttachPerformer<SpendManaGA>(SpendManaPerformer);
         ActionSystem.AttachPerformer<RefillManaGA>(RefillManaPerformer);
         ActionSystem.SubscribeReaction<EnemysTurnGA>(EnemysTurnPostReaction, ReactionTiming.POST);
@@ -23,18 +20,16 @@ public class ManaSystem : Singleton<ManaSystem>
     }
     public bool HasEnoughMana(int mana)
     {
-        return currentMana >= mana;
+        return CurrentMana >= mana;
     }
     private IEnumerator SpendManaPerformer(SpendManaGA spendManaGA)
     {
-        currentMana -= spendManaGA.Amount;
-        manaUI.UpdateManaText(currentMana);
+        CurrentMana -= spendManaGA.Amount;
         yield return null;
     }
     private IEnumerator RefillManaPerformer(RefillManaGA refillManaGA)
     {
-        currentMana = MAX_MANA;
-        manaUI.UpdateManaText(currentMana);
+        CurrentMana = MaxMana;
         yield return null;
     }
 

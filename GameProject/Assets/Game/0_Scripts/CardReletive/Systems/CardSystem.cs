@@ -15,6 +15,8 @@ public class CardSystem : Singleton<CardSystem>
     private readonly List<Card> discardPile = new();
     private readonly List<Card> hand = new();
 
+    public int drawPileCA => drawPile.Count;    public int discardPileCA => discardPile.Count;
+
     private void OnEnable()
     {
         ActionSystem.AttachPerformer<DrawCardsGA>(DrawCardsPerformer);
