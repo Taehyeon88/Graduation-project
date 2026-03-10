@@ -12,11 +12,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29bd87d4b821bdd419a4bafb4b3ce7b9, type: 3}
   m_Name: CRAttack_SpenningSlash
   m_EditorClassIdentifier: 
-  <Description>k__BackingField: 
-  <Mana>k__BackingField: 0
+  <Description>k__BackingField: This is SpenningSlash
+  <Mana>k__BackingField: 2
   <Image>k__BackingField: {fileID: 0}
   <ManualTargetEffects>k__BackingField: []
-  <GridTargetModes>k__BackingField: []
+  <GridTargetModes>k__BackingField:
+  - <Distance>k__BackingField: 1
+    <TargetMode>k__BackingField:
+      rid: 5842416888821579776
+    <GridRangeMode>k__BackingField:
+      rid: 5842416888821579777
+    <Effects>k__BackingField:
+    - rid: 5842416888821579778
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 5842416888821579776
+      type: {class: GlobalTM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 5842416888821579777
+      type: {class: AllAroundRM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 5842416888821579778
+      type: {class: AttackEnemyEffect, ns: , asm: Assembly-CSharp}
+      data:
+        amount: 6

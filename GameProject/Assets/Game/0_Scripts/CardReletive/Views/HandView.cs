@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class HandView : MonoBehaviour
 {
@@ -26,6 +27,31 @@ public class HandView : MonoBehaviour
         StartCoroutine(UpdateCardPositions(0.15f));
         return cardView;
     }
+
+    public void SetCardsLockView(bool active)
+    {
+        if (active)
+        {
+            foreach (var card in cards)
+            {
+                Image[] images = card.GetComponentsInChildren<Image>(); //부모 오브젝트의 image 제외
+                images[0] = null;
+                foreach (var image in images)
+                    if(image != null) image.color = new Color32(100, 100, 100, 255);
+            }
+        }
+        else
+        {
+            foreach (var card in cards)
+            {
+                Image[] images = card.GetComponentsInChildren<Image>(); //부모 오브젝트의 image 제외
+                images[0] = null;
+                foreach (var image in images)
+                    if (image != null) image.color = Color.white;
+            }
+        }
+    }
+
     private CardView GetCardView(Card card)
     {
         return cards.Find(cardView => cardView.card == card);

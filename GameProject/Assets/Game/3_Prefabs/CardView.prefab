@@ -220,7 +220,7 @@ GameObject:
   - component: {fileID: 7349490192476277783}
   - component: {fileID: 6894853696046041272}
   - component: {fileID: 1586981573354784889}
-  - component: {fileID: 1765379622261625256}
+  - component: {fileID: 7240715200633095228}
   m_Layer: 5
   m_Name: CardView
   m_TagString: Untagged
@@ -273,10 +273,7 @@ MonoBehaviour:
   mana: {fileID: 7706423595091622276}
   image: {fileID: 8663969265928892252}
   wrapper: {fileID: 7637256687717520968}
-  dropLayer:
-    serializedVersion: 2
-    m_Bits: 64
---- !u!114 &1765379622261625256
+--- !u!114 &7240715200633095228
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

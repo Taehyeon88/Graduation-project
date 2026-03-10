@@ -39,10 +39,17 @@ public class CardSystem : Singleton<CardSystem>
             drawPile.Add(card);
         }
     }
+    public void EndLockState()
+    {
+        handView.SetCardsLockView(false);
+        Interactions.Instance.lockInteraction = false;
+    }
 
     //Performers
     private IEnumerator DrawCardsPerformer(DrawCardsGA drawCardsGA)
     {
+        Interactions.Instance.lockInteraction = true;  //카드 드로우시, 카드 인터렉션 잠금
+
         int actualAmount = Mathf.Min(drawCardsGA.Amount, drawPile.Count);
         int notDrawnAmount = drawCardsGA.Amount - actualAmount;
         for (int i = 0; i < actualAmount; i++)
@@ -55,6 +62,9 @@ public class CardSystem : Singleton<CardSystem>
             for (int i = 0; i < notDrawnAmount; i++)
                 yield return DrawCard();
         }
+
+        if (drawCardsGA.IsFirstDraw) handView.SetCardsLockView(true); //첫턴 카드 드로우시, 바로 카드사용 불가 처리
+        else Interactions.Instance.lockInteraction = false;           //드로우 종료후, 잠금 해제
     }
     private IEnumerator DiscardAllCardsPerformer(DiscardAllCardsGA discardAllCardsGA)
     {

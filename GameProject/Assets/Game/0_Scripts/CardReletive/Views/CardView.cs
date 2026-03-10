@@ -12,7 +12,6 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
     [SerializeField] private TMP_Text mana;
     [SerializeField] private Image image;
     [SerializeField] private GameObject wrapper;
-    [SerializeField] private LayerMask dropLayer;
 
     private RectTransform rectTransform;
     private Vector3 dragStartPosition;
@@ -46,6 +45,7 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (!Interactions.Instance.PlayerCanInteract()) return;
+
         if (card.ManualTargetEffects != null && card.ManualTargetEffects.Count > 0)
         {
             ManualTargetSystem.Instance.StartTargeting(transform.position);

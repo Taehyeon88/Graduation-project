@@ -22,25 +22,26 @@ public class HeroSystem : Singleton<HeroSystem>
     //Performers
     private IEnumerator HeroFirstMoveGAPerformer(HeroFirstMoveGA heroFristMoveGA)
     {
+        //플레이어 카드 드로우
+        DrawCardsGA drawCardGA = new(5, true);
+        ActionSystem.Instance.AddReaction(drawCardGA);
+
         //플레이어 이동 가능 여부 판단
         var canMovePlaces = TokenSystem.Instance.GetCanMovePlace(HeroView, heroFristMoveGA.SPD);
         if (canMovePlaces == null || canMovePlaces.Count == 0)
         {
-            //false -> 플레이어 피격 및 액션 모드 전환
+            //false -> 플레이어 피격 및 카드사용 가능
             int amount = Mathf.CeilToInt(HeroView.MaxHealth * 0.05f);
             DealDamageGA dealDamageGA = new(amount, new() { HeroView }, HeroView);
-            ActionSystem.Instance.AddReaction(dealDamageGA);
+            ActionSystem.Instance.AddReaction(dealDamageGA, FinishedFirstMoveRelated);
         }
         else
         {
-            //true -> 플레이어 이동 모드 -> 이동후, 액션모드전환
+            //true -> 플레이어 이동 모드 -> 이동 및 카드사용 가능
             SPDSystem.Instance.AddSPD(heroFristMoveGA.SPD);
             PlayerMoveGA playerMoveGA = new(null, heroFristMoveGA.SPD, true);
-            ActionSystem.Instance.AddReaction(playerMoveGA);
+            ActionSystem.Instance.AddReaction(playerMoveGA, FinishedFirstMoveRelated);
         }
-
-        DrawCardsGA drawCardGA = new(5);
-        ActionSystem.Instance.AddReaction(drawCardGA);
 
         yield return null;
     }
@@ -68,4 +69,7 @@ public class HeroSystem : Singleton<HeroSystem>
         HeroFirstMoveGA heroFristMove = new(1);
         ActionSystem.Instance.AddReaction(heroFristMove);
     }
+
+    //Finisheds
+    private void FinishedFirstMoveRelated() => CardSystem.Instance.EndLockState();
 }

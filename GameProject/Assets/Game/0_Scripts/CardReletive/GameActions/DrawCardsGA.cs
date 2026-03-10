@@ -5,8 +5,10 @@ using UnityEngine;
 public class DrawCardsGA : GameAction
 {
     public int Amount { get; set; }
-    public DrawCardsGA(int amount)
+    public bool IsFirstDraw { get; set; }
+    public DrawCardsGA(int amount, bool isFirstDraw = false)
     {
         Amount = amount;
+        IsFirstDraw = isFirstDraw;
     }
 }
