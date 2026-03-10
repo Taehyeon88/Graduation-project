@@ -17,11 +17,9 @@ MonoBehaviour:
   <Image>k__BackingField: {fileID: 0}
   <ManualTargetEffects>k__BackingField: []
   <GridTargetModes>k__BackingField:
-  - <Distance>k__BackingField: 2
-    TargetModeVGName: Hero_Attack
-    RangeModeVGName: Hero_WillAttack
+  - <Distance>k__BackingField: 1
     <TargetMode>k__BackingField:
-      rid: 5842416735594479624
+      rid: 5842416894786404352
     <GridRangeMode>k__BackingField:
       rid: 4818494853736562691
     <Effects>k__BackingField:
@@ -32,10 +30,10 @@ MonoBehaviour:
     - rid: 4818494853736562691
       type: {class: AllAroundRM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 5842416735594479624
-      type: {class: LineTM, ns: , asm: Assembly-CSharp}
-      data: 
     - rid: 5842416777571074049
       type: {class: AttackEnemyEffect, ns: , asm: Assembly-CSharp}
       data:
         amount: 6
+    - rid: 5842416894786404352
+      type: {class: SingleTM, ns: , asm: Assembly-CSharp}
+      data: 
