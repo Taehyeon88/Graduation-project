@@ -54,34 +54,34 @@ public class PlayerCardEffectSystem : MonoBehaviour
 
                     currentTargets = targets;
                 }
-            }
 
-            if (InteractionSystem.GridSelected)  //그리드 선택 인터렉션 감지
-            {
-                Debug.Log("그리드 선택됨");
-                Debug.Log("선택 대상: " + string.Join(",", currentTargets));
-
-                List<CombatantView> combatants = new();
-                foreach (var target in currentTargets)
+                if (InteractionSystem.GridSelected)  //그리드 선택 인터렉션 감지
                 {
-                    Token token = TokenSystem.Instance.GetTokenByPosition(target);
-                    if (token != null)
+                    Debug.Log("그리드 선택됨");
+                    Debug.Log("선택 대상: " + string.Join(",", currentTargets));
+
+                    List<CombatantView> combatants = new();
+                    foreach (var target in currentTargets)
                     {
-                        combatants.Add(token as CombatantView);
+                        Token token = TokenSystem.Instance.GetTokenByPosition(target);
+                        if (token != null)
+                        {
+                            combatants.Add(token as CombatantView);
+                        }
                     }
-                }
-                if (combatants.Count > 0)
-                {
-                    DealDamageGA dealDamageGA = new(attackEnemyGA.Amount, combatants, HeroSystem.Instance.HeroView);
-                    ActionSystem.Instance.AddReaction(dealDamageGA);
-                }
-                else
-                {
-                    Debug.Log("해당 범위 안에 대상이 없음");
-                }
+                    if (combatants.Count > 0)
+                    {
+                        DealDamageGA dealDamageGA = new(attackEnemyGA.Amount, combatants, HeroSystem.Instance.HeroView);
+                        ActionSystem.Instance.AddReaction(dealDamageGA);
+                    }
+                    else
+                    {
+                        Debug.Log("해당 범위 안에 대상이 없음");
+                    }
 
-                VisualGridCreator.Instance.RemoveVisualGridById(gameObject.GetInstanceID());
-                break;
+                    VisualGridCreator.Instance.RemoveVisualGridById(gameObject.GetInstanceID());
+                    break;
+                }
             }
 
             yield return null;
@@ -101,7 +101,6 @@ public class PlayerCardEffectSystem : MonoBehaviour
         Vector2Int currentPos = TokenSystem.Instance.GetTokenPosition(HeroSystem.Instance.HeroView);
         var range = targetMode.GridRangeMode.GetGridRanges(currentPos, targetMode.Distance, false);
         List<Vector2Int> attackRange = new();
-
         List<Vector2Int> currentTargets = new();
 
         //비주얼 공격 예상 범위 그리드 업데이트
@@ -120,51 +119,54 @@ public class PlayerCardEffectSystem : MonoBehaviour
 
             var targets = targetMode.TargetMode.GetTargets(range, gridPosition, currentPos, targetMode.Distance);
 
-            if (InteractionSystem.GridSelected)  //그리드 선택 인터렉션 감지
+            if (targets != null)
             {
-                Vector3 mousePosition = TokenSystem.Instance.IsoWorld.MouseIsoTilePosition(1f);
-                Vector2Int isoPosition = new((int)mousePosition.x, (int)mousePosition.y);
-                CombatantView heroView = HeroSystem.Instance.HeroView;
-
-                int distance = TokenSystem.Instance.GetDistance(heroView, isoPosition);
-
-                if (curSPD >= distance)
+                if (InteractionSystem.GridSelected)  //그리드 선택 인터렉션 감지
                 {
-                    var path = TokenSystem.Instance.GetShortestPath(heroView, isoPosition);
-                    if (path != null)
+                    Vector3 mousePosition = TokenSystem.Instance.IsoWorld.MouseIsoTilePosition(1f);
+                    Vector2Int isoPosition = new((int)mousePosition.x, (int)mousePosition.y);
+                    CombatantView heroView = HeroSystem.Instance.HeroView;
+
+                    int distance = TokenSystem.Instance.GetDistance(heroView, isoPosition);
+
+                    if (curSPD >= distance)
                     {
-                        SPDSystem.Instance.SpendSPD(distance);
-
-                        PerformMoveGA performMoveGA = new(heroView, path);
-                        ActionSystem.Instance.AddReaction(performMoveGA);
-
-                        Vector2Int attackPos = path[0] + (path[0] - currentPos);
-                        CombatantView target = TokenSystem.Instance.GetTokenByPosition(attackPos) as CombatantView;
-
-                        if (target != null)
+                        var path = TokenSystem.Instance.GetShortestPath(heroView, isoPosition);
+                        if (path != null)
                         {
-                            //이동 이후, 공격 체인
-                            DealDamageGA dealDamageGA = new(shoulderBashGA.Damage, new() { target }, heroView);
-                            performMoveGA.PostReactions.Add((dealDamageGA, null));
+                            SPDSystem.Instance.SpendSPD(distance);
 
-                            //공격 이후, 대상 넉백 체인
-                            KnockBackGA knockBackGA = new(heroView, shoulderBashGA.Distance, attackPos, (path[0] - currentPos));
-                            performMoveGA.PostReactions.Add((knockBackGA, null));
-                        }
-                        else
-                        {
-                            Debug.Log("대상이 존재하지 않음");
+                            PerformMoveGA performMoveGA = new(heroView, path);
+                            ActionSystem.Instance.AddReaction(performMoveGA);
+
+                            Vector2Int attackPos = path[0] + (path[0] - currentPos);
+                            CombatantView target = TokenSystem.Instance.GetTokenByPosition(attackPos) as CombatantView;
+
+                            if (target != null)
+                            {
+                                //이동 이후, 공격 체인
+                                DealDamageGA dealDamageGA = new(shoulderBashGA.Damage, new() { target }, heroView);
+                                performMoveGA.PostReactions.Add((dealDamageGA, null));
+
+                                //공격 이후, 대상 넉백 체인
+                                KnockBackGA knockBackGA = new(heroView, shoulderBashGA.Distance, attackPos, (path[0] - currentPos));
+                                performMoveGA.PostReactions.Add((knockBackGA, null));
+                            }
+                            else
+                            {
+                                Debug.Log("대상이 존재하지 않음");
+                            }
                         }
                     }
-                }
-                else
-                {
-                    Debug.Log("거리의 밖 구역에서 사용할 수 없습니다.");
-                }
+                    else
+                    {
+                        Debug.Log("거리의 밖 구역에서 사용할 수 없습니다.");
+                    }
 
-                Debug.Log("초기화.");
-                VisualGridCreator.Instance.RemoveVisualGridById(gameObject.GetInstanceID());
-                yield break;
+                    Debug.Log("초기화.");
+                    VisualGridCreator.Instance.RemoveVisualGridById(gameObject.GetInstanceID());
+                    yield break;
+                }
             }
 
             yield return null;
