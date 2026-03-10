@@ -4,7 +4,6 @@ using System.Linq;
 using DG.Tweening;
 using IsoTools;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터, 건물 추가 및 삭제 (게임 중) | 토큰 이동, 등
 {
@@ -123,14 +122,14 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
     {
         preview.TokenTransform.position = isoPosition;
 
-        Vector2Int girdPosition = new Vector2Int((int)isoPosition.x, (int)isoPosition.y);
-        bool canSet = grid.CanSetByGridPos(girdPosition);
+        Vector2Int gridPosition = new Vector2Int((int)isoPosition.x, (int)isoPosition.y);
+        bool canSet = grid.CanSetByGridPos(gridPosition) && heroSetupPositions.Contains(gridPosition);
         if (canSet)
         {
             preview.ChangeState(TokenPreview.TokenPreViewState.Positive);
             if (isSelect)
             {
-                PlaceToken(girdPosition, preview.TokenData, TokenType.Hero);
+                PlaceToken(gridPosition, preview.TokenData, TokenType.Hero);
                 VisualGridCreator.Instance.RemoveVisualGridById(gameObject.GetInstanceID());
                 Destroy(preview.gameObject);
                 tokenData = null;
