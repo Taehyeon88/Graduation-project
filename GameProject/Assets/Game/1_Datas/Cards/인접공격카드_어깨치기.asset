@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29bd87d4b821bdd419a4bafb4b3ce7b9, type: 3}
+  m_Name: "\uC778\uC811\uACF5\uACA9\uCE74\uB4DC_\uC5B4\uAE68\uCE58\uAE30"
+  m_EditorClassIdentifier: 
+  <Description>k__BackingField: "\uC774\uAC83\uC740 \uC5B4\uAE68\uCE58\uAE30\uC785\uB2C8\uB2E4."
+  <Mana>k__BackingField: 1
+  <Image>k__BackingField: {fileID: 0}
+  <ManualTargetEffects>k__BackingField: []
+  <GridTargetModes>k__BackingField:
+  - <Distance>k__BackingField: 1
+    <TargetMode>k__BackingField:
+      rid: 5842416865367293952
+    <GridRangeMode>k__BackingField:
+      rid: 5842416865367293953
+    <Effects>k__BackingField:
+    - rid: 5842416865367293954
+  references:
+    version: 2
+    RefIds:
+    - rid: 5842416865367293952
+      type: {class: SingleTM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 5842416865367293953
+      type: {class: AllAroundRM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 5842416865367293954
+      type: {class: ShoulderBashEffect, ns: , asm: Assembly-CSharp}
+      data:
+        distance: 1
+        attackDistance: 1
+        damage: 6

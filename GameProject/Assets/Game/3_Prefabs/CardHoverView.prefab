@@ -67,8 +67,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: This is normal Card Prefab.
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: fd065c4496c4cf14990ed8a5b0f06b9f, type: 2}
+  m_sharedMaterial: {fileID: -6967317193008042672, guid: fd065c4496c4cf14990ed8a5b0f06b9f,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -273,9 +274,6 @@ MonoBehaviour:
   mana: {fileID: 7706423595091622276}
   image: {fileID: 8663969265928892252}
   wrapper: {fileID: 7637256687717520968}
-  dropLayer:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!223 &4346372558229612081
 Canvas:
   m_ObjectHideFlags: 0
@@ -366,8 +364,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: 2
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: fd065c4496c4cf14990ed8a5b0f06b9f, type: 2}
+  m_sharedMaterial: {fileID: -6967317193008042672, guid: fd065c4496c4cf14990ed8a5b0f06b9f,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -615,8 +614,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: Title
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: fd065c4496c4cf14990ed8a5b0f06b9f, type: 2}
+  m_sharedMaterial: {fileID: -6967317193008042672, guid: fd065c4496c4cf14990ed8a5b0f06b9f,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
