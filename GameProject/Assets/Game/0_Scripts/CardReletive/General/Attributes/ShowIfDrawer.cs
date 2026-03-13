@@ -39,13 +39,23 @@ public class ShowIfDrawer : PropertyDrawer
     {
         object target = property.serializedObject.targetObject;
 
-        FieldInfo field = target.GetType().GetField(showIf.conditionFieldName,
-            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        foreach (var conditionFieldName in showIf.conditionFieldNames)
+        {
+            FieldInfo field = target.GetType().GetField(conditionFieldName,
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
-        if (field == null)
-            return false;
+            if (field == null)
+                return false;
 
-        return (bool)field.GetValue(target);
+            if (field.FieldType != typeof(bool))
+                return false;
+
+            bool value = (bool)field.GetValue(target);
+            if (!value)
+                return false;
+        }
+
+        return true;
     }
 }
 #endif

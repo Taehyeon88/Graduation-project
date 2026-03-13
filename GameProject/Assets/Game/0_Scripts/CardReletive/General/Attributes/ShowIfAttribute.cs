@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class ShowIfAttribute : PropertyAttribute
 {
-    public string conditionFieldName;
-    public ShowIfAttribute(string conditionFieldName)
+    public string[] conditionFieldNames;
+    public ShowIfAttribute(params string[] conditionFieldNames)
     {
-        this.conditionFieldName = conditionFieldName;
+        this.conditionFieldNames = conditionFieldNames;
     }
 }
