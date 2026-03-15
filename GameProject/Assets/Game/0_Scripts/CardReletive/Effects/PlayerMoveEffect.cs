@@ -7,7 +7,7 @@ public class PlayerMoveEffect : Effect
     [SerializeField]private int distance;
     public override GameAction GetGameAction(EffectInfo effectInfo)
     {
-        PlayerMoveGA playerMoveGA = new(effectInfo.gridTargetMode, distance);
+        PlayerMoveGA playerMoveGA = new(effectInfo.gridTargetMode, effectInfo.targetPoses);
         return playerMoveGA;
     }
 }

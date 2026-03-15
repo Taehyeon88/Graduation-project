@@ -46,53 +46,34 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
     {
         if (!Interactions.Instance.PlayerCanInteract()) return;
 
-        if (card.ManualTargetEffects != null && card.ManualTargetEffects.Count > 0)
-        {
-            ManualTargetSystem.Instance.StartTargeting(transform.position);
-        }
-        else
-        {
-            Interactions.Instance.PlayerIsDraging = true;
-            wrapper.SetActive(true);
-            CardViewHoverSystem.Instance.Hide();
-            dragStartPosition = transform.position;
-            dragStartRotation = transform.rotation;
-            transform.rotation = Quaternion.Euler(0, 0, 0);
-            transform.position = eventData.position;
-        }
+        Interactions.Instance.PlayerIsDraging = true;
+        wrapper.SetActive(true);
+        CardViewHoverSystem.Instance.Hide();
+        dragStartPosition = transform.position;
+        dragStartRotation = transform.rotation;
+        transform.rotation = Quaternion.Euler(0, 0, 0);
+        transform.position = eventData.position;
     }
 
     public void OnDrag(PointerEventData eventData)
     {
         if (!Interactions.Instance.PlayerCanInteract()) return;
-        if (card.ManualTargetEffects != null && card.ManualTargetEffects.Count > 0) return;
         transform.position = eventData.position;
     }
     public void OnEndDrag(PointerEventData eventData)
     {
         if (!Interactions.Instance.PlayerCanInteract()) return;
-        if (card.ManualTargetEffects != null && card.ManualTargetEffects.Count > 0)
+
+        if (ManaSystem.Instance.HasEnoughMana(card.Mana) && rectTransform.anchoredPosition.y > -200f) //카드가 y좌표 -200를 넘었음 = DropArea
         {
-            EnemyView target = ManualTargetSystem.Instance.EndTargeting(eventData.position);
-            if (target != null && ManaSystem.Instance.HasEnoughMana(card.Mana))
-            {
-                PlayCardGA playCardGA = new(card, target);
-                ActionSystem.Instance.Perform(playCardGA);
-            }
+            PlayCardGA playCardGA = new(card);
+            ActionSystem.Instance.Perform(playCardGA);
         }
         else
         {
-            if (ManaSystem.Instance.HasEnoughMana(card.Mana) && rectTransform.anchoredPosition.y > -200f) //카드가 y좌표 -200를 넘었음 = DropArea
-            {
-                PlayCardGA playCardGA = new(card);
-                ActionSystem.Instance.Perform(playCardGA);
-            }
-            else
-            {
-                transform.position = dragStartPosition;
-                transform.rotation = dragStartRotation;
-            }
-            Interactions.Instance.PlayerIsDraging = false;
+            transform.position = dragStartPosition;
+            transform.rotation = dragStartRotation;
         }
+        Interactions.Instance.PlayerIsDraging = false;
     }
 }

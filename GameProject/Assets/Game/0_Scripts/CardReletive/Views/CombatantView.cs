@@ -12,6 +12,7 @@ public class CombatantView : Token
 
     [SerializeField] private StatusEffectsUI statusEffectsUI;
     private Dictionary<StatusEffectType, int> statusEffectUIs = new();
+    private StatusEffectInfo effectInfo = new();
 
     public int MaxHealth { get; private set; }
     public int CurrentHealth { get; private set; }
@@ -55,7 +56,7 @@ public class CombatantView : Token
         transform.DOShakePosition(0.2f, 0.5f);
         UpdateHealthText();
     }
-    public void AddStatusEffect(StatusEffectType type, int stackCount)
+    public void AddStatusEffect(StatusEffectType type, int stackCount, float[] infoes = null)
     {
         if (statusEffectUIs.ContainsKey(type))
         {
@@ -64,6 +65,7 @@ public class CombatantView : Token
         else
         {
             statusEffectUIs.Add(type, stackCount);
+            effectInfo.SetStatusEffectInfo(infoes, type);    //해당 StatusEffectInfo 저장
         }
         statusEffectsUI.UpdateStatusEffect(type, GetStatusEffectStacks(type));
     }
@@ -83,5 +85,11 @@ public class CombatantView : Token
     {
         if(statusEffectUIs.ContainsKey(type)) return statusEffectUIs[type];
         else return 0;
+    }
+
+    public StatusEffectInfo GetStatusEffectInfo(StatusEffectType type)
+    {
+        if (statusEffectUIs.ContainsKey(type)) return effectInfo;
+        else return default;
     }
 }

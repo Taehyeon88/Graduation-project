@@ -15,25 +15,28 @@ MonoBehaviour:
   <Description>k__BackingField: "\uC774\uAC83\uC740 \uD68C\uC804\uBCA0\uAE30\uC785\uB2C8\uB2E4."
   <Mana>k__BackingField: 2
   <Image>k__BackingField: {fileID: 0}
-  <ManualTargetEffects>k__BackingField: []
+  <SelfEffects>k__BackingField: []
   <GridTargetModes>k__BackingField:
   - <Distance>k__BackingField: 1
     <TargetMode>k__BackingField:
       rid: 5842416888821579776
     <GridRangeMode>k__BackingField:
       rid: 5842416888821579777
-    <Effects>k__BackingField:
-    - rid: 5842416888821579778
+    UseVisualGrid: 1
+    UseSelectVG: 0
+    WillSelectVGName: 
+    SelectVGName: 
+    <Effect>k__BackingField:
+      rid: -2
+    <AddedStatusEffects>k__BackingField: []
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 5842416888821579776
       type: {class: GlobalTM, ns: , asm: Assembly-CSharp}
       data: 
     - rid: 5842416888821579777
       type: {class: AllAroundRM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 5842416888821579778
-      type: {class: AttackEnemyEffect, ns: , asm: Assembly-CSharp}
-      data:
-        amount: 6

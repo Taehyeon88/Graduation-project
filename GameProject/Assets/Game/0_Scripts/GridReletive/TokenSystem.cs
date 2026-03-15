@@ -177,7 +177,7 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
     ///현재 턴의 영웅 혹은 몬스터가 현재 턴에 이동한 모든 그리드들 받기
     /// </summary>
     /// <returns></returns>
-    public List<Vector2Int> GetMovedPath() => movedPath;
+    public List<Vector2Int> GetMovedPath() => new(movedPath);
 
     /// <summary>
     /// 토큰(영웅, 적, 건물) 이동 함수

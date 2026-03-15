@@ -15,25 +15,30 @@ MonoBehaviour:
   <Description>k__BackingField: "\uC774\uAC83\uC740 \uAC77\uAE30\uC785\uB2C8\uB2E4."
   <Mana>k__BackingField: 1
   <Image>k__BackingField: {fileID: 0}
-  <ManualTargetEffects>k__BackingField: []
+  <SelfEffects>k__BackingField: []
   <GridTargetModes>k__BackingField:
   - <Distance>k__BackingField: 2
     <TargetMode>k__BackingField:
       rid: 5842416821157494784
     <GridRangeMode>k__BackingField:
       rid: 5842416821157494785
-    <Effects>k__BackingField:
-    - rid: 5842416777571074051
+    UseVisualGrid: 1
+    UseSelectVG: 0
+    WillSelectVGName: Hero_Move
+    SelectVGName: 
+    <Effect>k__BackingField:
+      rid: 5842416982960635907
+    <AddedStatusEffects>k__BackingField: []
   references:
     version: 2
     RefIds:
-    - rid: 5842416777571074051
-      type: {class: PlayerMoveEffect, ns: , asm: Assembly-CSharp}
-      data:
-        distance: 2
     - rid: 5842416821157494784
       type: {class: SingleTM, ns: , asm: Assembly-CSharp}
       data: 
     - rid: 5842416821157494785
       type: {class: AllAroundRM, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 5842416982960635907
+      type: {class: PlayerMoveEffect, ns: , asm: Assembly-CSharp}
+      data:
+        distance: 2

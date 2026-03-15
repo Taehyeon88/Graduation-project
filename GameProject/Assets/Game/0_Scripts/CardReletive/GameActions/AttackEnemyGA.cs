@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class AttackEnemyGA : GameAction
 {
-    public GridTargetMode GridTargetMode { get; private set; }
+    public List<Vector2Int> TargetPoses { get; private set; }
     public int Amount { get; private set; }
 
-    public AttackEnemyGA(GridTargetMode gridTargetMode, int amount)
+    public AttackEnemyGA(List<Vector2Int> targetPoses, int amount)
     {
-        this.GridTargetMode = gridTargetMode;
+        this.TargetPoses = targetPoses;
         this.Amount = amount;
     }
 }

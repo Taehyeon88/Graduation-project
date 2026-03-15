@@ -7,7 +7,7 @@ public class AttackEnemyEffect : Effect
     [SerializeField] private int amount;
     public override GameAction GetGameAction(EffectInfo effectInfo)
     {
-        AttackEnemyGA attackEnemyGA = new(effectInfo.gridTargetMode, amount);
+        AttackEnemyGA attackEnemyGA = new(effectInfo.targetPoses, amount);
         return attackEnemyGA;
     }
 }

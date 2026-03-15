@@ -15,25 +15,37 @@ MonoBehaviour:
   <Description>k__BackingField: "\uC774\uAC83\uC740 \uD0C0\uACA9\uC785\uB2C8\uB2E4."
   <Mana>k__BackingField: 1
   <Image>k__BackingField: {fileID: 0}
-  <ManualTargetEffects>k__BackingField: []
+  <SelfEffects>k__BackingField: []
   <GridTargetModes>k__BackingField:
   - <Distance>k__BackingField: 1
     <TargetMode>k__BackingField:
       rid: 5842416894786404352
     <GridRangeMode>k__BackingField:
       rid: 4818494853736562691
-    <Effects>k__BackingField:
-    - rid: 5842416777571074049
+    UseVisualGrid: 1
+    UseSelectVG: 1
+    WillSelectVGName: Hero_WillAttack
+    SelectVGName: Hero_Attack
+    <Effect>k__BackingField:
+      rid: 5842416982960635906
+    <AddedStatusEffects>k__BackingField:
+    - rid: 5842416982960635909
   references:
     version: 2
     RefIds:
     - rid: 4818494853736562691
       type: {class: AllAroundRM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 5842416777571074049
-      type: {class: AttackEnemyEffect, ns: , asm: Assembly-CSharp}
-      data:
-        amount: 6
     - rid: 5842416894786404352
       type: {class: SingleTM, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 5842416982960635906
+      type: {class: AttackEnemyEffect, ns: , asm: Assembly-CSharp}
+      data:
+        amount: 5
+    - rid: 5842416982960635909
+      type: {class: AddStatusEffectEffect, ns: , asm: Assembly-CSharp}
+      data:
+        statusEffectType: 0
+        stackCount: 5
+        isMySelf: 1

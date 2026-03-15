@@ -4,16 +4,11 @@ using UnityEngine;
 
 public class PlayCardGA : GameAction
 {
-    public EnemyView ManualTarget { get; private set; }
     public Card Card { get; set; }
-    public PlayCardGA(Card card)
+    public bool IsPart1 { get; set; }   //Part1, Part2가 있음. 각각 SelfEfects 와 GridTargetMode를 담당.
+    public PlayCardGA(Card card, bool isPart1 = true)
     {
         Card = card;
-        ManualTarget = null;
-    }
-    public PlayCardGA(Card card, EnemyView manualTarget)
-    {
-        Card = card;
-        ManualTarget = manualTarget;
+        IsPart1 = isPart1;
     }
 }

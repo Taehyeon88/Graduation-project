@@ -10,18 +10,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 29bd87d4b821bdd419a4bafb4b3ce7b9, type: 3}
-  m_Name: "\uC778\uC811\uACF5\uACA9\uCE74\uB4DC_\uC5B4\uAE68\uCE58\uAE30"
+  m_Name: "\uAE30\uC220\uCE74\uB4DC_\uBC29\uC5B4(\uD14C\uC2A4\uD2B8)"
   m_EditorClassIdentifier: 
-  <Description>k__BackingField: "\uC774\uAC83\uC740 \uC5B4\uAE68\uCE58\uAE30\uC785\uB2C8\uB2E4."
+  <Description>k__BackingField: "\uC774\uAC83\uC740 \uD14C\uC2A4\uD2B8\uC6A9 \uBC29\uC5B4\uCE74\uB4DC\uC785\uB2C8\uB2E4."
   <Mana>k__BackingField: 1
   <Image>k__BackingField: {fileID: 0}
   <SelfEffects>k__BackingField: []
   <GridTargetModes>k__BackingField:
-  - <Distance>k__BackingField: 1
+  - <Distance>k__BackingField: 0
     <TargetMode>k__BackingField:
-      rid: 5842416865367293952
+      rid: -2
     <GridRangeMode>k__BackingField:
-      rid: 5842416865367293953
+      rid: -2
+    UseVisualGrid: 0
+    UseSelectVG: 0
+    WillSelectVGName: 
+    SelectVGName: 
+    <Effect>k__BackingField:
+      rid: -2
+    <AddedStatusEffects>k__BackingField: []
+  - <Distance>k__BackingField: 0
+    <TargetMode>k__BackingField:
+      rid: -2
+    <GridRangeMode>k__BackingField:
+      rid: -2
     UseVisualGrid: 0
     UseSelectVG: 0
     WillSelectVGName: 
@@ -34,9 +46,3 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 5842416865367293952
-      type: {class: SingleTM, ns: , asm: Assembly-CSharp}
-      data: 
-    - rid: 5842416865367293953
-      type: {class: AllAroundRM, ns: , asm: Assembly-CSharp}
-      data: 

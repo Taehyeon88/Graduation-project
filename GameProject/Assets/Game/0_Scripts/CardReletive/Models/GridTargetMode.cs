@@ -9,5 +9,21 @@ public class GridTargetMode
     [field: SerializeField] public int Distance { get; private set; } = 1;
     [field: SerializeReference, SR] public TargetMode TargetMode { get; private set; }
     [field: SerializeReference, SR] public GridRangeMode GridRangeMode { get; private set; }
-    [field: SerializeReference, SR] public List<Effect> Effects { get; private set; }
+
+    public bool UseVisualGrid;
+
+    [ShowIf("UseVisualGrid")]
+    public bool UseSelectVG;
+
+    [ShowIf("UseVisualGrid")]
+    public string WillSelectVGName;
+
+    [ShowIf("UseSelectVG", "UseVisualGrid")]
+    public string SelectVGName;
+
+    [field: SerializeReference, SR] public Effect Effect { get; private set; }
+
+    [field: Space(7)]
+    [field: Tooltip("UseVisualGrid가 True일 때만 사용가능!")]
+    [field: SerializeReference, SR] public List<Effect> AddedStatusEffects { get; private set;}
 }

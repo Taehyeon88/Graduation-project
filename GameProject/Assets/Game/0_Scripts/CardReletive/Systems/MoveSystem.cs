@@ -30,52 +30,73 @@ public class MoveSystem : Singleton<MoveSystem>
     //Performer
     private IEnumerator PlayerMoveGAPerformer(PlayerMoveGA playerMoveGA)
     {
-        SPDSystem.Instance.AddSPD(playerMoveGA.Distance);
-
-        //현재 SPD가 없어서 이동 불가일 경우, 반환처리
-        int curSPD = SPDSystem.Instance.RemainSPD();
-        if (curSPD <= 0) yield break;
-
-        //비주얼 그리드 설정
-        VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "Hero_Move");            //이동 가능 타일 초기화
-        var positions = TokenSystem.Instance.GetCanMovePlace(HeroSystem.Instance.HeroView, curSPD); //이동 가능 타일 미리 보여주기
-        foreach (var pos in positions)
+        if (playerMoveGA.IsAutoMove)
         {
-            VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), pos, "Hero_Move");
-        }
+            SPDSystem.Instance.AddSPD(playerMoveGA.GridTargetMode.Distance);
 
-        while (true)
-        {
-            if (InteractionSystem.GridSelected)
+            CombatantView heroView = HeroSystem.Instance.HeroView;
+            Vector2Int targetPos = playerMoveGA.TargetPoses[0];
+            int distance = TokenSystem.Instance.GetDistance(heroView, targetPos);
+            var path = TokenSystem.Instance.GetShortestPath(heroView, targetPos);
+            if (path != null)
             {
-                Vector3 mousePosition = TokenSystem.Instance.IsoWorld.MouseIsoTilePosition(1f);
-                Vector2Int isoPosition = new((int)mousePosition.x, (int)mousePosition.y);
-                CombatantView heroView = HeroSystem.Instance.HeroView;
+                SPDSystem.Instance.SpendSPD(distance);
 
-                if (TokenSystem.Instance.CheckContainMovedPath(isoPosition)) yield return null;
+                PerformMoveGA performMoveGA = new(heroView, path);
+                ActionSystem.Instance.AddReaction(performMoveGA);
 
-                int distance = TokenSystem.Instance.GetDistance(heroView, isoPosition);
+                yield break;
+            }
+        }
+        else
+        {
+            SPDSystem.Instance.AddSPD(playerMoveGA.Distance);
 
-                if (SPDSystem.Instance.RemainSPD() >= distance)
-                {
-                    var path = TokenSystem.Instance.GetShortestPath(heroView, isoPosition);
-                    if (path != null)
-                    {
-                        SPDSystem.Instance.SpendSPD(distance);
+            //현재 SPD가 없어서 이동 불가일 경우, 반환처리
+            int curSPD = SPDSystem.Instance.RemainSPD();
+            if (curSPD <= 0) yield break;
 
-                        PerformMoveGA performMoveGA = new(heroView, path);
-                        ActionSystem.Instance.AddReaction(performMoveGA);
-
-                        yield break;
-                    }
-                }
-                else
-                {
-                    Debug.Log("거리의 밖 구역으로 이동할 수 없습니다.");
-                }
+            //비주얼 그리드 설정
+            VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "Hero_Move");            //이동 가능 타일 초기화
+            var positions = TokenSystem.Instance.GetCanMovePlace(HeroSystem.Instance.HeroView, curSPD); //이동 가능 타일 미리 보여주기
+            foreach (var pos in positions)
+            {
+                VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), pos, "Hero_Move");
             }
 
-            yield return null;
+            while (true)
+            {
+                if (InteractionSystem.GridSelected)
+                {
+                    Vector3 mousePosition = TokenSystem.Instance.IsoWorld.MouseIsoTilePosition(1f);
+                    Vector2Int isoPosition = new((int)mousePosition.x, (int)mousePosition.y);
+                    CombatantView heroView = HeroSystem.Instance.HeroView;
+
+                    if (TokenSystem.Instance.CheckContainMovedPath(isoPosition)) yield return null;
+
+                    int distance = TokenSystem.Instance.GetDistance(heroView, isoPosition);
+
+                    if (SPDSystem.Instance.RemainSPD() >= distance)
+                    {
+                        var path = TokenSystem.Instance.GetShortestPath(heroView, isoPosition);
+                        if (path != null)
+                        {
+                            SPDSystem.Instance.SpendSPD(distance);
+
+                            PerformMoveGA performMoveGA = new(heroView, path);
+                            ActionSystem.Instance.AddReaction(performMoveGA);
+
+                            yield break;
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("거리의 밖 구역으로 이동할 수 없습니다.");
+                    }
+                }
+
+                yield return null;
+            }
         }
     }
     private IEnumerator PerformMoveGAPerformer(PerformMoveGA performMoveGA)
