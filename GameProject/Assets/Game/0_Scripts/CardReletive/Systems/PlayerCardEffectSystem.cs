@@ -8,14 +8,22 @@ public class PlayerCardEffectSystem : MonoBehaviour
     {
         ActionSystem.AttachPerformer<AttackEnemyGA>(AttackEnemyGAPerformer);
         ActionSystem.AttachPerformer<ShoulderBashGA>(ShoulderBashGAPerformer);
+        ActionSystem.AttachPerformer<ShieldBashGA>(ShieldBashGAPerformer);
     }
     private void OnDisable()
     {
         ActionSystem.DetachPerformer<AttackEnemyGA>();
         ActionSystem.DetachPerformer<ShoulderBashGA>();
+        ActionSystem.DetachPerformer<ShieldBashGA>();
     }
 
     //Performers
+
+    /// <summary>
+    /// 기본 몬스터 공격
+    /// </summary>
+    /// <param name="attackEnemyGA"></param>
+    /// <returns></returns>
     private IEnumerator AttackEnemyGAPerformer(AttackEnemyGA attackEnemyGA)
     {
         List<CombatantView> combatants = new();
@@ -40,6 +48,11 @@ public class PlayerCardEffectSystem : MonoBehaviour
         yield return null;
     }
 
+    /// <summary>
+    /// 어깨치기 기술
+    /// </summary>
+    /// <param name="shoulderBashGA"></param>
+    /// <returns></returns>
     private IEnumerator ShoulderBashGAPerformer(ShoulderBashGA shoulderBashGA)
     {
         GridTargetMode targetMode = shoulderBashGA.GridTargetMode;
@@ -123,5 +136,37 @@ public class PlayerCardEffectSystem : MonoBehaviour
 
             yield return null;
         }
+    }
+
+    /// <summary>
+    /// 방패가격 기술
+    /// </summary>
+    /// <param name="shieldBashGA"></param>
+    /// <returns></returns>
+    private IEnumerator ShieldBashGAPerformer(ShieldBashGA shieldBashGA)
+    {
+        List<CombatantView> combatants = new();
+        foreach (var targetPos in shieldBashGA.TargetPoses)
+        {
+            Token token = TokenSystem.Instance.GetTokenByPosition(targetPos);
+            if (token != null)
+            {
+                combatants.Add(token as CombatantView);
+            }
+        }
+        if (combatants.Count > 0)
+        {
+            DealDamageGA dealDamageGA = new(shieldBashGA.Amount, combatants, HeroSystem.Instance.HeroView);
+            ActionSystem.Instance.AddReaction(dealDamageGA);
+
+            AddStatusEffectGA addStatusEffectGA = new(StatusEffectType.ARMOR, shieldBashGA.Amount, new() { HeroSystem.Instance.HeroView });
+            dealDamageGA.PostReactions.Add((addStatusEffectGA, null));
+        }
+        else
+        {
+            Debug.Log("해당 범위 안에 대상이 없음");
+        }
+
+        yield return null;
     }
 }
