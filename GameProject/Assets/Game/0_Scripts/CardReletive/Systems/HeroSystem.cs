@@ -54,11 +54,27 @@ public class HeroSystem : Singleton<HeroSystem>
 
         DiscardAllCardsGA discardAllCardsGA = new();
         ActionSystem.Instance.AddReaction(discardAllCardsGA);
+
+        //플레이어 상태효과 N감소
+        foreach (var statusEffectType in HeroView.GetStatusEffects())
+        {
+            //방어막은 제외
+            if (statusEffectType != StatusEffectType.ARMOR)
+            {
+                HeroView.RemoveStatusEffect(statusEffectType, 1);
+            }
+        }
     }
     private void EnemysTurnPostReaction(EnemysTurnGA enemyTurnGA)
     {
-        Debug.Log("적 턴 종료");
+        Debug.Log("플레이어 턴 시작");
 
+        //플레이어의 방어막 스택 삭제
+        int armorStack = HeroView.GetStatusEffectStacks(StatusEffectType.ARMOR);
+        if (armorStack > 0) HeroView.RemoveStatusEffect(StatusEffectType.ARMOR, armorStack);
+
+
+        //화염 상태효과 
         int burnStacks = HeroView.GetStatusEffectStacks(StatusEffectType.BURN);
         if (burnStacks > 0)
         {

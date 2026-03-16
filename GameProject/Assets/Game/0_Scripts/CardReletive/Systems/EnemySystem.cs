@@ -13,6 +13,7 @@ public class EnemySystem : Singleton<EnemySystem>
         ActionSystem.AttachPerformer<AttackHeroGA>(AttackHeroPerformer);
         ActionSystem.AttachPerformer<KillEnemyGA>(KillEnemyPerformer);
         ActionSystem.SubscribeReaction<EnemysTurnGA>(EnemysTurnPostReaction, ReactionTiming.POST);
+        ActionSystem.SubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
     }
     void OnDisable()
     {
@@ -21,6 +22,7 @@ public class EnemySystem : Singleton<EnemySystem>
         ActionSystem.DetachPerformer<AttackHeroGA>();
         ActionSystem.DetachPerformer<KillEnemyGA>();
         ActionSystem.UnsubscribeReaction<EnemysTurnGA>(EnemysTurnPostReaction, ReactionTiming.POST);
+        ActionSystem.UnsubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
     }
 
    //Performers
@@ -98,6 +100,16 @@ public class EnemySystem : Singleton<EnemySystem>
     {
         foreach (EnemyView enemy in Enemise)
         {
+            //몬스터 상태효과 N감소
+            foreach (var statusEffectType in enemy.GetStatusEffects())
+            {
+                //방어막은 제외
+                if (statusEffectType != StatusEffectType.ARMOR)
+                {
+                    enemy.RemoveStatusEffect(statusEffectType, 1);
+                }
+            }
+
             //다음 턴에 할 행동 미리 설정
             enemy.actAction = enemy.Enemy.JudgeActActions(enemy);
 
@@ -109,6 +121,16 @@ public class EnemySystem : Singleton<EnemySystem>
                     VisualGridCreator.Instance.CreateVisualGrid(enemy.GetInstanceID(), gridPos, "Enemy_Attack");
                 }
             }
+        }
+    }
+
+    private void EnemysTurnPreReaction(EnemysTurnGA enemysTurnGA)
+    {
+        //적들의 턴 시작시, 방어막 스택 제거
+        foreach (EnemyView enemy in Enemise)
+        {
+            int armorStack = enemy.GetStatusEffectStacks(StatusEffectType.ARMOR);
+            if(armorStack > 0) enemy.RemoveStatusEffect(StatusEffectType.ARMOR, armorStack);
         }
     }
 
