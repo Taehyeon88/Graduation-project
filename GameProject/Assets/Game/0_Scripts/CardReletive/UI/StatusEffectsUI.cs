@@ -6,9 +6,8 @@ public class StatusEffectsUI : MonoBehaviour
 {
     [SerializeField] private StatusEffectUI statusEffectPrefab;
 
-    [SerializeField] private Sprite armorImage, burnImage;
     private Dictionary<StatusEffectType, StatusEffectUI> statusEffectUIs = new();
-    public void UpdateStatusEffect(StatusEffectType statusEffectType, int stackCount)
+    public void UpdateStatusEffect(StatusEffectType statusEffectType, int stackCount, Sprite sprite = null)
     {
         if (stackCount == 0)
         {
@@ -26,17 +25,7 @@ public class StatusEffectsUI : MonoBehaviour
                 StatusEffectUI statusEffectUI = Instantiate(statusEffectPrefab, transform);
                 statusEffectUIs.Add(statusEffectType, statusEffectUI);
             }
-            Sprite sprite = GetSpriteByType(statusEffectType);
             statusEffectUIs[statusEffectType].Set(sprite, stackCount);
         }
-    }
-    private Sprite GetSpriteByType(StatusEffectType statusEffectType)
-    {
-        return statusEffectType switch
-        {
-            StatusEffectType.ARMOR => armorImage,
-            StatusEffectType.BURN => burnImage,
-            _ => null
-        };
     }
 }

@@ -28,8 +28,9 @@ public class StatusEffectSystem : MonoBehaviour
         foreach (var target in addStatusEffectGA.Targets)
         {
             var infoes = effectDataByType[addStatusEffectGA.StatusEffectType].effectInfos;
+            var sprite = effectDataByType[addStatusEffectGA.StatusEffectType].spriteImage;
 
-            target.AddStatusEffect(addStatusEffectGA.StatusEffectType, addStatusEffectGA.StackCount, infoes);
+            target.AddStatusEffect(addStatusEffectGA.StatusEffectType, addStatusEffectGA.StackCount, sprite, infoes);
             yield return null; //Add VFX for adding status effects
         }
     }

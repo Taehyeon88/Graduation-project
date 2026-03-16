@@ -56,7 +56,7 @@ public class CombatantView : Token
         transform.DOShakePosition(0.2f, 0.5f);
         UpdateHealthText();
     }
-    public void AddStatusEffect(StatusEffectType type, int stackCount, float[] infoes = null)
+    public void AddStatusEffect(StatusEffectType type, int stackCount, Sprite sprite, float[] infoes = null)
     {
         if (statusEffectUIs.ContainsKey(type))
         {
@@ -67,7 +67,7 @@ public class CombatantView : Token
             statusEffectUIs.Add(type, stackCount);
             effectInfo.SetStatusEffectInfo(infoes, type);    //해당 StatusEffectInfo 저장
         }
-        statusEffectsUI.UpdateStatusEffect(type, GetStatusEffectStacks(type));
+        statusEffectsUI.UpdateStatusEffect(type, GetStatusEffectStacks(type), sprite);
     }
     public void RemoveStatusEffect(StatusEffectType type, int stackCount)
     {
