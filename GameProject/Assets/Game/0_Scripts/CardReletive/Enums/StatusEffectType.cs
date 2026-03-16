@@ -1,6 +1,7 @@
 public enum StatusEffectType
 { 
-    ARMOR,
+    ARMOR,           //¹æ¾î
+    DISARRAY,        //È¥¶õ
     BURN,
     VULNERABLE,
     WEAKENING

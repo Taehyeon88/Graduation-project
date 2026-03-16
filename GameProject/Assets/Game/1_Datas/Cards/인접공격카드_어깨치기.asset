@@ -24,19 +24,23 @@ MonoBehaviour:
       rid: 5842416865367293953
     UseVisualGrid: 0
     UseSelectVG: 0
-    WillSelectVGName: 
-    SelectVGName: 
+    WillSelectVGName: Hero_WillAttack
+    SelectVGName: Hero_Attack
     <Effect>k__BackingField:
-      rid: -2
+      rid: 5842417010612109316
     <AddedStatusEffects>k__BackingField: []
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
     - rid: 5842416865367293952
       type: {class: SingleTM, ns: , asm: Assembly-CSharp}
       data: 
     - rid: 5842416865367293953
       type: {class: AllAroundRM, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 5842417010612109316
+      type: {class: ShoulderBashEffect, ns: , asm: Assembly-CSharp}
+      data:
+        distance: 1
+        attackDistance: 1
+        damage: 6

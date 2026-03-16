@@ -7640,6 +7640,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   effectDatas:
   - {fileID: 11400000, guid: e45333d3b6f113c4195c2b0e527d486b, type: 2}
+  - {fileID: 11400000, guid: 2425a0a2555a29d4ab97355c9cd7831f, type: 2}
 --- !u!4 &939387649 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7135897438596925868, guid: 9851229e58487e4449f6fa918f90a7d1,

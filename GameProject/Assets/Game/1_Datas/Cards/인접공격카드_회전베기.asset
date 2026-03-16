@@ -23,20 +23,22 @@ MonoBehaviour:
     <GridRangeMode>k__BackingField:
       rid: 5842416888821579777
     UseVisualGrid: 1
-    UseSelectVG: 0
-    WillSelectVGName: 
-    SelectVGName: 
+    UseSelectVG: 1
+    WillSelectVGName: Hero_WillAttack
+    SelectVGName: Hero_Attack
     <Effect>k__BackingField:
-      rid: -2
+      rid: 5842417010612109318
     <AddedStatusEffects>k__BackingField: []
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
     - rid: 5842416888821579776
       type: {class: GlobalTM, ns: , asm: Assembly-CSharp}
       data: 
     - rid: 5842416888821579777
       type: {class: AllAroundRM, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 5842417010612109318
+      type: {class: AttackEnemyEffect, ns: , asm: Assembly-CSharp}
+      data:
+        amount: 6

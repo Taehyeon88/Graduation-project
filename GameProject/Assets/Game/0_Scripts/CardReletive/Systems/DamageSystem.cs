@@ -19,6 +19,16 @@ public class DamageSystem : Singleton<DamageSystem>
     {
         foreach (var target in dealDamageGA.Targets)
         {
+            //상태이상 처리
+            //혼란 : N% 공격력 감소
+            int disarrayStack = dealDamageGA.Caster.GetStatusEffectStacks(StatusEffectType.DISARRAY);
+            if (disarrayStack > 0)
+            {
+                StatusEffectInfo info = dealDamageGA.Caster.GetStatusEffectInfo(StatusEffectType.DISARRAY);
+                float percent = info.disarrayPercent;
+                dealDamageGA.Amount -= Mathf.CeilToInt(dealDamageGA.Amount * (percent / 100f));
+            }
+
             target.Damage(dealDamageGA.Amount);
             Instantiate(damageVFX, target.transform.position, target.transform.rotation);
             yield return new WaitForSeconds(0.15f);

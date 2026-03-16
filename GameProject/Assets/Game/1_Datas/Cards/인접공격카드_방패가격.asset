@@ -12,11 +12,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29bd87d4b821bdd419a4bafb4b3ce7b9, type: 3}
   m_Name: "\uC778\uC811\uACF5\uACA9\uCE74\uB4DC_\uBC29\uD328\uAC00\uACA9"
   m_EditorClassIdentifier: 
-  <Description>k__BackingField: 
-  <Mana>k__BackingField: 0
+  <Description>k__BackingField: "\uC774\uAC83\uC740 \uBC29\uD328\uAC00\uACA9 \uACF5\uACA9
+    \uCE74\uB4DC\uC785\uB2C8\uB2E4."
+  <Mana>k__BackingField: 1
   <Image>k__BackingField: {fileID: 0}
   <SelfEffects>k__BackingField: []
-  <GridTargetModes>k__BackingField: []
+  <GridTargetModes>k__BackingField:
+  - <Distance>k__BackingField: 1
+    <TargetMode>k__BackingField:
+      rid: 5842417010612109320
+    <GridRangeMode>k__BackingField:
+      rid: 5842417010612109322
+    UseVisualGrid: 1
+    UseSelectVG: 1
+    WillSelectVGName: Hero_WillAttack
+    SelectVGName: Hero_Attack
+    <Effect>k__BackingField:
+      rid: 5842417010612109323
+    <AddedStatusEffects>k__BackingField: []
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 5842417010612109320
+      type: {class: SingleTM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 5842417010612109322
+      type: {class: AllAroundRM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 5842417010612109323
+      type: {class: ShieldBashEffect, ns: , asm: Assembly-CSharp}
+      data:
+        amount: 6
