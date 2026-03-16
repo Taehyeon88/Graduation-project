@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using DG.Tweening;
 using IsoTools;
 using TMPro;
+using System;
 using UnityEngine;
+using System.Linq;
 
 public class CombatantView : Token
 {
@@ -12,7 +14,7 @@ public class CombatantView : Token
 
     [SerializeField] private StatusEffectsUI statusEffectsUI;
     private Dictionary<StatusEffectType, int> statusEffectUIs = new();
-    private StatusEffectInfo effectInfo = new();
+    private StatusEffectStorage effectInfo = new();
 
     public int MaxHealth { get; private set; }
     public int CurrentHealth { get; private set; }
@@ -86,8 +88,9 @@ public class CombatantView : Token
         if(statusEffectUIs.ContainsKey(type)) return statusEffectUIs[type];
         else return 0;
     }
+    public StatusEffectType[] GetStatusEffects() => statusEffectUIs.Keys.ToArray();
 
-    public StatusEffectInfo GetStatusEffectInfo(StatusEffectType type)
+    public StatusEffectStorage GetStatusEffectInfo(StatusEffectType type)
     {
         if (statusEffectUIs.ContainsKey(type)) return effectInfo;
         else return default;

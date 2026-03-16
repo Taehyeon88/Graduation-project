@@ -11,6 +11,11 @@ public struct EffectInfo
     public GridTargetMode gridTargetMode;
     public List<Vector2Int> targetPoses;
 
+    /// <summary>
+    /// CardSystem의 UseVisualGrid == true 및 AddedSECondition == CombatantView의 AddedStatusEffect용
+    /// </summary>
+    /// <param name="targets"></param>
+    /// <param name="caster"></param>
     public EffectInfo(List<CombatantView> targets, CombatantView caster)
     {
         this.targets = targets;
@@ -44,7 +49,7 @@ public struct EffectInfo
     }
 
     /// <summary>
-    /// CardSystem의 UseVisualGrid == true일 때, AddedStatusEffect용
+    /// CardSystem의 UseVisualGrid == true일 때, 및 AddedSECondition == Grid의 AddedStatusEffect용
     /// </summary>
     /// <param name="targets"></param>
     /// <param name="caster"></param>
