@@ -24,10 +24,17 @@ public class DamageSystem : Singleton<DamageSystem>
             int disarrayStack = dealDamageGA.Caster.GetStatusEffectStacks(StatusEffectType.DISARRAY);
             if (disarrayStack > 0)
             {
-                StatusEffectInfo info = dealDamageGA.Caster.GetStatusEffectInfo(StatusEffectType.DISARRAY);
-                float percent = info.disarrayPercent;
-                dealDamageGA.Amount -= Mathf.CeilToInt(dealDamageGA.Amount * (percent / 100f));
+                StatusEffectStorage disarrayInfo = dealDamageGA.Caster.GetStatusEffectInfo(StatusEffectType.DISARRAY);
+                dealDamageGA.Amount -= Mathf.CeilToInt(dealDamageGA.Amount * (disarrayInfo.disarrayPercent / 100f));
             }
+            //표적 : N% 받는 피해 증가
+            int markStack = target.GetStatusEffectStacks(StatusEffectType.MARK);
+            if (markStack > 0)
+            {
+                StatusEffectStorage markInfo = target.GetStatusEffectInfo(StatusEffectType.MARK);
+                dealDamageGA.Amount += Mathf.CeilToInt(dealDamageGA.Amount * (markInfo.markPercent / 100f));
+            }
+
 
             target.Damage(dealDamageGA.Amount);
             Instantiate(damageVFX, target.transform.position, target.transform.rotation);

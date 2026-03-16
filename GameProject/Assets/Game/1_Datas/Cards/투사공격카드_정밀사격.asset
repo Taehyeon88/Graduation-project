@@ -10,43 +10,44 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 29bd87d4b821bdd419a4bafb4b3ce7b9, type: 3}
-  m_Name: "\uC778\uC811\uACF5\uACA9\uCE74\uB4DC_\uCC98\uD615"
+  m_Name: "\uD22C\uC0AC\uACF5\uACA9\uCE74\uB4DC_\uC815\uBC00\uC0AC\uACA9"
   m_EditorClassIdentifier: 
-  <Description>k__BackingField: "\uC774\uAC83\uC740 \uCC98\uD615 \uCE74\uB4DC \uC785\uB2C8\uB2E4."
+  <Description>k__BackingField: "\uC774\uAC83\uC740 \uD22C\uC0AC\uACF5\uACA9\uCE74\uB4DC
+    \uC815\uBC00 \uC0AC\uACA9\uC774\uB2E4."
   <Mana>k__BackingField: 1
   <Image>k__BackingField: {fileID: 0}
   <SelfEffects>k__BackingField: []
   <GridTargetModes>k__BackingField:
-  - <Distance>k__BackingField: 1
+  - <Distance>k__BackingField: 2
     <TargetMode>k__BackingField:
-      rid: 5842417036075991045
+      rid: 5842417036075991040
     <GridRangeMode>k__BackingField:
-      rid: 5842417036075991046
+      rid: 5842417036075991041
     UseVisualGrid: 1
     UseSelectVG: 1
     WillSelectVGName: Hero_WillAttack
     SelectVGName: Hero_Attack
     <Effect>k__BackingField:
-      rid: 5842417036075991047
+      rid: 5842417036075991050
     <_AddedSECondition>k__BackingField: 1
     <AddedStatusEffects>k__BackingField:
-    - rid: 5842417036075991048
+    - rid: 5842417036075991049
   references:
     version: 2
     RefIds:
-    - rid: 5842417036075991045
+    - rid: 5842417036075991040
       type: {class: SingleTM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 5842417036075991046
+    - rid: 5842417036075991041
       type: {class: AllAroundRM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 5842417036075991047
-      type: {class: AttackEnemyEffect, ns: , asm: Assembly-CSharp}
-      data:
-        amount: 15
-    - rid: 5842417036075991048
+    - rid: 5842417036075991049
       type: {class: AddStatusEffectEffect, ns: , asm: Assembly-CSharp}
       data:
-        statusEffectType: 1
+        statusEffectType: 2
         stackCount: 1
-        isMySelf: 1
+        isMySelf: 0
+    - rid: 5842417036075991050
+      type: {class: AttackEnemyEffect, ns: , asm: Assembly-CSharp}
+      data:
+        amount: 6

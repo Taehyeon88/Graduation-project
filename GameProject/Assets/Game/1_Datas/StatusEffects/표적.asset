@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81ca9361e2a2ceb498a99fc6c8f70e8f, type: 3}
+  m_Name: "\uD45C\uC801"
+  m_EditorClassIdentifier: 
+  <EffectType>k__BackingField: 2
+  <Discription>k__BackingField: "N \uD134 \uB3D9\uC548 \uBC1B\uB294 \uD53C\uD574
+    z% \uC99D\uAC00"
+  <spriteImage>k__BackingField: {fileID: 0}
+  <effectInfos>k__BackingField:
+  - 50

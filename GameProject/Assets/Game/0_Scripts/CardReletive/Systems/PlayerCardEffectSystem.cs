@@ -9,14 +9,12 @@ public class PlayerCardEffectSystem : MonoBehaviour
         ActionSystem.AttachPerformer<AttackEnemyGA>(AttackEnemyGAPerformer);
         ActionSystem.AttachPerformer<ShoulderBashGA>(ShoulderBashGAPerformer);
         ActionSystem.AttachPerformer<ShieldBashGA>(ShieldBashGAPerformer);
-        ActionSystem.AttachPerformer<ExecutionGA>(ExecutionGAPerformer);
     }
     private void OnDisable()
     {
         ActionSystem.DetachPerformer<AttackEnemyGA>();
         ActionSystem.DetachPerformer<ShoulderBashGA>();
         ActionSystem.DetachPerformer<ShieldBashGA>();
-        ActionSystem.DetachPerformer<ExecutionGA>();
     }
 
     //Performers
@@ -162,38 +160,6 @@ public class PlayerCardEffectSystem : MonoBehaviour
             ActionSystem.Instance.AddReaction(dealDamageGA);
 
             AddStatusEffectGA addStatusEffectGA = new(StatusEffectType.ARMOR, shieldBashGA.Amount, new() { HeroSystem.Instance.HeroView });
-            dealDamageGA.PostReactions.Add((addStatusEffectGA, null));
-        }
-        else
-        {
-            Debug.Log("해당 범위 안에 대상이 없음");
-        }
-
-        yield return null;
-    }
-
-    /// <summary>
-    /// 처형 카드 기술
-    /// </summary>
-    /// <param name="executionGA"></param>
-    /// <returns></returns>
-    private IEnumerator ExecutionGAPerformer(ExecutionGA executionGA)
-    {
-        List<CombatantView> combatants = new();
-        foreach (var targetPos in executionGA.TargetPoses)
-        {
-            Token token = TokenSystem.Instance.GetTokenByPosition(targetPos);
-            if (token != null)
-            {
-                combatants.Add(token as CombatantView);
-            }
-        }
-        if (combatants.Count > 0)
-        {
-            DealDamageGA dealDamageGA = new(executionGA.Amount, combatants, HeroSystem.Instance.HeroView);
-            ActionSystem.Instance.AddReaction(dealDamageGA);
-
-            AddStatusEffectGA addStatusEffectGA = new(StatusEffectType.DISARRAY, 1, new() { HeroSystem.Instance.HeroView });
             dealDamageGA.PostReactions.Add((addStatusEffectGA, null));
         }
         else
