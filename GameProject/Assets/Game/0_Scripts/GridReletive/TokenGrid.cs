@@ -60,15 +60,11 @@ public class TokenGrid : MonoBehaviour
         remainCells.Remove(pos);
         return pos;
     }
-    public void SetToken(Token token, Vector2Int pos)
+
+    public Vector2Int SetToken(Token token, Vector2Int pos)
     {
-        int x = pos.x; int y = pos.y;
-        grid[x, y].SetToken(token);
-        simpleGrid[x, y] = 1;
-        remainCells.Remove(new(x,y));
-    }
-    public Vector2Int SetTokenByGridPos(Token token, Vector2Int pos)
-    {
+        if (grid == null) Initialize();
+
         grid[pos.x, pos.y].SetToken(token);
         simpleGrid[pos.x, pos.y] = 1;
         remainCells.Remove(pos);

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum TokenType
 {
-    Hero, Enemy, Builing
+    Hero, Enemy, Wall
 }
 
 public class TokenCreator : Singleton<TokenCreator>
@@ -12,6 +12,7 @@ public class TokenCreator : Singleton<TokenCreator>
     [SerializeField] private TokenPreview previewPrefab;
     [SerializeField] private Token heroTokenPrefab;
     [SerializeField] private Token enemyTokenPrefab;
+    [SerializeField] private Token wallTokenPrefab;
     [SerializeField] private Transform isoWorld;      //토큰들을 생성할 부모 오브젝트
 
     private Token tokenPrefab;
@@ -22,6 +23,7 @@ public class TokenCreator : Singleton<TokenCreator>
         {
             case TokenType.Hero: tokenPrefab = heroTokenPrefab; break;
             case TokenType.Enemy: tokenPrefab = enemyTokenPrefab; break;
+            case TokenType.Wall: tokenPrefab = wallTokenPrefab; break;
             default: tokenPrefab = null; break;
         }
         if (tokenPrefab == null) return null;
@@ -38,6 +40,11 @@ public class TokenCreator : Singleton<TokenCreator>
                 EnemyView enemyView = token as EnemyView;
                 enemyView.SetUp(data as EnemyData);
                 break;
+            case TokenType.Wall:
+                WallView wallView = token as WallView;
+                wallView.SetUp(data as WallData);
+                break;
+                
         }
 
         token.TokenTransform.position = isoPosition;

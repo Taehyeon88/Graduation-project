@@ -9,7 +9,7 @@ using System.Linq;
 
 public class CombatantView : Token
 {
-    [SerializeField] private TMP_Text healthText;
+    [SerializeField] protected TMP_Text healthText;
     [SerializeField] private Transform wrapper;
 
     [SerializeField] private StatusEffectsUI statusEffectsUI;
@@ -32,7 +32,8 @@ public class CombatantView : Token
     }
     public void UpdateHealthText()
     {
-        healthText.text = $"HP : {CurrentHealth}";
+        if(healthText != null)
+            healthText.text = $"HP : {CurrentHealth}";
     }
     public void Damage(int amount)
     {

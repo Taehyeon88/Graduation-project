@@ -13,6 +13,7 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
 
     public HeroView HeroView { get; private set; }
     public List<EnemyView> EnemyViews { get; private set; } = new();
+    public List<WallView> WallViews { get; private set; } = new();
 
     private Dictionary<Token, Vector2Int> gridPosByToken = new();
     private TokenPreview preview;
@@ -20,6 +21,35 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
     private List<Vector2Int> heroSetupPositions = new();
     private List<Vector2Int> movedPath = new();
 
+    /// <summary>
+    /// 정해진 위치좌표들에 각 벽들을 생성하는 함수
+    /// </summary>
+    /// <param name="wallDatas"></param>
+    /// <param name="setupPositions"></param>
+    public void StartSetWalls(List<TokenData> wallDatas, List<Vector2Int> setupPositions)
+    {
+        int index = 0;
+        foreach (var wallData in wallDatas)
+        {
+            if (setupPositions.Count > index)
+            {
+                Vector2Int pos = setupPositions[index];
+
+                Token token = TokenCreator.Instance.CreateToken(
+                        wallData,
+                        TokenType.Wall,
+                        transform.position
+                    );
+                token.TokenTransform.position = new(pos.x, pos.y, 1);
+
+                grid.SetToken(token, pos);
+                WallViews.Add(token as WallView);
+                gridPosByToken.Add(token, pos);
+            }
+
+            index++;
+        }
+    }
     /// <summary>
     /// 전투 시작시, 모든 몬스터들 비어있는 그리드에 랜덤 배치 함수
     /// </summary>
@@ -210,7 +240,7 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
         }
         
         grid.ResetToken(gridPosByToken[token]);
-        grid.SetTokenByGridPos(token, targetPos);
+        grid.SetToken(token, targetPos);
         gridPosByToken[token] = targetPos;
 
         if (useAnimation)

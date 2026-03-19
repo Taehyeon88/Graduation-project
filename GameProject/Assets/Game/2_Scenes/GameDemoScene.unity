@@ -6200,6 +6200,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8084f429f7ca2c942ac6d4a239f8fe74, type: 2}
   - {fileID: 11400000, guid: 8084f429f7ca2c942ac6d4a239f8fe74, type: 2}
   - {fileID: 11400000, guid: 8084f429f7ca2c942ac6d4a239f8fe74, type: 2}
+  wallDatas:
+  - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
+  - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
+  - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
   heroSetUpPositions:
   - {x: 0, y: 0}
   - {x: 0, y: 1}
@@ -6226,6 +6230,10 @@ MonoBehaviour:
   - {x: 3, y: 5}
   - {x: 3, y: 6}
   - {x: 3, y: 7}
+  wallSetUpPositions:
+  - {x: 0, y: 7}
+  - {x: 1, y: 7}
+  - {x: 0, y: 6}
 --- !u!1 &830014049
 GameObject:
   m_ObjectHideFlags: 0
@@ -13878,6 +13886,8 @@ MonoBehaviour:
   heroTokenPrefab: {fileID: 4819093266047866604, guid: 296d8e78ff2395748b1e1d3bb452ad78,
     type: 3}
   enemyTokenPrefab: {fileID: 8184131505389806249, guid: 358d85ed5d16fef40b0ea0f9411f97ea,
+    type: 3}
+  wallTokenPrefab: {fileID: 3401949663337504491, guid: d0a4180de37b5c54f82f2edbf12e6ded,
     type: 3}
   isoWorld: {fileID: 4457070332747971071}
 --- !u!4 &1954904732 stripped

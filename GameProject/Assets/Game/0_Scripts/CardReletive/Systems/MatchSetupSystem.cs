@@ -9,8 +9,10 @@ public class MatchSetupSystem : MonoBehaviour
     //[SerializeField] private PerkData perkData;
     [SerializeField] private DiceData diceData;
     [SerializeField] private List<EnemyData> enemyDatas;
+    [SerializeField] private List<WallData> wallDatas;
     [SerializeField] private List<Vector2Int> heroSetUpPositions;
     [SerializeField] private List<Vector2Int> enemySetUpPositions;
+    [SerializeField] private List<Vector2Int> wallSetUpPositions;
     private readonly int drawCount = 5;
     private void Start()
     {
@@ -30,7 +32,9 @@ public class MatchSetupSystem : MonoBehaviour
             yield break;
         }
 
-        //건물 배치
+        //벽 배치
+        TokenSystem.Instance.StartSetWalls(new(wallDatas), wallSetUpPositions);
+
         //몬스터 배치
         TokenSystem.Instance.StartSettingEnemys(new(enemyDatas), enemySetUpPositions);
         //아이템 배치
