@@ -16,29 +16,30 @@ MonoBehaviour:
   <Mana>k__BackingField: 1
   <Image>k__BackingField: {fileID: 0}
   <SelfEffects>k__BackingField: []
-  <GridTargetModes>k__BackingField:
-  - <Distance>k__BackingField: 2
+  <GridTargetMode>k__BackingField:
+    <Distance>k__BackingField: 1
     <TargetMode>k__BackingField:
-      rid: 5842416765715349505
+      rid: 5842417105210966023
     <GridRangeMode>k__BackingField:
-      rid: 5842416765715349504
+      rid: 5842417105210966024
     UseVisualGrid: 1
     UseSelectVG: 1
     WillSelectVGName: Hero_WillAttack
     SelectVGName: Hero_Attack
     <Effect>k__BackingField:
-      rid: 5842417010612109317
+      rid: 5842417105210966025
+    <_AddedSECondition>k__BackingField: 0
     <AddedStatusEffects>k__BackingField: []
   references:
     version: 2
     RefIds:
-    - rid: 5842416765715349504
-      type: {class: PlusRM, ns: , asm: Assembly-CSharp}
-      data: 
-    - rid: 5842416765715349505
+    - rid: 5842417105210966023
       type: {class: LineTM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 5842417010612109317
+    - rid: 5842417105210966024
+      type: {class: PlusRM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 5842417105210966025
       type: {class: AttackEnemyEffect, ns: , asm: Assembly-CSharp}
       data:
         amount: 8

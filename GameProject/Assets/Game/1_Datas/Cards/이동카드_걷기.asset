@@ -16,29 +16,30 @@ MonoBehaviour:
   <Mana>k__BackingField: 1
   <Image>k__BackingField: {fileID: 0}
   <SelfEffects>k__BackingField: []
-  <GridTargetModes>k__BackingField:
-  - <Distance>k__BackingField: 2
+  <GridTargetMode>k__BackingField:
+    <Distance>k__BackingField: 2
     <TargetMode>k__BackingField:
-      rid: 5842416821157494784
+      rid: 5842417105210966016
     <GridRangeMode>k__BackingField:
-      rid: 5842416821157494785
+      rid: 5842417105210966017
     UseVisualGrid: 1
     UseSelectVG: 0
     WillSelectVGName: Hero_Move
     SelectVGName: 
     <Effect>k__BackingField:
-      rid: 5842416982960635907
+      rid: 5842417105210966018
+    <_AddedSECondition>k__BackingField: 0
     <AddedStatusEffects>k__BackingField: []
   references:
     version: 2
     RefIds:
-    - rid: 5842416821157494784
+    - rid: 5842417105210966016
       type: {class: SingleTM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 5842416821157494785
+    - rid: 5842417105210966017
       type: {class: AllAroundRM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 5842416982960635907
+    - rid: 5842417105210966018
       type: {class: PlayerMoveEffect, ns: , asm: Assembly-CSharp}
       data:
         distance: 2

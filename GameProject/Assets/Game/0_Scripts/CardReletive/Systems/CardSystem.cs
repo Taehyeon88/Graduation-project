@@ -1,10 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using DG.Tweening;
 using UnityEngine;
-using UnityEngine.UIElements;
-using UnityEngine.WSA;
 
 public class CardSystem : Singleton<CardSystem>
 {
@@ -108,106 +105,105 @@ public class CardSystem : Singleton<CardSystem>
         }
         else if (playCardGA.Card.GridTargetMode != null)
         {
-            foreach (var targetMode in playCardGA.Card.GridTargetMode)
+            var targetMode = playCardGA.Card.GridTargetMode;
+
+            //그리드 선택 기능을 사용할 경우
+            if (targetMode.UseVisualGrid)
             {
-                //그리드 선택 기능을 사용할 경우
-                if (targetMode.UseVisualGrid)
+                Vector2Int currentPos = TokenSystem.Instance.GetTokenPosition(HeroSystem.Instance.HeroView);
+                bool penetration = targetMode.TargetMode is LineTM;
+                var range = targetMode.GridRangeMode.GetGridRanges(currentPos, targetMode.Distance, penetration);
+
+                //이동 카드일 경우, 자체적인 이동 범위 사용
+                if (targetMode.Effect is PlayerMoveEffect)
                 {
-                    Vector2Int currentPos = TokenSystem.Instance.GetTokenPosition(HeroSystem.Instance.HeroView);
-                    bool penetration = targetMode.TargetMode is LineTM;
-                    var range = targetMode.GridRangeMode.GetGridRanges(currentPos, targetMode.Distance, penetration);
+                    range = TokenSystem.Instance.GetCanMovePlace(HeroSystem.Instance.HeroView, targetMode.Distance);
+                }
 
-                    //이동 카드일 경우, 자체적인 이동 범위 사용
-                    if (targetMode.Effect is PlayerMoveEffect)
+                //비주얼 공격 예상 범위 그리드 업데이트
+                foreach (var r in range)
+                    VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), r, targetMode.WillSelectVGName);
+
+                Debug.Log("공격 가능 범위: " + string.Join(",", range));
+
+                string curStr = "";
+
+                while (true)
+                {
+                    Vector3 temp = TokenSystem.Instance.IsoWorld.MouseIsoTilePosition(1);
+                    Vector2Int gridPosition = new((int)temp.x, (int)temp.y);
+
+                    var targets = targetMode.TargetMode.GetTargets(range, gridPosition, currentPos, targetMode.Distance);
+
+                    if (targets != null)
                     {
-                        range = TokenSystem.Instance.GetCanMovePlace(HeroSystem.Instance.HeroView, targetMode.Distance);
-                    }
-
-                    //비주얼 공격 예상 범위 그리드 업데이트
-                    foreach (var r in range)
-                        VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), r, targetMode.WillSelectVGName);
-
-                    Debug.Log("공격 가능 범위: " + string.Join(",", range));
-
-                    string curStr = "";
-
-                    while (true)
-                    {
-                        Vector3 temp = TokenSystem.Instance.IsoWorld.MouseIsoTilePosition(1);
-                        Vector2Int gridPosition = new((int)temp.x, (int)temp.y);
-
-                        var targets = targetMode.TargetMode.GetTargets(range, gridPosition, currentPos, targetMode.Distance);
-
-                        if (targets != null)
+                        if (targetMode.UseSelectVG)
                         {
-                            if (targetMode.UseSelectVG)
+                            string targetStr = string.Join("", targets);
+                            if (curStr != targetStr)
                             {
-                                string targetStr = string.Join("", targets);
-                                if (curStr != targetStr)
-                                {
-                                    //비주얼 공격 범위 그리드 업데이트
-                                    VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), targetMode.SelectVGName);
-                                    foreach (var target in targets)
-                                        VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), target, targetMode.SelectVGName);
+                                //비주얼 공격 범위 그리드 업데이트
+                                VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), targetMode.SelectVGName);
+                                foreach (var target in targets)
+                                    VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), target, targetMode.SelectVGName);
 
-                                    curStr = targetStr;
+                                curStr = targetStr;
+                            }
+                        }
+
+                        if (InteractionSystem.GridSelected)  //그리드 선택 인터렉션 감지
+                        {
+                            //전달할 데이터 :
+                            //1. 타겟으로 지정된 타일 좌표들
+                            PerformEffectGA performEffectGA = new(targetMode.Effect, new(targets, targetMode));
+                            ActionSystem.Instance.AddReaction(performEffectGA);
+
+                            //StatusEffect(버프/디버프)같이 적용 기능
+                            if (targetMode._AddedSECondition == GridTargetMode.AddedSECondition.Grid)   //그리드 선택 했을 때.
+                            {
+                                foreach (var effect in targetMode.AddedStatusEffects)
+                                {
+                                    if (effect is AddStatusEffectEffect)
+                                    {
+                                        PerformEffectGA performStatusEffectGA = new(effect, new(targets, HeroSystem.Instance.HeroView));
+                                        performEffectGA.PostReactions.Add((performStatusEffectGA, null));
+                                    }
                                 }
                             }
-
-                            if (InteractionSystem.GridSelected)  //그리드 선택 인터렉션 감지
+                            else if (targetMode._AddedSECondition == GridTargetMode.AddedSECondition.CombatantView)  //선택한 그리드에 대상이 있을 때.
                             {
-                                //전달할 데이터 :
-                                //1. 타겟으로 지정된 타일 좌표들
-                                PerformEffectGA performEffectGA = new(targetMode.Effect, new(targets, targetMode));
-                                ActionSystem.Instance.AddReaction(performEffectGA);
-
-                                //StatusEffect(버프/디버프)같이 적용 기능
-                                if (targetMode._AddedSECondition == GridTargetMode.AddedSECondition.Grid)   //그리드 선택 했을 때.
+                                List<CombatantView> combatants = new();
+                                foreach (var targetPos in targets)
+                                {
+                                    Token token = TokenSystem.Instance.GetTokenByPosition(targetPos);
+                                    if (token != null)
+                                        combatants.Add(token as CombatantView);
+                                }
+                                if (combatants.Count > 0)
                                 {
                                     foreach (var effect in targetMode.AddedStatusEffects)
                                     {
                                         if (effect is AddStatusEffectEffect)
                                         {
-                                            PerformEffectGA performStatusEffectGA = new(effect, new(targets, HeroSystem.Instance.HeroView));
+                                            PerformEffectGA performStatusEffectGA = new(effect, new(combatants, HeroSystem.Instance.HeroView));
                                             performEffectGA.PostReactions.Add((performStatusEffectGA, null));
                                         }
                                     }
                                 }
-                                else if (targetMode._AddedSECondition == GridTargetMode.AddedSECondition.CombatantView)  //선택한 그리드에 대상이 있을 때.
-                                {
-                                    List<CombatantView> combatants = new();
-                                    foreach (var targetPos in targets)
-                                    {
-                                        Token token = TokenSystem.Instance.GetTokenByPosition(targetPos);
-                                        if (token != null)
-                                            combatants.Add(token as CombatantView);
-                                    }
-                                    if (combatants.Count > 0)
-                                    {
-                                        foreach (var effect in targetMode.AddedStatusEffects)
-                                        {
-                                            if (effect is AddStatusEffectEffect)
-                                            {
-                                                PerformEffectGA performStatusEffectGA = new(effect, new(combatants, HeroSystem.Instance.HeroView));
-                                                performEffectGA.PostReactions.Add((performStatusEffectGA, null));
-                                            }
-                                        }
-                                    }
-                                }
-
-                                VisualGridCreator.Instance.RemoveVisualGridById(gameObject.GetInstanceID());
-                                break;
                             }
-                        }
 
-                        yield return null;
+                            VisualGridCreator.Instance.RemoveVisualGridById(gameObject.GetInstanceID());
+                            break;
+                        }
                     }
+
+                    yield return null;
                 }
-                else
-                {
-                    PerformEffectGA performEffectGA = new(targetMode.Effect, new(targetMode));  //그리드를 선택할 수 있는 기능의 GAEffect만 사용 가능
-                    ActionSystem.Instance.AddReaction(performEffectGA);
-                }
+            }
+            else
+            {
+                PerformEffectGA performEffectGA = new(targetMode.Effect, new(targetMode));  //그리드를 선택할 수 있는 기능의 GAEffect만 사용 가능
+                ActionSystem.Instance.AddReaction(performEffectGA);
             }
         }
     }

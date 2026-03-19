@@ -14,5 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <EffectType>k__BackingField: 1
   <Discription>k__BackingField: "N \uD134 \uB3D9\uC548 \uACF5\uACA9\uB825 z% \uAC10\uC18C"
+  <spriteImage>k__BackingField: {fileID: 21300000, guid: e05f53bc30becf347900e032504423c1,
+    type: 3}
   <effectInfos>k__BackingField:
   - 50

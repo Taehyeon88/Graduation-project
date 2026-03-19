@@ -17,6 +17,8 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
     private Vector3 dragStartPosition;
     private Quaternion dragStartRotation;
     public Card card { get; private set; }
+
+    private bool onDragPreView;
     public void SetUp(Card card)
     {
         this.card = card;
@@ -59,12 +61,41 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
     {
         if (!Interactions.Instance.PlayerCanInteract()) return;
         transform.position = eventData.position;
+
+        if (onDragPreView) return;
+        onDragPreView = true;
+
+        //그리드 미리보기
+        if (card.SelfEffects != null && card.SelfEffects.Count > 0)
+        {
+            Vector2Int heroPos = TokenSystem.Instance.GetTokenPosition(HeroSystem.Instance.HeroView);
+            VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), heroPos, "Hero_UseSelf");
+        }
+
+        if (card.GridTargetMode != null)
+        {
+            var targetMode = card.GridTargetMode;
+
+            Vector2Int currentPos = TokenSystem.Instance.GetTokenPosition(HeroSystem.Instance.HeroView);
+            bool penetration = targetMode.TargetMode is LineTM;
+            var range = targetMode.GridRangeMode.GetGridRanges(currentPos, targetMode.Distance, penetration);
+
+            //이동 카드일 경우, 자체적인 이동 범위 사용
+            if (targetMode.Effect is PlayerMoveEffect)
+            {
+                range = TokenSystem.Instance.GetCanMovePlace(HeroSystem.Instance.HeroView, targetMode.Distance);
+            }
+
+            //비주얼 공격 예상 범위 그리드 업데이트
+            foreach (var r in range)
+                VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), r, targetMode.WillSelectVGName);
+        }
     }
     public void OnEndDrag(PointerEventData eventData)
     {
         if (!Interactions.Instance.PlayerCanInteract()) return;
 
-        if (ManaSystem.Instance.HasEnoughMana(card.Mana) && rectTransform.anchoredPosition.y > -200f) //카드가 y좌표 -200를 넘었음 = DropArea
+        if (ManaSystem.Instance.HasEnoughMana(card.Mana) && rectTransform.anchoredPosition.y > 250f) //카드가 y좌표 250를 넘었음 = DropArea
         {
             PlayCardGA playCardGA = new(card);
             ActionSystem.Instance.Perform(playCardGA);
@@ -74,6 +105,10 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
             transform.position = dragStartPosition;
             transform.rotation = dragStartRotation;
         }
+
+        //미리보기 취소
+        VisualGridCreator.Instance.RemoveVisualGridById(gameObject.GetInstanceID());
+        onDragPreView = false;
         Interactions.Instance.PlayerIsDraging = false;
     }
 }

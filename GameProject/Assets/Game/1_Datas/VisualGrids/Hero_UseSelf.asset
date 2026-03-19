@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9473ac8937d88c54b805a05b80f1aac1, type: 3}
+  m_Name: Hero_UseSelf
+  m_EditorClassIdentifier: 
+  <VisualGridTypes>k__BackingField:
+  - rid: 5842417105210966052
+  - rid: 5842417105210966053
+  layerDepth: 2
+  references:
+    version: 2
+    RefIds:
+    - rid: 5842417105210966052
+      type: {class: FillType, ns: , asm: Assembly-CSharp}
+      data:
+        Color: {r: 0, g: 0.7133577, b: 1, a: 0.5882353}
+        sprite: {fileID: 21300000, guid: c24597d5a32fc364fba168752f092718, type: 3}
+    - rid: 5842417105210966053
+      type: {class: BorderType, ns: , asm: Assembly-CSharp}
+      data:
+        Color: {r: 0, g: 0.56786895, b: 1, a: 0}
+        sprite: {fileID: 21300000, guid: 4b6b9674e5b1c6140a50ea7b1ffe278f, type: 3}

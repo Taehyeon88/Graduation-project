@@ -16,29 +16,26 @@ MonoBehaviour:
   <Mana>k__BackingField: 1
   <Image>k__BackingField: {fileID: 0}
   <SelfEffects>k__BackingField: []
-  <GridTargetModes>k__BackingField:
-  - <Distance>k__BackingField: 1
+  <GridTargetMode>k__BackingField:
+    <Distance>k__BackingField: 1
     <TargetMode>k__BackingField:
-      rid: 5842416865367293952
+      rid: -2
     <GridRangeMode>k__BackingField:
-      rid: 5842416865367293953
+      rid: -2
     UseVisualGrid: 0
     UseSelectVG: 0
-    WillSelectVGName: Hero_WillAttack
-    SelectVGName: Hero_Attack
+    WillSelectVGName: 
+    SelectVGName: 
     <Effect>k__BackingField:
-      rid: 5842417010612109316
+      rid: 5842417105210966022
+    <_AddedSECondition>k__BackingField: 0
     <AddedStatusEffects>k__BackingField: []
   references:
     version: 2
     RefIds:
-    - rid: 5842416865367293952
-      type: {class: SingleTM, ns: , asm: Assembly-CSharp}
-      data: 
-    - rid: 5842416865367293953
-      type: {class: AllAroundRM, ns: , asm: Assembly-CSharp}
-      data: 
-    - rid: 5842417010612109316
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 5842417105210966022
       type: {class: ShoulderBashEffect, ns: , asm: Assembly-CSharp}
       data:
         distance: 1

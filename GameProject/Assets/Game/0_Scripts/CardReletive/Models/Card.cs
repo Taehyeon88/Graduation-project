@@ -9,7 +9,7 @@ public class Card
     public string Description => data.Description;
     public Sprite Image => data.Image;
     public List<Effect> SelfEffects => data.SelfEffects;
-    public List<GridTargetMode> GridTargetMode => data.GridTargetModes;
+    public GridTargetMode GridTargetMode => data.GridTargetMode;
     public int Mana { get; private set; }
 
     private readonly CardData data;
