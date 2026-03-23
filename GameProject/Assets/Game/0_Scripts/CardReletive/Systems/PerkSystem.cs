@@ -9,13 +9,13 @@ public class PerkSystem : Singleton<PerkSystem>
     public void AddPerk(Perk perk)
     {
         perks.Add(perk);
-        perksUI.AddPerkUI(perk);
+        UISystem.Instance.UpdatePerkUI(perk, true);
         perk.OnAdd();
     }
     public void RemovePerk(Perk perk)
     {
         perks.Remove(perk);
-        perksUI.RemovePerkUI(perk);
+        UISystem.Instance.UpdatePerkUI(perk, false);
         perk.OnRemove();
     }
 }

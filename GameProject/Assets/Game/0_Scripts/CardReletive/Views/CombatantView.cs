@@ -70,7 +70,7 @@ public class CombatantView : Token
             statusEffectUIs.Add(type, stackCount);
             effectInfo.SetStatusEffectInfo(infoes, type);    //해당 StatusEffectInfo 저장
         }
-        statusEffectsUI.UpdateStatusEffect(type, GetStatusEffectStacks(type), sprite);
+        UISystem.Instance.UpdateStatusEffectUI(this, type, GetStatusEffectStacks(type), sprite);
     }
     public void RemoveStatusEffect(StatusEffectType type, int stackCount)
     {
@@ -81,7 +81,7 @@ public class CombatantView : Token
             {
                 statusEffectUIs.Remove(type);
             }
-            statusEffectsUI.UpdateStatusEffect(type, GetStatusEffectStacks(type));
+            UISystem.Instance.UpdateStatusEffectUI(this, type, GetStatusEffectStacks(type));
         }
     }
     public int GetStatusEffectStacks(StatusEffectType type)
