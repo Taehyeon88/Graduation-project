@@ -6,7 +6,9 @@ using UnityEngine.InputSystem;
 
 public enum InteractionCase
 {
-    None, SetHero, UseCard, HeroMove, RollDice, SelectGrid
+    None, 
+    SetUp,      //전투 시작전, 셋업 단계
+    MainGame,   //메인 전투 단계
 }
 public class InteractionSystem : Singleton<InteractionSystem>
 {
@@ -15,7 +17,6 @@ public class InteractionSystem : Singleton<InteractionSystem>
     [SerializeField] private PlayerInput playerInput;
 
     private InputAction m_SelectGrid;
-    private InputAction m_RollDice;
     private InteractionCase currentInteraction;
 
     private event Action<bool> updatedAction;
@@ -26,24 +27,19 @@ public class InteractionSystem : Singleton<InteractionSystem>
     private void Initialze()
     {
         m_SelectGrid = playerInput.actions["SelectGrid"];
-        m_RollDice = playerInput.actions["RollDice"];
     }
 
     private void Update()
     {
         switch (currentInteraction)
         {
-            case InteractionCase.SetHero:
+            case InteractionCase.SetUp:
                 updatedAction?.Invoke(m_SelectGrid.WasPressedThisFrame());
                 break;
-
-            case InteractionCase.HeroMove:
-                updatedAction?.Invoke(m_SelectGrid.WasPressedThisFrame());
+            case InteractionCase.MainGame:
+                updatedAction?.Invoke(m_SelectGrid.WasPerformedThisFrame());
                 break;
 
-            case InteractionCase.RollDice:
-                updatedAction?.Invoke(m_RollDice.WasPressedThisFrame());
-                break;
         }
 
         GridSelected = m_SelectGrid.WasPressedThisFrame();

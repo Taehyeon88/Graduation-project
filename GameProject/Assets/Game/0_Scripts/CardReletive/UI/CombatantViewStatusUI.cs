@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.GraphicsBuffer;
 
 public class CombatantViewStatusUI : MonoBehaviour
 {
@@ -15,14 +16,46 @@ public class CombatantViewStatusUI : MonoBehaviour
     [SerializeField] private GridLayoutGroup perkUI;
     [SerializeField] private RectTransform hero_statusEffectUI;
 
-    private Dictionary<int, Dictionary<StatusEffectType, StatusEffectUI>> statusEffectUIDic = new();
-    private readonly List<PerkUI> perkUIs = new();
+    [Header("몬스터 상태 정보창")]
+    [SerializeField] private EnemyUI enemyUIPrefab;
+    [SerializeField] private RectTransform enemyInfosUI;
+    [SerializeField] private RectTransform enemysUI;
+    [SerializeField] private Image enemyImage;
+    [SerializeField] private TMP_Text enemyNameText;
+    [SerializeField] private Slider enemyHPSlider;
+    [SerializeField] private TMP_Text enemyHPText;
+    [SerializeField] private RectTransform enemy_statusEffectUI;
+    [SerializeField] private RectTransform enemyStatusEffectUIPool;
 
+    //공용
+    private Dictionary<int, Dictionary<StatusEffectType, StatusEffectUI>> statusEffectUIDic = new();
+    
+    //영웅
+    private readonly List<PerkUI> perkUIs = new();
     private bool perkUIActive = true;
-    private int perkCount => perkUI.transform.childCount; //PerkSystem.Instance.perks.Count;
+    private int perkCount => perkUI.transform.childCount;
+
+    //몬스터
+    private List<EnemyView> enemies => new(TokenSystem.Instance.EnemyViews);
+    private int enemyCount => TokenSystem.Instance.EnemyViews.Count;
+    private List<EnemyUI> enemyUIs = new();
+    private EnemyView currentSelectedEnemy;
+    private bool isEnemyInfosUIActive = true;
 
     void Update()
     {
+        //적 인터렉션 -> 상태 UI 대상 변경
+        if (InteractionSystem.GridSelected)
+        {
+            Vector3 pos = TokenSystem.Instance.IsoWorld.MouseIsoTilePosition(1f);
+            Vector2Int isoPosition = new((int)pos.x, (int)pos.y);
+            Token token = TokenSystem.Instance.GetTokenByPosition(isoPosition);
+            if (token is EnemyView enemyView)
+            {
+                SetEnemyUIInfos(enemyView);
+            }
+        }
+
         //영웅 상태 UI 자동 정렬
         Token heroView = HeroSystem.Instance.HeroView;
         if (heroView != null)
@@ -39,7 +72,6 @@ public class CombatantViewStatusUI : MonoBehaviour
                 int rowCount = perkCount / culumnCount + (perkCount % culumnCount == 0 ? 0 : 1);
 
                 //hero_equipUI위치 + //크기 + 윗 패딩 + 아랫 패딩 + 셀 크기 * 줄 개수 + 스페이싱 크기 * (줄 개수 -1)
-
                 targetY = hero_equipUI.anchoredPosition.y
                     - hero_equipUI.sizeDelta.y
                     - paddingSum
@@ -55,27 +87,64 @@ public class CombatantViewStatusUI : MonoBehaviour
             }
 
             hero_statusEffectUI.anchoredPosition = new(hero_statusEffectUI.anchoredPosition.x, targetY);
+        }
 
-            ////상태효과UI 예외처리
-            //int heroId = heroView.gameObject.GetInstanceID();
-            //if (statusEffectUIDic.ContainsKey(heroId))
-            //{
-            //    var statusEffectUIs = statusEffectUIDic[heroId];
-            //    if (statusEffectUIs != null)
-            //    {
-            //        if (statusEffectUIs.Count == 0)
-            //        {
-            //            hero_statusEffectUI.GetComponent<ContentSizeFitter>().enabled = false;
-            //            hero_statusEffectUI.sizeDelta = new(hero_statusEffectUI.sizeDelta.x, hero_equipUI.sizeDelta.y);
-            //        }
-            //        else
-            //        {
-            //            hero_statusEffectUI.GetComponent<ContentSizeFitter>().enabled = true;
-            //        }
-            //    }
-            //}
+        //몬스터 상태 UI 정렬
+        if (enemyCount > 0)
+        {
+            //파괴된 적의 UI 제거 (자동 제거)
+            for (int i = 0; i < enemyUIs.Count; i++)
+            {
+                if (enemyUIs[i] == null) continue;
+                if (enemyUIs[i].enemyView == null)
+                {
+                    Destroy(enemyUIs[i].gameObject);
+                    enemyUIs[i] = null;
+                }
+            }
+            enemyUIs.RemoveAll(e => e == null);
+
+            //현재 몬스터들에 맞게 UI생성 (자동 생성)
+            if (enemyCount != enemyUIs.Count)
+            {
+                var temp = this.enemies;
+                foreach (var enemyUI in enemyUIs)
+                {
+                    if (temp.Contains(enemyUI.enemyView))
+                        temp.Remove(enemyUI.enemyView);
+                }
+                foreach (var enemy in temp)
+                {
+                    EnemyUI enemyUI = Instantiate(enemyUIPrefab, enemysUI);
+                    enemyUI.Set(enemy, this);
+                    enemyUIs.Add(enemyUI);
+                }
+            }
+        }
+
+        //현재 보고 있는 적 정보 실시간 업데이트 
+        //예: 체력, 다음 할 공격, 상태효과
+        if (currentSelectedEnemy != null)
+        {
+            //체력 업데이트
+            enemyHPSlider.maxValue = currentSelectedEnemy.MaxHealth;
+            enemyHPSlider.value = currentSelectedEnemy.CurrentHealth;
+            enemyHPText.text = $"{currentSelectedEnemy.CurrentHealth}/{currentSelectedEnemy.MaxHealth}";
+
+            //다음 할 공격 업데이트
+
+        }
+        else
+        {
+            //현재 설정된 대상 없을 때, 자동 설정
+            //예: 초기 혹은 선택 대상이 사망시 사용
+            var enemies = this.enemies;
+            if (enemies.Count > 0 && enemies[0] != null)
+                SetEnemyUIInfos(enemies[0]);
         }
     }
+
+    //Hero
 
     /// <summary>
     /// 유물UI 활성화 설정 함수(OnPerkUIButton 체인)
@@ -110,6 +179,57 @@ public class CombatantViewStatusUI : MonoBehaviour
         }
     }
 
+    //Enemy
+
+    /// <summary>
+    /// 현재 보고 있는 몬스터(대상) 결정(설정) 함수
+    /// </summary>
+    /// <param name="enemyView"></param>
+    public void SetEnemyUIInfos(EnemyView enemyView)
+    {
+        enemyImage.sprite = enemyView.EnemySprite;
+        enemyNameText.text = enemyView.EnemyName;
+        enemyHPSlider.maxValue = enemyView.MaxHealth;
+        enemyHPSlider.value = enemyView.CurrentHealth;
+        enemyHPText.text = $"{enemyView.CurrentHealth}/{enemyView.MaxHealth}";
+
+        //상태 효과 업데이트
+
+        //기존 적 상태 효과UI Pool로 되돌리기
+        if (currentSelectedEnemy != null)
+        {
+            int preTokenId = currentSelectedEnemy.gameObject.GetInstanceID();
+            if (statusEffectUIDic.ContainsKey(preTokenId))
+            {
+                var statusEffectUIs = statusEffectUIDic[preTokenId];
+                foreach (var UI in statusEffectUIs.Values)
+                {
+                    UI.transform.SetParent(enemyStatusEffectUIPool);
+                }
+            }
+        }
+        //새로운 적 상태 효과UI 적용
+        int tokenId = enemyView.gameObject.GetInstanceID();
+        if (statusEffectUIDic.ContainsKey(tokenId))
+        {
+            var statusEffectUIs = statusEffectUIDic[tokenId];
+            foreach (var UI in statusEffectUIs.Values)
+            {
+                UI.transform.SetParent(enemy_statusEffectUI);
+            }
+        }
+
+        currentSelectedEnemy = enemyView;
+    }
+
+    public void UpdateEnemyInfosUIActive()
+    {
+        isEnemyInfosUIActive = !isEnemyInfosUIActive;
+        enemyInfosUI.gameObject.SetActive(isEnemyInfosUIActive);
+    }
+
+    //Combatant
+
     /// <summary>
     /// 영웅, 몬스터 공용 상태이상UI 업데이트 함수
     /// </summary>
@@ -122,7 +242,6 @@ public class CombatantViewStatusUI : MonoBehaviour
         int tokenId = combatantView.gameObject.GetInstanceID();
         if (!statusEffectUIDic.ContainsKey(tokenId))
         {
-            Debug.Log("영웅ID추가 " +  tokenId);
             statusEffectUIDic.Add(tokenId, new());
         }
         var statusEffectUIs = statusEffectUIDic[tokenId];
@@ -146,9 +265,18 @@ public class CombatantViewStatusUI : MonoBehaviour
                     StatusEffectUI statusEffectUI = Instantiate(statusEffectPrefab, hero_statusEffectUI.transform);
                     statusEffectUIs.Add(statusEffectType, statusEffectUI);
                 }
-                else if (combatantView is EnemyView)
+                else if (combatantView is EnemyView enemyView)
                 {
-
+                    if (currentSelectedEnemy == enemyView)
+                    {
+                        StatusEffectUI statusEffectUI = Instantiate(statusEffectPrefab, enemy_statusEffectUI.transform);
+                        statusEffectUIs.Add(statusEffectType, statusEffectUI);
+                    }
+                    else
+                    {
+                        StatusEffectUI statusEffectUI = Instantiate(statusEffectPrefab, enemyStatusEffectUIPool.transform);
+                        statusEffectUIs.Add(statusEffectType, statusEffectUI);
+                    }
                 }
             }
             statusEffectUIs[statusEffectType].Set(sprite, stackCount);

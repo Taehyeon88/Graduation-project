@@ -126,7 +126,7 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
             else
                 VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), gridPos, "Hero_SetUp_False");
         }
-        InteractionSystem.Instance.SetInteraction(InteractionCase.SetHero, UpdateHeroPreview);
+        InteractionSystem.Instance.SetInteraction(InteractionCase.SetUp, UpdateHeroPreview);
     }
 
     /// <summary>

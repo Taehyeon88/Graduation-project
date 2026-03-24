@@ -9,10 +9,8 @@ using System.Linq;
 
 public class CombatantView : Token
 {
-    [SerializeField] protected TMP_Text healthText;
     [SerializeField] private Transform wrapper;
 
-    [SerializeField] private StatusEffectsUI statusEffectsUI;
     private Dictionary<StatusEffectType, int> statusEffectUIs = new();
     private StatusEffectStorage effectInfo = new();
 
@@ -21,7 +19,6 @@ public class CombatantView : Token
     public void SetUpBase(int health, TokenData tokenData, IsoObject isoObject)
     {
         MaxHealth = CurrentHealth = health;     //몬스터 & 플레이어 체력 셋업
-        UpdateHealthText();
 
         foreach (Transform child in wrapper)    //몬스터 & 플레이어 모델 셋업
             Destroy(child.gameObject);
@@ -30,11 +27,7 @@ public class CombatantView : Token
 
         TokenTransform = isoObject;             //몬스터 & 플레이어 isomertric용 transform 셋업
     }
-    public void UpdateHealthText()
-    {
-        if(healthText != null)
-            healthText.text = $"HP : {CurrentHealth}";
-    }
+
     public void Damage(int amount)
     {
         int remainingDamage = amount;
@@ -57,7 +50,6 @@ public class CombatantView : Token
             CurrentHealth = Mathf.Max(CurrentHealth - remainingDamage, 0);
         }
         transform.DOShakePosition(0.2f, 0.5f);
-        UpdateHealthText();
     }
     public void AddStatusEffect(StatusEffectType type, int stackCount, Sprite sprite, float[] infoes = null)
     {

@@ -12,7 +12,5 @@ public class WallView : CombatantView
             isObject = gameObject.AddComponent<IsoObject>();
 
         SetUpBase(1000000, wallData, isObject);
-
-        healthText = null;    //임시 - 체력UI 삭제
     }
 }
