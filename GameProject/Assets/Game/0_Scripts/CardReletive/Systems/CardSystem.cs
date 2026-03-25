@@ -130,10 +130,13 @@ public class CardSystem : Singleton<CardSystem>
                 }
             }
 
-            PlayCardGA playCard2GA = new(playCardGA.Card, false);
-            playCardGA.PostReactions.Add((playCard2GA, null));
+            if (playCardGA.Card.GridTargetMode != null && playCardGA.Card.GridTargetMode.GridRangeMode != null)
+            {
+                PlayCardGA playCard2GA = new(playCardGA.Card, false);
+                playCardGA.PostReactions.Add((playCard2GA, null));
+            }
         }
-        else if (playCardGA.Card.GridTargetMode != null)
+        else
         {
             var targetMode = playCardGA.Card.GridTargetMode;
 

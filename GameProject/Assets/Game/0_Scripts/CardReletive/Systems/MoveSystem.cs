@@ -99,18 +99,22 @@ public class MoveSystem : Singleton<MoveSystem>
             }
         }
     }
+    private CombatantView mover;
+    private void Update()
+    {
+        if (mover != null)
+        {
+            Debug.Log($"위치에 비어있는 여부!! : {TokenSystem.Instance.IsGridEmpty(TokenSystem.Instance.GetTokenPosition(mover))}");
+        }
+    }
     private IEnumerator PerformMoveGAPerformer(PerformMoveGA performMoveGA)
     {
-        if (performMoveGA.mover == null) yield break;   //파괴된 몬스터 예외처리
-
-        //상태 이상 - 고립 처리
-        int isolationStack = performMoveGA.mover.GetStatusEffectStacks(StatusEffectType.ISOLATION);
-        if (isolationStack > 0)
-            yield break;
-
         CombatantView mover = performMoveGA.mover;
         List<Vector2Int> path = performMoveGA.path;
 
+        if (mover == null) yield break;   //파괴된 몬스터 예외처리
+
+        //대상 이동 처리
         foreach (Vector2Int p in path)
         {
             MoveGA moveGA = new(mover, p);

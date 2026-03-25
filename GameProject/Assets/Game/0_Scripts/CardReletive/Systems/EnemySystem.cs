@@ -50,9 +50,18 @@ public class EnemySystem : Singleton<EnemySystem>
             ApplyBurnGA applyBurnGA = new(burnStack, enemy);
             ActionSystem.Instance.AddReaction(applyBurnGA);
         }
+
+        //!! - 고립 조건에 걸리는 행동은 예외처리!!
         //미리 예약한 행동 실행
         if (enemy.actAction != null) 
             ActionSystem.Instance.AddReaction(enemy.actAction);
+
+        //상태 이상 - 고립 처리
+        int isolationStack = enemy.GetStatusEffectStacks(StatusEffectType.ISOLATION);
+        if (isolationStack > 0)
+        {
+            yield break;
+        }
 
         //이동 판단 및 실행
         enemy.moveAction = enemy.Enemy.JudgeMoveAction(enemy);

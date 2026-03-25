@@ -69,7 +69,7 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
             VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), heroPos, "Hero_UseSelf");
         }
 
-        if (card.GridTargetMode != null)
+        if (card.GridTargetMode != null && card.GridTargetMode.GridRangeMode != null)
         {
             var targetMode = card.GridTargetMode;
 
