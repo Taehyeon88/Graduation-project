@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class StatusEffectStorage
 {
-    //방어막N
+    //info가 필요 없는 것: 방어막N, 고립N
 
     //혼란N
     public float disarrayPercent { get; private set; }
@@ -15,8 +15,6 @@ public class StatusEffectStorage
     {
         switch (type)
         {
-            case StatusEffectType.ARMOR: break;
-
             case StatusEffectType.DISARRAY:
                 disarrayPercent = infoes[0];
             break;

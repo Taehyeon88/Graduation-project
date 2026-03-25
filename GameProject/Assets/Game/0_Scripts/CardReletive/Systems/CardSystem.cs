@@ -155,7 +155,7 @@ public class CardSystem : Singleton<CardSystem>
                         {
                             //전달할 데이터 :
                             //1. 타겟으로 지정된 타일 좌표들
-                            PerformEffectGA performEffectGA = new(targetMode.Effect, new(targets, targetMode));
+                            PerformEffectGA performEffectGA = new(targetMode.Effect, new(targets, targetMode, HeroSystem.Instance.HeroView));
                             ActionSystem.Instance.AddReaction(performEffectGA);
 
                             //StatusEffect(버프/디버프)같이 적용 기능

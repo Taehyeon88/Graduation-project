@@ -27,17 +27,20 @@ public class ActionSystem : Singleton<ActionSystem>
 
     private IEnumerator Flow(GameAction action, Action OnFlowFinished = null)
     {
-        reactions = action.PreReactions;
-        PerformSubscribers(action, preSubs);
-        yield return PerformReactions();
+        if (action != null)
+        {
+            reactions = action.PreReactions;
+            PerformSubscribers(action, preSubs);
+            yield return PerformReactions();
 
-        reactions = action.PerformReactions;
-        yield return PerformPerformer(action);
-        yield return PerformReactions();
+            reactions = action.PerformReactions;
+            yield return PerformPerformer(action);
+            yield return PerformReactions();
 
-        reactions = action.PostReactions;
-        PerformSubscribers(action, postSubs);
-        yield return PerformReactions();
+            reactions = action.PostReactions;
+            PerformSubscribers(action, postSubs);
+            yield return PerformReactions();
+        }
 
         OnFlowFinished?.Invoke();
     }

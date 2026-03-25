@@ -9,18 +9,20 @@ public class PlayerCardEffectSystem : MonoBehaviour
         ActionSystem.AttachPerformer<AttackEnemyGA>(AttackEnemyGAPerformer);
         ActionSystem.AttachPerformer<ShoulderBashGA>(ShoulderBashGAPerformer);
         ActionSystem.AttachPerformer<ShieldBashGA>(ShieldBashGAPerformer);
+        ActionSystem.AttachPerformer<SplashGA>(SplashGAPerformer);
     }
     private void OnDisable()
     {
         ActionSystem.DetachPerformer<AttackEnemyGA>();
         ActionSystem.DetachPerformer<ShoulderBashGA>();
         ActionSystem.DetachPerformer<ShieldBashGA>();
+        ActionSystem.DetachPerformer<SplashGA>();
     }
 
     //Performers
 
     /// <summary>
-    /// 기본 몬스터 공격
+    /// 인접 - 기본 몬스터 공격
     /// </summary>
     /// <param name="attackEnemyGA"></param>
     /// <returns></returns>
@@ -49,7 +51,7 @@ public class PlayerCardEffectSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// 어깨치기 기술
+    /// 인접 - 어깨치기 기술
     /// </summary>
     /// <param name="shoulderBashGA"></param>
     /// <returns></returns>
@@ -139,7 +141,7 @@ public class PlayerCardEffectSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// 방패가격 기술
+    /// 인접 - 방패가격 기술
     /// </summary>
     /// <param name="shieldBashGA"></param>
     /// <returns></returns>
@@ -168,5 +170,49 @@ public class PlayerCardEffectSystem : MonoBehaviour
         }
 
         yield return null;
+    }
+
+    private IEnumerator SplashGAPerformer(SplashGA splashGA)
+    {
+        foreach (var targetPos in splashGA.TargetPoses)
+        {
+            CombatantView target = TokenSystem.Instance.GetTokenByPosition(targetPos) as CombatantView;
+            var range = splashGA.GridRangeMode.GetGridRanges(targetPos, splashGA.Distance, splashGA.IsPentration);
+
+            if (target != null)
+            {
+                DealDamageGA dealDamageGA = new(splashGA.Damage, new() { target }, splashGA.Caster);
+                ActionSystem.Instance.AddReaction(dealDamageGA);
+
+                List<CombatantView> splashTargets = new();
+                foreach (var r in range)
+                {
+                    CombatantView tg = TokenSystem.Instance.GetTokenByPosition(r) as CombatantView;
+                    if (tg != null)
+                    {
+                        splashTargets.Add(tg);
+                    }
+                    Debug.Log($"그리드 비주얼: {string.Join(",", range)}");
+                    VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), r, "Hero_WillAttack");
+                }
+                if (splashTargets.Count > 0)
+                {
+                    DealDamageGA dDGA = new(splashGA.SplashDamage, splashTargets, splashGA.Caster);
+                    dealDamageGA.PostReactions.Add((dDGA, null));
+                }
+            }
+            else
+            {
+                Debug.Log("해당 범위 안에 대상이 없음");
+            }
+        }
+        splashGA.PostReactions.Add((null, EndSplashVisualGrid));
+
+        yield return null;
+    }
+    private void EndSplashVisualGrid()
+    {
+        Debug.Log("삭제용");
+        VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "Hero_WillAttack");
     }
 }

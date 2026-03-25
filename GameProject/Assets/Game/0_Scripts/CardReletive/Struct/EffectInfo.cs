@@ -65,10 +65,10 @@ public struct EffectInfo
     /// CardSystem¿« UseVisualGrid == true¿Œ GridTargetModeøÎ
     /// </summary>
     /// <param name="targetPoses"></param>
-    public EffectInfo(List<Vector2Int> targetPoses, GridTargetMode gridTagetMode)
+    public EffectInfo(List<Vector2Int> targetPoses, GridTargetMode gridTagetMode, CombatantView caster)
     {
         this.targets = null;
-        this.caster = null;
+        this.caster = caster;
         this.gridTargetMode = gridTagetMode;
         this.targetPoses = targetPoses;
     }
