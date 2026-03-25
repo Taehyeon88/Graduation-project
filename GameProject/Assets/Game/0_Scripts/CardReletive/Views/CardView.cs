@@ -17,8 +17,8 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
     private Vector3 dragStartPosition;
     private Quaternion dragStartRotation;
     public Card card { get; private set; }
+    public bool lockCardUse { get; set; } = false;
 
-    private bool onDragPreView;
     public void SetUp(Card card)
     {
         this.card = card;
@@ -31,7 +31,7 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (!Interactions.Instance.PlayerCanHover()) return;
+        if (!Interactions.Instance.PlayerCanHover() || lockCardUse) return;
         wrapper.SetActive(false);
         Vector2 pos = rectTransform.anchoredPosition + Vector2.up * 120f;
         CardViewHoverSystem.Instance.Show(card, pos);
@@ -39,14 +39,14 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (!Interactions.Instance.PlayerCanHover()) return;
+        if (!Interactions.Instance.PlayerCanHover() || lockCardUse) return;
         CardViewHoverSystem.Instance.Hide();
         wrapper.SetActive(true);
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (!Interactions.Instance.PlayerCanInteract()) return;
+        if (!Interactions.Instance.PlayerCanInteract() || lockCardUse) return;
 
         Interactions.Instance.PlayerIsDraging = true;
         wrapper.SetActive(true);
@@ -59,11 +59,8 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (!Interactions.Instance.PlayerCanInteract()) return;
+        if (!Interactions.Instance.PlayerCanInteract() || lockCardUse) return;
         transform.position = eventData.position;
-
-        if (onDragPreView) return;
-        onDragPreView = true;
 
         //그리드 미리보기
         if (card.SelfEffects != null && card.SelfEffects.Count > 0)
@@ -93,7 +90,7 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
     }
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (!Interactions.Instance.PlayerCanInteract()) return;
+        if (!Interactions.Instance.PlayerCanInteract() || lockCardUse) return;
 
         if (ManaSystem.Instance.HasEnoughMana(card.Mana) && rectTransform.anchoredPosition.y > 250f) //카드가 y좌표 250를 넘었음 = DropArea
         {
@@ -108,7 +105,6 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
 
         //미리보기 취소
         VisualGridCreator.Instance.RemoveVisualGridById(gameObject.GetInstanceID());
-        onDragPreView = false;
         Interactions.Instance.PlayerIsDraging = false;
     }
 }

@@ -51,6 +51,34 @@ public class HandView : MonoBehaviour
         }
     }
 
+    public void SetCardLockView(bool active, Card target)
+    {
+        CardView card = GetCardView(target);
+
+        if(card == null) return;
+
+        if (active && !card.lockCardUse)
+        {
+            //사용 불가 실제 처리
+            card.lockCardUse = true;
+            //사용 불가 비주얼처리
+            Image[] images = card.GetComponentsInChildren<Image>(); //부모 오브젝트의 image 제외
+            images[0] = null;
+            foreach (var image in images)
+                if (image != null) image.color = new Color32(100, 100, 100, 255);
+        }
+        else if (!active && card.lockCardUse)
+        {
+            //사용 불가 해제 실제 처리
+            card.lockCardUse = false;
+            //사용 불가 해제 비주얼처리
+            Image[] images = card.GetComponentsInChildren<Image>(); //부모 오브젝트의 image 제외
+            images[0] = null;
+            foreach (var image in images)
+                if (image != null) image.color = Color.white;
+        }
+    }
+
     private CardView GetCardView(Card card)
     {
         return cards.Find(cardView => cardView.card == card);

@@ -15,37 +15,31 @@ MonoBehaviour:
   <Description>k__BackingField: "\uC774\uAC83\uC740 \uD14C\uC2A4\uD2B8\uC6A9 \uBC29\uC5B4\uCE74\uB4DC\uC785\uB2C8\uB2E4."
   <Mana>k__BackingField: 1
   <Image>k__BackingField: {fileID: 0}
+  <CardType>k__BackingField: 2
   <SelfEffects>k__BackingField:
   - rid: 5842417010612109312
-  <GridTargetModes>k__BackingField:
-  - <Distance>k__BackingField: 2
+  <GridTargetMode>k__BackingField:
+    <Distance>k__BackingField: 1
     <TargetMode>k__BackingField:
-      rid: 5842417010612109313
+      rid: -2
     <GridRangeMode>k__BackingField:
-      rid: 5842417010612109314
-    UseVisualGrid: 1
+      rid: -2
+    UseVisualGrid: 0
     UseSelectVG: 0
-    WillSelectVGName: Hero_Move
+    WillSelectVGName: 
     SelectVGName: 
     <Effect>k__BackingField:
-      rid: 5842417010612109315
+      rid: -2
+    <_AddedSECondition>k__BackingField: 0
     <AddedStatusEffects>k__BackingField: []
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 5842417010612109312
       type: {class: AddStatusEffectEffect, ns: , asm: Assembly-CSharp}
       data:
         statusEffectType: 0
         stackCount: 5
         isMySelf: 1
-    - rid: 5842417010612109313
-      type: {class: SingleTM, ns: , asm: Assembly-CSharp}
-      data: 
-    - rid: 5842417010612109314
-      type: {class: AllAroundRM, ns: , asm: Assembly-CSharp}
-      data: 
-    - rid: 5842417010612109315
-      type: {class: PlayerMoveEffect, ns: , asm: Assembly-CSharp}
-      data:
-        distance: 0

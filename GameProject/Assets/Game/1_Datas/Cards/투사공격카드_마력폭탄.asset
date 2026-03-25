@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: "\uD22C\uC0AC\uACF5\uACA9\uCE74\uB4DC_\uB9C8\uB825\uD3ED\uD0C4"
   m_EditorClassIdentifier: 
   <Description>k__BackingField: "\uC774\uAC83\uC740 \uD3ED\uBC1C \uD14C\uC2A4\uD2B8\uC784."
-  <Mana>k__BackingField: 1
+  <Mana>k__BackingField: 2
   <Image>k__BackingField: {fileID: 0}
   <CardType>k__BackingField: 1
+  <CardTypeType>k__BackingField: 5
   <SelfEffects>k__BackingField: []
   <GridTargetMode>k__BackingField:
     <Distance>k__BackingField: 2

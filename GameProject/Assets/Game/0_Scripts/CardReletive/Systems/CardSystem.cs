@@ -15,6 +15,7 @@ public class CardSystem : Singleton<CardSystem>
     private readonly List<Card> hand = new();
 
     public int drawPileCA => drawPile.Count;    public int discardPileCA => discardPile.Count;
+    private bool isIsolation;
 
     private void OnEnable()
     {
@@ -27,6 +28,34 @@ public class CardSystem : Singleton<CardSystem>
         ActionSystem.DetachPerformer<DrawCardsGA>();
         ActionSystem.DetachPerformer<DiscardAllCardsGA>();
         ActionSystem.DetachPerformer<PlayCardGA>();
+    }
+    private void Update()
+    {
+        //상태이상 - 고립 처리
+        CombatantView hero = HeroSystem.Instance.HeroView;
+        if (hero != null)
+        {
+            int isolationStack = hero.GetStatusEffectStacks(StatusEffectType.ISOLATION);
+            if (isolationStack > 0)
+            {
+                //손패의 있는 모든 이동 타입의 카드 비활성화 처리
+                foreach (var card in hand)
+                {
+                    if (card.CardTypeType == CardTypeType.Move)
+                        handView.SetCardLockView(true, card);
+                }
+                isIsolation = true;
+            }
+            else if (isIsolation)
+            {
+                foreach (var card in hand)
+                {
+                    if (card.CardTypeType == CardTypeType.Move)
+                        handView.SetCardLockView(true, card);
+                }
+                isIsolation = false;
+            }
+        }
     }
 
     //Public
@@ -74,6 +103,7 @@ public class CardSystem : Singleton<CardSystem>
         }
         hand.Clear();
     }
+
     private IEnumerator PlayCardPerformer(PlayCardGA playCardGA)
     {
         if (playCardGA.IsPart1)

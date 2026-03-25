@@ -9,6 +9,7 @@ public class CardData : ScriptableObject
     [field: SerializeField] public int Mana { get; private set; }
     [field: SerializeField] public Sprite Image { get; private set; }
     [field: SerializeField] public CardType CardType { get; private set; }
+    [field: SerializeField] public CardTypeType CardTypeType { get; private set; }
     [field: SerializeReference, SR] public List<Effect> SelfEffects { get; private set; } = null;
     [field: SerializeField] public GridTargetMode GridTargetMode { get; private set; }
 }

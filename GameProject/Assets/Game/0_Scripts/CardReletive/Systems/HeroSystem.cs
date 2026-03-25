@@ -22,9 +22,21 @@ public class HeroSystem : Singleton<HeroSystem>
     //Performers
     private IEnumerator HeroFirstMoveGAPerformer(HeroFirstMoveGA heroFristMoveGA)
     {
+        bool isFirsMove = true;
+
+        //상태 이상 - 고립 처리
+        int isolationStack = HeroView.GetStatusEffectStacks(StatusEffectType.ISOLATION);
+        if (isolationStack > 0) 
+            isFirsMove = false;
+
         //플레이어 카드 드로우
-        DrawCardsGA drawCardGA = new(5, true);
+        DrawCardsGA drawCardGA = new(5, isFirsMove);
         ActionSystem.Instance.AddReaction(drawCardGA);
+
+        if (!isFirsMove)
+        {
+            yield break;
+        }
 
         //플레이어 이동 가능 여부 판단
         var canMovePlaces = TokenSystem.Instance.GetCanMovePlace(HeroView, heroFristMoveGA.SPD);

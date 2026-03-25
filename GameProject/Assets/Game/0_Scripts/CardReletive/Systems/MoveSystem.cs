@@ -103,6 +103,11 @@ public class MoveSystem : Singleton<MoveSystem>
     {
         if (performMoveGA.mover == null) yield break;   //파괴된 몬스터 예외처리
 
+        //상태 이상 - 고립 처리
+        int isolationStack = performMoveGA.mover.GetStatusEffectStacks(StatusEffectType.ISOLATION);
+        if (isolationStack > 0)
+            yield break;
+
         CombatantView mover = performMoveGA.mover;
         List<Vector2Int> path = performMoveGA.path;
 

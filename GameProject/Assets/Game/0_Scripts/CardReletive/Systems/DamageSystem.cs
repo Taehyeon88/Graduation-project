@@ -37,19 +37,22 @@ public class DamageSystem : Singleton<DamageSystem>
 
 
             target.Damage(dealDamageGA.Amount);
-            Instantiate(damageVFX, target.transform.position, target.transform.rotation);
-            yield return new WaitForSeconds(0.15f);
-            if (target.CurrentHealth <= 0)
+            if (target != null)
             {
-                if (target is EnemyView enemyView)
+                Instantiate(damageVFX, target.transform.position, target.transform.rotation);
+                yield return new WaitForSeconds(0.15f);
+                if (target.CurrentHealth <= 0)
                 {
-                    KillEnemyGA killEnemyGA = new KillEnemyGA(enemyView);
-                    ActionSystem.Instance.AddReaction(killEnemyGA);
-                }
-                else
-                {
-                    //Do some Game over logic here
-                    //Open Game over Scene
+                    if (target is EnemyView enemyView)
+                    {
+                        KillEnemyGA killEnemyGA = new KillEnemyGA(enemyView);
+                        ActionSystem.Instance.AddReaction(killEnemyGA);
+                    }
+                    else
+                    {
+                        //Do some Game over logic here
+                        //Open Game over Scene
+                    }
                 }
             }
         }

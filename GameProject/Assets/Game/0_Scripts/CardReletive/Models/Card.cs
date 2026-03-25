@@ -9,6 +9,7 @@ public class Card
     public string Description => data.Description;
     public Sprite Image => data.Image;
     public CardType CardType => data.CardType;
+    public CardTypeType CardTypeType => data.CardTypeType;
     public List<Effect> SelfEffects => data.SelfEffects;
     public GridTargetMode GridTargetMode => data.GridTargetMode;
     public int Mana { get; private set; }

@@ -15,6 +15,8 @@ MonoBehaviour:
   <Description>k__BackingField: "\uC774\uAC83\uC740 \uC5B4\uAE68\uCE58\uAE30\uC785\uB2C8\uB2E4."
   <Mana>k__BackingField: 1
   <Image>k__BackingField: {fileID: 0}
+  <CardType>k__BackingField: 0
+  <CardTypeType>k__BackingField: 2
   <SelfEffects>k__BackingField: []
   <GridTargetMode>k__BackingField:
     <Distance>k__BackingField: 1
