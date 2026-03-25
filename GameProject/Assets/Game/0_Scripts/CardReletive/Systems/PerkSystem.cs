@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PerkSystem : Singleton<PerkSystem>
 {
-    [SerializeField] private PerksUI perksUI;
     public readonly List<Perk> perks = new();
     public void AddPerk(Perk perk)
     {

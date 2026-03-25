@@ -13,9 +13,9 @@ public class CombatantView : Token
 
     private Dictionary<StatusEffectType, int> statusEffectUIs = new();
     private StatusEffectStorage effectInfo = new();
-
     public int MaxHealth { get; private set; }
     public int CurrentHealth { get; private set; }
+
     public void SetUpBase(int health, TokenData tokenData, IsoObject isoObject)
     {
         MaxHealth = CurrentHealth = health;     //몬스터 & 플레이어 체력 셋업
@@ -49,7 +49,9 @@ public class CombatantView : Token
         {
             CurrentHealth = Mathf.Max(CurrentHealth - remainingDamage, 0);
         }
-        transform.DOShakePosition(0.2f, 0.5f);
+
+        if(CurrentHealth > 0)
+            transform.DOShakePosition(0.2f, 0.5f);
     }
     public void AddStatusEffect(StatusEffectType type, int stackCount, Sprite sprite, float[] infoes = null)
     {
