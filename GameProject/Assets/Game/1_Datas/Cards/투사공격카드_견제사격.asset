@@ -24,7 +24,7 @@ MonoBehaviour:
     <TargetMode>k__BackingField:
       rid: 5842417240195465227
     <GridRangeMode>k__BackingField:
-      rid: 5842417240195465224
+      rid: 5842417265986240516
     UseVisualGrid: 1
     UseSelectVG: 1
     WillSelectVGName: Hero_WillAttack
@@ -37,9 +37,6 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 5842417240195465224
-      type: {class: PlusRM, ns: , asm: Assembly-CSharp}
-      data: 
     - rid: 5842417240195465225
       type: {class: AttackEnemyEffect, ns: , asm: Assembly-CSharp}
       data:
@@ -57,3 +54,6 @@ MonoBehaviour:
       type: {class: AddCardAbilityEffect, ns: , asm: Assembly-CSharp}
       data:
         cardAbilityType: 0
+    - rid: 5842417265986240516
+      type: {class: SnowRM, ns: , asm: Assembly-CSharp}
+      data: 

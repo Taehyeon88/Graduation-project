@@ -23,7 +23,7 @@ MonoBehaviour:
     <TargetMode>k__BackingField:
       rid: 5842417105210966040
     <GridRangeMode>k__BackingField:
-      rid: 5842417105210966041
+      rid: 5842417265986240515
     UseVisualGrid: 1
     UseSelectVG: 1
     WillSelectVGName: Hero_WillAttack
@@ -39,9 +39,6 @@ MonoBehaviour:
     - rid: 5842417105210966040
       type: {class: LineTM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 5842417105210966041
-      type: {class: CrossRM, ns: , asm: Assembly-CSharp}
-      data: 
     - rid: 5842417105210966042
       type: {class: AttackEnemyEffect, ns: , asm: Assembly-CSharp}
       data:
@@ -52,3 +49,6 @@ MonoBehaviour:
         statusEffectType: 2
         stackCount: 1
         isMySelf: 0
+    - rid: 5842417265986240515
+      type: {class: SnowRM, ns: , asm: Assembly-CSharp}
+      data: 

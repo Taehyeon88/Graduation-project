@@ -19,11 +19,11 @@ MonoBehaviour:
   <CardTypeType>k__BackingField: 1
   <SelfEffects>k__BackingField: []
   <GridTargetMode>k__BackingField:
-    <Distance>k__BackingField: 1
+    <Distance>k__BackingField: 2
     <TargetMode>k__BackingField:
       rid: 5842417105210966023
     <GridRangeMode>k__BackingField:
-      rid: 5842417105210966024
+      rid: 5842417265986240514
     UseVisualGrid: 1
     UseSelectVG: 1
     WillSelectVGName: Hero_WillAttack
@@ -38,10 +38,10 @@ MonoBehaviour:
     - rid: 5842417105210966023
       type: {class: LineTM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 5842417105210966024
-      type: {class: PlusRM, ns: , asm: Assembly-CSharp}
-      data: 
     - rid: 5842417105210966025
       type: {class: AttackEnemyEffect, ns: , asm: Assembly-CSharp}
       data:
         amount: 8
+    - rid: 5842417265986240514
+      type: {class: SnowRM, ns: , asm: Assembly-CSharp}
+      data: 
