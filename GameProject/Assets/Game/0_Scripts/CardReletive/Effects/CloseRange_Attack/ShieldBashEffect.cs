@@ -7,6 +7,8 @@ public class ShieldBashEffect : Effect
     [SerializeField] private int amount;
     public override GameAction GetGameAction(EffectInfo effectInfo)
     {
-        return new ShieldBashGA(amount, effectInfo.targetPoses);
+        var shieldBashGA = new ShieldBashGA(CalculateDamage(amount), effectInfo.targetPoses);
+        InitDamageRate();
+        return shieldBashGA;
     }
 }

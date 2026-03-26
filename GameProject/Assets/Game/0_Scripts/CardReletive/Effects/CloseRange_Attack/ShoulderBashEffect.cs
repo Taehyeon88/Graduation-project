@@ -9,7 +9,8 @@ public class ShoulderBashEffect : Effect
     [SerializeField] private int damage;
     public override GameAction GetGameAction(EffectInfo effectInfo)
     {
-        ShoulderBashGA shoulderBashGA = new(distance, attackDistance, damage, effectInfo.gridTargetMode);
+        ShoulderBashGA shoulderBashGA = new(distance, attackDistance, CalculateDamage(damage), effectInfo.gridTargetMode);
+        InitDamageRate();
         return shoulderBashGA;
     }
 }

@@ -13,6 +13,16 @@ public class SplashEffect : Effect
 
     public override GameAction GetGameAction(EffectInfo effectInfo)
     {
-        return new SplashGA(effectInfo.targetPoses, gridRangeMode, isPentration, distance, damage, splashDamage, effectInfo.caster);
+        var shplash = new SplashGA(
+                  effectInfo.targetPoses,
+                  gridRangeMode,
+                  isPentration,
+                  distance,
+                  CalculateDamage(damage),
+                  CalculateDamage(splashDamage),
+                  effectInfo.caster
+             );
+        InitDamageRate();
+        return shplash;
     }
 }

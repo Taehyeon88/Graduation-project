@@ -17,7 +17,8 @@ MonoBehaviour:
   <Image>k__BackingField: {fileID: 0}
   <CardType>k__BackingField: 1
   <CardTypeType>k__BackingField: 1
-  <SelfEffects>k__BackingField: []
+  <SelfEffects>k__BackingField:
+  - rid: 5842417265986240513
   <GridTargetMode>k__BackingField:
     <Distance>k__BackingField: 2
     <TargetMode>k__BackingField:
@@ -52,3 +53,7 @@ MonoBehaviour:
     - rid: 5842417240195465227
       type: {class: LineTM, ns: , asm: Assembly-CSharp}
       data: 
+    - rid: 5842417265986240513
+      type: {class: AddCardAbilityEffect, ns: , asm: Assembly-CSharp}
+      data:
+        cardAbilityType: 0
