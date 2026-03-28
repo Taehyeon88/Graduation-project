@@ -13,7 +13,7 @@ public class AddStatusEffectEffect : Effect
         switch (etargetMode)
         {
             case ETargetMode.MySelf: targets.Add(effectInfo.caster); break;
-            case ETargetMode.Opponent: targets.AddRange(effectInfo.targets); break;
+            case ETargetMode.Targets: targets.AddRange(effectInfo.targets); break;
             case ETargetMode.Entire:
                 targets.AddRange(effectInfo.targets);
                 targets.Add(effectInfo.caster);
@@ -26,6 +26,6 @@ public class AddStatusEffectEffect : Effect
 public enum ETargetMode
 {
     MySelf,
-    Opponent,
+    Targets,
     Entire
 }

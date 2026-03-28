@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ce87ac8b57556641b26f2ad232c2752, type: 3}
+  m_Name: "\uC131\uC5ED\uC758 \uBB38\uC591"
+  m_EditorClassIdentifier: 
+  <AoEModel>k__BackingField: {fileID: 3168746442247006446, guid: 18bb07086ba7cb346801ea1fbbc0b36c,
+    type: 3}
+  <AoEFieldType>k__BackingField: 0
+  <AoEType>k__BackingField: 1
+  <EntryDamage>k__BackingField: 0
+  <TurnDamage>k__BackingField: 0
+  UseCountBased: 0
+  DurationCount: 0
+  <DurationTurn>k__BackingField: 3
+  <statusEffects>k__BackingField:
+  - rid: 5842417299890896906
+  references:
+    version: 2
+    RefIds:
+    - rid: 5842417299890896906
+      type: {class: AddStatusEffectEffect, ns: , asm: Assembly-CSharp}
+      data:
+        statusEffectType: 0
+        stackCount: 5
+        etargetMode: 0
