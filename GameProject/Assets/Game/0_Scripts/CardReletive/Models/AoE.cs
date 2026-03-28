@@ -14,23 +14,33 @@ public class AoE
     public int MaxDuration { get; private set; }                                 //최대 지속 턴 수 혹은 횟수
     public int RemainDuration { get; private set; }                              //남은 지속 턴 수 혹은 횟수
     public CombatantView Caster { get; private set; }
+    public TokenType CasterType { get; private set; }
+    public bool IsBuff { get; private set; }                                     //버프 타입 여부 (T - 버프 | F - 디버프)
 
     private readonly AoEData aoEData;
 
 
-    public AoE(AoEData aoEData, CombatantView caster)
+    public AoE(AoEData aoEData, CombatantView caster, bool isBuff)
     {
         this.aoEData = aoEData;
         this.Caster = caster;
+        this.IsBuff = isBuff;
         EntryDamage = aoEData.EntryDamage;
         TurnDamage = aoEData.TurnDamage;
         RemainDuration = MaxDuration = aoEData.UseCountBased? 
             aoEData.DurationCount : aoEData.DurationTurn;
+        this.CasterType = GetTokenType(caster);
     }
 
     public int ReduceRemainDuration(int amount = 1)
     {
         RemainDuration -= amount;
         return RemainDuration;
+    }
+
+    public TokenType GetTokenType(CombatantView combatantView)
+    {
+        if (combatantView is EnemyView) return TokenType.Enemy;
+        else return TokenType.Hero;
     }
 }

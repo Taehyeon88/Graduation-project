@@ -41,8 +41,8 @@ public class CardSystem : Singleton<CardSystem>
                 //손패의 있는 모든 이동 타입의 카드 비활성화 처리
                 foreach (var card in hand)
                 {
-                    if (card.CardTypeType == CardTypeType.Move 
-                        || card.CardTypeType == CardTypeType.Dash)
+                    if (card.CardSubType == CardSubType.Move 
+                        || card.CardSubType == CardSubType.Dash)
                         handView.SetCardLockView(true, card);
                 }
                 isIsolation = true;
@@ -51,8 +51,8 @@ public class CardSystem : Singleton<CardSystem>
             {
                 foreach (var card in hand)
                 {
-                    if (card.CardTypeType == CardTypeType.Move
-                        || card.CardTypeType == CardTypeType.Dash)
+                    if (card.CardSubType == CardSubType.Move
+                        || card.CardSubType == CardSubType.Dash)
                         handView.SetCardLockView(true, card);
                 }
                 isIsolation = false;
@@ -127,7 +127,11 @@ public class CardSystem : Singleton<CardSystem>
                         addSEE.etargetMode = ETargetMode.MySelf;
                     }
 
-                    PerformEffectGA performEffectGA = new(effect, new(HeroSystem.Instance.HeroView));
+                    PerformEffectGA performEffectGA = new(effect, 
+                        new(HeroSystem.Instance.HeroView, 
+                        playCardGA.Card.CardType, 
+                        playCardGA.Card.CardSubType
+                        ));
                     ActionSystem.Instance.AddReaction(performEffectGA);
                 }
             }
@@ -190,7 +194,13 @@ public class CardSystem : Singleton<CardSystem>
                         {
                             //전달할 데이터 :
                             //1. 타겟으로 지정된 타일 좌표들
-                            PerformEffectGA performEffectGA = new(targetMode.Effect, new(targets, targetMode, HeroSystem.Instance.HeroView));
+                            PerformEffectGA performEffectGA = new(targetMode.Effect, 
+                                new(targets, 
+                                targetMode, 
+                                HeroSystem.Instance.HeroView,
+                                playCardGA.Card.CardType,
+                                playCardGA.Card.CardSubType
+                        ));
                             ActionSystem.Instance.AddReaction(performEffectGA);
 
                             //StatusEffect(버프/디버프)같이 적용 기능
@@ -200,7 +210,12 @@ public class CardSystem : Singleton<CardSystem>
                                 {
                                     if (effect is AddStatusEffectEffect)
                                     {
-                                        PerformEffectGA performStatusEffectGA = new(effect, new(targets, HeroSystem.Instance.HeroView));
+                                        PerformEffectGA performStatusEffectGA = new(effect, 
+                                            new(targets, 
+                                            HeroSystem.Instance.HeroView,
+                                            playCardGA.Card.CardType,
+                                            playCardGA.Card.CardSubType
+                                            ));
                                         performEffectGA.PostReactions.Add((performStatusEffectGA, null));
                                     }
                                 }
@@ -237,7 +252,12 @@ public class CardSystem : Singleton<CardSystem>
             }
             else
             {
-                PerformEffectGA performEffectGA = new(targetMode.Effect, new(targetMode));  //그리드를 선택할 수 있는 기능의 GAEffect만 사용 가능
+                PerformEffectGA performEffectGA = new(targetMode.Effect, 
+                                         new(targetMode,
+                                         playCardGA.Card.CardType,
+                                         playCardGA.Card.CardSubType
+                                         ));  
+                //그리드를 선택할 수 있는 기능의 GAEffect만 사용 가능
                 ActionSystem.Instance.AddReaction(performEffectGA);
             }
         }

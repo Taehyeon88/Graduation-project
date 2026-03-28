@@ -42,7 +42,7 @@ public class AoESystem : Singleton<AoESystem>
         if (aoEDataByType.ContainsKey(addAoEGA.AoEType))
         {
             var data = aoEDataByType[addAoEGA.AoEType];
-            var aoE = new AoE(data, addAoEGA.Caster);
+            var aoE = new AoE(data, addAoEGA.Caster, addAoEGA.IsBuff);
 
             foreach (var targetPos in addAoEGA.TargetPoses)
             {
@@ -72,7 +72,7 @@ public class AoESystem : Singleton<AoESystem>
                 //지정한 타일 내, 대상이 존재할 경우
                 CombatantView target = TokenSystem.Instance.GetTokenByPosition(targetPos) as CombatantView;
                 if(target != null)
-                    CheckAndPlayAoE(target);
+                    CheckAndPlayAoE(target, true);
             }
         }
         else Debug.LogError($"{addAoEGA.AoEType}타입의 AoEData를 찾을 수 없습니다.");
@@ -88,7 +88,7 @@ public class AoESystem : Singleton<AoESystem>
         foreach (var pos in fieldAoEsByPosition.Keys.ToList())
         {
             var aoE = fieldAoEsByPosition[pos];
-            if (aoE.Caster is HeroView)
+            if (aoE.CasterType == TokenType.Hero)
             {
                 if (aoE.ReduceRemainDuration() <= 0)
                 {
@@ -103,7 +103,7 @@ public class AoESystem : Singleton<AoESystem>
         foreach (var pos in objectAoEsByPosition.Keys.ToList())
         {
             var aoE = objectAoEsByPosition[pos];
-            if (aoE.Caster is HeroView && !aoE.UseCountBased)
+            if (aoE.CasterType == TokenType.Hero && !aoE.UseCountBased)
             {
                 if (aoE.ReduceRemainDuration() <= 0)
                 {
@@ -116,7 +116,7 @@ public class AoESystem : Singleton<AoESystem>
 
         var hero = HeroSystem.Instance.HeroView;
         if (hero != null)
-            CheckAndPlayAoE(hero);
+            CheckAndPlayAoE(hero, false);
     }
 
     //몬스터들 턴 시작시, 체크
@@ -126,7 +126,7 @@ public class AoESystem : Singleton<AoESystem>
         foreach (var pos in fieldAoEsByPosition.Keys.ToList())
         {
             var aoE = fieldAoEsByPosition[pos];
-            if (aoE.Caster is EnemyView)
+            if (aoE.CasterType == TokenType.Enemy)
             {
                 if (aoE.ReduceRemainDuration() <= 0)
                 {
@@ -141,7 +141,7 @@ public class AoESystem : Singleton<AoESystem>
         foreach (var pos in objectAoEsByPosition.Keys.ToList())
         {
             var aoE = objectAoEsByPosition[pos];
-            if (aoE.Caster is EnemyView && !aoE.UseCountBased)
+            if (aoE.CasterType == TokenType.Enemy && !aoE.UseCountBased)
             {
                 if (aoE.ReduceRemainDuration() <= 0)
                 {
@@ -158,7 +158,7 @@ public class AoESystem : Singleton<AoESystem>
     {
         var enemy = enemyTurnGA.EnemyView;
         if (enemy != null)
-            CheckAndPlayAoE(enemy);
+            CheckAndPlayAoE(enemy, false);
     }
 
     //영웅, 적 모두 이동 이후 체크
@@ -166,40 +166,71 @@ public class AoESystem : Singleton<AoESystem>
     {
         var mover = moveGA.mover;
         if (mover != null)
-            CheckAndPlayAoE(mover);
+            CheckAndPlayAoE(mover, true);
     }
 
     //Privates
-    private void CheckAndPlayAoE(CombatantView target)
+    private void CheckAndPlayAoE(CombatantView target, bool isEntry)
     {
         Vector2Int pos = TokenSystem.Instance.GetTokenPosition(target);
 
         //필드 계열 장판 처리
         if (fieldAoEsByPosition.ContainsKey(pos))
-            ApplyAreaOfEffects(target, fieldAoEsByPosition[pos], false);
+        {
+            var aoE = fieldAoEsByPosition[pos];
+            if (aoE != null)
+            {
+                ApplyAreaOfEffects(target, aoE);
+                ApplyAoEDamage(target, aoE, isEntry);
+            }
+        }
 
         //오브젝트 계열 장판 처리
         if (objectAoEsByPosition.ContainsKey(pos))
         {
             var aoE = objectAoEsByPosition[pos];
-            if (ApplyAreaOfEffects(target, aoE, false))
+            if (aoE != null)
             {
-                //영역 효과가 오브젝트 계열 + 횟수기반일 경우, 횟수 감소 및 횟수가 없을 시, 삭제처리
-                if (aoE.AoEFieldType == AoEFieldType.Object && aoE.UseCountBased)
+                if (ApplyAreaOfEffects(target, aoE))
                 {
-                    if (aoE.ReduceRemainDuration() <= 0)
+                    //영역 효과가 오브젝트 계열 + 횟수기반일 경우, 횟수 감소 및 횟수가 없을 시, 삭제처리
+                    if (aoE.AoEFieldType == AoEFieldType.Object && aoE.UseCountBased)
                     {
-                        TokenSystem.Instance.ResetAoE(pos, aoE.AoEFieldType);
-                        objectAoEsByPosition.Remove(pos);
+                        if (aoE.ReduceRemainDuration() <= 0)
+                        {
+                            TokenSystem.Instance.ResetAoE(pos, aoE.AoEFieldType);
+                            objectAoEsByPosition.Remove(pos);
+                        }
                     }
                 }
+                ApplyAoEDamage(target, aoE, isEntry);
             }
         }
     }
-    private bool ApplyAreaOfEffects(CombatantView target, AoE aoE, bool isEntry)
+    private bool ApplyAreaOfEffects(CombatantView target, AoE aoE)
     {
-        if (aoE == null) return false;
-        if (aoE.Caster == null) return false;
+        var targetType = aoE.GetTokenType(target);
+
+        if ((aoE.IsBuff && targetType == aoE.CasterType)
+             || (!aoE.IsBuff && targetType != aoE.CasterType))
+        {
+            //상태 효과 적용
+            foreach (var effect in aoE.statusEffects)
+            {
+                if (effect is AddStatusEffectEffect)
+                {
+                    PerformEffectGA performEffectGA = new(effect, new(new List<CombatantView>() { target }, aoE.Caster));
+                    ActionSystem.Instance.AddReaction(performEffectGA);
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private void ApplyAoEDamage(CombatantView target, AoE aoE, bool isEntry)
+    {
+        var targetType = aoE.GetTokenType(target);
 
         //틱 데미지 적용
         int damage = 0;
@@ -209,24 +240,11 @@ public class AoESystem : Singleton<AoESystem>
         if (damage > 0)
         {
             //몬스터는 영웅에게 | 영웅은 몬스터에게만 데미지 피격 가능
-            if (target.GetType() != aoE.Caster.GetType())
+            if (targetType != aoE.CasterType)
             {
                 DealDamageGA dealDamageGA = new(damage, new() { target }, aoE.Caster);
                 ActionSystem.Instance.AddReaction(dealDamageGA);
             }
         }
-
-        //상태 효과 적용
-        foreach (var effect in aoE.statusEffects)
-        {
-            if (effect is AddStatusEffectEffect)
-            {
-                Debug.Log("작동한다.");
-                PerformEffectGA performEffectGA = new(effect, new(new List<CombatantView>() { target }, aoE.Caster));
-                ActionSystem.Instance.AddReaction(performEffectGA);
-            }
-        }
-
-        return true;
     }
 }

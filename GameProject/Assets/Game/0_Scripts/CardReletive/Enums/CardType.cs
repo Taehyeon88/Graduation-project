@@ -8,7 +8,7 @@ public enum CardType
     Skill_Buff,            //스킬 - 버프
     Skill_Debuff           //스킬 - 디버프
 }
-public enum CardTypeType
+public enum CardSubType
 {
     Single,          //단일
     Penetration,     //관통

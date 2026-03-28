@@ -10,6 +10,8 @@ public struct EffectInfo
     public CombatantView caster;
     public GridTargetMode gridTargetMode;
     public List<Vector2Int> targetPoses;
+    public CardType cardType;
+    public CardSubType cardSubType;
 
     /// <summary>
     /// CardSystem의 UseVisualGrid == true 및 AddedSECondition == CombatantView의 AddedStatusEffect용
@@ -22,30 +24,36 @@ public struct EffectInfo
         this.caster = caster;
         this.gridTargetMode = null;
         this.targetPoses = null;
+        this.cardType = default;
+        this.cardSubType = default;
     }
 
     /// <summary>
     /// CardSystem의 SelfEffects용
     /// </summary>
     /// <param name="target"></param>
-    public EffectInfo(CombatantView target)
+    public EffectInfo(CombatantView target, CardType cardType, CardSubType cardSubType)
     {
         this.targets = new() { target };
         this.caster = target;
         this.gridTargetMode = null;
         this.targetPoses = null;
+        this.cardType = cardType;
+        this.cardSubType = cardSubType;
     }
 
     /// <summary>
     /// CardSystem의 UseVisualGrid == false인 GridTargetMode용
     /// </summary>
     /// <param name="gridTagetMode"></param>
-    public EffectInfo(GridTargetMode gridTagetMode)
+    public EffectInfo(GridTargetMode gridTagetMode, CardType cardType, CardSubType cardSubType)
     {
         this.targets = null;
         this.caster = null;
         this.gridTargetMode = gridTagetMode;
         this.targetPoses = null;
+        this.cardType = cardType;
+        this.cardSubType = cardSubType;
     }
 
     /// <summary>
@@ -53,24 +61,28 @@ public struct EffectInfo
     /// </summary>
     /// <param name="targets"></param>
     /// <param name="caster"></param>
-    public EffectInfo(List<Vector2Int> targetPoses, CombatantView caster)
+    public EffectInfo(List<Vector2Int> targetPoses, CombatantView caster, CardType cardType, CardSubType cardSubType)
     {
         this.targets = null;
         this.caster = caster;
         this.gridTargetMode = null;
         this.targetPoses = targetPoses;
+        this.cardType = cardType;
+        this.cardSubType = cardSubType;
     }
 
     /// <summary>
     /// CardSystem의 UseVisualGrid == true인 GridTargetMode용
     /// </summary>
     /// <param name="targetPoses"></param>
-    public EffectInfo(List<Vector2Int> targetPoses, GridTargetMode gridTagetMode, CombatantView caster)
+    public EffectInfo(List<Vector2Int> targetPoses, GridTargetMode gridTagetMode, CombatantView caster, CardType cardType, CardSubType cardSubType)
     {
         this.targets = null;
         this.caster = caster;
         this.gridTargetMode = gridTagetMode;
         this.targetPoses = targetPoses;
+        this.cardType = cardType;
+        this.cardSubType = cardSubType;
     }
 }
 

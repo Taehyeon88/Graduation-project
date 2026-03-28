@@ -7,6 +7,11 @@ public class AddAoEEffect : Effect
     [SerializeField] private AoEType aoEType;
     public override GameAction GetGameAction(EffectInfo effectInfo)
     {
-        return new AddAoEGA(effectInfo.caster, aoEType, effectInfo.targetPoses);
+        return new AddAoEGA(
+            effectInfo.caster, 
+            aoEType, 
+            effectInfo.targetPoses,
+            effectInfo.cardSubType == CardSubType.Buff? true : false
+            );
     }
 }

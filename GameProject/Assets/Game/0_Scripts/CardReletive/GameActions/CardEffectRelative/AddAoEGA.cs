@@ -7,10 +7,12 @@ public class AddAoEGA : GameAction
     public CombatantView Caster { get; private set; }
     public AoEType AoEType { get; private set; }
     public List<Vector2Int> TargetPoses { get; private set; }
-    public AddAoEGA(CombatantView caster, AoEType aoEType, List<Vector2Int> targetPoses)
+    public bool IsBuff { get; private set; }
+    public AddAoEGA(CombatantView caster, AoEType aoEType, List<Vector2Int> targetPoses, bool isBuff)
     {
         Caster = caster;
         AoEType = aoEType;
         TargetPoses = targetPoses;
+        IsBuff = isBuff;
     }
 }
