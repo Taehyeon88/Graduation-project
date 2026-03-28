@@ -9379,6 +9379,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   aoEDatas:
   - {fileID: 11400000, guid: dc7e58192a412b245b4faac378e8ba67, type: 2}
+  - {fileID: 11400000, guid: 4ccaf60c7a96e8f4d8b07e8180589e0e, type: 2}
 --- !u!4 &1061820683 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8241385529586602247, guid: 216766530c0c7c14ba95d2686381b37c,

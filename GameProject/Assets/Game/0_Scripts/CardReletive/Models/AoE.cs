@@ -8,10 +8,11 @@ public class AoE
     public AoEFieldType AoEFieldType => aoEData.AoEFieldType;                    //장판 계열(오브젝트 or 필드)
     public AoEType AoEType => aoEData.AoEType;                                   //장판 타입
     public List<Effect> statusEffects => aoEData.statusEffects;                  //대상 지정 부여하는 상태효과
+    public bool UseCountBased => aoEData.UseCountBased;                          //횟수 기반 여부(T - 횟수 | F - 턴)
     public int EntryDamage { get; private set; }                                 //진입 피해
     public int TurnDamage { get; private set; }                                  //턴당 피해
-    public int MaxDurationTurn { get; private set; }                             //최대 지속 턴 수
-    public int RemainDurationTurn { get; private set; }                          //남은 지속 턴 수
+    public int MaxDuration { get; private set; }                                 //최대 지속 턴 수 혹은 횟수
+    public int RemainDuration { get; private set; }                              //남은 지속 턴 수 혹은 횟수
     public CombatantView Caster { get; private set; }
 
     private readonly AoEData aoEData;
@@ -23,12 +24,13 @@ public class AoE
         this.Caster = caster;
         EntryDamage = aoEData.EntryDamage;
         TurnDamage = aoEData.TurnDamage;
-        RemainDurationTurn = MaxDurationTurn = aoEData.DurationTurn;
+        RemainDuration = MaxDuration = aoEData.UseCountBased? 
+            aoEData.DurationCount : aoEData.DurationTurn;
     }
 
-    public int ReduceRemainDurationTurn(int amount = 1)
+    public int ReduceRemainDuration(int amount = 1)
     {
-        RemainDurationTurn -= amount;
-        return RemainDurationTurn;
+        RemainDuration -= amount;
+        return RemainDuration;
     }
 }

@@ -123,14 +123,20 @@ public class TokenGrid : MonoBehaviour
     }
     public void SetObject(IsoObject obj, Vector2Int pos)
     {
-        Destroy(grid[pos.x, pos.y].Object.gameObject);
+        if(grid[pos.x, pos.y].Object != null)
+            Destroy(grid[pos.x, pos.y].Object.gameObject);
+
         obj.position = new(pos.x, pos.y, 1);
+        obj.transform.SetParent(gridTransform);
         grid[pos.x, pos.y].SetObject(obj);
     }
     public void ResetObject(Vector2Int pos)
     {
-        Destroy(grid[pos.x, pos.y].Object.gameObject);
-        grid[pos.x, pos.y].ResetObject();
+        if (grid[pos.x, pos.y].Object != null)
+        {
+            Destroy(grid[pos.x, pos.y].Object.gameObject);
+            grid[pos.x, pos.y].ResetObject();
+        }
     }
     public bool IsBound(int x, int y)
     {
