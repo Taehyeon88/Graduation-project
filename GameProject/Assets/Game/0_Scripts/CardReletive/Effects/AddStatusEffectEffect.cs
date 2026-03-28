@@ -6,12 +6,26 @@ public class AddStatusEffectEffect : Effect
 {
     [SerializeField] private StatusEffectType statusEffectType;
     [SerializeField] private int stackCount;
-    [SerializeField] public bool isMySelf = true;    //(이펙트 효과 받는 대상 = 나) 여부 체크
+    [SerializeField] public ETargetMode etargetMode = ETargetMode.MySelf;    //(이펙트 효과 받는 대상 = 나) 여부 체크
     public override GameAction GetGameAction(EffectInfo effectInfo)
     {
-        if (isMySelf)
-            return new AddStatusEffectGA(statusEffectType, stackCount, new(){effectInfo.caster});
-        else
-            return new AddStatusEffectGA(statusEffectType, stackCount, effectInfo.targets);
+        List<CombatantView> targets = new();
+        switch (etargetMode)
+        {
+            case ETargetMode.MySelf: targets.Add(effectInfo.caster); break;
+            case ETargetMode.Opponent: targets.AddRange(effectInfo.targets); break;
+            case ETargetMode.Entire:
+                targets.AddRange(effectInfo.targets);
+                targets.Add(effectInfo.caster);
+                break;
+        }
+        return new AddStatusEffectGA(statusEffectType, stackCount, targets);
     }
+}
+
+public enum ETargetMode
+{
+    MySelf,
+    Opponent,
+    Entire
 }

@@ -48,7 +48,7 @@ MonoBehaviour:
       data:
         statusEffectType: 2
         stackCount: 1
-        isMySelf: 0
+        etargetMode: 1
     - rid: 5842417265986240515
       type: {class: SnowRM, ns: , asm: Assembly-CSharp}
       data: 

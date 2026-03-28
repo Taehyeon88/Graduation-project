@@ -46,7 +46,7 @@ MonoBehaviour:
       data:
         statusEffectType: 3
         stackCount: 1
-        isMySelf: 0
+        etargetMode: 1
     - rid: 5842417240195465227
       type: {class: LineTM, ns: , asm: Assembly-CSharp}
       data: 

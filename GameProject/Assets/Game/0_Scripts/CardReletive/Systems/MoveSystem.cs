@@ -127,8 +127,10 @@ public class MoveSystem : Singleton<MoveSystem>
     {
         Token mover = moveGA.mover;
         Vector2Int position = moveGA.movePosition;
-
-        yield return TokenSystem.Instance.MoveToken(mover, position);
+        if (mover != null)
+        {
+            yield return TokenSystem.Instance.MoveToken(mover, position);
+        }
     }
 
     //Subscribers

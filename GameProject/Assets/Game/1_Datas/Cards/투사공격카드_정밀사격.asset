@@ -52,4 +52,4 @@ MonoBehaviour:
       data:
         statusEffectType: 2
         stackCount: 1
-        isMySelf: 0
+        etargetMode: 1

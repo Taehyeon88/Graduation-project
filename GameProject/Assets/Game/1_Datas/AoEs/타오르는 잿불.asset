@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ce87ac8b57556641b26f2ad232c2752, type: 3}
+  m_Name: "\uD0C0\uC624\uB974\uB294 \uC7BF\uBD88"
+  m_EditorClassIdentifier: 
+  <AoEModel>k__BackingField: {fileID: 751135096241676851, guid: 3f9a0d682c6e13c47b2377b839a7849c,
+    type: 3}
+  <AoEFieldType>k__BackingField: 0
+  <AoEType>k__BackingField: 0
+  <EntryDamage>k__BackingField: 8
+  <TurnDamage>k__BackingField: 8
+  <DurationTurn>k__BackingField: 2
+  <statusEffects>k__BackingField: []
+  references:
+    version: 2
+    RefIds: []
