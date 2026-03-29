@@ -53,6 +53,10 @@ public class CombatantView : Token
         if(CurrentHealth > 0)
             transform.DOShakePosition(0.2f, 0.5f);
     }
+    public void Heal(int amount)
+    {
+        CurrentHealth = Mathf.Min(CurrentHealth + amount, MaxHealth);
+    }
     public void AddStatusEffect(StatusEffectType type, int stackCount, Sprite sprite, float[] infoes = null)
     {
         if (statusEffectUIs.ContainsKey(type))

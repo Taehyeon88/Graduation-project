@@ -3,15 +3,21 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using IsoTools;
+using UnityEditor.Experimental.GraphView;
 
 public class TokenGrid : MonoBehaviour
 {
+    [SerializeField] private Transform gridTransform;
+    [SerializeField] private Transform gridTilePool;
     [field: SerializeField] public int width { get; private set; }
     [field: SerializeField] public int height { get; private set; }
     public TokenGirdCell[,] grid { get; private set; }
     public int[,] simpleGrid { get; private set; }   //0 - 토큰 없음 | 1 - 토큰 있음 (토큰 존재여부 확인용)
 
     private List<Vector2Int> remainCells = new();
+
+    private Dictionary<Vector2Int, IsoObject> dgridTileByPos = new();
 
     private bool endInitialize = false;
     private void Start()
@@ -21,6 +27,10 @@ public class TokenGrid : MonoBehaviour
     private void Initialize()
     {
         if (endInitialize) return;
+
+        var gridTiles = gridTransform.GetComponentsInChildren<IsoObject>();
+        if (gridTiles == null)
+            Debug.LogError("gridTransform의 자식들에서 isoObject를 가지는 대상을 찾을 수 없습니다.");
 
         grid = new TokenGirdCell[width, height];
         simpleGrid = new int[width, height];
@@ -32,6 +42,17 @@ public class TokenGrid : MonoBehaviour
                 simpleGrid[x, y] = 0;
                 remainCells.Add(new(x, y));
             }
+        }
+
+        //모든 그리드 타일의 IsoObj를 해당 gird에 저장
+        foreach (var gridTile in gridTiles)
+        {
+            Vector2 pos = gridTile.positionXY;
+            Vector2Int gridPos = new((int)pos.x, (int)pos.y);
+            grid[gridPos.x, gridPos.y].SetField(gridTile);
+
+            if (!dgridTileByPos.TryAdd(gridPos, gridTile))
+                Debug.LogError($"{gridPos}위치에 {dgridTileByPos[gridPos]}와 {gridTile}이 같은 위치로 충돌합니다.");
         }
 
         endInitialize = true;
@@ -75,6 +96,47 @@ public class TokenGrid : MonoBehaviour
         grid[pos.x, pos.y].ResetToken();
         simpleGrid[pos.x, pos.y] = 0;
         remainCells.Add(pos);
+    }
+    public void SetField(IsoObject field, Vector2Int pos)
+    {
+        //기존의 필드가 기본 타일일 경우, pool로 이동 및 보관 / 아닐 경우, 파괴
+        bool isDefualt = dgridTileByPos[pos] == grid[pos.x, pos.y].field;
+        if (isDefualt)
+            grid[pos.x, pos.y].field.gameObject.transform.SetParent(gridTilePool);
+        else
+            Destroy(grid[pos.x, pos.y].field.gameObject);
+
+        field.position = new(pos.x, pos.y, 0);
+        field.transform.SetParent(gridTransform);
+        grid[pos.x, pos.y].SetField(field);
+
+    }
+    public void ResetField(Vector2Int pos)
+    {
+        //기본 타일로 되돌리기
+        Destroy(grid[pos.x, pos.y].field.gameObject);
+
+        IsoObject field = dgridTileByPos[pos];
+        field.transform.SetParent(gridTransform);
+        grid[pos.x, pos.y].SetField(field);
+
+    }
+    public void SetObject(IsoObject obj, Vector2Int pos)
+    {
+        if(grid[pos.x, pos.y].Object != null)
+            Destroy(grid[pos.x, pos.y].Object.gameObject);
+
+        obj.position = new(pos.x, pos.y, 1);
+        obj.transform.SetParent(gridTransform);
+        grid[pos.x, pos.y].SetObject(obj);
+    }
+    public void ResetObject(Vector2Int pos)
+    {
+        if (grid[pos.x, pos.y].Object != null)
+        {
+            Destroy(grid[pos.x, pos.y].Object.gameObject);
+            grid[pos.x, pos.y].ResetObject();
+        }
     }
     public bool IsBound(int x, int y)
     {
@@ -121,33 +183,23 @@ public class TokenGrid : MonoBehaviour
         }
         return null;
     }
-
-    public Vector2Int WorldToGirdPosition(Vector3 worldPosition)
-    {
-        int x = Mathf.FloorToInt((worldPosition - transform.position).x / TokenSystem.CellSize);
-        int y = Mathf.FloorToInt((worldPosition - transform.position).z / TokenSystem.CellSize);
-        return new(x, y);
-    }
-    public Vector3 GridToWorldPosition(Vector2Int gridPosition)
-    {
-        float x = transform.position.x + gridPosition.x * TokenSystem.CellSize + TokenSystem.CellSize / 2f;
-        float z = transform.position.z + gridPosition.y * TokenSystem.CellSize + TokenSystem.CellSize / 2f;
-        return new(x, 0f, z);
-    }
 }
 public class TokenGirdCell
 {
     public Token token { get; private set; }
-    public void SetToken(Token token)
-    {
-        this.token = token;
-    }
-    public void ResetToken()
-    {
-        this.token = null;
-    }
-    public bool IsEmpty()
-    {
-        return token == null;
-    }
+    public IsoObject field { get; private set; }
+    public IsoObject Object { get; private set; }
+
+    //토큰 관련 함수
+    public void SetToken(Token token) => this.token = token;
+    public void ResetToken() => this.token = null;
+    public bool IsEmpty() => token == null;
+
+    //필드 타일 관련 함수
+    public void SetField(IsoObject field) => this.field = field;
+    public void ResetField() => this.field = null;
+
+    //오브젝트 관련 함수
+    public void SetObject(IsoObject obj) => this.Object = obj;
+    public void ResetObject() => this.Object = null;
 }

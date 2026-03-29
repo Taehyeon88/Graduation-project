@@ -120,7 +120,6 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
         this.heroSetupPositions = heroSetupPositions;
         foreach (var gridPos in heroSetupPositions)
         {
-            Vector3 position = grid.GridToWorldPosition(gridPos);
             if (grid.CanSetByGridPos(gridPos))
                 VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), gridPos, "Hero_SetUp_True");
             else
@@ -339,6 +338,29 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
         if (enemyException) return grid.CanSetByGridPosEnemyException(isPosition);
         else return grid.CanSetByGridPos(isPosition);
     }
+
+    /// <summary>
+    /// 해당 위치의 필드/오브젝트를 새로운 타일(영역)으로 바꾸는 함수
+    /// </summary>
+    /// <param name="aoE"></param>
+    /// <param name="pos"></param>
+    public void SetAoE(IsoObject aoE, Vector2Int pos, AoEFieldType aoEFieldType)
+    {
+        if (aoEFieldType == AoEFieldType.Field) grid.SetField(aoE, pos);
+        else if (aoEFieldType == AoEFieldType.Object) grid.SetObject(aoE, pos);
+    }
+    
+    /// <summary>
+    /// 해당 위치의 필드를 기본 필드로 되돌리는 함수 | 해당 위치의 오브젝트를 삭제하는 함수
+    /// </summary>
+    /// <param name="pos"></param>
+    public void ResetAoE(Vector2Int pos, AoEFieldType aoEFieldType)
+    {
+        if (aoEFieldType == AoEFieldType.Field) grid.ResetField(pos);
+        else if (aoEFieldType == AoEFieldType.Object) grid.ResetObject(pos);
+    }
+
+    //privates
 
     /// <summary>
     /// 특정 위치에 토큰(영웅, 적, 건물)을 생성하는 함수
