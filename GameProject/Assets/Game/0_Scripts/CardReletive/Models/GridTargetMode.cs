@@ -28,7 +28,7 @@ public class GridTargetMode
     [field: SerializeField] public AddedSECondition _AddedSECondition { get; private set; } = AddedSECondition.Grid;
 
     [field: Tooltip("UseVisualGrid가 True일 때만 사용가능!")]
-    [field: SerializeReference, SR] public List<Effect> AddedStatusEffects { get; private set;}
+    [field: SerializeReference, SR] public List<Effect> AddedEffects { get; private set;}
 
 
     public enum AddedSECondition

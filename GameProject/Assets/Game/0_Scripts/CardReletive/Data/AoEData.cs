@@ -19,6 +19,6 @@ public class AoEData : ScriptableObject
     [field: Tooltip("UseCountBased가 ture일 때, 사용하지 않습니다!")]
     [field: SerializeField] public int DurationTurn { get; private set; }             //지속 턴 수
 
-    [field: Tooltip("AddStatusEffect만 받기 위한 변수입니다!")]
-    [field: SerializeReference, SR] public List<Effect> statusEffects { get; private set; }    //본인에게만 부여하는 상태효과
+    [field: Tooltip("대상 기반(effectInfo - List<CombatantView> targets)만 사용할 수 있습니다!")]
+    [field: SerializeReference, SR] public List<Effect> effects { get; private set; }    //본인에게만 부여하는 효과부여
 }

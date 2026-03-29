@@ -10,39 +10,40 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 29bd87d4b821bdd419a4bafb4b3ce7b9, type: 3}
-  m_Name: "\uAE30\uC220\uC601\uC5ED\uCE74\uB4DC_\uD0C0\uC624\uB974\uB294 \uC7BF\uBE5B"
+  m_Name: "\uAE30\uC220\uC601\uC5ED\uCE74\uB4DC_\uBE5B\uC758 \uC6C5\uB369\uC774"
   m_EditorClassIdentifier: 
-  <Description>k__BackingField: "\uC774\uAC83\uC740 \uD0C0\uC624\uB974\uB294 \uC7BF\uBE5B\uCE74\uB4DC\uC785\uB2C8\uB2E4."
+  <Description>k__BackingField: "\uC774\uAC83\uC740 \uBE5B\uC758 \uC6C5\uB369\uC774
+    \uC601\uC5ED \uCE74\uB4DC \uC785\uB2C8\uB2E4."
   <Mana>k__BackingField: 2
   <Image>k__BackingField: {fileID: 0}
   <CardType>k__BackingField: 3
-  <CardSubType>k__BackingField: 0
+  <CardSubType>k__BackingField: 6
   <SelfEffects>k__BackingField: []
   <GridTargetMode>k__BackingField:
     <Distance>k__BackingField: 2
     <TargetMode>k__BackingField:
-      rid: 5842417299890896897
+      rid: 5842417319833763846
     <GridRangeMode>k__BackingField:
-      rid: 5842417299890896898
+      rid: 5842417319833763847
     UseVisualGrid: 1
     UseSelectVG: 1
     WillSelectVGName: Hero_WillAttack
     SelectVGName: Hero_Attack
     <Effect>k__BackingField:
-      rid: 5842417299890896899
+      rid: 5842417319833763848
     <_AddedSECondition>k__BackingField: 0
-    <AddedStatusEffects>k__BackingField: []
+    <AddedEffects>k__BackingField: []
   references:
     version: 2
     RefIds:
-    - rid: 5842417299890896897
+    - rid: 5842417319833763846
       type: {class: SingleTM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 5842417299890896898
+    - rid: 5842417319833763847
       type: {class: AllAroundRM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 5842417299890896899
+    - rid: 5842417319833763848
       type: {class: AddAoEEffect, ns: , asm: Assembly-CSharp}
       data:
-        aoEType: 0
-        aoETargetMode: 3
+        aoEType: 3
+        aoETargetMode: 0

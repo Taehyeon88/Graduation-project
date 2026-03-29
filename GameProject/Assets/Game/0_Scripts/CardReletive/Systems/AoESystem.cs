@@ -214,13 +214,10 @@ public class AoESystem : Singleton<AoESystem>
         if (aoE.CheckCanUse(target))
         {
             //상태 효과 적용
-            foreach (var effect in aoE.statusEffects)
+            foreach (var effect in aoE.effects)
             {
-                if (effect is AddStatusEffectEffect)
-                {
-                    PerformEffectGA performEffectGA = new(effect, new(new List<CombatantView>() { target }, aoE.Caster));
-                    ActionSystem.Instance.AddReaction(performEffectGA);
-                }
+                PerformEffectGA performEffectGA = new(effect, new(new List<CombatantView>() { target }, aoE.Caster));
+                ActionSystem.Instance.AddReaction(performEffectGA);
             }
             return true;
         }

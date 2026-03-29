@@ -7,22 +7,27 @@ public class StatusEffectStorage
     //info가 필요 없는 것: 방어막N, 고립N
 
     //혼란N
-    public float disarrayPercent { get; private set; }
+    public float Disarray_Percent { get; private set; }
     //표적N
-    public float markPercent { get; private set; }
+    public float Mark_Percent { get; private set; }
+    //집중N
+    public float Concentration_Percent { get; private set; }
 
     public void SetStatusEffectInfo(float[] infoes, StatusEffectType type)
     {
         switch (type)
         {
             case StatusEffectType.DISARRAY:
-                disarrayPercent = infoes[0];
+                Disarray_Percent = infoes[0];
             break;
 
             case StatusEffectType.MARK:
-                markPercent = infoes[0];
+                Mark_Percent = infoes[0];
             break;
 
+            case StatusEffectType.CONCENTRATION:
+                Concentration_Percent = infoes[0];
+            break;
 
             default: break;
         }

@@ -45,3 +45,4 @@ MonoBehaviour:
       type: {class: AddAoEEffect, ns: , asm: Assembly-CSharp}
       data:
         aoEType: 2
+        aoETargetMode: 3

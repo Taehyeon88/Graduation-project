@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.SceneManagement;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public struct EffectInfo
 {
@@ -14,7 +12,9 @@ public struct EffectInfo
     public CardSubType cardSubType;
 
     /// <summary>
-    /// CardSystem의 UseVisualGrid == true 및 AddedSECondition == CombatantView의 AddedStatusEffect용
+    /// 대상 기반 지정용!!
+    /// 1. CardSystem의 UseVisualGrid == true일때, AddedEffect
+    /// 2. AoESystem의 Effect
     /// </summary>
     /// <param name="targets"></param>
     /// <param name="caster"></param>

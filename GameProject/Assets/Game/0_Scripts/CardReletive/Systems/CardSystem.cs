@@ -200,24 +200,21 @@ public class CardSystem : Singleton<CardSystem>
                                 HeroSystem.Instance.HeroView,
                                 playCardGA.Card.CardType,
                                 playCardGA.Card.CardSubType
-                        ));
+                                ));
                             ActionSystem.Instance.AddReaction(performEffectGA);
 
-                            //StatusEffect(버프/디버프)같이 적용 기능
+                            //후속으로 사용할 Effects들 적용 기능
                             if (targetMode._AddedSECondition == GridTargetMode.AddedSECondition.Grid)   //그리드 선택 했을 때.
                             {
-                                foreach (var effect in targetMode.AddedStatusEffects)
+                                foreach (var effect in targetMode.AddedEffects)
                                 {
-                                    if (effect is AddStatusEffectEffect)
-                                    {
-                                        PerformEffectGA performStatusEffectGA = new(effect, 
-                                            new(targets, 
-                                            HeroSystem.Instance.HeroView,
-                                            playCardGA.Card.CardType,
-                                            playCardGA.Card.CardSubType
-                                            ));
-                                        performEffectGA.PostReactions.Add((performStatusEffectGA, null));
-                                    }
+                                    PerformEffectGA performStatusEffectGA = new(effect,
+                                                   new(targets,
+                                                   HeroSystem.Instance.HeroView,
+                                                   playCardGA.Card.CardType,
+                                                   playCardGA.Card.CardSubType
+                                               ));
+                                    performEffectGA.PostReactions.Add((performStatusEffectGA, null));
                                 }
                             }
                             else if (targetMode._AddedSECondition == GridTargetMode.AddedSECondition.CombatantView)  //선택한 그리드에 대상이 있을 때.
@@ -231,13 +228,10 @@ public class CardSystem : Singleton<CardSystem>
                                 }
                                 if (combatants.Count > 0)
                                 {
-                                    foreach (var effect in targetMode.AddedStatusEffects)
+                                    foreach (var effect in targetMode.AddedEffects)
                                     {
-                                        if (effect is AddStatusEffectEffect)
-                                        {
-                                            PerformEffectGA performStatusEffectGA = new(effect, new(combatants, HeroSystem.Instance.HeroView));
-                                            performEffectGA.PostReactions.Add((performStatusEffectGA, null));
-                                        }
+                                        PerformEffectGA performStatusEffectGA = new(effect, new(combatants, HeroSystem.Instance.HeroView));
+                                        performEffectGA.PostReactions.Add((performStatusEffectGA, null));
                                     }
                                 }
                             }

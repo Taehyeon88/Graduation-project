@@ -7,7 +7,7 @@ public class AoE
     public AoEModel AoEModel => aoEData.AoEModel;                                //장판 모델(스프라이트 포함)
     public AoEFieldType AoEFieldType => aoEData.AoEFieldType;                    //장판 계열(오브젝트 or 필드)
     public AoEType AoEType => aoEData.AoEType;                                   //장판 타입
-    public List<Effect> statusEffects => aoEData.statusEffects;                  //대상 지정 부여하는 상태효과
+    public List<Effect> effects => aoEData.effects;                              //대상 지정 부여할 효과들
     public bool UseCountBased => aoEData.UseCountBased;                          //횟수 기반 여부(T - 횟수 | F - 턴)
     public int EntryDamage { get; private set; }                                 //진입 피해
     public int TurnDamage { get; private set; }                                  //턴당 피해
