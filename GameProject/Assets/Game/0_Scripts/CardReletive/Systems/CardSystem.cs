@@ -124,7 +124,7 @@ public class CardSystem : Singleton<CardSystem>
                     //effect가 AddStatusEffectEffect일 경우, 항상 자신자신에게 사용을 설정
                     if (effect is AddStatusEffectEffect addSEE)
                     {
-                        addSEE.etargetMode = ETargetMode.MySelf;
+                        addSEE.etargetMode = SETargetMode.MySelf;
                     }
 
                     PerformEffectGA performEffectGA = new(effect, 

@@ -42,7 +42,7 @@ public class AoESystem : Singleton<AoESystem>
         if (aoEDataByType.ContainsKey(addAoEGA.AoEType))
         {
             var data = aoEDataByType[addAoEGA.AoEType];
-            var aoE = new AoE(data, addAoEGA.Caster, addAoEGA.IsBuff);
+            var aoE = new AoE(data, addAoEGA.Caster, addAoEGA.AoETargetMode);
 
             foreach (var targetPos in addAoEGA.TargetPoses)
             {
@@ -211,8 +211,7 @@ public class AoESystem : Singleton<AoESystem>
     {
         var targetType = aoE.GetTokenType(target);
 
-        if ((aoE.IsBuff && targetType == aoE.CasterType)
-             || (!aoE.IsBuff && targetType != aoE.CasterType))
+        if (aoE.CheckCanUse(target))
         {
             //상태 효과 적용
             foreach (var effect in aoE.statusEffects)

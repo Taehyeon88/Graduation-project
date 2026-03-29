@@ -15,16 +15,16 @@ public class AoE
     public int RemainDuration { get; private set; }                              //남은 지속 턴 수 혹은 횟수
     public CombatantView Caster { get; private set; }
     public TokenType CasterType { get; private set; }
-    public bool IsBuff { get; private set; }                                     //버프 타입 여부 (T - 버프 | F - 디버프)
+    public AoETargetMode AoETargetMode { get; private set; }
 
     private readonly AoEData aoEData;
 
 
-    public AoE(AoEData aoEData, CombatantView caster, bool isBuff)
+    public AoE(AoEData aoEData, CombatantView caster, AoETargetMode aoETargetMode)
     {
         this.aoEData = aoEData;
         this.Caster = caster;
-        this.IsBuff = isBuff;
+        this.AoETargetMode = aoETargetMode;
         EntryDamage = aoEData.EntryDamage;
         TurnDamage = aoEData.TurnDamage;
         RemainDuration = MaxDuration = aoEData.UseCountBased? 
@@ -42,5 +42,35 @@ public class AoE
     {
         if (combatantView is EnemyView) return TokenType.Enemy;
         else return TokenType.Hero;
+    }
+
+    public bool CheckCanUse(CombatantView target)
+    {
+        //1. 나자신만 2. 나제외하고 다, 3. 아군, 4, 적군 5. 모든 대상
+
+        switch (AoETargetMode)
+        {
+            case AoETargetMode.MySelf:
+                if(Caster == null) return false;
+                else if (Caster == target) return true;
+                break;
+
+            case AoETargetMode.ExceptMySelf:
+                if (Caster == null) return true;
+                else if (Caster != target) return true;
+                break;
+
+            case AoETargetMode.Ally:
+                if (CasterType == GetTokenType(target)) return true;
+                break;
+
+            case AoETargetMode.Opponent:
+                if (CasterType != GetTokenType(target)) return true;
+                break;
+
+            case AoETargetMode.All:
+                return true;
+        }
+        return false;
     }
 }
