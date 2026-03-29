@@ -10,25 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ce87ac8b57556641b26f2ad232c2752, type: 3}
-  m_Name: "\uC131\uC5ED\uC758 \uBB38\uC591"
+  m_Name: "\uB9F9\uB3C5\uC758 \uB2AA"
   m_EditorClassIdentifier: 
-  <AoEModel>k__BackingField: {fileID: 3168746442247006446, guid: 18bb07086ba7cb346801ea1fbbc0b36c,
+  <AoEModel>k__BackingField: {fileID: 3940115676849602503, guid: 95237fbccad2b464fa99ef6c53290089,
     type: 3}
   <AoEFieldType>k__BackingField: 0
-  <AoEType>k__BackingField: 1
-  <EntryDamage>k__BackingField: 0
-  <TurnDamage>k__BackingField: 0
+  <AoEType>k__BackingField: 2
+  <EntryDamage>k__BackingField: 4
+  <TurnDamage>k__BackingField: 3
   UseCountBased: 0
   DurationCount: 0
   <DurationTurn>k__BackingField: 3
   <statusEffects>k__BackingField:
-  - rid: 5842417299890896906
+  - rid: 5842417319833763840
   references:
     version: 2
     RefIds:
-    - rid: 5842417299890896906
+    - rid: 5842417319833763840
       type: {class: AddStatusEffectEffect, ns: , asm: Assembly-CSharp}
       data:
-        statusEffectType: 0
-        stackCount: 5
+        statusEffectType: 1
+        stackCount: 1
         etargetMode: 1
