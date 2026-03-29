@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 29bd87d4b821bdd419a4bafb4b3ce7b9, type: 3}
-  m_Name: "\uAE30\uC220\uCE74\uB4DC_\uD0C0\uC624\uB974\uB294 \uC7BF\uBE5B"
+  m_Name: "\uAE30\uC220\uC601\uC5ED\uCE74\uB4DC_\uD0C0\uC624\uB974\uB294 \uC7BF\uBE5B"
   m_EditorClassIdentifier: 
   <Description>k__BackingField: "\uC774\uAC83\uC740 \uD0C0\uC624\uB974\uB294 \uC7BF\uBE5B\uCE74\uB4DC\uC785\uB2C8\uB2E4."
   <Mana>k__BackingField: 2

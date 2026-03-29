@@ -10,46 +10,43 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 29bd87d4b821bdd419a4bafb4b3ce7b9, type: 3}
-  m_Name: "\uD22C\uC0AC\uACF5\uACA9\uCE74\uB4DC_\uC815\uBC00\uC0AC\uACA9"
+  m_Name: "\uACF5\uACA9\uC778\uC811\uCE74\uB4DC_\uCC98\uD615"
   m_EditorClassIdentifier: 
-  <Description>k__BackingField: "\uC774\uAC83\uC740 \uD22C\uC0AC\uACF5\uACA9\uCE74\uB4DC
-    \uC815\uBC00 \uC0AC\uACA9\uC774\uB2E4."
+  <Description>k__BackingField: "\uC774\uAC83\uC740 \uCC98\uD615 \uCE74\uB4DC \uC785\uB2C8\uB2E4."
   <Mana>k__BackingField: 1
   <Image>k__BackingField: {fileID: 0}
-  <CardType>k__BackingField: 1
-  <CardTypeType>k__BackingField: 0
   <SelfEffects>k__BackingField: []
   <GridTargetMode>k__BackingField:
-    <Distance>k__BackingField: 2
+    <Distance>k__BackingField: 1
     <TargetMode>k__BackingField:
-      rid: 5842417105210966047
+      rid: 5842417105210966026
     <GridRangeMode>k__BackingField:
-      rid: 5842417105210966048
+      rid: 5842417105210966027
     UseVisualGrid: 1
     UseSelectVG: 1
     WillSelectVGName: Hero_WillAttack
     SelectVGName: Hero_Attack
     <Effect>k__BackingField:
-      rid: 5842417105210966049
+      rid: 5842417105210966028
     <_AddedSECondition>k__BackingField: 1
     <AddedStatusEffects>k__BackingField:
-    - rid: 5842417105210966050
+    - rid: 5842417105210966029
   references:
     version: 2
     RefIds:
-    - rid: 5842417105210966047
+    - rid: 5842417105210966026
       type: {class: SingleTM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 5842417105210966048
+    - rid: 5842417105210966027
       type: {class: AllAroundRM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 5842417105210966049
+    - rid: 5842417105210966028
       type: {class: AttackEnemyEffect, ns: , asm: Assembly-CSharp}
       data:
-        amount: 6
-    - rid: 5842417105210966050
+        amount: 15
+    - rid: 5842417105210966029
       type: {class: AddStatusEffectEffect, ns: , asm: Assembly-CSharp}
       data:
-        statusEffectType: 2
+        statusEffectType: 1
         stackCount: 1
-        etargetMode: 1
+        isMySelf: 1

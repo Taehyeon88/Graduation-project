@@ -10,37 +10,39 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 29bd87d4b821bdd419a4bafb4b3ce7b9, type: 3}
-  m_Name: "\uAE30\uC220\uCE74\uB4DC_\uC131\uC5ED\uC758 \uBB38\uC591"
+  m_Name: "\uAE30\uC220\uC601\uC5ED\uCE74\uB4DC_\uAC70\uBBF8\uC904 \uD568\uC815"
   m_EditorClassIdentifier: 
-  <Description>k__BackingField: "\uC774\uAC83\uC740 \uC131\uC5ED\uC758 \uBB38\uC591
+  <Description>k__BackingField: "\uC774\uAC83\uC740 \uAC70\uBBF8\uC904 \uD568\uC815
     \uCE74\uB4DC\uC785\uB2C8\uB2E4."
   <Mana>k__BackingField: 1
   <Image>k__BackingField: {fileID: 0}
   <CardType>k__BackingField: 3
-  <CardSubType>k__BackingField: 0
+  <CardTypeType>k__BackingField: 9
   <SelfEffects>k__BackingField: []
   <GridTargetMode>k__BackingField:
     <Distance>k__BackingField: 2
     <TargetMode>k__BackingField:
-      rid: 5842417299890896907
+      rid: 5842417299890896901
     <GridRangeMode>k__BackingField:
-      rid: 5842417299890896908
-    UseVisualGrid: 0
-    UseSelectVG: 0
-    WillSelectVGName: 
-    SelectVGName: 
+      rid: 5842417299890896905
+    UseVisualGrid: 1
+    UseSelectVG: 1
+    WillSelectVGName: Hero_WillAttack
+    SelectVGName: Hero_Attack
     <Effect>k__BackingField:
-      rid: -2
+      rid: 5842417299890896903
     <_AddedSECondition>k__BackingField: 0
     <AddedStatusEffects>k__BackingField: []
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
-    - rid: 5842417299890896907
+    - rid: 5842417299890896901
       type: {class: SingleTM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 5842417299890896908
-      type: {class: AllAroundRM, ns: , asm: Assembly-CSharp}
+    - rid: 5842417299890896903
+      type: {class: AddAoEEffect, ns: , asm: Assembly-CSharp}
+      data:
+        aoEType: 4
+    - rid: 5842417299890896905
+      type: {class: AllAround_ExpceptEnemyRM, ns: , asm: Assembly-CSharp}
       data: 

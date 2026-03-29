@@ -10,37 +10,46 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 29bd87d4b821bdd419a4bafb4b3ce7b9, type: 3}
-  m_Name: "\uD22C\uC0AC\uACF5\uACA9\uCE74\uB4DC_\uC0AC\uACA9"
+  m_Name: "\uACF5\uACA9\uD22C\uC0AC\uCE74\uB4DC_\uB9C8\uB825\uD3ED\uD0C4"
   m_EditorClassIdentifier: 
-  <Description>k__BackingField: "\uC774\uAC83\uC740 \uC0AC\uACA9\uC785\uB2C8\uB2E4."
-  <Mana>k__BackingField: 1
+  <Description>k__BackingField: "\uC774\uAC83\uC740 \uD3ED\uBC1C \uD14C\uC2A4\uD2B8\uC784."
+  <Mana>k__BackingField: 2
   <Image>k__BackingField: {fileID: 0}
   <CardType>k__BackingField: 1
+  <CardTypeType>k__BackingField: 5
   <SelfEffects>k__BackingField: []
   <GridTargetMode>k__BackingField:
     <Distance>k__BackingField: 2
     <TargetMode>k__BackingField:
-      rid: 5842417105210966044
+      rid: 5842417265986240517
     <GridRangeMode>k__BackingField:
-      rid: 5842417105210966045
+      rid: 5842417265986240518
     UseVisualGrid: 1
     UseSelectVG: 1
     WillSelectVGName: Hero_WillAttack
     SelectVGName: Hero_Attack
     <Effect>k__BackingField:
-      rid: 5842417105210966046
+      rid: 5842417229088423938
     <_AddedSECondition>k__BackingField: 0
     <AddedStatusEffects>k__BackingField: []
   references:
     version: 2
     RefIds:
-    - rid: 5842417105210966044
+    - rid: 5842417229088423938
+      type: {class: SplashEffect, ns: , asm: Assembly-CSharp}
+      data:
+        damage: 10
+        splashDamage: 5
+        gridRangeMode:
+          rid: 5842417229088423941
+        distance: 1
+        isPentration: 0
+    - rid: 5842417229088423941
+      type: {class: CrossRM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 5842417265986240517
       type: {class: SingleTM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 5842417105210966045
+    - rid: 5842417265986240518
       type: {class: AllAroundRM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 5842417105210966046
-      type: {class: AttackEnemyEffect, ns: , asm: Assembly-CSharp}
-      data:
-        amount: 5

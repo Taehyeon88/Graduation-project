@@ -10,43 +10,50 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 29bd87d4b821bdd419a4bafb4b3ce7b9, type: 3}
-  m_Name: "\uC778\uC811\uACF5\uACA9\uCE74\uB4DC_\uCC98\uD615"
+  m_Name: "\uACF5\uACA9\uD22C\uC0AC\uCE74\uB4DC_\uACAC\uC81C\uC0AC\uACA9"
   m_EditorClassIdentifier: 
-  <Description>k__BackingField: "\uC774\uAC83\uC740 \uCC98\uD615 \uCE74\uB4DC \uC785\uB2C8\uB2E4."
+  <Description>k__BackingField: "\uC774\uAC83\uC740 \uACAC\uC81C\uC0AC\uACA9 \uACF5\uACA9\uCE74\uB4DC\uC785\uB2C8\uB2E4."
   <Mana>k__BackingField: 1
   <Image>k__BackingField: {fileID: 0}
-  <SelfEffects>k__BackingField: []
+  <CardType>k__BackingField: 1
+  <CardTypeType>k__BackingField: 1
+  <SelfEffects>k__BackingField:
+  - rid: 5842417265986240513
   <GridTargetMode>k__BackingField:
-    <Distance>k__BackingField: 1
+    <Distance>k__BackingField: 2
     <TargetMode>k__BackingField:
-      rid: 5842417105210966026
+      rid: 5842417240195465227
     <GridRangeMode>k__BackingField:
-      rid: 5842417105210966027
+      rid: 5842417265986240516
     UseVisualGrid: 1
     UseSelectVG: 1
     WillSelectVGName: Hero_WillAttack
     SelectVGName: Hero_Attack
     <Effect>k__BackingField:
-      rid: 5842417105210966028
+      rid: 5842417240195465225
     <_AddedSECondition>k__BackingField: 1
     <AddedStatusEffects>k__BackingField:
-    - rid: 5842417105210966029
+    - rid: 5842417240195465226
   references:
     version: 2
     RefIds:
-    - rid: 5842417105210966026
-      type: {class: SingleTM, ns: , asm: Assembly-CSharp}
-      data: 
-    - rid: 5842417105210966027
-      type: {class: AllAroundRM, ns: , asm: Assembly-CSharp}
-      data: 
-    - rid: 5842417105210966028
+    - rid: 5842417240195465225
       type: {class: AttackEnemyEffect, ns: , asm: Assembly-CSharp}
       data:
-        amount: 15
-    - rid: 5842417105210966029
+        amount: 4
+    - rid: 5842417240195465226
       type: {class: AddStatusEffectEffect, ns: , asm: Assembly-CSharp}
       data:
-        statusEffectType: 1
+        statusEffectType: 3
         stackCount: 1
-        isMySelf: 1
+        etargetMode: 1
+    - rid: 5842417240195465227
+      type: {class: LineTM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 5842417265986240513
+      type: {class: AddCardAbilityEffect, ns: , asm: Assembly-CSharp}
+      data:
+        cardAbilityType: 0
+    - rid: 5842417265986240516
+      type: {class: SnowRM, ns: , asm: Assembly-CSharp}
+      data: 
