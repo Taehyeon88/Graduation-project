@@ -216,7 +216,7 @@ public class AoESystem : Singleton<AoESystem>
             //상태 효과 적용
             foreach (var effect in aoE.effects)
             {
-                PerformEffectGA performEffectGA = new(effect, new(new List<CombatantView>() { target }, aoE.Caster));
+                PerformEffectGA performEffectGA = new(effect, new(new List<CombatantView>() { target }, null));
                 ActionSystem.Instance.AddReaction(performEffectGA);
             }
             return true;
@@ -238,7 +238,7 @@ public class AoESystem : Singleton<AoESystem>
             //몬스터는 영웅에게 | 영웅은 몬스터에게만 데미지 피격 가능
             if (targetType != aoE.CasterType)
             {
-                DealDamageGA dealDamageGA = new(damage, new() { target }, aoE.Caster);
+                DealDamageGA dealDamageGA = new(damage, new() { target }, null);
                 ActionSystem.Instance.AddReaction(dealDamageGA);
             }
         }

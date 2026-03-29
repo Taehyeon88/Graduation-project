@@ -19,48 +19,52 @@ public class DamageSystem : Singleton<DamageSystem>
     {
         foreach (var target in dealDamageGA.Targets)
         {
+            if (target == null)
+                continue;
+
             //상태이상 처리
-            //혼란 : N% 공격력 감소
-            int disarrayStack = dealDamageGA.Caster.GetStatusEffectStacks(StatusEffectType.DISARRAY);
-            if (disarrayStack > 0)
-            {
-                StatusEffectStorage disarrayInfo = dealDamageGA.Caster.GetStatusEffectInfo(StatusEffectType.DISARRAY);
-                dealDamageGA.Amount -= Mathf.CeilToInt(dealDamageGA.Amount * (disarrayInfo.Disarray_Percent / 100f));
-            }
             //표적 : N% 받는 피해 증가
-            int markStack = target.GetStatusEffectStacks(StatusEffectType.MARK);
+                int markStack = target.GetStatusEffectStacks(StatusEffectType.MARK);
             if (markStack > 0)
             {
                 StatusEffectStorage markInfo = target.GetStatusEffectInfo(StatusEffectType.MARK);
                 dealDamageGA.Amount += Mathf.CeilToInt(dealDamageGA.Amount * (markInfo.Mark_Percent / 100f));
             }
 
-            //집중 : N% 공격력 증가
-            int concentrationStatck = dealDamageGA.Caster.GetStatusEffectStacks(StatusEffectType.CONCENTRATION);
-            if (concentrationStatck > 0)
+            if (dealDamageGA.Caster != null)
             {
-                StatusEffectStorage concentrationInfo = dealDamageGA.Caster.GetStatusEffectInfo(StatusEffectType.CONCENTRATION);
-                dealDamageGA.Amount += Mathf.CeilToInt(dealDamageGA.Amount * (concentrationInfo.Concentration_Percent / 100f));
+                //혼란 : N% 공격력 감소
+                int disarrayStack = dealDamageGA.Caster.GetStatusEffectStacks(StatusEffectType.DISARRAY);
+                if (disarrayStack > 0)
+                {
+                    StatusEffectStorage disarrayInfo = dealDamageGA.Caster.GetStatusEffectInfo(StatusEffectType.DISARRAY);
+                    dealDamageGA.Amount -= Mathf.CeilToInt(dealDamageGA.Amount * (disarrayInfo.Disarray_Percent / 100f));
+                }
+
+                //집중 : N% 공격력 증가
+                int concentrationStatck = dealDamageGA.Caster.GetStatusEffectStacks(StatusEffectType.CONCENTRATION);
+                if (concentrationStatck > 0)
+                {
+                    StatusEffectStorage concentrationInfo = dealDamageGA.Caster.GetStatusEffectInfo(StatusEffectType.CONCENTRATION);
+                    dealDamageGA.Amount += Mathf.CeilToInt(dealDamageGA.Amount * (concentrationInfo.Concentration_Percent / 100f));
+                }
             }
 
 
             target.Damage(dealDamageGA.Amount);
-            if (target != null)
+            Instantiate(damageVFX, target.transform.position, target.transform.rotation);
+            yield return new WaitForSeconds(0.15f);
+            if (target.CurrentHealth <= 0)
             {
-                Instantiate(damageVFX, target.transform.position, target.transform.rotation);
-                yield return new WaitForSeconds(0.15f);
-                if (target.CurrentHealth <= 0)
+                if (target is EnemyView enemyView)
                 {
-                    if (target is EnemyView enemyView)
-                    {
-                        KillEnemyGA killEnemyGA = new KillEnemyGA(enemyView);
-                        ActionSystem.Instance.AddReaction(killEnemyGA);
-                    }
-                    else
-                    {
-                        //Do some Game over logic here
-                        //Open Game over Scene
-                    }
+                    KillEnemyGA killEnemyGA = new KillEnemyGA(enemyView);
+                    ActionSystem.Instance.AddReaction(killEnemyGA);
+                }
+                else
+                {
+                    //Do some Game over logic here
+                    //Open Game over Scene
                 }
             }
         }
