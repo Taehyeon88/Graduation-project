@@ -6,9 +6,9 @@ using UnityEngine;
 public class VisualGridData : ScriptableObject
 {
     [field: SerializeReference, SR] public List<VisualGridType> VisualGridTypes {  get; private set; }
-    [Range(0, 2)]
-    [SerializeField] private int layerDepth;            //같은 VG끼리의 깊이 설정(수치UP -> 우선도UP)
-    public int LayerDepth { get { return layerDepth; } }
+    [Range(0, 3)]
+    [SerializeField] private float layerDepth;            //같은 VG끼리의 깊이 설정(수치UP -> 우선도UP)
+    public float LayerDepth { get { return layerDepth; } }
 
     public float GetVGTransZ(float targetZ) => targetZ - layerDepth * 0.3f;
 }

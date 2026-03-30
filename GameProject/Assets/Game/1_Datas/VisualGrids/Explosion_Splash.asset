@@ -10,22 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9473ac8937d88c54b805a05b80f1aac1, type: 3}
-  m_Name: Hero_WillAttack
+  m_Name: Explosion_Splash
   m_EditorClassIdentifier: 
   <VisualGridTypes>k__BackingField:
-  - rid: 4818494444620218370
-  - rid: 4818494444620218371
-  layerDepth: 1
+  - rid: 5842417319833763855
+  - rid: 5842417319833763857
+  layerDepth: 1.1
   references:
     version: 2
     RefIds:
-    - rid: 4818494444620218370
+    - rid: 5842417319833763855
       type: {class: FillType, ns: , asm: Assembly-CSharp}
       data:
-        Color: {r: 1, g: 0.54793787, b: 0, a: 0.6}
-        sprite: {fileID: 21300000, guid: c24597d5a32fc364fba168752f092718, type: 3}
-    - rid: 4818494444620218371
+        Color: {r: 1, g: 0.42745098, b: 0.20784314, a: 0.47058824}
+        sprite: {fileID: 0}
+    - rid: 5842417319833763857
       type: {class: BorderType, ns: , asm: Assembly-CSharp}
       data:
-        Color: {r: 1, g: 0.68811125, b: 0, a: 1}
-        sprite: {fileID: 21300000, guid: 4b6b9674e5b1c6140a50ea7b1ffe278f, type: 3}
+        Color: {r: 1, g: 0.27450982, b: 0, a: 1}
+        sprite: {fileID: 0}

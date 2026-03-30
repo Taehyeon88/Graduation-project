@@ -21,12 +21,12 @@ MonoBehaviour:
   UseCountBased: 0
   DurationCount: 0
   <DurationTurn>k__BackingField: 3
-  <statusEffects>k__BackingField:
-  - rid: 5842417319833763840
+  <effects>k__BackingField:
+  - rid: 5842417319833763849
   references:
     version: 2
     RefIds:
-    - rid: 5842417319833763840
+    - rid: 5842417319833763849
       type: {class: AddStatusEffectEffect, ns: , asm: Assembly-CSharp}
       data:
         statusEffectType: 1

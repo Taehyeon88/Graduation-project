@@ -174,6 +174,7 @@ public class PlayerCardEffectSystem : MonoBehaviour
 
     private IEnumerator SplashGAPerformer(SplashGA splashGA)
     {
+
         foreach (var targetPos in splashGA.TargetPoses)
         {
             CombatantView target = TokenSystem.Instance.GetTokenByPosition(targetPos) as CombatantView;

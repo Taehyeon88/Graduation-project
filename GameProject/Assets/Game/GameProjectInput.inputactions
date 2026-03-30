@@ -24,9 +24,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "RollDice",
+                    "name": "CancelReadyUseCard",
                     "type": "Button",
-                    "id": "6bcd4cec-db0b-42c4-bf37-6ae24be16496",
+                    "id": "3e91a0a4-8c48-4254-a284-8ff6d976dd7d",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -178,23 +178,12 @@
                 },
                 {
                     "name": "",
-                    "id": "0805f850-7523-43bb-8180-6d3d539f3f90",
-                    "path": "<Keyboard>/space",
+                    "id": "72124361-d7bf-467c-802b-a42656735235",
+                    "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "RollDice",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "088538e9-38b2-43c7-bc82-5ec219b19a5b",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "RollDice",
+                    "action": "CancelReadyUseCard",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -18,8 +18,10 @@ MonoBehaviour:
   <AoEType>k__BackingField: 0
   <EntryDamage>k__BackingField: 8
   <TurnDamage>k__BackingField: 8
+  UseCountBased: 0
+  DurationCount: 0
   <DurationTurn>k__BackingField: 2
-  <statusEffects>k__BackingField: []
+  <effects>k__BackingField: []
   references:
     version: 2
     RefIds: []

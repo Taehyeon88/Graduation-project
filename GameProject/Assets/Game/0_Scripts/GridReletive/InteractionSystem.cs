@@ -13,10 +13,12 @@ public enum InteractionCase
 public class InteractionSystem : Singleton<InteractionSystem>
 {
     public static bool GridSelected { get; private set; } = false;
+    public static bool CancelReadyUseCard { get; private set; } = false;
 
     [SerializeField] private PlayerInput playerInput;
 
     private InputAction m_SelectGrid;
+    private InputAction m_CancelReadyUseCard;
     private InteractionCase currentInteraction;
 
     private event Action<bool> updatedAction;
@@ -27,6 +29,7 @@ public class InteractionSystem : Singleton<InteractionSystem>
     private void Initialze()
     {
         m_SelectGrid = playerInput.actions["SelectGrid"];
+        m_CancelReadyUseCard = playerInput.actions["CancelReadyUseCard"];
     }
 
     private void Update()
@@ -43,6 +46,7 @@ public class InteractionSystem : Singleton<InteractionSystem>
         }
 
         GridSelected = m_SelectGrid.WasPressedThisFrame();
+        CancelReadyUseCard = m_CancelReadyUseCard.WasPressedThisFrame();
     }
 
     //void OnMousePosition(InputValue value)
