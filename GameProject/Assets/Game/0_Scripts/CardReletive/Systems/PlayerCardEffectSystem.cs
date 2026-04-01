@@ -134,6 +134,36 @@ public class PlayerCardEffectSystem : Singleton<PlayerCardEffectSystem>
         yield return null;
     }
 
+    public void SplashTVG(bool active, int ownerID, List<Vector2Int> range, Card card)
+    {
+        if (active)
+        {
+            Vector2Int targetPos = range[0];
+            if (card.GridTargetMode.Effect is SplashEffect splashEffect)
+            {
+                var rg = splashEffect.GridRangeMode.GetGridRanges(
+                    targetPos,
+                    splashEffect.Distance,
+                    splashEffect.IsPentration
+                    );
+
+                VisualGridCreator.Instance.CreateVisualGrid(ownerID, targetPos, "Explosion_Damage");
+                foreach (var r in rg)
+                    VisualGridCreator.Instance.CreateVisualGrid(ownerID, r, "Explosion_Splash");
+            }
+        }
+        else
+        {
+            VisualGridCreator.Instance.RemoveVisualGrid(ownerID, "Explosion_Damage");
+            VisualGridCreator.Instance.RemoveVisualGrid(ownerID, "Explosion_Splash");
+        }
+    }
+
+    /// <summary>
+    /// 스플래시 효과
+    /// </summary>
+    /// <param name="splashGA"></param>
+    /// <returns></returns>
     private IEnumerator SplashGAPerformer(SplashGA splashGA)
     {
 

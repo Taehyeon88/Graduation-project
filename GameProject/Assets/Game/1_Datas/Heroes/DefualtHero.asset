@@ -16,14 +16,9 @@ MonoBehaviour:
     type: 3}
   <Health>k__BackingField: 44
   <Deck>k__BackingField:
-  - {fileID: 11400000, guid: 80712369029259d49add093e29ed8900, type: 2}
-  - {fileID: 11400000, guid: 80712369029259d49add093e29ed8900, type: 2}
-  - {fileID: 11400000, guid: 80712369029259d49add093e29ed8900, type: 2}
-  - {fileID: 11400000, guid: 80712369029259d49add093e29ed8900, type: 2}
-  - {fileID: 11400000, guid: c3c4f4a36edefe243b5ac6da1b87457a, type: 2}
-  - {fileID: 11400000, guid: c3c4f4a36edefe243b5ac6da1b87457a, type: 2}
-  - {fileID: 11400000, guid: c3c4f4a36edefe243b5ac6da1b87457a, type: 2}
-  - {fileID: 11400000, guid: 570fcdef13c54784fa7091caf2c57c07, type: 2}
-  - {fileID: 11400000, guid: 570fcdef13c54784fa7091caf2c57c07, type: 2}
-  - {fileID: 11400000, guid: 570fcdef13c54784fa7091caf2c57c07, type: 2}
-  - {fileID: 11400000, guid: 570fcdef13c54784fa7091caf2c57c07, type: 2}
+  - {fileID: 11400000, guid: f8a86a5d882dd3545aff6d733e9085b3, type: 2}
+  - {fileID: 11400000, guid: f8a86a5d882dd3545aff6d733e9085b3, type: 2}
+  - {fileID: 11400000, guid: f8a86a5d882dd3545aff6d733e9085b3, type: 2}
+  - {fileID: 11400000, guid: f8a86a5d882dd3545aff6d733e9085b3, type: 2}
+  - {fileID: 11400000, guid: f8a86a5d882dd3545aff6d733e9085b3, type: 2}
+  - {fileID: 11400000, guid: f8a86a5d882dd3545aff6d733e9085b3, type: 2}

@@ -5,5 +5,5 @@ using UnityEngine;
 
 public interface IUseCustomTargetVG
 {
-    public Action<int> GetCustomTargetVGEvent(int ownerID);
+    public Action<bool, int, List<Vector2Int>, Card> GetCustomTargetVGEvent();
 }

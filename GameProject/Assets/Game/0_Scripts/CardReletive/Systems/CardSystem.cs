@@ -176,26 +176,28 @@ public class CardSystem : Singleton<CardSystem>
                 var targets = targetMode.TargetMode.GetTargets(range, gridPosition, currentPos, targetMode.Distance);
                 if (targets != null)
                 {
-                    if (targetMode.UseSelectVG)
+                    string targetStr = string.Join("", targets);
+                    if (curStr != targetStr)
                     {
-                        string targetStr = string.Join("", targets);
-                        if (curStr != targetStr)
+                        //비주얼 공격 범위 그리드 업데이트
+                        if (targetMode.UseSelectVG)
                         {
-                            //비주얼 공격 범위 그리드 업데이트
                             VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), targetMode.SelectVGName);
                             foreach (var target in targets)
                                 VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), target, targetMode.SelectVGName);
-
-                            curStr = targetStr;
                         }
-                    }
-                    else
-                    {
-                        //커스텀 선택 VG 사용
-                        if (card.GridTargetMode.Effect is IUseCustomTargetVG customTargetVG)
+                        else
                         {
-
+                            //커스텀 선택 VG 사용
+                            if (card.GridTargetMode.Effect is IUseCustomTargetVG customTargetVG)
+                            {
+                                var customTVGEvent = customTargetVG.GetCustomTargetVGEvent();
+                                customTVGEvent?.Invoke(false, gameObject.GetInstanceID(), targets, card);
+                                customTVGEvent?.Invoke(true, gameObject.GetInstanceID(), targets, card);
+                            }
                         }
+
+                        curStr = targetStr;
                     }
 
                     //그리드 선택 인터렉션 감지
