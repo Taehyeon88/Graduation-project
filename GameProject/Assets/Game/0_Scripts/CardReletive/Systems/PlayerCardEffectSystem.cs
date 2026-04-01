@@ -182,11 +182,8 @@ public class PlayerCardEffectSystem : Singleton<PlayerCardEffectSystem>
                 {
                     CombatantView tg = TokenSystem.Instance.GetTokenByPosition(r) as CombatantView;
                     if (tg != null)
-                    {
-                        splashTargets.Add(tg);
-                    }
-                    Debug.Log($"그리드 비주얼: {string.Join(",", range)}");
-                    VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), r, "Hero_WillAttack");
+                        if(tg is not HeroView)
+                            splashTargets.Add(tg);
                 }
                 if (splashTargets.Count > 0)
                 {
@@ -199,13 +196,7 @@ public class PlayerCardEffectSystem : Singleton<PlayerCardEffectSystem>
                 Debug.Log("해당 범위 안에 대상이 없음");
             }
         }
-        splashGA.PostReactions.Add((null, EndSplashVisualGrid));
 
         yield return null;
-    }
-    private void EndSplashVisualGrid()
-    {
-        Debug.Log("삭제용");
-        VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "Hero_WillAttack");
     }
 }
