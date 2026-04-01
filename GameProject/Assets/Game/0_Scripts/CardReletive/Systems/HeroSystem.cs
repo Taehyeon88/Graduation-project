@@ -51,7 +51,7 @@ public class HeroSystem : Singleton<HeroSystem>
         {
             //true -> 플레이어 이동 모드 -> 이동 및 카드사용 가능
             SPDSystem.Instance.AddSPD(heroFristMoveGA.SPD);
-            PlayerMoveGA playerMoveGA = new(null, heroFristMoveGA.SPD, true);
+            PlayerMoveGA playerMoveGA = new(heroFristMoveGA.SPD, true);
             ActionSystem.Instance.AddReaction(playerMoveGA, FinishedFirstMoveRelated);
         }
 

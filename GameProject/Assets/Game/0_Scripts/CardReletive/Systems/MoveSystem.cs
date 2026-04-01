@@ -32,7 +32,7 @@ public class MoveSystem : Singleton<MoveSystem>
     {
         if (playerMoveGA.IsAutoMove)
         {
-            SPDSystem.Instance.AddSPD(playerMoveGA.GridTargetMode.Distance);
+            SPDSystem.Instance.AddSPD(playerMoveGA.Distance);
 
             CombatantView heroView = HeroSystem.Instance.HeroView;
             Vector2Int targetPos = playerMoveGA.TargetPoses[0];
@@ -147,7 +147,7 @@ public class MoveSystem : Singleton<MoveSystem>
         int curSPD = SPDSystem.Instance.RemainSPD();
         if (curSPD >= 1)  //새로운 비주얼 그리드 그려서 보여주기
         {
-            PlayerMoveGA playerMoveGA = new(null, curSPD);
+            PlayerMoveGA playerMoveGA = new(curSPD);
             ActionSystem.Instance.AddReaction(playerMoveGA);
         }
         else
