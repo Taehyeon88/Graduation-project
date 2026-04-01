@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerCardEffectSystem : MonoBehaviour
+public class PlayerCardEffectSystem : Singleton<PlayerCardEffectSystem>
 {
     private void OnEnable()
     {
@@ -51,93 +51,55 @@ public class PlayerCardEffectSystem : MonoBehaviour
     }
 
     /// <summary>
+    /// 인접 - 어깨치기 범위VG 생성 함수
+    /// </summary>
+    public void ShoulderBashRVG(int ownerID, List<Vector2Int> range)
+    {
+        Vector2Int currentPos = TokenSystem.Instance.GetTokenPosition(HeroSystem.Instance.HeroView);
+        foreach (var r in range)
+        {
+            VisualGridCreator.Instance.CreateVisualGrid(ownerID, r, "Hero_Move");
+            Vector2Int attackPos = r + (r - currentPos);
+            VisualGridCreator.Instance.CreateVisualGrid(ownerID, attackPos, "Hero_WillAttack");
+        }
+    }
+
+    /// <summary>
     /// 인접 - 어깨치기 기술
     /// </summary>
     /// <param name="shoulderBashGA"></param>
     /// <returns></returns>
     private IEnumerator ShoulderBashGAPerformer(ShoulderBashGA shoulderBashGA)
     {
-        GridTargetMode targetMode = shoulderBashGA.GridTargetMode;
-
-        SPDSystem.Instance.AddSPD(targetMode.Distance);
-
-        //현재 SPD가 없어서 이동 불가일 경우, 반환처리
-        int curSPD = SPDSystem.Instance.RemainSPD();
-        if (curSPD <= 0) yield break;
-
         Vector2Int currentPos = TokenSystem.Instance.GetTokenPosition(HeroSystem.Instance.HeroView);
-        var range = targetMode.GridRangeMode.GetGridRanges(currentPos, targetMode.Distance, false);
-        List<Vector2Int> attackRange = new();
-        List<Vector2Int> currentTargets = new();
+        Vector2Int targetPos = shoulderBashGA.TargetPoses[0];
+        CombatantView heroView = HeroSystem.Instance.HeroView;
 
-        //비주얼 공격 예상 범위 그리드 업데이트
-        foreach (var r in range)
+        var path = TokenSystem.Instance.GetShortestPath(heroView, targetPos);
+        if (path != null)
         {
-            VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), r, "Hero_Move");
-            Vector2Int attackPos = r + (r - currentPos);
-            VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), attackPos, "Hero_WillAttack");
-            attackRange.Add(attackPos);
-        }
+            PerformMoveGA performMoveGA = new(heroView, path);
+            ActionSystem.Instance.AddReaction(performMoveGA);
 
-        while (true)
-        {
-            Vector3 temp = TokenSystem.Instance.IsoWorld.MouseIsoTilePosition(1);
-            Vector2Int gridPosition = new((int)temp.x, (int)temp.y);
+            Vector2Int attackPos = path[0] + (path[0] - currentPos);
+            CombatantView target = TokenSystem.Instance.GetTokenByPosition(attackPos) as CombatantView;
 
-            var targets = targetMode.TargetMode.GetTargets(range, gridPosition, currentPos, targetMode.Distance);
-
-            if (targets != null)
+            if (target != null)
             {
-                if (InteractionSystem.GridSelected)  //그리드 선택 인터렉션 감지
-                {
-                    Vector3 mousePosition = TokenSystem.Instance.IsoWorld.MouseIsoTilePosition(1f);
-                    Vector2Int isoPosition = new((int)mousePosition.x, (int)mousePosition.y);
-                    CombatantView heroView = HeroSystem.Instance.HeroView;
+                //이동 이후, 공격 체인
+                DealDamageGA dealDamageGA = new(shoulderBashGA.Damage, new() { target }, heroView);
+                performMoveGA.PostReactions.Add((dealDamageGA, null));
 
-                    int distance = TokenSystem.Instance.GetDistance(heroView, isoPosition);
-
-                    if (curSPD >= distance)
-                    {
-                        var path = TokenSystem.Instance.GetShortestPath(heroView, isoPosition);
-                        if (path != null)
-                        {
-                            SPDSystem.Instance.SpendSPD(distance);
-
-                            PerformMoveGA performMoveGA = new(heroView, path);
-                            ActionSystem.Instance.AddReaction(performMoveGA);
-
-                            Vector2Int attackPos = path[0] + (path[0] - currentPos);
-                            CombatantView target = TokenSystem.Instance.GetTokenByPosition(attackPos) as CombatantView;
-
-                            if (target != null)
-                            {
-                                //이동 이후, 공격 체인
-                                DealDamageGA dealDamageGA = new(shoulderBashGA.Damage, new() { target }, heroView);
-                                performMoveGA.PostReactions.Add((dealDamageGA, null));
-
-                                //공격 이후, 대상 넉백 체인
-                                KnockBackGA knockBackGA = new(heroView, shoulderBashGA.Distance, attackPos, (path[0] - currentPos));
-                                performMoveGA.PostReactions.Add((knockBackGA, null));
-                            }
-                            else
-                            {
-                                Debug.Log("대상이 존재하지 않음");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        Debug.Log("거리의 밖 구역에서 사용할 수 없습니다.");
-                    }
-
-                    Debug.Log("초기화.");
-                    VisualGridCreator.Instance.RemoveVisualGridById(gameObject.GetInstanceID());
-                    yield break;
-                }
+                //공격 이후, 대상 넉백 체인
+                KnockBackGA knockBackGA = new(heroView, shoulderBashGA.Distance, attackPos, (path[0] - currentPos));
+                performMoveGA.PostReactions.Add((knockBackGA, null));
             }
-
-            yield return null;
+            else
+            {
+                Debug.Log("대상이 존재하지 않음");
+            }
         }
+        yield return null;
     }
 
     /// <summary>

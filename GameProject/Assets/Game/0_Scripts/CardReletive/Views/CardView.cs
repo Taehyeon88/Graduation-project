@@ -105,6 +105,8 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
     {
         if (!Interactions.Instance.PlayerCanDraging() || lockCardUse) return;
 
+        if (!Interactions.Instance.PlayerIsDraging) return;
+
         if (ManaSystem.Instance.HasEnoughMana(card.Mana) && rectTransform.anchoredPosition.y > 250f) //카드가 y좌표 250를 넘었음 = DropArea
         {
             if (card.GridTargetMode.GridRangeMode != null)

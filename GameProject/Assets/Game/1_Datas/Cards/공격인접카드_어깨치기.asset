@@ -16,14 +16,14 @@ MonoBehaviour:
   <Mana>k__BackingField: 1
   <Image>k__BackingField: {fileID: 0}
   <CardType>k__BackingField: 0
-  <CardTypeType>k__BackingField: 2
+  <CardSubType>k__BackingField: 0
   <SelfEffects>k__BackingField: []
   <GridTargetMode>k__BackingField:
     <Distance>k__BackingField: 1
     <TargetMode>k__BackingField:
-      rid: -2
+      rid: 2515386859722899456
     <GridRangeMode>k__BackingField:
-      rid: -2
+      rid: 2515386859722899458
     UseVisualGrid: 0
     UseSelectVG: 0
     WillSelectVGName: 
@@ -31,12 +31,16 @@ MonoBehaviour:
     <Effect>k__BackingField:
       rid: 5842417105210966022
     <_AddedSECondition>k__BackingField: 0
-    <AddedStatusEffects>k__BackingField: []
+    <AddedEffects>k__BackingField: []
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 2515386859722899456
+      type: {class: SingleTM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 2515386859722899458
+      type: {class: AllAround_ExpceptEnemyRM, ns: , asm: Assembly-CSharp}
+      data: 
     - rid: 5842417105210966022
       type: {class: ShoulderBashEffect, ns: , asm: Assembly-CSharp}
       data:

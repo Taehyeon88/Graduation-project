@@ -116,7 +116,8 @@ public class CardSystem : Singleton<CardSystem>
     /// <summary>
     /// 카드 사용 전, 그리드 타겟팅 시스템
     /// !!주의: 선택 모드는 철저히 TargetMode, GridRangeMode 유무로 판단. 
-    /// 즉, GridTargetMode가 존재할 경우, TargetMode, GridRangeMode를 무조건 가져야함.
+    /// !!즉, GridTargetMode가 존재할 경우, TargetMode, GridRangeMode를 무조건 가져야함.
+    /// !!만약, 고용 VisualGrid가 없을 경우, 필수로 커스텀 VisualGrid를 가져야 한다.
     /// </summary>
     /// <param name="playCardTargetingGA"></param>
     /// <returns></returns>
@@ -155,8 +156,13 @@ public class CardSystem : Singleton<CardSystem>
             else
             {
                 //커스텀 예상 범위 비주얼
+                //IUseCustomRangeVG customRVG = card.GridTargetMode.Effect.GetType
+                if (card.GridTargetMode.Effect is IUseCustomRangeVG customRangeVG)
+                {
+                    var customRVGEvent = customRangeVG.GetCustomRangeVGEvent();
+                    customRVGEvent?.Invoke(gameObject.GetInstanceID(), range);
+                }
             }
-
             Debug.Log("공격 가능 범위: " + string.Join(",", range));
 
 
@@ -186,6 +192,10 @@ public class CardSystem : Singleton<CardSystem>
                     else
                     {
                         //커스텀 선택 VG 사용
+                        if (card.GridTargetMode.Effect is IUseCustomTargetVG customTargetVG)
+                        {
+
+                        }
                     }
 
                     //그리드 선택 인터렉션 감지
@@ -201,9 +211,27 @@ public class CardSystem : Singleton<CardSystem>
 
                 //카드 사용 준비 취소 인터렉션 감지
                 if (InteractionSystem.CancelReadyUseCard)
+                    break;
+
+                yield return null;
+            }
+        }
+        else
+        {
+            //단순 자가 적용용 - 카드일 경우
+            while (true)
+            {
+                if (InteractionSystem.GridSelected)
                 {
+                    playCardTargetingGA.EndSelectAction?.Invoke();
+                    PlayCardGA PlayCardGA = new(playCardTargetingGA.Card, null);
+                    ActionSystem.Instance.AddReaction(PlayCardGA);
                     break;
                 }
+
+                //카드 사용 준비 취소 인터렉션 감지
+                if (InteractionSystem.CancelReadyUseCard)
+                    break;
 
                 yield return null;
             }
@@ -256,7 +284,6 @@ public class CardSystem : Singleton<CardSystem>
             //메인 실행 GameAction - 그리드좌표 기반
             PerformEffectGA performEffectGA = new(targetMode.Effect,
                 new(targetPoses,
-                targetMode,
                 HeroSystem.Instance.HeroView,
                 playCardGA.Card.CardType,
                 playCardGA.Card.CardSubType

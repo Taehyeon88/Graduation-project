@@ -11,14 +11,12 @@ public class GridTargetMode
     [field: SerializeReference, SR] public GridRangeMode GridRangeMode { get; private set; }
 
     public bool UseVisualGrid;
-
-    [ShowIf("UseVisualGrid")]
     public bool UseSelectVG;
 
     [ShowIf("UseVisualGrid")]
     public string WillSelectVGName;
 
-    [ShowIf("UseSelectVG", "UseVisualGrid")]
+    [ShowIf("UseSelectVG")]
     public string SelectVGName;
 
     [field: SerializeReference, SR] public Effect Effect { get; private set; }
