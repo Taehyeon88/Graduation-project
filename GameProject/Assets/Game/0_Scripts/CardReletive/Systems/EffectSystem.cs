@@ -14,8 +14,11 @@ public class EffectSystem : MonoBehaviour
     }
     private IEnumerator PerformEffectPerformer(PerformEffectGA performEffectGA)
     {
-        GameAction effectAction = performEffectGA.Effect.GetGameAction(performEffectGA.EffectInfo);
-        ActionSystem.Instance.AddReaction(effectAction);
-        yield return null;
+        if (!performEffectGA.IsSkiping)
+        {
+            GameAction effectAction = performEffectGA.Effect.GetGameAction(performEffectGA.EffectInfo);
+            ActionSystem.Instance.AddReaction(effectAction);
+            yield return null;
+        }
     }
 }

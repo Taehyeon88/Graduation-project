@@ -163,7 +163,7 @@ public class CardSystem : Singleton<CardSystem>
                     customRVGEvent?.Invoke(gameObject.GetInstanceID(), range);
                 }
             }
-            Debug.Log("공격 가능 범위: " + string.Join(",", range));
+            //Debug.Log("공격 가능 범위: " + string.Join(",", range));
 
 
             //선택 - 그리드 미리보기
@@ -283,13 +283,17 @@ public class CardSystem : Singleton<CardSystem>
             GridTargetMode targetMode = playCardGA.Card.GridTargetMode;
             var targetPoses = playCardGA.TargetPoses;
 
-            //메인 실행 GameAction - 그리드좌표 기반
-            PerformEffectGA performEffectGA = new(targetMode.Effect,
-                new(targetPoses,
-                HeroSystem.Instance.HeroView,
-                playCardGA.Card.CardType,
-                playCardGA.Card.CardSubType
-                ));
+            PerformEffectGA performEffectGA = new();
+            if (playCardGA.Card.GridTargetMode.Effect != null)
+            {
+                //메인 실행 GameAction - 그리드좌표 기반
+                performEffectGA = new(targetMode.Effect,
+                    new(targetPoses,
+                    HeroSystem.Instance.HeroView,
+                    playCardGA.Card.CardType,
+                    playCardGA.Card.CardSubType
+                    ));
+            }
             ActionSystem.Instance.AddReaction(performEffectGA);
 
             //후속 실행 GameAction들 - 대상 선택 가능(그리드좌표/대상)
@@ -298,13 +302,13 @@ public class CardSystem : Singleton<CardSystem>
                 //그리드 좌표 기반
                 foreach (var effect in targetMode.AddedEffects)
                 {
-                    PerformEffectGA performStatusEffectGA = new(effect,
+                    PerformEffectGA performGridEffectGA = new(effect,
                                    new(targetPoses,
                                    HeroSystem.Instance.HeroView,
                                    playCardGA.Card.CardType,
                                    playCardGA.Card.CardSubType
                                ));
-                    performEffectGA.PostReactions.Add((performStatusEffectGA, null));
+                    performEffectGA.PostReactions.Add((performGridEffectGA, null));
                 }
             }
             else if (targetMode._AddedSECondition == GridTargetMode.AddedSECondition.CombatantView)
@@ -321,8 +325,8 @@ public class CardSystem : Singleton<CardSystem>
                 {
                     foreach (var effect in targetMode.AddedEffects)
                     {
-                        PerformEffectGA performStatusEffectGA = new(effect, new(combatants, HeroSystem.Instance.HeroView));
-                        performEffectGA.PostReactions.Add((performStatusEffectGA, null));
+                        PerformEffectGA performTargetEffectGA = new(effect, new(combatants, HeroSystem.Instance.HeroView));
+                        performEffectGA.PostReactions.Add((performTargetEffectGA, null));
                     }
                 }
             }

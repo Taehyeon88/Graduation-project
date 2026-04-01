@@ -6,10 +6,12 @@ public enum CardType
     Skill_Sheild,          //스킬 - 방어
     Skill_Area,            //스킬 - 영역
     Skill_Buff,            //스킬 - 버프
-    Skill_Debuff           //스킬 - 디버프
+    Skill_Debuff,          //스킬 - 디버프
+    Skill_Move,            //스킬 - 이동
 }
 public enum CardSubType
 {
+    None,            //없음
     Single,          //단일
     Penetration,     //관통
     Dash,            //돌진
@@ -20,5 +22,6 @@ public enum CardSubType
     Debuff,          //디버프
     Damage,          //피해
     CC,              //CC
-    Move             //이동
+    Move,            //이동
+    Shield,          //방어
 }
