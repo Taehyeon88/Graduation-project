@@ -1,9 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
-using UnityEditor;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class CardSystem : Singleton<CardSystem>
 {
@@ -64,7 +62,7 @@ public class CardSystem : Singleton<CardSystem>
         }
     }
 
-    //Public
+    //Publics
     public void SetUp(List<CardData> deckData)
     {
         foreach (var cardData in deckData.Shuffle())
@@ -77,6 +75,33 @@ public class CardSystem : Singleton<CardSystem>
     {
         handView.SetCardsLockView(false);
         Interactions.Instance.lockInteraction = false;
+    }
+
+    public bool Cheat_ChangeCards(List<CardData> deckData)
+    {
+        if (!ActionSystem.Instance.IsPerforming)
+        {
+            //foreach(var remainCards in drawPile)
+                
+            drawPile.Clear();
+            foreach (var cardData in deckData)
+            {
+                Card card = new(cardData);
+                drawPile.Add(card);
+            }
+
+            DiscardAllCardsGA discardAllCardsGA = new();
+            ActionSystem.Instance.Perform(discardAllCardsGA, () =>
+            {
+                discardPile.Clear();
+            });
+
+            DrawCardsGA drawCardsGA = new(5);
+            discardAllCardsGA.PerformReactions.Add((drawCardsGA, null));
+
+            return true;
+        }
+        else return false;
     }
 
     //Performers
@@ -104,10 +129,18 @@ public class CardSystem : Singleton<CardSystem>
 
     private IEnumerator DiscardAllCardsPerformer(DiscardAllCardsGA discardAllCardsGA)
     {
+        int handLastIdx = hand.Count - 1;
         foreach (var card in hand)
         {
-            CardView cardView = handView.RemoveCard(card);
-            yield return DiscardCard(cardView);
+            if (!card.LockDiscarding)
+            {
+                CardView cardView = handView.RemoveCard(card);
+                yield return DiscardCard(cardView);
+            }
+            else
+            {
+                //hand.Add(card);
+            }
         }
         hand.Clear();
     }
@@ -196,7 +229,6 @@ public class CardSystem : Singleton<CardSystem>
                                 customTVGEvent?.Invoke(true, gameObject.GetInstanceID(), targets, card);
                             }
                         }
-
                         curStr = targetStr;
                     }
 
@@ -210,7 +242,6 @@ public class CardSystem : Singleton<CardSystem>
                         break;
                     }
                 }
-
                 //카드 사용 준비 취소 인터렉션 감지
                 if (InteractionSystem.CancelReadyUseCard)
                     break;
@@ -230,7 +261,6 @@ public class CardSystem : Singleton<CardSystem>
                     ActionSystem.Instance.AddReaction(PlayCardGA);
                     break;
                 }
-
                 //카드 사용 준비 취소 인터렉션 감지
                 if (InteractionSystem.CancelReadyUseCard)
                     break;
@@ -346,6 +376,7 @@ public class CardSystem : Singleton<CardSystem>
 
     private IEnumerator DiscardCard(CardView cardView)
     {
+        Debug.Log(cardView);
         discardPile.Add(cardView.card);
         cardView.transform.DOScale(Vector3.zero, 0.15f);
         Tween tween = cardView.transform.DOMove(discardPilePoint.position, 0.15f);

@@ -272,6 +272,12 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터
     public Vector2Int GetTokenPosition(Token token) => gridPosByToken[token];
 
     /// <summary>
+    /// 현재 게임 위에 있는 모든 토큰 받아가는 함수
+    /// </summary>
+    /// <returns></returns>
+    public List<Token> GetAllTokens() => gridPosByToken.Keys.ToList();
+
+    /// <summary>
     /// 특정 위치의 토큰을 받아가는 함수
     /// </summary>
     /// <param name="position"></param>

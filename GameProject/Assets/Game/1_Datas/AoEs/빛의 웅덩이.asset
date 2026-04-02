@@ -32,7 +32,7 @@ MonoBehaviour:
       data:
         statusEffectType: 4
         stackCount: 1
-        etargetMode: 1
+        setargetMode: 1
     - rid: 5842417319833763845
       type: {class: HealEffect, ns: , asm: Assembly-CSharp}
       data:

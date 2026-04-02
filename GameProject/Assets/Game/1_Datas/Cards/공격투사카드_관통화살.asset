@@ -16,7 +16,7 @@ MonoBehaviour:
   <Mana>k__BackingField: 1
   <Image>k__BackingField: {fileID: 0}
   <CardType>k__BackingField: 1
-  <CardTypeType>k__BackingField: 1
+  <CardSubType>k__BackingField: 0
   <SelfEffects>k__BackingField: []
   <GridTargetMode>k__BackingField:
     <Distance>k__BackingField: 2
@@ -31,11 +31,17 @@ MonoBehaviour:
     <Effect>k__BackingField:
       rid: 5842417105210966042
     <_AddedSECondition>k__BackingField: 1
-    <AddedStatusEffects>k__BackingField:
-    - rid: 5842417105210966043
+    <AddedEffects>k__BackingField:
+    - rid: 2515386894848360451
   references:
     version: 2
     RefIds:
+    - rid: 2515386894848360451
+      type: {class: AddStatusEffectEffect, ns: , asm: Assembly-CSharp}
+      data:
+        statusEffectType: 2
+        stackCount: 1
+        setargetMode: 1
     - rid: 5842417105210966040
       type: {class: LineTM, ns: , asm: Assembly-CSharp}
       data: 
@@ -43,12 +49,6 @@ MonoBehaviour:
       type: {class: AttackEnemyEffect, ns: , asm: Assembly-CSharp}
       data:
         amount: 6
-    - rid: 5842417105210966043
-      type: {class: AddStatusEffectEffect, ns: , asm: Assembly-CSharp}
-      data:
-        statusEffectType: 2
-        stackCount: 1
-        etargetMode: 1
     - rid: 5842417265986240515
       type: {class: SnowRM, ns: , asm: Assembly-CSharp}
       data: 

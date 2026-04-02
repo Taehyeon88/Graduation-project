@@ -13,6 +13,7 @@ public class Card
     public List<Effect> SelfEffects => data.SelfEffects;
     public GridTargetMode GridTargetMode => data.GridTargetMode;
     public int Mana { get; private set; }
+    public bool LockDiscarding { get; set; }
 
     private readonly CardData data;
 
@@ -20,5 +21,6 @@ public class Card
     {
         this.data = data;
         Mana = data.Mana;
+        LockDiscarding = false;
     }
 }

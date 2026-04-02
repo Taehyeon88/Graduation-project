@@ -1,8 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public enum InteractionCase
 {
@@ -19,9 +18,12 @@ public class InteractionSystem : Singleton<InteractionSystem>
 
     private InputAction m_SelectGrid;
     private InputAction m_CancelReadyUseCard;
+    private InputAction m_ChangeCheatMode;
     private InteractionCase currentInteraction;
 
     private event Action<bool> updatedAction;
+
+    private event Action<bool> cheatUpdatedAction;
     private void Start()
     {
         Initialze();
@@ -30,6 +32,7 @@ public class InteractionSystem : Singleton<InteractionSystem>
     {
         m_SelectGrid = playerInput.actions["SelectGrid"];
         m_CancelReadyUseCard = playerInput.actions["CancelReadyUseCard"];
+        m_ChangeCheatMode = playerInput.actions["ChangeCheatMode"];
     }
 
     private void Update()
@@ -45,14 +48,13 @@ public class InteractionSystem : Singleton<InteractionSystem>
 
         }
 
+        cheatUpdatedAction?.Invoke(m_ChangeCheatMode.WasPerformedThisFrame());
+
         GridSelected = m_SelectGrid.WasPressedThisFrame();
         CancelReadyUseCard = m_CancelReadyUseCard.WasPressedThisFrame();
     }
 
-    //void OnMousePosition(InputValue value)
-    //{
-    //    Vector2 mousePos = value.Get<Vector2>();
-    //}
+    void OnStartCheat() => CheatSystem.Instance.StartCheat();
 
     void OnSelectCard()
     {
@@ -84,6 +86,11 @@ public class InteractionSystem : Singleton<InteractionSystem>
     {
         updatedAction = action;
         currentInteraction = newCase;
+    }
+
+    public void SetCheatInteraction(Action<bool> action)
+    {
+        cheatUpdatedAction = action;
     }
     public void EndInteraction()
     {

@@ -29,7 +29,6 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
         image.sprite = card.Image;
         rectTransform = GetComponent<RectTransform>();
     }
-
     public void OnPointerClick(PointerEventData eventData)
     {
         if (!Interactions.Instance.PlayerCanTargeting() || lockCardUse) return;

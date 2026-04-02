@@ -94,4 +94,9 @@ public class CombatantView : Token
         if (statusEffectUIs.ContainsKey(type)) return effectInfo;
         else return default;
     }
+
+    public void Cheat_GetHealth(int amount)
+    {
+        CurrentHealth = MaxHealth = amount;
+    }
 }

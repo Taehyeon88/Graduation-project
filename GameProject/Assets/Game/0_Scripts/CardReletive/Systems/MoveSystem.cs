@@ -99,14 +99,7 @@ public class MoveSystem : Singleton<MoveSystem>
             }
         }
     }
-    private CombatantView mover;
-    private void Update()
-    {
-        if (mover != null)
-        {
-            Debug.Log($"위치에 비어있는 여부!! : {TokenSystem.Instance.IsGridEmpty(TokenSystem.Instance.GetTokenPosition(mover))}");
-        }
-    }
+
     private IEnumerator PerformMoveGAPerformer(PerformMoveGA performMoveGA)
     {
         CombatantView mover = performMoveGA.mover;

@@ -22,6 +22,10 @@ public class ManaSystem : Singleton<ManaSystem>
     {
         return CurrentMana >= mana;
     }
+    public void Cheat_ChangeMaxMana(int amount)
+    {
+        MaxMana = amount;
+    }
     private IEnumerator SpendManaPerformer(SpendManaGA spendManaGA)
     {
         CurrentMana -= spendManaGA.Amount;

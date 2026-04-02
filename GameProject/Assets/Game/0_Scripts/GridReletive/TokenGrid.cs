@@ -1,10 +1,7 @@
-using System;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using IsoTools;
-using UnityEditor.Experimental.GraphView;
 
 public class TokenGrid : MonoBehaviour
 {

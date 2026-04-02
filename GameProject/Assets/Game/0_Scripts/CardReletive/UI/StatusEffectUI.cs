@@ -9,7 +9,7 @@ public class StatusEffectUI : MonoBehaviour
 
     public void Set(Sprite sprite, int stackCount)
     {
-        image.sprite = sprite;
+        image.sprite = image.sprite != null? image.sprite : sprite;
         stackCountText.text = stackCount.ToString();
     }
 }
