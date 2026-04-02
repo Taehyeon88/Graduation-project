@@ -12,6 +12,12 @@ public class StatusEffectStorage
     public float Mark_Percent { get; private set; }
     //ÁýÁßN
     public float Concentration_Percent { get; private set; }
+    //µ¶¹°N
+    public float Poision_Percent { get; private set; }
+    //ÃâÇ÷N
+    public float Bleeding_Percent { get; private set; }
+    //¾ÇÈ­N
+    public float Deteriorate_Rate { get; private set; }
 
     public void SetStatusEffectInfo(float[] infoes, StatusEffectType type)
     {
@@ -28,6 +34,18 @@ public class StatusEffectStorage
             case StatusEffectType.CONCENTRATION:
                 Concentration_Percent = infoes[0];
             break;
+
+            case StatusEffectType.POISIONING:
+                Poision_Percent = infoes[0];
+                break;
+
+            case StatusEffectType.BLEEDING:
+                Bleeding_Percent = infoes[0];
+                break;
+
+            case StatusEffectType.DETERIORATE:
+                Deteriorate_Rate = infoes[0];
+                break;
 
             default: break;
         }

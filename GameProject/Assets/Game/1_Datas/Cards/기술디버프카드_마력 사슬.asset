@@ -12,28 +12,48 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29bd87d4b821bdd419a4bafb4b3ce7b9, type: 3}
   m_Name: "\uAE30\uC220\uB514\uBC84\uD504\uCE74\uB4DC_\uB9C8\uB825 \uC0AC\uC2AC"
   m_EditorClassIdentifier: 
-  <Description>k__BackingField: 
-  <Mana>k__BackingField: 0
+  <Description>k__BackingField: "\uC774\uAC83\uC740 \uB9C8\uB825 \uC0AC\uC2AC \uB514\uBC84\uD504\uC785\uB2C8\uB2E4."
+  <Mana>k__BackingField: 2
   <Image>k__BackingField: {fileID: 0}
-  <CardType>k__BackingField: 0
+  <CardType>k__BackingField: 5
   <CardSubType>k__BackingField: 0
   <SelfEffects>k__BackingField: []
   <GridTargetMode>k__BackingField:
-    <Distance>k__BackingField: 1
+    <Distance>k__BackingField: 2
     <TargetMode>k__BackingField:
-      rid: -2
+      rid: 2515386870715383817
     <GridRangeMode>k__BackingField:
-      rid: -2
-    UseVisualGrid: 0
-    UseSelectVG: 0
-    WillSelectVGName: 
-    SelectVGName: 
+      rid: 2515386870715383818
+    UseVisualGrid: 1
+    UseSelectVG: 1
+    WillSelectVGName: Hero_WillAttack
+    SelectVGName: Hero_Attack
     <Effect>k__BackingField:
       rid: -2
-    <_AddedSECondition>k__BackingField: 0
-    <AddedEffects>k__BackingField: []
+    <_AddedSECondition>k__BackingField: 1
+    <AddedEffects>k__BackingField:
+    - rid: 2515386870715383819
+    - rid: 2515386870715383820
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
+    - rid: 2515386870715383817
+      type: {class: SingleTM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 2515386870715383818
+      type: {class: AllAroundRM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 2515386870715383819
+      type: {class: AddStatusEffectEffect, ns: , asm: Assembly-CSharp}
+      data:
+        statusEffectType: 3
+        stackCount: 1
+        setargetMode: 1
+    - rid: 2515386870715383820
+      type: {class: AddStatusEffectEffect, ns: , asm: Assembly-CSharp}
+      data:
+        statusEffectType: 2
+        stackCount: 1
+        setargetMode: 1

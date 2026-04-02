@@ -140,6 +140,36 @@ public class EnemySystem : Singleton<EnemySystem>
         {
             int armorStack = enemy.GetStatusEffectStacks(StatusEffectType.ARMOR);
             if(armorStack > 0) enemy.RemoveStatusEffect(StatusEffectType.ARMOR, armorStack);
+
+            //»óÅÂ È¿°ú
+            //¾ÇÈ­
+            float specialRate = 1;
+            int deteriorateStacks = enemy.GetStatusEffectStacks(StatusEffectType.DETERIORATE);
+            if (deteriorateStacks > 0)
+            {
+                float rate = enemy.GetStatusEffectInfo(StatusEffectType.DETERIORATE).Deteriorate_Rate;
+                specialRate = specialRate * rate;
+            }
+
+            //µ¶¹°
+            int poisionStatcks = enemy.GetStatusEffectStacks(StatusEffectType.POISIONING);
+            if (poisionStatcks > 0)
+            {
+                float percent = enemy.GetStatusEffectInfo(StatusEffectType.POISIONING).Poision_Percent;
+                int amount = Mathf.CeilToInt(enemy.MaxHealth * (percent / 100f) * specialRate);
+                DealDamageGA dealDamageGA = new(amount, new() { enemy }, enemy, DamageFormulaType.Special);
+                ActionSystem.Instance.AddReaction(dealDamageGA);
+            }
+
+            //ÃâÇ÷
+            int bleedingStatcks = enemy.GetStatusEffectStacks(StatusEffectType.BLEEDING);
+            if (bleedingStatcks > 0)
+            {
+                float percent = enemy.GetStatusEffectInfo(StatusEffectType.BLEEDING).Bleeding_Percent;
+                int amount = Mathf.CeilToInt(enemy.MaxHealth * (percent / 100f) * specialRate);
+                DealDamageGA dealDamageGA = new(amount, new() { enemy }, enemy, DamageFormulaType.Special);
+                ActionSystem.Instance.AddReaction(dealDamageGA);
+            }
         }
     }
 

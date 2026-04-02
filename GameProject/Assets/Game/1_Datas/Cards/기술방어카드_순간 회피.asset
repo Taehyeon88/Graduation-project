@@ -12,28 +12,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29bd87d4b821bdd419a4bafb4b3ce7b9, type: 3}
   m_Name: "\uAE30\uC220\uBC29\uC5B4\uCE74\uB4DC_\uC21C\uAC04 \uD68C\uD53C"
   m_EditorClassIdentifier: 
-  <Description>k__BackingField: 
+  <Description>k__BackingField: "\uC774\uAC83\uC740 \uC21C\uAC04 \uD68C\uD53C \uC774\uB3D9
+    \uBC29\uC5B4 \uCE74\uB4DC\uC785\uB2C8\uB2E4."
   <Mana>k__BackingField: 0
   <Image>k__BackingField: {fileID: 0}
-  <CardType>k__BackingField: 0
-  <CardSubType>k__BackingField: 0
-  <SelfEffects>k__BackingField: []
+  <CardType>k__BackingField: 6
+  <CardSubType>k__BackingField: 12
+  <SelfEffects>k__BackingField:
+  - rid: 2515386870715383824
   <GridTargetMode>k__BackingField:
     <Distance>k__BackingField: 1
     <TargetMode>k__BackingField:
-      rid: -2
+      rid: 2515386870715383825
     <GridRangeMode>k__BackingField:
-      rid: -2
-    UseVisualGrid: 0
+      rid: 2515386870715383826
+    UseVisualGrid: 1
     UseSelectVG: 0
-    WillSelectVGName: 
+    WillSelectVGName: Hero_Move
     SelectVGName: 
     <Effect>k__BackingField:
-      rid: -2
+      rid: 2515386870715383827
     <_AddedSECondition>k__BackingField: 0
     <AddedEffects>k__BackingField: []
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 2515386870715383824
+      type: {class: AddStatusEffectEffect, ns: , asm: Assembly-CSharp}
+      data:
+        statusEffectType: 0
+        stackCount: 2
+        setargetMode: 0
+    - rid: 2515386870715383825
+      type: {class: SingleTM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 2515386870715383826
+      type: {class: AllAroundRM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 2515386870715383827
+      type: {class: PlayerMoveEffect, ns: , asm: Assembly-CSharp}
+      data:
+        distance: 1

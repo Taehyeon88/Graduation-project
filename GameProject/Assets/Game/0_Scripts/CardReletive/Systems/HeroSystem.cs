@@ -85,6 +85,36 @@ public class HeroSystem : Singleton<HeroSystem>
         int armorStack = HeroView.GetStatusEffectStacks(StatusEffectType.ARMOR);
         if (armorStack > 0) HeroView.RemoveStatusEffect(StatusEffectType.ARMOR, armorStack);
 
+        //상태 효과
+        //악화
+        float specialRate = 1;
+        int deteriorateStacks = HeroView.GetStatusEffectStacks(StatusEffectType.DETERIORATE);
+        if (deteriorateStacks > 0)
+        {
+            float rate = HeroView.GetStatusEffectInfo(StatusEffectType.DETERIORATE).Deteriorate_Rate;
+            specialRate = specialRate * rate;
+        }
+
+        //독물
+        int poisionStatcks = HeroView.GetStatusEffectStacks(StatusEffectType.POISIONING);
+        if (poisionStatcks > 0)
+        {
+            float percent = HeroView.GetStatusEffectInfo(StatusEffectType.POISIONING).Poision_Percent;
+            int amount = Mathf.CeilToInt(HeroView.MaxHealth * (percent / 100f) * specialRate);
+            DealDamageGA dealDamageGA = new(amount, new() { HeroView }, HeroView, DamageFormulaType.Special);
+            ActionSystem.Instance.AddReaction(dealDamageGA);
+        }
+
+        //출혈
+        int bleedingStatcks = HeroView.GetStatusEffectStacks(StatusEffectType.BLEEDING);
+        if (bleedingStatcks > 0)
+        {
+            float percent = HeroView.GetStatusEffectInfo(StatusEffectType.BLEEDING).Bleeding_Percent;
+            int amount = Mathf.CeilToInt(HeroView.MaxHealth * (percent / 100f) * specialRate);
+            DealDamageGA dealDamageGA = new(amount, new() { HeroView }, HeroView, DamageFormulaType.Special);
+            ActionSystem.Instance.AddReaction(dealDamageGA);
+        }
+
 
         //화염 상태효과 
         int burnStacks = HeroView.GetStatusEffectStacks(StatusEffectType.BURN);
