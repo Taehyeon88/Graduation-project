@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,8 @@ using UnityEngine;
 public class CardAbilitySystem : Singleton<CardAbilitySystem>
 {
     public readonly List<CardAbilityType> Abilitys = new();
+
+    private Dictionary<CardAbilityType, Func<float>> EventByAbilityType = new();
 
     private void OnEnable()
     {
@@ -48,11 +51,26 @@ public class CardAbilitySystem : Singleton<CardAbilitySystem>
                 Effect effect = playCardGA.Card.GridTargetMode.Effect;
                 if (effect != null)
                 {
-                    Debug.Log("작동한다");
-                    effect.AddDamageRate(0.5f);
+                    Debug.Log("카드 효과 걸기");
+                    EventByAbilityType.Add(CardAbilityType.AddNextAdjDamage, () =>
+                    {
+                        Debug.Log("카드 효과 적용");
+                        EventByAbilityType.Remove(CardAbilityType.AddNextAdjDamage);
+                        return 0.5f;
+                    });
                     Abilitys.Remove(CardAbilityType.AddNextAdjDamage);
                 }
             }
         }
+    }
+
+    //Publics
+    public Func<float> GetCardAbilityEvent(CardAbilityType cardAbilityType)
+    {
+        if (EventByAbilityType.ContainsKey(cardAbilityType))
+        {
+            return EventByAbilityType[cardAbilityType];
+        }
+        return null;
     }
 }

@@ -28,11 +28,10 @@ public class SplashEffect : Effect, IUseCustomTargetVG
                   gridRangeMode,
                   isPentration,
                   distance,
-                  CalculateDamage(damage),
-                  CalculateDamage(splashDamage),
+                  damage,
+                  splashDamage,
                   effectInfo.caster
              );
-        InitDamageRate();
         return shplash;
     }
 }

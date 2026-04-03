@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class ShieldBashEffect : Effect
 {
-    [SerializeField] private int amount;
+    [SerializeField] private float amount;
     public override GameAction GetGameAction(EffectInfo effectInfo)
     {
-        var shieldBashGA = new ShieldBashGA(CalculateDamage(amount), effectInfo.targetPoses);
-        InitDamageRate();
+        var shieldBashGA = new ShieldBashGA(amount, effectInfo.targetPoses);
         return shieldBashGA;
     }
 }

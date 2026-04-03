@@ -16,8 +16,7 @@ public class ShoulderBashEffect : Effect, IUseCustomRangeVG
 
     public override GameAction GetGameAction(EffectInfo effectInfo)
     {
-        ShoulderBashGA shoulderBashGA = new(distance, attackDistance, CalculateDamage(damage), effectInfo.targetPoses);
-        InitDamageRate();
+        ShoulderBashGA shoulderBashGA = new(distance, attackDistance, damage, effectInfo.targetPoses);
         return shoulderBashGA;
     }
 }
