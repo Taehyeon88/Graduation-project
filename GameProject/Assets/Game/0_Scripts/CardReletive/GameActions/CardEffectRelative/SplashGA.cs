@@ -10,9 +10,9 @@ public class SplashGA : GameAction
     public GridRangeMode GridRangeMode { get; private set; }
     public bool IsPentration { get; private set; }
     public int Distance { get; private set; }
-    public int Damage { get; private set; }
-    public int SplashDamage { get; private set; }
-    public SplashGA(List<Vector2Int> targetPoses, GridRangeMode gridRangeMode, bool isPentration, int distance, int damage, int splashDamage, CombatantView caster)
+    public float Damage { get; private set; }
+    public float SplashDamage { get; private set; }
+    public SplashGA(List<Vector2Int> targetPoses, GridRangeMode gridRangeMode, bool isPentration, int distance, float damage, float splashDamage, CombatantView caster)
     {
         TargetPoses = targetPoses;
         GridRangeMode = gridRangeMode;

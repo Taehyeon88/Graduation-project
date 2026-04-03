@@ -8,7 +8,7 @@ public abstract class Effect
 
     //데미지 추가 보정치(데미지 변수 보유시 적용)
     private float DamageRate;
-    protected int CalculateDamage(int amount) => Mathf.CeilToInt((1 + DamageRate) * amount);
+    protected float CalculateDamage(float amount) => (1 + DamageRate) * amount;
     public void AddDamageRate(float rate) => DamageRate = rate;
     protected void InitDamageRate() => DamageRate = 0;
 }

@@ -8,7 +8,7 @@ public class EnemyView : CombatantView
 {
     public string EnemyName { get; private set; }     //적 이름
     public Sprite EnemySprite { get; private set; }   //적 이미지
-    public int AttackPower { get; set; }              //적 공격력 !추후수정
+    public float AttackPower { get; set; }            //적 공격력 !추후수정
     public Enemy Enemy { get; private set; }          //적 모델
     public GameAction actAction { get; set; }         //다음 할 행동 GameAction
     public PerformMoveGA moveAction { get; set; }     //이동GameAction

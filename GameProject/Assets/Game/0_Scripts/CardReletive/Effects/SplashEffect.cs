@@ -6,8 +6,8 @@ using UnityEngine;
 
 public class SplashEffect : Effect, IUseCustomTargetVG
 {
-    [SerializeField] private int damage;
-    [SerializeField] private int splashDamage;
+    [SerializeField] private float damage;
+    [SerializeField] private float splashDamage;
     [SerializeReference, SR] private GridRangeMode gridRangeMode;
     [SerializeField] private int distance;
     [SerializeField] private bool isPentration;

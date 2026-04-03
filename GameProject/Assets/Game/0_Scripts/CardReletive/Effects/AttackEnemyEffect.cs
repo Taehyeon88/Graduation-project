@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AttackEnemyEffect : Effect
 {
-    [SerializeField] private int amount;
+    [SerializeField] private float amount;
     public override GameAction GetGameAction(EffectInfo effectInfo)
     {
         AttackEnemyGA attackEnemyGA = new(effectInfo.targetPoses, CalculateDamage(amount));

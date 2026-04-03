@@ -6561,9 +6561,9 @@ MonoBehaviour:
   Attack_Adjacent_CardDeck:
   - {fileID: 11400000, guid: 570fcdef13c54784fa7091caf2c57c07, type: 2}
   - {fileID: 11400000, guid: c8454026c0aebb14285168494634a9b9, type: 2}
-  - {fileID: 11400000, guid: ce4e1987d8be0cc4aa6c2fd76ca81ff5, type: 2}
-  - {fileID: 11400000, guid: c3c4f4a36edefe243b5ac6da1b87457a, type: 2}
+  - {fileID: 11400000, guid: b3fa60c2e5365024ba71e530c94a21c5, type: 2}
   - {fileID: 11400000, guid: 4bb2181ad44476e44912d6ada97dd27d, type: 2}
+  - {fileID: 11400000, guid: 7cd94dde0a6676b48baeb12c2aa0d504, type: 2}
   Attack_Projection_CardDeck:
   - {fileID: 11400000, guid: b3fa60c2e5365024ba71e530c94a21c5, type: 2}
   - {fileID: 11400000, guid: c4079ead3a289fc4990942d4dd3a2f92, type: 2}

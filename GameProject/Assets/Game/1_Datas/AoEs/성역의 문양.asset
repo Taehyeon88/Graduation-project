@@ -31,4 +31,4 @@ MonoBehaviour:
       data:
         statusEffectType: 0
         stackCount: 5
-        etargetMode: 1
+        setargetMode: 1

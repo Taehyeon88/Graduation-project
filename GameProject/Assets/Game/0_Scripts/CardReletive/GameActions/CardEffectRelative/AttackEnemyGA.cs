@@ -5,9 +5,9 @@ using UnityEngine;
 public class AttackEnemyGA : GameAction
 {
     public List<Vector2Int> TargetPoses { get; private set; }
-    public int Amount { get; private set; }
+    public float Amount { get; private set; }
 
-    public AttackEnemyGA(List<Vector2Int> targetPoses, int amount)
+    public AttackEnemyGA(List<Vector2Int> targetPoses, float amount)
     {
         this.TargetPoses = targetPoses;
         this.Amount = amount;

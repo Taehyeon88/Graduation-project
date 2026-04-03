@@ -123,7 +123,8 @@ public class PlayerCardEffectSystem : Singleton<PlayerCardEffectSystem>
             DealDamageGA dealDamageGA = new(shieldBashGA.Amount, combatants, HeroSystem.Instance.HeroView);
             ActionSystem.Instance.AddReaction(dealDamageGA);
 
-            AddStatusEffectGA addStatusEffectGA = new(StatusEffectType.ARMOR, shieldBashGA.Amount, new() { HeroSystem.Instance.HeroView });
+            int shieldStack = Mathf.CeilToInt(shieldBashGA.Amount);
+            AddStatusEffectGA addStatusEffectGA = new(StatusEffectType.ARMOR, shieldStack, new() { HeroSystem.Instance.HeroView });
             dealDamageGA.PostReactions.Add((addStatusEffectGA, null));
         }
         else

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DealDamageEffect : Effect
 {
-    [SerializeField] private int amount;
+    [SerializeField] private float amount;
     public override GameAction GetGameAction(EffectInfo effectInfo)
     {
         DealDamageGA dealDamageGA = new(amount, effectInfo.targets, effectInfo.caster);

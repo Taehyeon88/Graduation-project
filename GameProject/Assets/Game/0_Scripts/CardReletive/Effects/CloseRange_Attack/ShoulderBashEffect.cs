@@ -7,7 +7,7 @@ public class ShoulderBashEffect : Effect, IUseCustomRangeVG
 {
     [SerializeField] private int distance;
     [SerializeField] private int attackDistance;
-    [SerializeField] private int damage;
+    [SerializeField] private float damage;
 
     public Action<int, List<Vector2Int>> GetCustomRangeVGEvent()
     {

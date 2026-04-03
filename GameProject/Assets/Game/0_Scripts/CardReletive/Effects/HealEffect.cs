@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HealEffect : Effect
 {
-    [SerializeField] private int amount;
+    [SerializeField] private float amount;
     public override GameAction GetGameAction(EffectInfo effectInfo)
     {
         if (effectInfo.targets != null)           //대상 기반

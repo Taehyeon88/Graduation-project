@@ -156,7 +156,7 @@ public class EnemySystem : Singleton<EnemySystem>
             if (poisionStatcks > 0)
             {
                 float percent = enemy.GetStatusEffectInfo(StatusEffectType.POISIONING).Poision_Percent;
-                int amount = Mathf.CeilToInt(enemy.MaxHealth * (percent / 100f) * specialRate);
+                float amount = enemy.MaxHealth * (percent / 100f) * specialRate;
                 DealDamageGA dealDamageGA = new(amount, new() { enemy }, enemy, DamageFormulaType.Special);
                 ActionSystem.Instance.AddReaction(dealDamageGA);
             }
@@ -166,7 +166,7 @@ public class EnemySystem : Singleton<EnemySystem>
             if (bleedingStatcks > 0)
             {
                 float percent = enemy.GetStatusEffectInfo(StatusEffectType.BLEEDING).Bleeding_Percent;
-                int amount = Mathf.CeilToInt(enemy.MaxHealth * (percent / 100f) * specialRate);
+                float amount = enemy.MaxHealth * (percent / 100f) * specialRate;
                 DealDamageGA dealDamageGA = new(amount, new() { enemy }, enemy, DamageFormulaType.Special);
                 ActionSystem.Instance.AddReaction(dealDamageGA);
             }

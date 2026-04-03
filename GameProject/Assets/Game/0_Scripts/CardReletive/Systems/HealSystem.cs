@@ -36,7 +36,8 @@ public class HealSystem : Singleton<HealSystem>
         {
             if (target != null)
             {
-                target.Heal(healGA.Amount);
+                int amountInt = Mathf.CeilToInt(healGA.Amount);
+                target.Heal(amountInt);
                 //회복 연출
                 yield return new WaitForSeconds(0.15f);
             }

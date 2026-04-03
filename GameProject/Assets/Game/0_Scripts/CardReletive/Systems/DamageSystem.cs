@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 public class DamageSystem : Singleton<DamageSystem>
@@ -22,6 +23,9 @@ public class DamageSystem : Singleton<DamageSystem>
             if (target == null)
                 continue;
 
+            float amount = dealDamageGA.Amount;
+            float temp = amount;
+
             if (dealDamageGA.FormulaType == DamageFormulaType.Main)
             {
                 //상태이상 처리
@@ -30,7 +34,7 @@ public class DamageSystem : Singleton<DamageSystem>
                 if (markStack > 0)
                 {
                     StatusEffectStorage markInfo = target.GetStatusEffectInfo(StatusEffectType.MARK);
-                    dealDamageGA.Amount += Mathf.CeilToInt(dealDamageGA.Amount * (markInfo.Mark_Percent / 100f));
+                    amount += Mathf.CeilToInt(dealDamageGA.Amount * (markInfo.Mark_Percent / 100f));
                 }
 
                 if (dealDamageGA.Caster != null)
@@ -40,7 +44,7 @@ public class DamageSystem : Singleton<DamageSystem>
                     if (disarrayStack > 0)
                     {
                         StatusEffectStorage disarrayInfo = dealDamageGA.Caster.GetStatusEffectInfo(StatusEffectType.DISARRAY);
-                        dealDamageGA.Amount -= Mathf.CeilToInt(dealDamageGA.Amount * (disarrayInfo.Disarray_Percent / 100f));
+                        amount -= Mathf.CeilToInt(dealDamageGA.Amount * (disarrayInfo.Disarray_Percent / 100f));
                     }
 
                     //집중 : N% 공격력 증가
@@ -48,13 +52,17 @@ public class DamageSystem : Singleton<DamageSystem>
                     if (concentrationStatck > 0)
                     {
                         StatusEffectStorage concentrationInfo = dealDamageGA.Caster.GetStatusEffectInfo(StatusEffectType.CONCENTRATION);
-                        dealDamageGA.Amount += Mathf.CeilToInt(dealDamageGA.Amount * (concentrationInfo.Concentration_Percent / 100f));
+                        amount += Mathf.CeilToInt(dealDamageGA.Amount * (concentrationInfo.Concentration_Percent / 100f));
                     }
                 }
             }
 
-            target.Damage(dealDamageGA.Amount);
+            int amountInt = Mathf.CeilToInt(amount);
+            Debug.Log($"{target.name}에게 구 - {temp}데미지 | 실 - {amountInt}데미지");
+
+            target.Damage(amountInt);
             Instantiate(damageVFX, target.transform.position, target.transform.rotation);
+
             yield return new WaitForSeconds(0.15f);
             if (target.CurrentHealth <= 0)
             {

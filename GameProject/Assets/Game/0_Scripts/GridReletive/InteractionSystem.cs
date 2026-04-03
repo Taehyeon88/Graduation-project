@@ -54,7 +54,7 @@ public class InteractionSystem : Singleton<InteractionSystem>
         CancelReadyUseCard = m_CancelReadyUseCard.WasPressedThisFrame();
     }
 
-    void OnStartCheat() => CheatSystem.Instance.StartCheat();
+    void OnStartCheat() => CheatSystem.Instance?.StartCheat();
 
     void OnSelectCard()
     {

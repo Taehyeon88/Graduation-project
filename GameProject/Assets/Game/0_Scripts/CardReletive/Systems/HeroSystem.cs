@@ -43,7 +43,7 @@ public class HeroSystem : Singleton<HeroSystem>
         if (canMovePlaces == null || canMovePlaces.Count == 0)
         {
             //false -> 플레이어 피격 및 카드사용 가능
-            int amount = Mathf.CeilToInt(HeroView.MaxHealth * 0.05f);
+            float amount = HeroView.MaxHealth * 0.05f;
             DealDamageGA dealDamageGA = new(amount, new() { HeroView }, HeroView);
             ActionSystem.Instance.AddReaction(dealDamageGA, FinishedFirstMoveRelated);
         }
@@ -100,7 +100,7 @@ public class HeroSystem : Singleton<HeroSystem>
         if (poisionStatcks > 0)
         {
             float percent = HeroView.GetStatusEffectInfo(StatusEffectType.POISIONING).Poision_Percent;
-            int amount = Mathf.CeilToInt(HeroView.MaxHealth * (percent / 100f) * specialRate);
+            float amount = HeroView.MaxHealth * (percent / 100f) * specialRate;
             DealDamageGA dealDamageGA = new(amount, new() { HeroView }, HeroView, DamageFormulaType.Special);
             ActionSystem.Instance.AddReaction(dealDamageGA);
         }
@@ -110,7 +110,7 @@ public class HeroSystem : Singleton<HeroSystem>
         if (bleedingStatcks > 0)
         {
             float percent = HeroView.GetStatusEffectInfo(StatusEffectType.BLEEDING).Bleeding_Percent;
-            int amount = Mathf.CeilToInt(HeroView.MaxHealth * (percent / 100f) * specialRate);
+            float amount = HeroView.MaxHealth * (percent / 100f) * specialRate;
             DealDamageGA dealDamageGA = new(amount, new() { HeroView }, HeroView, DamageFormulaType.Special);
             ActionSystem.Instance.AddReaction(dealDamageGA);
         }
