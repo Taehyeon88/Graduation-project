@@ -56,10 +56,7 @@ public class InteractionSystem : Singleton<InteractionSystem>
 
     void OnStartCheat() => CheatSystem.Instance?.StartCheat();
 
-    void OnSelectCard()
-    {
-        //Debug.Log("카드 선택");
-    }
+    void OnCancel() => UISystem.Instance?.OffPileofCardUI();
     void OnSelectCardWithNumber1()
     {
         Debug.Log("카드1 선택");

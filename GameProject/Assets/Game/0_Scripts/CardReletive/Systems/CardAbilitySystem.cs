@@ -33,10 +33,10 @@ public class CardAbilitySystem : Singleton<CardAbilitySystem>
         if (Abilitys.Contains(CardAbilityType.GetCardByDiscardPile))
         {
             bool eventInvoke = false;
-            UISystem.Instance.SetPileofCardUI(false, true);
+            UISystem.Instance.SetPileofCardUI(false, true, true);
             GetCardByDiscardPileEvent = (card) =>
             {
-                UISystem.Instance.SetPileofCardUI(false, false);
+                UISystem.Instance.SetPileofCardUI(false, false, true);
                 eventInvoke = true;
                 Abilitys.Remove(CardAbilityType.GetCardByDiscardPile);
 

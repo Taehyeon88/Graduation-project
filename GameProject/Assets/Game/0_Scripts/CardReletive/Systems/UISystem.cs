@@ -26,9 +26,13 @@ public class UISystem : Singleton<UISystem>
         else combatantViewStatusUI.RemovePerkUI(perk);
     }
 
-    public void SetPileofCardUI(bool isDraw, bool active)
+    public void SetPileofCardUI(bool isDraw, bool active, bool isAbility = false)
     {
-        if (isDraw) pileofCardUI.SetDrawPileUI(active);
-        else pileofCardUI.SetDiscardPileUI(active);
+        if (isDraw) pileofCardUI.SetDrawPileUI(active, isAbility);
+        else pileofCardUI.SetDiscardPileUI(active, isAbility);
+    }
+    public void OffPileofCardUI()
+    {
+        pileofCardUI.OffPileofCardUI();
     }
 }

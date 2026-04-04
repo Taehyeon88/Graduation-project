@@ -18,24 +18,18 @@ public class PileofCardUI : MonoBehaviour
     private bool isDrawCardPileActive = false;
     private bool isDiscardCardPileActive = false;
 
-    private Transform curButtonParent;
+    private Transform drawCardPBParent;
+    private Transform discardCardPBParent;
+    private bool isAbilityActive;
     private void OnEnable()
     {
+        drawCardPBParent = drawCardPileButton.transform.parent;
+        discardCardPBParent = discardCardPileButton.transform.parent;
+
         scrollView.gameObject.SetActive(false);
 
-        drawCardPileButton.onClick.AddListener(() =>
-        {
-            if (isDiscardCardPileActive) return;
-
-            SetDrawPileUI(!isDrawCardPileActive);
-        });
-
-        discardCardPileButton.onClick.AddListener(() =>
-        {
-            if (isDrawCardPileActive) return;
-
-            SetDiscardPileUI(!isDiscardCardPileActive);
-        });
+        drawCardPileButton.onClick.AddListener(() => SetDrawPileUI(!isDrawCardPileActive));
+        discardCardPileButton.onClick.AddListener(() =>SetDiscardPileUI(!isDiscardCardPileActive));
 
         cancelButton.onClick.AddListener(() =>
         {
@@ -45,32 +39,38 @@ public class PileofCardUI : MonoBehaviour
         });
     }
 
-    public void SetDrawPileUI(bool active)
+    public void SetDrawPileUI(bool active, bool isAbility = false)
     {
-        if (active == isDrawCardPileActive) return;
+        if (active == isDrawCardPileActive 
+            || isDiscardCardPileActive
+            || (isAbilityActive && !isAbility)) return;
+
+        if (isAbility) isAbilityActive = active;
+        isDrawCardPileActive = active;
 
         SetPileofCardUI(true, active);
-
-        if (active)
-        {
-            curButtonParent = drawCardPileButton.transform.parent;
+        if (active && !isAbility)
             drawCardPileButton.transform.SetParent(scrollView);
-        }
-        isDrawCardPileActive = active;
     }
 
-    public void SetDiscardPileUI(bool active)
+    public void SetDiscardPileUI(bool active, bool isAbility = false)
     {
-        if (active == isDiscardCardPileActive) return;
+        if (active == isDiscardCardPileActive 
+            || isDrawCardPileActive
+            || (isAbilityActive && !isAbility)) return;
+
+        if (isAbility) isAbilityActive = active;
+        isDiscardCardPileActive = active;
 
         SetPileofCardUI(false, active);
-
-        if (active)
-        {
-            curButtonParent = discardCardPileButton.transform.parent;
+        if (active && !isAbility)
             discardCardPileButton.transform.SetParent(scrollView);
-        }
-        isDiscardCardPileActive = active;
+    }
+
+    public void OffPileofCardUI()
+    {
+        if (isDiscardCardPileActive) SetDiscardPileUI(false);
+        if (isDrawCardPileActive) SetDrawPileUI(false);
     }
 
     private void SetPileofCardUI(bool isDrawCard, bool active)
@@ -80,6 +80,9 @@ public class PileofCardUI : MonoBehaviour
 
         //카드명 사전적 순서로 정렬
         cards.Sort((a,b) => a.Title.CompareTo(b.Title));
+
+        //취소 버튼 설정
+        cancelButton.gameObject.SetActive(!isAbilityActive);
 
         if (active)
         {
@@ -137,8 +140,8 @@ public class PileofCardUI : MonoBehaviour
             cardViewIPs.Clear();
 
             //버튼 부모 초기화
-            if (isDrawCard) drawCardPileButton.transform.SetParent(curButtonParent);
-            else discardCardPileButton.transform.SetParent (curButtonParent);
+            if (isDrawCard) drawCardPileButton.transform.SetParent(drawCardPBParent);
+            else discardCardPileButton.transform.SetParent(discardCardPBParent);
             //UI 비활성화
             scrollView.gameObject.SetActive(false);
         }
