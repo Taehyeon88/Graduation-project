@@ -15,7 +15,8 @@ public class CardSystem : Singleton<CardSystem>
     private readonly List<Card> discardPile = new();
     private readonly List<Card> hand = new();
 
-    public int drawPileCA => drawPile.Count;    public int discardPileCA => discardPile.Count;
+    public int drawPileCA => drawPile.Count; public int discardPileCA => discardPile.Count;
+    public List<Card> DiscardPile => new(discardPile); public List<Card> DrawcardPile => new(drawPile);
     private bool isIsolation;
 
     private void OnEnable()

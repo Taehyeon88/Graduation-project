@@ -7,8 +7,6 @@ using TMPro;
 public class HUDUI : MonoBehaviour
 {
     [Header("버튼들(사용자 반응형)")]
-    [SerializeField] private Button drawPileButton;
-    [SerializeField] private Button discardPileButton;
     [SerializeField] private Button endTurnButton;
     [SerializeField] private Button onSettingButton;
 
@@ -48,29 +46,16 @@ public class HUDUI : MonoBehaviour
 
     private void OnEnable()
     {
-        drawPileButton.onClick.AddListener(OnDrawPileUI);
-        discardPileButton.onClick.AddListener(OnDiscardPileUI);
         endTurnButton.onClick.AddListener(EndPlayerTurn);
         onSettingButton.onClick.AddListener(OnSettingUI);
     }
     private void OnDisable()
     {
-        drawPileButton.onClick.RemoveListener(OnDrawPileUI);
-        discardPileButton.onClick.RemoveListener(OnDiscardPileUI);
         endTurnButton.onClick.RemoveListener(EndPlayerTurn);
         onSettingButton.onClick.RemoveListener(OnSettingUI);
     }
 
     //Button Event Methods
-    private void OnDrawPileUI()
-    {
-        Debug.Log("드로우카드더미 활성화");
-    }
-
-    private void OnDiscardPileUI()
-    {
-        Debug.Log("버린카드더미 활성화");
-    }
     private void EndPlayerTurn()
     {
         Debug.Log("플레이어 턴 종료");

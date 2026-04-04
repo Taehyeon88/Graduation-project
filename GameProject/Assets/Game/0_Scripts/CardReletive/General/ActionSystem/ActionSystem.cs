@@ -7,9 +7,16 @@ public class ActionSystem : Singleton<ActionSystem>
 {
     private List<(GameAction, System.Action)> reactions = null;
     public bool IsPerforming { get; private set; } = false;
+    public bool IsPausing { get; private set; } = false;
     private static Dictionary<Type, List<Action<GameAction>>> preSubs = new();
     private static Dictionary<Type, List<Action<GameAction>>> postSubs = new();
     private static Dictionary<Type, Func<GameAction, IEnumerator>> performers = new();
+
+    private WaitUntil WaitUntilEndPause;
+    private void Start()
+    {
+        WaitUntilEndPause = new(() => !IsPausing);
+    }
     public void Perform(GameAction action, System.Action OnPerformFinished = null)
     {
         if (IsPerforming) return;
@@ -24,18 +31,25 @@ public class ActionSystem : Singleton<ActionSystem>
     {
         reactions?.Add((gameAction, OnReactionFinished));
     }
+    public void SetPause(bool active) => IsPausing = active;
 
     private IEnumerator Flow(GameAction action, Action OnFlowFinished = null)
     {
         if (action != null)
         {
+            yield return WaitUntilEndPause;       //일시정지 대기
+
             reactions = action.PreReactions;
             PerformSubscribers(action, preSubs);
             yield return PerformReactions();
 
+            yield return WaitUntilEndPause;       //일시정지 대기
+
             reactions = action.PerformReactions;
             yield return PerformPerformer(action);
             yield return PerformReactions();
+
+            yield return WaitUntilEndPause;       //일시정지 대기
 
             reactions = action.PostReactions;
             PerformSubscribers(action, postSubs);
@@ -47,6 +61,8 @@ public class ActionSystem : Singleton<ActionSystem>
 
     private IEnumerator PerformPerformer(GameAction action)
     {
+        yield return WaitUntilEndPause;
+
         Type type = action.GetType();
         if (performers.ContainsKey(type))
         {
@@ -68,6 +84,8 @@ public class ActionSystem : Singleton<ActionSystem>
 
     private IEnumerator PerformReactions()
     {
+        yield return WaitUntilEndPause;
+
         foreach (var reaction in reactions)
         {
             yield return Flow(reaction.Item1, reaction.Item2);

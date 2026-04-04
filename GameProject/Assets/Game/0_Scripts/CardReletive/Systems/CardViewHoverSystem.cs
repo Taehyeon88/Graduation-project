@@ -5,6 +5,7 @@ using UnityEngine;
 public class CardViewHoverSystem : Singleton<CardViewHoverSystem>
 {
     [SerializeField] private CardView cardViewHover;
+    [SerializeField] private CardViewInPile cardViewHoverInPile;
 
     public void Show(Card card, Vector2 position)
     {
@@ -15,5 +16,16 @@ public class CardViewHoverSystem : Singleton<CardViewHoverSystem>
     public void Hide()
     {
         cardViewHover.gameObject.SetActive(false);
+    }
+
+    public void ShowInPile(Card card, Vector2 position)
+    {
+        cardViewHoverInPile.gameObject.SetActive(true);
+        cardViewHoverInPile.SetUp(card);
+        cardViewHoverInPile.GetComponent<RectTransform>().position = position;
+    }
+    public void HideInPile()
+    {
+        cardViewHoverInPile.gameObject.SetActive(false);
     }
 }
