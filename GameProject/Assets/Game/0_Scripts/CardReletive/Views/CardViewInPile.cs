@@ -35,7 +35,12 @@ public class CardViewInPile : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnPointerClick(PointerEventData eventData)
     {
-
+        var ev = CardAbilitySystem.Instance.GetCardByDiscardPileEvent;
+        if (ev != null)
+        {
+            ev.Invoke(card);
+            OnPointerExit(null);
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)

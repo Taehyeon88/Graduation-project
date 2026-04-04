@@ -6,8 +6,8 @@ using UnityEngine;
 public class CardAbilitySystem : Singleton<CardAbilitySystem>
 {
     public readonly List<CardAbilityType> Abilitys = new();
-
-    private Dictionary<CardAbilityType, Func<float>> EventByAbilityType = new();
+    public Func<float> AddNextAdjDamageEvent { get; private set; }             //다음 인접 카드 50% 증가
+    public Action<Card> GetCardByDiscardPileEvent { get; private set; }        //버려진 카드 더미에서 카드 가져오기
 
     private void OnEnable()
     {
@@ -27,6 +27,26 @@ public class CardAbilitySystem : Singleton<CardAbilitySystem>
     {
         Debug.Log("카드능력 추가 - " +  addCardAbilityGA.CardAbilityType);
         Abilitys.Add(addCardAbilityGA.CardAbilityType);
+
+
+        //버려진 카드 더미에서 카드 가져오기
+        if (Abilitys.Contains(CardAbilityType.GetCardByDiscardPile))
+        {
+            bool eventInvoke = false;
+            UISystem.Instance.SetPileofCardUI(false, true);
+            GetCardByDiscardPileEvent = (card) =>
+            {
+                UISystem.Instance.SetPileofCardUI(false, false);
+                eventInvoke = true;
+                Abilitys.Remove(CardAbilityType.GetCardByDiscardPile);
+
+                DrawCardFromDiscardPileGA drawCardFDPGA = new(card);
+                ActionSystem.Instance.AddReaction(drawCardFDPGA);
+            };
+
+            yield return new WaitUntil(() =>  eventInvoke);
+        }
+
         yield return null;
     }
 
@@ -51,26 +71,15 @@ public class CardAbilitySystem : Singleton<CardAbilitySystem>
                 Effect effect = playCardGA.Card.GridTargetMode.Effect;
                 if (effect != null)
                 {
-                    Debug.Log("카드 효과 걸기");
-                    EventByAbilityType.Add(CardAbilityType.AddNextAdjDamage, () =>
+                    //Debug.Log("카드 효과 걸기");
+                    AddNextAdjDamageEvent = () =>
                     {
-                        Debug.Log("카드 효과 적용");
-                        EventByAbilityType.Remove(CardAbilityType.AddNextAdjDamage);
+                        //Debug.Log("카드 효과 적용");
                         return 0.5f;
-                    });
+                    };
                     Abilitys.Remove(CardAbilityType.AddNextAdjDamage);
                 }
             }
         }
-    }
-
-    //Publics
-    public Func<float> GetCardAbilityEvent(CardAbilityType cardAbilityType)
-    {
-        if (EventByAbilityType.ContainsKey(cardAbilityType))
-        {
-            return EventByAbilityType[cardAbilityType];
-        }
-        return null;
     }
 }

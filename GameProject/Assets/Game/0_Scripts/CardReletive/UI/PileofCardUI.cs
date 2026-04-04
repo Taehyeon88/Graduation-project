@@ -27,28 +27,14 @@ public class PileofCardUI : MonoBehaviour
         {
             if (isDiscardCardPileActive) return;
 
-            isDrawCardPileActive = !isDrawCardPileActive;
-            SetPileofCardUI(true, isDrawCardPileActive);
-
-            if (isDrawCardPileActive)
-            {
-                curButtonParent = drawCardPileButton.transform.parent;
-                drawCardPileButton.transform.SetParent(scrollView);
-            }
+            SetDrawPileUI(!isDrawCardPileActive);
         });
 
         discardCardPileButton.onClick.AddListener(() =>
         {
             if (isDrawCardPileActive) return;
 
-            isDiscardCardPileActive = !isDiscardCardPileActive;
-            SetPileofCardUI(false, isDiscardCardPileActive);
-
-            if (isDiscardCardPileActive)
-            {
-                curButtonParent = discardCardPileButton.transform.parent;
-                discardCardPileButton.transform.SetParent(scrollView);
-            }
+            SetDiscardPileUI(!isDiscardCardPileActive);
         });
 
         cancelButton.onClick.AddListener(() =>
@@ -57,6 +43,34 @@ public class PileofCardUI : MonoBehaviour
             isDrawCardPileActive = false;
             isDiscardCardPileActive = false;
         });
+    }
+
+    public void SetDrawPileUI(bool active)
+    {
+        if (active == isDrawCardPileActive) return;
+
+        SetPileofCardUI(true, active);
+
+        if (active)
+        {
+            curButtonParent = drawCardPileButton.transform.parent;
+            drawCardPileButton.transform.SetParent(scrollView);
+        }
+        isDrawCardPileActive = active;
+    }
+
+    public void SetDiscardPileUI(bool active)
+    {
+        if (active == isDiscardCardPileActive) return;
+
+        SetPileofCardUI(false, active);
+
+        if (active)
+        {
+            curButtonParent = discardCardPileButton.transform.parent;
+            discardCardPileButton.transform.SetParent(scrollView);
+        }
+        isDiscardCardPileActive = active;
     }
 
     private void SetPileofCardUI(bool isDrawCard, bool active)

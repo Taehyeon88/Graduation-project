@@ -23,6 +23,7 @@ public class CardSystem : Singleton<CardSystem>
     {
         ActionSystem.AttachPerformer<DrawCardsGA>(DrawCardsPerformer);
         ActionSystem.AttachPerformer<DiscardAllCardsGA>(DiscardAllCardsPerformer);
+        ActionSystem.AttachPerformer<DrawCardFromDiscardPileGA>(DrawCardFromDiscardPilePerformer);
         ActionSystem.AttachPerformer<PlayCardTargetingGA>(PlayCardTargetingGAPerformer);
         ActionSystem.AttachPerformer<PlayCardGA>(PlayCardPerformer);
     }
@@ -30,6 +31,7 @@ public class CardSystem : Singleton<CardSystem>
     {
         ActionSystem.DetachPerformer<DrawCardsGA>();
         ActionSystem.DetachPerformer<DiscardAllCardsGA>();
+        ActionSystem.DetachPerformer<DrawCardFromDiscardPileGA>();
         ActionSystem.DetachPerformer<PlayCardTargetingGA>();
         ActionSystem.DetachPerformer<PlayCardGA>();
     }
@@ -82,9 +84,7 @@ public class CardSystem : Singleton<CardSystem>
     public bool Cheat_ChangeCards(List<CardData> deckData)
     {
         if (!ActionSystem.Instance.IsPerforming)
-        {
-            //foreach(var remainCards in drawPile)
-                
+        {            
             drawPile.Clear();
             foreach (var cardData in deckData)
             {
@@ -143,6 +143,39 @@ public class CardSystem : Singleton<CardSystem>
         }
         hand.RemoveRange(0, handCount);
     }
+
+    private IEnumerator DrawCardFromDiscardPilePerformer(DrawCardFromDiscardPileGA drawCardFDPGA)
+    {
+        yield return DrawCardFromDP(drawCardFDPGA.Card);
+    }
+
+    //Helpers
+    private IEnumerator DrawCard()
+    {
+        Card card = drawPile.Draw();
+        hand.Add(card);
+        CardView cardView = CardViewCreator.Instance.CreatCardView(card, drawPilePoint, handTransform);
+        yield return handView.AddCard(cardView);
+    }
+    private void RefillDect() => drawPile.AddRange(discardPile.Shuffle());
+
+    private IEnumerator DiscardCard(CardView cardView)
+    {
+        discardPile.Add(cardView.card);
+        cardView.transform.DOScale(Vector3.zero, 0.15f);
+        Tween tween = cardView.transform.DOMove(discardPilePoint.position, 0.15f);
+        yield return tween.WaitForCompletion();
+        Destroy(cardView.gameObject);
+    }
+
+    private IEnumerator DrawCardFromDP(Card card)
+    {
+        discardPile.Remove(card);
+        hand.Add(card);
+        CardView cardView = CardViewCreator.Instance.CreatCardView(card, discardPilePoint, handTransform);
+        yield return handView.AddCard(cardView);
+    }
+
 
 
     /// <summary>
@@ -360,25 +393,5 @@ public class CardSystem : Singleton<CardSystem>
                 }
             }
         }
-    }
-
-
-    //Helpers
-    private IEnumerator DrawCard()
-    {
-        Card card = drawPile.Draw();
-        hand.Add(card);
-        CardView cardView = CardViewCreator.Instance.CreatCardView(card, drawPilePoint, handTransform);
-        yield return handView.AddCard(cardView);
-    }
-    private void RefillDect() => drawPile.AddRange(discardPile.Shuffle());
-
-    private IEnumerator DiscardCard(CardView cardView)
-    {
-        discardPile.Add(cardView.card);
-        cardView.transform.DOScale(Vector3.zero, 0.15f);
-        Tween tween = cardView.transform.DOMove(discardPilePoint.position, 0.15f);
-        yield return tween.WaitForCompletion();
-        Destroy(cardView.gameObject);
     }
 }

@@ -48,7 +48,7 @@ public class DamageSystem : Singleton<DamageSystem>
                     }
 
                     //카드 효과 : 다음 인접 카드 50% 증가
-                    var attackerEvent = CardAbilitySystem.Instance.GetCardAbilityEvent(CardAbilityType.AddNextAdjDamage);
+                    var attackerEvent = CardAbilitySystem.Instance.AddNextAdjDamageEvent;
                     if (attackerEvent != null)
                     {
                         amount += dealDamageGA.Amount * attackerEvent.Invoke();

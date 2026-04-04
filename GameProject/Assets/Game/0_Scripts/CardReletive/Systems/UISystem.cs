@@ -5,7 +5,7 @@ using UnityEngine;
 public class UISystem : Singleton<UISystem>
 {
     [SerializeField] private CombatantViewStatusUI combatantViewStatusUI;
-
+    [SerializeField] private PileofCardUI pileofCardUI;
 
 
     /// <summary>
@@ -24,5 +24,11 @@ public class UISystem : Singleton<UISystem>
     {
         if (isAdd) combatantViewStatusUI.AddPerkUI(perk);
         else combatantViewStatusUI.RemovePerkUI(perk);
+    }
+
+    public void SetPileofCardUI(bool isDraw, bool active)
+    {
+        if (isDraw) pileofCardUI.SetDrawPileUI(active);
+        else pileofCardUI.SetDiscardPileUI(active);
     }
 }
