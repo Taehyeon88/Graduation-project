@@ -12,4 +12,9 @@ public class CardData : ScriptableObject
     [field: SerializeField] public CardSubType CardSubType { get; private set; }
     [field: SerializeReference, SR] public List<Effect> SelfEffects { get; private set; } = null;
     [field: SerializeField] public GridTargetMode GridTargetMode { get; private set; }
+
+    //기타 옵션들
+    public bool OtherOptions = false;
+    [ShowIf("OtherOptions")]
+    public bool LockDiscarding;    //손패에 그래로 남음! 사용시에만 버려짐
 }

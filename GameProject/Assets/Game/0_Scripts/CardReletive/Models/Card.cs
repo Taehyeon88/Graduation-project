@@ -21,6 +21,6 @@ public class Card
     {
         this.data = data;
         Mana = data.Mana;
-        LockDiscarding = false;
+        LockDiscarding = data.LockDiscarding;
     }
 }

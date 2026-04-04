@@ -6560,7 +6560,7 @@ MonoBehaviour:
   cardCheatModeText: {fileID: 718147332}
   Attack_Adjacent_CardDeck:
   - {fileID: 11400000, guid: 570fcdef13c54784fa7091caf2c57c07, type: 2}
-  - {fileID: 11400000, guid: c8454026c0aebb14285168494634a9b9, type: 2}
+  - {fileID: 11400000, guid: cc704643e39670b4e8af3dca66973495, type: 2}
   - {fileID: 11400000, guid: b3fa60c2e5365024ba71e530c94a21c5, type: 2}
   - {fileID: 11400000, guid: 4bb2181ad44476e44912d6ada97dd27d, type: 2}
   - {fileID: 11400000, guid: 7cd94dde0a6676b48baeb12c2aa0d504, type: 2}

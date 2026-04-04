@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using UnityEngine;
 
@@ -110,7 +111,7 @@ public class CardSystem : Singleton<CardSystem>
         Interactions.Instance.lockInteraction = true;  //카드 드로우시, 카드 인터렉션 잠금
 
         int actualAmount = Mathf.Min(drawCardsGA.Amount, drawPile.Count);
-        int notDrawnAmount = drawCardsGA.Amount - actualAmount;
+        int notDrawnAmount = Mathf.Min(drawCardsGA.Amount - actualAmount, discardPile.Count);
         for (int i = 0; i < actualAmount; i++)
         {
             yield return DrawCard();
@@ -129,20 +130,17 @@ public class CardSystem : Singleton<CardSystem>
 
     private IEnumerator DiscardAllCardsPerformer(DiscardAllCardsGA discardAllCardsGA)
     {
-        int handLastIdx = hand.Count - 1;
-        foreach (var card in hand)
+        int handCount = hand.Count;
+        foreach (var card in hand.ToList())
         {
-            if (!card.LockDiscarding)
+            if (!card.LockDiscarding)   //<- 예외처리: 버려지지 않는 카드
             {
                 CardView cardView = handView.RemoveCard(card);
                 yield return DiscardCard(cardView);
             }
-            else
-            {
-                //hand.Add(card);
-            }
+            else hand.Add(card);
         }
-        hand.Clear();
+        hand.RemoveRange(0, handCount);
     }
 
 

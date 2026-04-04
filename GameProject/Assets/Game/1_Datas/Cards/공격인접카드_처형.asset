@@ -33,6 +33,8 @@ MonoBehaviour:
     <_AddedSECondition>k__BackingField: 1
     <AddedEffects>k__BackingField:
     - rid: 2515386894848360453
+  OtherOptions: 0
+  LockDiscarding: 0
   references:
     version: 2
     RefIds:
