@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StatusEffectSystem : MonoBehaviour
+public class StatusEffectSystem : Singleton<StatusEffectSystem>
 {
     [SerializeField] private StatusEffectData[] effectDatas;
     private Dictionary<StatusEffectType, StatusEffectData> effectDataByType = new();
@@ -36,5 +36,16 @@ public class StatusEffectSystem : MonoBehaviour
                 yield return null; //Add VFX for adding status effects
             }
         }
+    }
+
+
+    //Publics
+    public SEMachanicsType GetMachanicsType(StatusEffectType statusEffectType)
+    {
+        if (effectDataByType.ContainsKey(statusEffectType))
+        {
+            return effectDataByType[statusEffectType].SEMachanicsType;
+        }
+        return SEMachanicsType.None;
     }
 }

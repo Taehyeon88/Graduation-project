@@ -112,8 +112,9 @@ public class EnemySystem : Singleton<EnemySystem>
             //몬스터 상태효과 N감소
             foreach (var statusEffectType in enemy.GetStatusEffects())
             {
-                //방어막은 제외
-                if (statusEffectType != StatusEffectType.ARMOR)
+                //기간제 및 조건제만 실행
+                var mcType = StatusEffectSystem.Instance.GetMachanicsType(statusEffectType);
+                if (mcType == SEMachanicsType.FixedTerm || mcType == SEMachanicsType.ConditionTerm)
                 {
                     enemy.RemoveStatusEffect(statusEffectType, 1);
                 }

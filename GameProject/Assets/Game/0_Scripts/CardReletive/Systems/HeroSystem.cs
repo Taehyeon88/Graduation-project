@@ -70,8 +70,9 @@ public class HeroSystem : Singleton<HeroSystem>
         //플레이어 상태효과 N감소
         foreach (var statusEffectType in HeroView.GetStatusEffects())
         {
-            //방어막은 제외
-            if (statusEffectType != StatusEffectType.ARMOR)
+            //기간제 및 조건제만 실행
+            var mcType = StatusEffectSystem.Instance.GetMachanicsType(statusEffectType);
+            if (mcType == SEMachanicsType.FixedTerm || mcType == SEMachanicsType.ConditionTerm)
             {
                 HeroView.RemoveStatusEffect(statusEffectType, 1);
             }

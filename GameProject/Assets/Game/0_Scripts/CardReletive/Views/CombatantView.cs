@@ -11,7 +11,7 @@ public class CombatantView : Token
 {
     [SerializeField] private Transform wrapper;
 
-    private Dictionary<StatusEffectType, int> statusEffectUIs = new();
+    protected Dictionary<StatusEffectType, int> statusEffectUIs = new();
     private StatusEffectStorage effectInfo = new();
     public int MaxHealth { get; private set; }
     public int CurrentHealth { get; private set; }
@@ -57,7 +57,7 @@ public class CombatantView : Token
     {
         CurrentHealth = Mathf.Min(CurrentHealth + amount, MaxHealth);
     }
-    public void AddStatusEffect(StatusEffectType type, int stackCount, Sprite sprite, float[] infoes = null)
+    public virtual void AddStatusEffect(StatusEffectType type, int stackCount, Sprite sprite, float[] infoes = null)
     {
         if (statusEffectUIs.ContainsKey(type))
         {
@@ -70,7 +70,7 @@ public class CombatantView : Token
         }
         UISystem.Instance.UpdateStatusEffectUI(this, type, GetStatusEffectStacks(type), sprite);
     }
-    public void RemoveStatusEffect(StatusEffectType type, int stackCount)
+    public virtual void RemoveStatusEffect(StatusEffectType type, int stackCount)
     {
         if (statusEffectUIs.ContainsKey(type))
         {
