@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AddStatusEffectEffect : Effect
+public class AddStatusEffectEffect : Effect, IUseCondition
 {
     [SerializeField] private StatusEffectType statusEffectType;
     [SerializeField] private int stackCount;
@@ -20,5 +20,30 @@ public class AddStatusEffectEffect : Effect
                 break;
         }
         return new AddStatusEffectGA(statusEffectType, stackCount, targets);
+    }
+
+    public bool[] IsMeetCondition(List<Vector2Int> targetPoses)
+    {
+        if (statusEffectType == StatusEffectType.DETERIORATE)
+        {
+            bool[] result = new bool[targetPoses.Count];
+
+            for (int i = 0; i < targetPoses.Count; i++)
+            {
+                var targetPos = targetPoses[i];
+                CombatantView target = TokenSystem.Instance.GetTokenByPosition(targetPos) as CombatantView;
+                if (target != null)
+                {
+                    int poisionStatck = target.GetStatusEffectStacks(StatusEffectType.POISIONING);
+                    int bleedingStatck = target.GetStatusEffectStacks(StatusEffectType.BLEEDING);
+                    if (poisionStatck > 0 || bleedingStatck > 0)
+                    {
+                        result[i] = true;
+                    }
+                }
+            }
+            return result;
+        }
+        return null;
     }
 }

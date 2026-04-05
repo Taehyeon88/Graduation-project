@@ -87,6 +87,7 @@ public class CombatantView : Token
         if(statusEffectUIs.ContainsKey(type)) return statusEffectUIs[type];
         else return 0;
     }
+    public bool CheckStatusEffectExist(StatusEffectType type) => statusEffectUIs.ContainsKey(type);
     public StatusEffectType[] GetStatusEffects() => statusEffectUIs.Keys.ToArray();
 
     public StatusEffectStorage GetStatusEffectInfo(StatusEffectType type)

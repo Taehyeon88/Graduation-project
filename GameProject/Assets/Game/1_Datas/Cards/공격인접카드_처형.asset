@@ -28,9 +28,10 @@ MonoBehaviour:
     UseSelectVG: 1
     WillSelectVGName: Hero_WillAttack
     SelectVGName: Hero_Attack
+    <EffectCondition>k__BackingField: 0
     <Effect>k__BackingField:
       rid: 5842417105210966028
-    <_AddedSECondition>k__BackingField: 1
+    <_AddedEffectCondition>k__BackingField: 1
     <AddedEffects>k__BackingField:
     - rid: 2515386894848360453
   OtherOptions: 0

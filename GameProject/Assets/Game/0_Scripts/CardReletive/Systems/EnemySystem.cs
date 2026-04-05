@@ -120,6 +120,13 @@ public class EnemySystem : Singleton<EnemySystem>
                 }
             }
 
+            //상태효과 - 악화 삭제
+            bool tdSEExist = enemy.CheckStatusEffectExist(StatusEffectType.POISIONING)
+                           || enemy.CheckStatusEffectExist(StatusEffectType.BLEEDING);
+            if (!tdSEExist)
+                enemy.RemoveStatusEffect(StatusEffectType.DETERIORATE, 0);
+
+
             //다음 턴에 할 행동 미리 설정
             enemy.actAction = enemy.Enemy.JudgeActActions(enemy);
 
@@ -145,11 +152,11 @@ public class EnemySystem : Singleton<EnemySystem>
             //상태 효과
             //악화
             float specialRate = 1;
-            int deteriorateStacks = enemy.GetStatusEffectStacks(StatusEffectType.DETERIORATE);
-            if (deteriorateStacks > 0)
+            bool deteriaorateExist = enemy.CheckStatusEffectExist(StatusEffectType.DETERIORATE);
+            if (deteriaorateExist)
             {
                 float rate = enemy.GetStatusEffectInfo(StatusEffectType.DETERIORATE).Deteriorate_Rate;
-                specialRate = specialRate * rate;
+                specialRate *= rate;
             }
 
             //독물

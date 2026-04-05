@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9473ac8937d88c54b805a05b80f1aac1, type: 3}
-  m_Name: Hero_Attack
+  m_Name: Hero_CannotUse
   m_EditorClassIdentifier: 
   <VisualGridTypes>k__BackingField:
-  - rid: 4818494444620218369
-  layerDepth: 0
+  - rid: 2515386956118491136
+  layerDepth: 1.5
   references:
     version: 2
     RefIds:
-    - rid: 4818494444620218369
+    - rid: 2515386956118491136
       type: {class: SymbolType, ns: , asm: Assembly-CSharp}
       data:
         Color: {r: 1, g: 1, b: 1, a: 1}
-        sprite: {fileID: 21300000, guid: 3bb89eafbdb5d27428fb731241971ad3, type: 3}
+        sprite: {fileID: 21300000, guid: 40c58e2e87f729245a7b8adaf14a1f99, type: 3}

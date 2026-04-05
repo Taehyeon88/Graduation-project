@@ -149,6 +149,7 @@ public class CardSystem : Singleton<CardSystem>
         yield return DrawCardFromDP(drawCardFDPGA.Card);
     }
 
+
     //Helpers
     private IEnumerator DrawCard()
     {
@@ -176,6 +177,14 @@ public class CardSystem : Singleton<CardSystem>
         yield return handView.AddCard(cardView);
     }
 
+    private bool CheckCanUse(bool[] array, int index)
+    {
+        if (array != null)
+        {
+            return array[index];
+        }
+        return false;
+    }
 
 
     /// <summary>
@@ -221,7 +230,6 @@ public class CardSystem : Singleton<CardSystem>
             else
             {
                 //커스텀 예상 범위 비주얼
-                //IUseCustomRangeVG customRVG = card.GridTargetMode.Effect.GetType
                 if (card.GridTargetMode.Effect is IUseCustomRangeVG customRangeVG)
                 {
                     var customRVGEvent = customRangeVG.GetCustomRangeVGEvent();
@@ -241,6 +249,11 @@ public class CardSystem : Singleton<CardSystem>
                 var targets = targetMode.TargetMode.GetTargets(range, gridPosition, currentPos, targetMode.Distance);
                 if (targets != null)
                 {
+                    bool[] conditions = null;
+                    IUseCondition icondition = card.GridTargetMode.Effect as IUseCondition;
+                    if (icondition != null)
+                        conditions = icondition.IsMeetCondition(targets);
+
                     string targetStr = string.Join("", targets);
                     if (curStr != targetStr)
                     {
@@ -248,8 +261,16 @@ public class CardSystem : Singleton<CardSystem>
                         if (targetMode.UseSelectVG)
                         {
                             VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), targetMode.SelectVGName);
-                            foreach (var target in targets)
-                                VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), target, targetMode.SelectVGName);
+                            VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "Hero_CannotUse");
+                            for (int i = 0; i < targets.Count; i++)
+                            {
+                                var target = targets[i];
+                                var vgName = targetMode.SelectVGName;
+                                if (conditions != null)
+                                    vgName = conditions[i] ? targetMode.SelectVGName : "Hero_CannotUse";
+
+                                VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), target, vgName);
+                            }
                         }
                         else
                         {
@@ -267,11 +288,23 @@ public class CardSystem : Singleton<CardSystem>
                     //그리드 선택 인터렉션 감지
                     if (InteractionSystem.GridSelected)
                     {
-                        playCardTargetingGA.EndSelectAction?.Invoke();
+                        if (conditions != null)
+                        {
+                            for (int i = 0; i < conditions.Length; i++)
+                            {
+                                if (conditions[i])
+                                    targets.Add(targets[i]);
+                            }
+                            targets.RemoveRange(0, conditions.Length);
+                        }
+                        if (targets.Count > 0)
+                        {
+                            playCardTargetingGA.EndSelectAction?.Invoke();
 
-                        PlayCardGA PlayCardGA = new(playCardTargetingGA.Card, targets);
-                        ActionSystem.Instance.AddReaction(PlayCardGA);
-                        break;
+                            PlayCardGA PlayCardGA = new(playCardTargetingGA.Card, targets);
+                            ActionSystem.Instance.AddReaction(PlayCardGA);
+                            break;
+                        }
                     }
                 }
                 //카드 사용 준비 취소 인터렉션 감지
@@ -348,18 +381,39 @@ public class CardSystem : Singleton<CardSystem>
             PerformEffectGA performEffectGA = new();
             if (playCardGA.Card.GridTargetMode.Effect != null)
             {
-                //메인 실행 GameAction - 그리드좌표 기반
-                performEffectGA = new(targetMode.Effect,
-                    new(targetPoses,
-                    HeroSystem.Instance.HeroView,
-                    playCardGA.Card.CardType,
-                    playCardGA.Card.CardSubType
-                    ));
+                if (targetMode.EffectCondition == GridTargetMode.EffectTargetCondition.Grid)
+                {
+                    //메인 실행 GameAction - 그리드좌표 기반
+                    performEffectGA = new(targetMode.Effect,
+                        new(targetPoses,
+                        HeroSystem.Instance.HeroView,
+                        playCardGA.Card.CardType,
+                        playCardGA.Card.CardSubType
+                        ));
+                }
+                else if (targetMode.EffectCondition == GridTargetMode.EffectTargetCondition.CombatantView)
+                {
+                    //대상 기반
+                    List<CombatantView> combatants = new();
+                    foreach (var targetPos in targetPoses)
+                    {
+                        Token token = TokenSystem.Instance.GetTokenByPosition(targetPos);
+                        if (token != null)
+                            combatants.Add(token as CombatantView);
+                    }
+                    if (combatants.Count > 0)
+                    {
+                        performEffectGA = new(targetMode.Effect, 
+                            new(combatants, 
+                            HeroSystem.Instance.HeroView
+                            ));
+                    }
+                }
             }
             ActionSystem.Instance.AddReaction(performEffectGA);
 
             //후속 실행 GameAction들 - 대상 선택 가능(그리드좌표/대상)
-            if (targetMode._AddedSECondition == GridTargetMode.AddedSECondition.Grid)
+            if (targetMode._AddedEffectCondition == GridTargetMode.EffectTargetCondition.Grid)
             {
                 //그리드 좌표 기반
                 foreach (var effect in targetMode.AddedEffects)
@@ -373,7 +427,7 @@ public class CardSystem : Singleton<CardSystem>
                     performEffectGA.PostReactions.Add((performGridEffectGA, null));
                 }
             }
-            else if (targetMode._AddedSECondition == GridTargetMode.AddedSECondition.CombatantView)
+            else if (targetMode._AddedEffectCondition == GridTargetMode.EffectTargetCondition.CombatantView)
             {
                 //대상 기반
                 List<CombatantView> combatants = new();

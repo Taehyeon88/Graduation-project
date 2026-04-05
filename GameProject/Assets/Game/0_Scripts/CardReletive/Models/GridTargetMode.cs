@@ -19,17 +19,18 @@ public class GridTargetMode
     [ShowIf("UseSelectVG")]
     public string SelectVGName;
 
+    [field: SerializeField] public EffectTargetCondition EffectCondition { get; private set; } = EffectTargetCondition.Grid;
     [field: SerializeReference, SR] public Effect Effect { get; private set; }
 
     [field: Space(7)]
     [field: Tooltip("UseVisualGrid가 True일 때만 사용가능!")]
-    [field: SerializeField] public AddedSECondition _AddedSECondition { get; private set; } = AddedSECondition.Grid;
+    [field: SerializeField] public EffectTargetCondition _AddedEffectCondition { get; private set; } = EffectTargetCondition.CombatantView;
 
     [field: Tooltip("UseVisualGrid가 True일 때만 사용가능!")]
     [field: SerializeReference, SR] public List<Effect> AddedEffects { get; private set;}
 
 
-    public enum AddedSECondition
+    public enum EffectTargetCondition
     {
         Grid,
         CombatantView

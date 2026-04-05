@@ -77,6 +77,12 @@ public class HeroSystem : Singleton<HeroSystem>
                 HeroView.RemoveStatusEffect(statusEffectType, 1);
             }
         }
+
+        //상태효과 - 악화 삭제
+        bool tdSEExist = HeroView.CheckStatusEffectExist(StatusEffectType.POISIONING)
+                       || HeroView.CheckStatusEffectExist(StatusEffectType.BLEEDING);
+        if (!tdSEExist)
+            HeroView.RemoveStatusEffect(StatusEffectType.DETERIORATE, 0);
     }
     private void EnemysTurnPostReaction(EnemysTurnGA enemyTurnGA)
     {
@@ -89,11 +95,14 @@ public class HeroSystem : Singleton<HeroSystem>
         //상태 효과
         //악화
         float specialRate = 1;
-        int deteriorateStacks = HeroView.GetStatusEffectStacks(StatusEffectType.DETERIORATE);
-        if (deteriorateStacks > 0)
+        bool deteriaorateExist = HeroView.CheckStatusEffectExist(StatusEffectType.DETERIORATE);
+        if (deteriaorateExist)
         {
-            float rate = HeroView.GetStatusEffectInfo(StatusEffectType.DETERIORATE).Deteriorate_Rate;
-            specialRate = specialRate * rate;
+            bool tdSEExist = HeroView.CheckStatusEffectExist(StatusEffectType.POISIONING)
+                          || HeroView.CheckStatusEffectExist(StatusEffectType.BLEEDING);
+
+            if (!tdSEExist)
+                HeroView.RemoveStatusEffect(StatusEffectType.DETERIORATE, 0);
         }
 
         //독물

@@ -28,23 +28,23 @@ MonoBehaviour:
     UseSelectVG: 1
     WillSelectVGName: Hero_WillAttack
     SelectVGName: Hero_Attack
+    <EffectCondition>k__BackingField: 0
     <Effect>k__BackingField:
-      rid: -2
-    <_AddedSECondition>k__BackingField: 1
-    <AddedEffects>k__BackingField:
-    - rid: 2515386870715383813
+      rid: 2515386954168664072
+    <_AddedEffectCondition>k__BackingField: 0
+    <AddedEffects>k__BackingField: []
+  OtherOptions: 0
+  LockDiscarding: 0
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
     - rid: 2515386870715383809
       type: {class: SingleTM, ns: , asm: Assembly-CSharp}
       data: 
     - rid: 2515386870715383810
       type: {class: AllAroundRM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 2515386870715383813
+    - rid: 2515386954168664072
       type: {class: AddStatusEffectEffect, ns: , asm: Assembly-CSharp}
       data:
         statusEffectType: 2

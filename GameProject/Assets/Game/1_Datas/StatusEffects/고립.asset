@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: "\uACE0\uB9BD"
   m_EditorClassIdentifier: 
   <EffectType>k__BackingField: 3
+  <SEMachanicsType>k__BackingField: 1
   <Discription>k__BackingField: "N \uD134 \uB3D9\uC548 \uC774\uB3D9 \uBD88\uAC00"
   <spriteImage>k__BackingField: {fileID: 21300000, guid: 1cfc4a10b642dba449cca6daefb3cd1c,
     type: 3}
