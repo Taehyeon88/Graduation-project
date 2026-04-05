@@ -79,7 +79,8 @@ public class PileofCardUI : MonoBehaviour
         int cardCount = cards.Count;
 
         //카드명 사전적 순서로 정렬
-        cards.Sort((a,b) => a.Title.CompareTo(b.Title));
+        if(isDrawCard)
+            cards.Sort((a,b) => a.Title.CompareTo(b.Title));
 
         //취소 버튼 설정
         cancelButton.gameObject.SetActive(!isAbilityActive);
