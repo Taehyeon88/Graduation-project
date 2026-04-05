@@ -39,7 +39,7 @@ public class CardSystem : Singleton<CardSystem>
     {
         //상태이상 - 고립 처리
         CombatantView hero = HeroSystem.Instance.HeroView;
-        if (hero != null)
+        if (hero != null && !Interactions.Instance.lockInteraction)
         {
             int isolationStack = hero.GetStatusEffectStacks(StatusEffectType.ISOLATION);
             if (isolationStack > 0)
