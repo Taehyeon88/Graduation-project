@@ -47,8 +47,9 @@ public class CardSystem : Singleton<CardSystem>
                 //손패의 있는 모든 이동 타입의 카드 비활성화 처리
                 foreach (var card in hand)
                 {
-                    if (card.CardSubType == CardSubType.Move 
-                        || card.CardSubType == CardSubType.Dash)
+                    if (card.CardSubType == CardSubType.Move
+                        || card.CardSubType == CardSubType.Dash
+                        || card.CardType == CardType.Skill_Move)
                         handView.SetCardLockView(true, card);
                 }
                 isIsolation = true;
@@ -58,7 +59,8 @@ public class CardSystem : Singleton<CardSystem>
                 foreach (var card in hand)
                 {
                     if (card.CardSubType == CardSubType.Move
-                        || card.CardSubType == CardSubType.Dash)
+                        || card.CardSubType == CardSubType.Dash
+                        || card.CardType == CardType.Skill_Move)
                         handView.SetCardLockView(true, card);
                 }
                 isIsolation = false;

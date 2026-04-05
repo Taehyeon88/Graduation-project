@@ -17,8 +17,7 @@ public class Interactions : Singleton<Interactions>
     public bool PlayerCanHover()           //호버 가능 <- 타겟 모드X, 드래그X
     {
         if (PlayerIsTargeting 
-            || PlayerIsDraging 
-            || lockInteraction) return false;
+            || PlayerIsDraging) return false;
         else return true;
     }
     public bool PlayerCanTargeting()       //타겟 모드 가능 <- 드래그X, 수행하는 액션 없음

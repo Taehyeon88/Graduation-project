@@ -61,15 +61,16 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (!Interactions.Instance.PlayerCanHover() || lockCardUse) return;
+        if (!Interactions.Instance.PlayerCanHover()) return;
         wrapper.SetActive(false);
         Vector2 pos = rectTransform.anchoredPosition + Vector2.up * 120f;
-        CardViewHoverSystem.Instance.Show(card, pos);
+        CardViewHoverSystem.Instance.Show(card, pos, 
+                        Interactions.Instance.lockInteraction || lockCardUse);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (!Interactions.Instance.PlayerCanHover() || lockCardUse) return;
+        if (!Interactions.Instance.PlayerCanHover()) return;
         CardViewHoverSystem.Instance.Hide();
         wrapper.SetActive(true);
     }

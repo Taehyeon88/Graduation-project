@@ -43,7 +43,7 @@ public class HandView : MonoBehaviour
         {
             foreach (var card in cards)
             {
-                Image[] images = card.GetComponentsInChildren<Image>(); //부모 오브젝트의 image 제외
+                Image[] images = card.GetComponentsInChildren<Image>(true); //부모 오브젝트의 image 제외
                 images[0] = null;
                 foreach (var image in images)
                     if (image != null) image.color = Color.white;
