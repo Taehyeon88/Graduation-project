@@ -319,7 +319,7 @@ namespace IsoTools.Internal {
 
 		public static Vector3 GizmoFreeMoveHandle(Color color, Vector3 center, float scale) {
 		#if UNITY_5_6_OR_NEWER
-			var fmh_324_5_639057532600573419 = Quaternion.identity; return Handles.FreeMoveHandle(
+			var fmh_324_5_639111893941938016 = Quaternion.identity; return Handles.FreeMoveHandle(
 				center,
 				HandleUtility.GetHandleSize(center) * scale,
 				Vector3.zero,

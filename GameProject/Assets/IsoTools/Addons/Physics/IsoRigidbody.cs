@@ -36,7 +36,7 @@ namespace IsoTools.Physics {
 			set {
 				_drag = value;
 				if ( realRigidbody ) {
-					realRigidbody.drag = value;
+					realRigidbody.linearDamping = value;
 				}
 			}
 		}
@@ -144,10 +144,10 @@ namespace IsoTools.Physics {
 		}
 
 		public Vector3 velocity {
-			get { return realRigidbody ? realRigidbody.velocity : Vector3.zero; }
+			get { return realRigidbody ? realRigidbody.linearVelocity : Vector3.zero; }
 			set {
 				if ( realRigidbody ) {
-					realRigidbody.velocity = value;
+					realRigidbody.linearVelocity = value;
 				}
 			}
 		}
@@ -279,7 +279,7 @@ namespace IsoTools.Physics {
 			_realRigidbody                        = fakeObject.AddComponent<Rigidbody>();
 			_realRigidbody.freezeRotation         = true;
 			_realRigidbody.mass                   = mass;
-			_realRigidbody.drag                   = drag;
+			_realRigidbody.linearDamping                   = drag;
 			_realRigidbody.useGravity             = useGravity;
 			_realRigidbody.isKinematic            = isKinematic;
 			_realRigidbody.interpolation          = interpolation;
@@ -322,7 +322,7 @@ namespace IsoTools.Physics {
 		void OnValidate() {
 			if ( realRigidbody ) {
 				realRigidbody.mass                   = mass;
-				realRigidbody.drag                   = drag;
+				realRigidbody.linearDamping                   = drag;
 				realRigidbody.useGravity             = useGravity;
 				realRigidbody.isKinematic            = isKinematic;
 				realRigidbody.interpolation          = interpolation;

@@ -8,6 +8,7 @@ public abstract class GridRangeMode
     public abstract List<Vector2Int> GetGridRanges(Vector2Int currentPosition, int distance, bool penetration);
 }
 
+[System.Serializable]
 public class AllAroundRM : GridRangeMode
 {
     public override List<Vector2Int> GetGridRanges(Vector2Int currentPosition, int distance = 1, bool penetration = false)
@@ -32,6 +33,7 @@ public class AllAroundRM : GridRangeMode
     }
 }
 
+[System.Serializable]
 public class AllAround_ExpceptEnemyRM : GridRangeMode
 {
     public override List<Vector2Int> GetGridRanges(Vector2Int currentPosition, int distance = 1, bool penetration = false)
@@ -56,6 +58,7 @@ public class AllAround_ExpceptEnemyRM : GridRangeMode
     }
 }
 
+[System.Serializable]
 public class PlusRM : GridRangeMode
 {
     public override List<Vector2Int> GetGridRanges(Vector2Int currentPosition, int distance = 1, bool penetration = false)
@@ -79,6 +82,7 @@ public class PlusRM : GridRangeMode
     }
 }
 
+[System.Serializable]
 public class CrossRM : GridRangeMode
 {
     public override List<Vector2Int> GetGridRanges(Vector2Int currentPosition, int distance, bool penetration = false)
@@ -102,6 +106,7 @@ public class CrossRM : GridRangeMode
     }
 }
 
+[System.Serializable]
 public class SnowRM : GridRangeMode
 {
     public override List<Vector2Int> GetGridRanges(Vector2Int currentPosition, int distance, bool penetration = false)

@@ -61,7 +61,7 @@ public class CardSystem : Singleton<CardSystem>
                     if (card.CardSubType == CardSubType.Move
                         || card.CardSubType == CardSubType.Dash
                         || card.CardType == CardType.Skill_Move)
-                        handView.SetCardLockView(true, card);
+                        handView.SetCardLockView(false, card);
                 }
                 isIsolation = false;
             }

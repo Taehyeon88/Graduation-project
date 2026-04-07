@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class AddStatusEffectEffect : Effect, IUseCondition
 {
     [SerializeField] private StatusEffectType statusEffectType;

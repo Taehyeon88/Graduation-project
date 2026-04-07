@@ -8,6 +8,7 @@ public abstract class TargetMode
     public abstract List<Vector2Int> GetTargets(List<Vector2Int> range, Vector2Int targetPos, Vector2Int currentPos, int distance);
 }
 
+[System.Serializable]
 public class SingleTM : TargetMode
 {
     public override List<Vector2Int> GetTargets(List<Vector2Int> range, Vector2Int targetPos, Vector2Int currentPos, int distance)
@@ -17,6 +18,7 @@ public class SingleTM : TargetMode
     }
 }
 
+[System.Serializable]
 public class LineTM : TargetMode
 {
     public override List<Vector2Int> GetTargets(List<Vector2Int> range, Vector2Int targetPos, Vector2Int currentPos, int distance)
@@ -46,6 +48,7 @@ public class LineTM : TargetMode
     }
 }
 
+[System.Serializable]
 public class ConeTM : TargetMode
 {
     public override List<Vector2Int> GetTargets(List<Vector2Int> range, Vector2Int targetPos, Vector2Int currentPos, int distance)
@@ -79,6 +82,8 @@ public class ConeTM : TargetMode
         }
     }
 }
+
+[System.Serializable]
 public class GlobalTM : TargetMode
 {
     public override List<Vector2Int> GetTargets(List<Vector2Int> range, Vector2Int targetPos, Vector2Int currentPos, int distance)

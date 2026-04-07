@@ -18,8 +18,8 @@ namespace IsoTools.Physics {
 		}
 
 		[SerializeField]
-		public PhysicMaterial _material  = null;
-		public PhysicMaterial material {
+		public PhysicsMaterial _material  = null;
+		public PhysicsMaterial material {
 			get { return _material; }
 			set {
 				_material = value;

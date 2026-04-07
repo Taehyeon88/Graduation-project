@@ -21,6 +21,7 @@ public abstract class VisualGridType
     public abstract float GetVGTypeTransZ();
 }
 
+[System.Serializable]
 public class FillType : VisualGridType
 {
     [SerializeField] public Color Color;
@@ -32,6 +33,7 @@ public class FillType : VisualGridType
     public override float GetVGTypeTransZ() => transZ;
 }
 
+[System.Serializable]
 public class BorderType : VisualGridType
 {
     [SerializeField] public Color Color;
@@ -42,6 +44,7 @@ public class BorderType : VisualGridType
     public override float GetVGTypeTransZ() => transZ;
 }
 
+[System.Serializable]
 public class SymbolType : VisualGridType
 {
     [HideInInspector] public Color Color = Color.white;

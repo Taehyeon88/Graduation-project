@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using SerializeReferenceEditor;
 using UnityEngine;
 
+[System.Serializable]
 public class SplashEffect : Effect, IUseCustomTargetVG
 {
     [SerializeField] private float damage;
