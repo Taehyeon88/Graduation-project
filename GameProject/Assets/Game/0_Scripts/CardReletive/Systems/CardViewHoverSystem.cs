@@ -12,7 +12,7 @@ public class CardViewHoverSystem : Singleton<CardViewHoverSystem>
     public void Show(Card card, Vector2 position, bool isLock = false)
     {
         cardViewHover.gameObject.SetActive(true);
-        cardViewHover.SetUp(card);
+        cardViewHover.SetUp(card, true);
         cardViewHover.GetComponent<RectTransform>().anchoredPosition = position;
         if (isLock)
         {
@@ -33,7 +33,7 @@ public class CardViewHoverSystem : Singleton<CardViewHoverSystem>
     public void ShowInPile(Card card, Vector2 position)
     {
         cardViewHoverInPile.gameObject.SetActive(true);
-        cardViewHoverInPile.SetUp(card);
+        cardViewHoverInPile.SetUp(card, true);
         cardViewHoverInPile.GetComponent<RectTransform>().position = position;
     }
     public void HideInPile()
@@ -46,14 +46,12 @@ public class CardViewHoverSystem : Singleton<CardViewHoverSystem>
     {
         if (active)
         {
-            Image[] images = cardViewHover.GetComponentsInChildren<Image>();
-            foreach (var image in images)
+            foreach (var image in cardViewHover.images)
                 if (image != null) image.color = new Color32(100, 100, 100, 255);
         }
         else
         {
-            Image[] images = cardViewHover.GetComponentsInChildren<Image>();
-            foreach (var image in images)
+            foreach (var image in cardViewHover.images)
                 if (image != null) image.color = Color.white;
         }
     }

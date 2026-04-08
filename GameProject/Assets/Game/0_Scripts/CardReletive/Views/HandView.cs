@@ -33,19 +33,15 @@ public class HandView : MonoBehaviour
         {
             foreach (var card in cards)
             {
-                Image[] images = card.GetComponentsInChildren<Image>(); //부모 오브젝트의 image 제외
-                images[0] = null;
-                foreach (var image in images)
-                    if(image != null) image.color = new Color32(100, 100, 100, 255);
+                foreach (var image in card.images)
+                    if (image != null) image.color = new Color32(100, 100, 100, 255);
             }
         }
         else
         {
             foreach (var card in cards)
             {
-                Image[] images = card.GetComponentsInChildren<Image>(true); //부모 오브젝트의 image 제외
-                images[0] = null;
-                foreach (var image in images)
+                foreach (var image in card.images)
                     if (image != null) image.color = Color.white;
             }
         }
@@ -62,9 +58,7 @@ public class HandView : MonoBehaviour
             //사용 불가 실제 처리
             card.lockCardUse = true;
             //사용 불가 비주얼처리
-            Image[] images = card.GetComponentsInChildren<Image>(); //부모 오브젝트의 image 제외
-            images[0] = null;
-            foreach (var image in images)
+            foreach (var image in card.images)
                 if (image != null) image.color = new Color32(100, 100, 100, 255);
         }
         else if (!active && card.lockCardUse)
@@ -72,9 +66,7 @@ public class HandView : MonoBehaviour
             //사용 불가 해제 실제 처리
             card.lockCardUse = false;
             //사용 불가 해제 비주얼처리
-            Image[] images = card.GetComponentsInChildren<Image>(); //부모 오브젝트의 image 제외
-            images[0] = null;
-            foreach (var image in images)
+            foreach (var image in card.images)
                 if (image != null) image.color = Color.white;
         }
     }

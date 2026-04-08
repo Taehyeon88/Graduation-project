@@ -17,7 +17,7 @@ public class CardViewInPile : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     public Card card { get; private set; }
     public bool lockCardUse { get; set; } = false;
 
-    public void SetUp(Card card)
+    public void SetUp(Card card, bool isHover = false)
     {
         this.card = card;
         title.text = card.Title;

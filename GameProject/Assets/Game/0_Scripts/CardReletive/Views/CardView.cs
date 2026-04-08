@@ -18,9 +18,10 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
     private Vector3 dragStartPosition;
     private Quaternion dragStartRotation;
     public Card card { get; private set; }
+    public Image[] images { get; private set; }
     public bool lockCardUse { get; set; } = false;
 
-    public void SetUp(Card card)
+    public void SetUp(Card card, bool isHover = false)
     {
         this.card = card;
         title.text = card.Title;
@@ -28,6 +29,16 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
         mana.text = card.Mana.ToString();
         image.sprite = card.Image;
         rectTransform = GetComponent<RectTransform>();
+
+        if (isHover)
+        {
+            images = GetComponentsInChildren<Image>(true);
+        }
+        else
+        {
+            images = GetComponentsInChildren<Image>(true);
+            images[0] = null;
+        }
     }
     public void OnPointerClick(PointerEventData eventData)
     {

@@ -35,11 +35,11 @@ public class HUDUI : MonoBehaviour
     {
         if (HeroSystem.Instance.HeroView != null)
         {
-            heroHpText.text = $"{heroHP}/{heroMaxHP}";
+            heroHpText.SetText("{0}/{1}", heroHP, heroMaxHP);
         }
         //°ñµå
         //ÅÏ È½¼ö
-        manaAmountText.text = $"{manaAmount}/{maxMana}";
+        manaAmountText.SetText("{0}/{1}", manaAmount, maxMana);
         drawPileCardAmountText.text = drawPileCardAmount.ToString();
         discardPileCardAmountText.text = discardPileCardAmount.ToString();
     }

@@ -68,6 +68,7 @@ public class CardSystem : Singleton<CardSystem>
         }
     }
 
+
     //Publics
     public void SetUp(List<CardData> deckData)
     {

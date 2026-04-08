@@ -315,7 +315,7 @@ namespace CartoonFX
 		void UpdateLabels()
 		{
 			labelEffect.text = currentEffect.name;
-			labelIndex.text = string.Format("{0}/{1}", (index+1), effectsList.Length);
-		}
+			labelIndex.text = (index + 1).ToString() + "/" + effectsList.Length.ToString();
+        }
 	}
 }

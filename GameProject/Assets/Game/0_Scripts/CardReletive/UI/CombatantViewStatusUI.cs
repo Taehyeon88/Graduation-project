@@ -127,9 +127,9 @@ public class CombatantViewStatusUI : MonoBehaviour
         if (currentSelectedEnemy != null)
         {
             //체력 업데이트
-            enemyHPSlider.maxValue = currentSelectedEnemy.MaxHealth;
+            enemyHPSlider.maxValue = currentSelectedEnemy.MaxHealth; 
             enemyHPSlider.value = currentSelectedEnemy.CurrentHealth;
-            enemyHPText.text = $"{currentSelectedEnemy.CurrentHealth}/{currentSelectedEnemy.MaxHealth}";
+            enemyHPText.SetText("{0}/{1}", currentSelectedEnemy.CurrentHealth, currentSelectedEnemy.MaxHealth);
 
             //다음 할 공격 업데이트
 
@@ -191,7 +191,7 @@ public class CombatantViewStatusUI : MonoBehaviour
         enemyNameText.text = enemyView.EnemyName;
         enemyHPSlider.maxValue = enemyView.MaxHealth;
         enemyHPSlider.value = enemyView.CurrentHealth;
-        enemyHPText.text = $"{enemyView.CurrentHealth}/{enemyView.MaxHealth}";
+        enemyHPText.SetText("{0}/{1}", enemyView.CurrentHealth, enemyView.MaxHealth);
 
         //상태 효과 업데이트
 

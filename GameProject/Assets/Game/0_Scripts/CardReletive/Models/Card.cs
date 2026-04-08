@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class Card
 {
-    public string Title => data.name.Contains("_")? data.name.Substring(data.name.IndexOf("_")+1) : data.name;
     public string Description => data.Description;
     public Sprite Image => data.Image;
     public CardType CardType => data.CardType;
     public CardSubType CardSubType => data.CardSubType;
     public List<Effect> SelfEffects => data.SelfEffects;
     public GridTargetMode GridTargetMode => data.GridTargetMode;
+    public string Title { get; private set; }
     public int Mana { get; private set; }
     public bool LockDiscarding { get; set; }
 
@@ -22,5 +22,9 @@ public class Card
         this.data = data;
         Mana = data.Mana;
         LockDiscarding = data.LockDiscarding;
+
+        string name = data.name;
+        int index = name.IndexOf("_");
+        Title = index >= 0? name.Substring(index + 1) : name;
     }
 }
