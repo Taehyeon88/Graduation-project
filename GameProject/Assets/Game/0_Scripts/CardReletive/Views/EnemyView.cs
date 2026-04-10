@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using IsoTools;
 using TMPro;
@@ -6,24 +6,24 @@ using UnityEngine;
 
 public class EnemyView : CombatantView
 {
-    public string EnemyName { get; private set; }     //Àû ÀÌ¸§
-    public Sprite EnemySprite { get; private set; }   //Àû ÀÌ¹ÌÁö
-    public float AttackPower { get; set; }            //Àû °ø°İ·Â !ÃßÈÄ¼öÁ¤
-    public Enemy Enemy { get; private set; }          //Àû ¸ğµ¨
-    public GameAction actAction { get; set; }         //´ÙÀ½ ÇÒ Çàµ¿ GameAction
-    public PerformMoveGA moveAction { get; set; }     //ÀÌµ¿GameAction
+    public string EnemyName { get; private set; }     //ì  ì´ë¦„
+    public Sprite EnemySprite { get; private set; }   //ì  ì´ë¯¸ì§€
+    public float AttackPower { get; set; }            //ì  ê³µê²©ë ¥ !ì¶”í›„ìˆ˜ì •
+    public Enemy Enemy { get; private set; }          //ì  ëª¨ë¸
+
+    public EnemyActionInfo ActionInfo { get; set; }   //ëª¬ìŠ¤í„° í–‰ë™/ì´ë™ ì •ë³´
 
 
     private bool isEnemysTurn = false;
     private Dictionary<StatusEffectType, (int, Sprite, float[])> newStatusEffectUIs = new();
     public void SetUp(EnemyData enemyData)
     {
-        //Isometric ¼³Á¤
+        //Isometric ì„¤ì •
         IsoObject isObject = GetComponent<IsoObject>();
         if (isObject == null)
             isObject = gameObject.AddComponent<IsoObject>();
 
-        //Enemy µ¥ÀÌÅÍ ¼³Á¤
+        //Enemy ë°ì´í„° ì„¤ì •
         EnemyName = enemyData.name;
         EnemySprite = enemyData.TokenModel.Sprite;
         AttackPower = enemyData.AttackPower;

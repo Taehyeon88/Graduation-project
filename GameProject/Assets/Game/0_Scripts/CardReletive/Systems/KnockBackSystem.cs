@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
@@ -22,109 +22,97 @@ public class KnockBackSystem : MonoBehaviour
     {
         if (knockBackGA.IsSingle)
         {
-            int pushedDis = 0;               //½ÇÁ¦ ³Ë¹é ¹Ğ¸®´Â °Å¸®
+            int pushedDis = 0;               //ì‹¤ì œ ë„‰ë°± ë°€ë¦¬ëŠ” ê±°ë¦¬
             bool chrash = false;
 
-            Debug.Log("³Ë¹é ¼º°ø!!");
+            Debug.Log("ë„‰ë°± ì„±ê³µ!!");
 
-            ////³Ë¹éµÉ ´ë»ó Ã£±â
-            Token target = TokenSystem.Instance.GetTokenByPosition(knockBackGA.TargetPos);
-            CombatantView chrashedTarget = null;
+            ////ë„‰ë°±ë  ëŒ€ìƒ ì°¾ê¸°
+            var target = TokenSystem.Instance.GetTokenByPosition(knockBackGA.TargetPos) as CombatantView;
 
-            //³Ë¹é È¿°ú ÆÇ´Ü Ã³¸®
+            //ë„‰ë°± íš¨ê³¼ íŒë‹¨ ì²˜ë¦¬
             for (int d = 1; d <= knockBackGA.Distance; d++)
             {
-                //¹Ğ·Á³¯ À§Ä¡ ¹Ş±â
+                //ë°€ë ¤ë‚  ìœ„ì¹˜ ë°›ê¸°
                 Vector2Int pushedPos = knockBackGA.TargetPos + knockBackGA.Direction * d;
 
                 if (!TokenSystem.Instance.IsBound(pushedPos)) chrash = true;
                 else if (TokenSystem.Instance.GetTokenByPosition(pushedPos) != null) chrash = true;
 
-                Debug.Log($"Á¤º¸ - ¹Ğ¸° À§Ä¡ : {pushedPos}, Ãæµ¹ ¿©ºÎ: {chrash}");
+                Debug.Log($"ì •ë³´ - ë°€ë¦° ìœ„ì¹˜ : {pushedPos}, ì¶©ëŒ ì—¬ë¶€: {chrash}");
 
                 if (!chrash) pushedDis = d;
-                else
-                {
-                    chrashedTarget = TokenSystem.Instance.GetTokenByPosition(pushedPos) as CombatantView;
-                    break;
-                }
+                else break;
             }
 
-            //³Ë¹é ¾Ö´Ï¸ŞÀÌ¼Ç
+            //ë„‰ë°± ì• ë‹ˆë©”ì´ì…˜
+            MoveGA moveGA = null;
             if (pushedDis > 0)
             {
-                Debug.Log("¹Ğ¸®´Â ¾Ö´Ï¸ŞÀÌ¼Ç ½ÃÀÛ");
-                for (int d = 1; d <= knockBackGA.Distance; d++)
-                {
-                    Vector2Int pushedPos = knockBackGA.TargetPos + knockBackGA.Direction * d;
-                    yield return TokenSystem.Instance.MoveToken(target, pushedPos, true, false);
-                }
+                Debug.Log("ë°€ë¦¬ëŠ” ì• ë‹ˆë©”ì´ì…˜ ì‹œì‘");
+                Vector2Int pushedPos = knockBackGA.TargetPos + knockBackGA.Direction * pushedDis;
+                moveGA = new(target, pushedPos);
+                ActionSystem.Instance.AddReaction(moveGA);
             }
-
-            if (chrash && chrashedTarget != null)
+            if (chrash)
             {
-                Debug.Log("Ãæµ¹ µ¥¹ÌÁö È¹µæ");
-                DealDamageGA dealDamageGA = new(crachDamage, new() { chrashedTarget }, target as CombatantView);
+                Debug.Log("ì¶©ëŒ ë°ë¯¸ì§€ íšë“");
+                DealDamageGA dealDamageGA = new(crachDamage, new() { target as CombatantView }, knockBackGA.Caster);
                 ActionSystem.Instance.AddReaction(dealDamageGA);
             }
         }
         else
         {
-            var chrashedTargets = new List<CombatantView>();
+            //for (int i = 0; i < knockBackGA.TargetPoses.Count; i++)
+            //{
+            //    Vector2Int targetPos = knockBackGA.TargetPoses[i];
+            //    Vector2Int direction = knockBackGA.Directions[i];
+            //    bool chrash = false;
+            //    int pushedDis = 0;               //ì‹¤ì œ ë„‰ë°± ë°€ë¦¬ëŠ” ê±°ë¦¬
 
-            for (int i = 0; i < knockBackGA.TargetPoses.Count; i++)
-            {
-                Vector2Int targetPos = knockBackGA.TargetPoses[i];
-                Vector2Int direction = knockBackGA.Directions[i];
-                bool chrash = false;
-                int pushedDis = 0;               //½ÇÁ¦ ³Ë¹é ¹Ğ¸®´Â °Å¸®
+            //    Debug.Log("ë„‰ë°± ì„±ê³µ!!");
 
-                Debug.Log("³Ë¹é ¼º°ø!!");
+            //    ////ë„‰ë°±ë  ëŒ€ìƒ ì°¾ê¸°
+            //    Token target = TokenSystem.Instance.GetTokenByPosition(targetPos);
 
-                ////³Ë¹éµÉ ´ë»ó Ã£±â
-                Token target = TokenSystem.Instance.GetTokenByPosition(targetPos);
+            //    //ë„‰ë°± íš¨ê³¼ íŒë‹¨ ì²˜ë¦¬
+            //    for (int d = 1; d <= knockBackGA.Distance; d++)
+            //    {
+            //        //ë°€ë ¤ë‚  ìœ„ì¹˜ ë°›ê¸°
+            //        Vector2Int pushedPos = targetPos + direction * d;
 
-                //³Ë¹é È¿°ú ÆÇ´Ü Ã³¸®
-                for (int d = 1; d <= knockBackGA.Distance; d++)
-                {
-                    //¹Ğ·Á³¯ À§Ä¡ ¹Ş±â
-                    Vector2Int pushedPos = targetPos + direction * d;
+            //        if (!TokenSystem.Instance.IsBound(pushedPos)) chrash = true;
+            //        else if (TokenSystem.Instance.GetTokenByPosition(pushedPos) != null) chrash = true;
 
-                    if (!TokenSystem.Instance.IsBound(pushedPos)) chrash = true;
-                    else if (TokenSystem.Instance.GetTokenByPosition(pushedPos) != null) chrash = true;
+            //        Debug.Log($"ì •ë³´ - ë°€ë¦° ìœ„ì¹˜ : {pushedPos}, ì¶©ëŒ ì—¬ë¶€: {chrash}");
 
-                    Debug.Log($"Á¤º¸ - ¹Ğ¸° À§Ä¡ : {pushedPos}, Ãæµ¹ ¿©ºÎ: {chrash}");
+            //        if (!chrash) pushedDis = d;
+            //        else break;
+            //    }
 
-                    if (!chrash) pushedDis = d;
-                    else
-                    {
-                        chrashedTargets.Add(TokenSystem.Instance.GetTokenByPosition(pushedPos) as CombatantView);
-                        break;
-                    }
-                }
+            //    //ë„‰ë°± ì• ë‹ˆë©”ì´ì…˜
+            //    if (pushedDis > 0)
+            //    {
+            //        Debug.Log("ë°€ë¦¬ëŠ” ì• ë‹ˆë©”ì´ì…˜ ì‹œì‘");
+            //        for (int d = 1; d <= knockBackGA.Distance; d++)
+            //        {
+            //            Vector2Int pushedPos = targetPos + direction * d;
+            //            if (i == knockBackGA.TargetPoses.Count - 1)
+            //            {
+            //                yield return TokenSystem.Instance.MoveToken(target, pushedPos, true, false);
+            //            }
+            //            else TokenSystem.Instance.MoveToken(target, pushedPos, true, false);
+            //        }
+            //    }
 
-                //³Ë¹é ¾Ö´Ï¸ŞÀÌ¼Ç
-                if (pushedDis > 0)
-                {
-                    Debug.Log("¹Ğ¸®´Â ¾Ö´Ï¸ŞÀÌ¼Ç ½ÃÀÛ");
-                    for (int d = 1; d <= knockBackGA.Distance; d++)
-                    {
-                        Vector2Int pushedPos = targetPos + direction * d;
-                        if (i == knockBackGA.TargetPoses.Count - 1)
-                        {
-                            yield return TokenSystem.Instance.MoveToken(target, pushedPos, true, false);
-                        }
-                        else TokenSystem.Instance.MoveToken(target, pushedPos, true, false);
-                    }
-                }
-            }
-
-            if (chrashedTargets.Count > 0)
-            {
-                Debug.Log("Ãæµ¹ µ¥¹ÌÁö È¹µæ");
-                DealDamageGA dealDamageGA = new(crachDamage, chrashedTargets, knockBackGA.Caster);
-                ActionSystem.Instance.AddReaction(dealDamageGA);
-            }
+            //    if (chrash)
+            //    {
+            //        Debug.Log("ì¶©ëŒ ë°ë¯¸ì§€ íšë“");
+            //        DealDamageGA dealDamageGA = new(crachDamage, chrashedTargets, knockBackGA.Caster);
+            //        ActionSystem.Instance.AddReaction(dealDamageGA);
+            //    }
+            //}
         }
+        yield return null;
     }
 }

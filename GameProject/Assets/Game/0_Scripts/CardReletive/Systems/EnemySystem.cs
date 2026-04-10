@@ -1,6 +1,7 @@
+ï»¿using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
-using DG.Tweening;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemySystem : Singleton<EnemySystem>
@@ -28,9 +29,9 @@ public class EnemySystem : Singleton<EnemySystem>
    //Performers
     private IEnumerator EnemysTurnPerformer(EnemysTurnGA enemysTurn)
     {
-        if (enemysTurn.isStartGame) yield break;   //°ÔÀÓ ½ÃÀÛ½Ã, ¹İÈ¯Ã³¸®
+        if (enemysTurn.isStartGame) yield break;   //ê²Œì„ ì‹œì‘ì‹œ, ë°˜í™˜ì²˜ë¦¬
 
-        //Àû Çàµ¿ ¼ø¼­ ÆÇ´Ü(È®Àå)
+        //ì  í–‰ë™ ìˆœì„œ íŒë‹¨(í™•ì¥)
 
         foreach (EnemyView enemy in Enemise)
         {
@@ -44,6 +45,8 @@ public class EnemySystem : Singleton<EnemySystem>
     {
         EnemyView enemy = enemyTurn.EnemyView;
 
+//---------------------------------------------ëª¬ìŠ¤í„° ìƒíƒœíš¨ê³¼-----------------------------------------------
+
         int burnStack = enemy.GetStatusEffectStacks(StatusEffectType.BURN);
         if (burnStack > 0)
         {
@@ -51,22 +54,29 @@ public class EnemySystem : Singleton<EnemySystem>
             ActionSystem.Instance.AddReaction(applyBurnGA);
         }
 
-        //!! - °í¸³ Á¶°Ç¿¡ °É¸®´Â Çàµ¿Àº ¿¹¿ÜÃ³¸®!!
-        //¹Ì¸® ¿¹¾àÇÑ Çàµ¿ ½ÇÇà
-        if (enemy.actAction != null) 
-            ActionSystem.Instance.AddReaction(enemy.actAction);
-
-        //»óÅÂ ÀÌ»ó - °í¸³ Ã³¸®
+        //ìƒíƒœ ì´ìƒ - ê³ ë¦½ ì²˜ë¦¬
+        bool isIsolation = false;
         int isolationStack = enemy.GetStatusEffectStacks(StatusEffectType.ISOLATION);
         if (isolationStack > 0)
         {
-            yield break;
+            isIsolation = true;
         }
 
-        //ÀÌµ¿ ÆÇ´Ü ¹× ½ÇÇà
-        enemy.moveAction = enemy.Enemy.JudgeMoveAction(enemy);
-        if (enemy.moveAction != null) 
-            ActionSystem.Instance.AddReaction(enemy.moveAction);
+        //-------------------------------------------------------------------------------------------------------
+
+        //!! - ê³ ë¦½ ì¡°ê±´ì— ê±¸ë¦¬ëŠ” í–‰ë™ì€ ì˜ˆì™¸ì²˜ë¦¬!!
+        //ë¯¸ë¦¬ ì˜ˆì•½í•œ í–‰ë™ ì‹¤í–‰
+        if (enemy.ActionInfo.actType != null
+            && isIsolation == true ? enemy.ActionInfo.actType != typeof(PerformMoveGA) : true)
+        {
+            enemy.Enemy.PlayActAction(enemy, enemy.ActionInfo);
+        }
+
+        //ì´ë™ íŒë‹¨ ë° ì‹¤í–‰
+        if (enemy.ActionInfo.movePath != null && !isIsolation)
+        {
+            enemy.Enemy.PlayMoveAction(enemy, enemy.ActionInfo.movePath);
+        }
 
         yield return null;
     }
@@ -78,7 +88,7 @@ public class EnemySystem : Singleton<EnemySystem>
         yield return tween.WaitForCompletion();
         DomoveX(attacker, 1f, 0.25f);
 
-        //°ø°İ¹üÀ§¿¡ ÇÃ·¹ÀÌ¾î Á¸Àç ¿©ºÎ Ã¼Å©
+        //ê³µê²©ë²”ìœ„ì— í”Œë ˆì´ì–´ ì¡´ì¬ ì—¬ë¶€ ì²´í¬
         var heroPos = TokenSystem.Instance.GetTokenPosition(HeroSystem.Instance.HeroView);
         bool isExist = false;
         foreach (var attackPos in attackHeroGA.AttackArea)
@@ -86,7 +96,7 @@ public class EnemySystem : Singleton<EnemySystem>
             if(attackPos == heroPos) isExist = true;
         }
 
-        //°ø°İ¹üÀ§¿¡ ÀÖÀ» ¶§, °ø°İ ½ÇÇà
+        //ê³µê²©ë²”ìœ„ì— ìˆì„ ë•Œ, ê³µê²© ì‹¤í–‰
         if (isExist)
         {
             DealDamageGA dealDamageGA = new(attacker.AttackPower, new() { HeroSystem.Instance.HeroView }, attackHeroGA.Caster);
@@ -95,7 +105,7 @@ public class EnemySystem : Singleton<EnemySystem>
 
         yield return new WaitForSeconds(0.5f);
 
-        //¹Ì¸® º¸¿©ÁØ °ø°İ ¹üÀ§ »èÁ¦
+        //ë¯¸ë¦¬ ë³´ì—¬ì¤€ ê³µê²© ë²”ìœ„ ì‚­ì œ
         VisualGridCreator.Instance.RemoveVisualGrid(attacker.GetInstanceID(), "Enemy_Attack");
     }
 
@@ -105,14 +115,15 @@ public class EnemySystem : Singleton<EnemySystem>
     }
 
     //Reactions
-    private void EnemysTurnPostReaction(EnemysTurnGA enemysTurnGA)   //¸ğµç Àûµé ´ÙÀ½À¸·Î ÇÒ Çàµ¿ ÆÇ´Ü ¹× º¸¿©ÁÖ±â
+    private void EnemysTurnPostReaction(EnemysTurnGA enemysTurnGA)   //ëª¨ë“  ì ë“¤ ë‹¤ìŒìœ¼ë¡œ í•  í–‰ë™ íŒë‹¨ ë° ë³´ì—¬ì£¼ê¸°
     {
         foreach (EnemyView enemy in Enemise)
         {
-            //¸ó½ºÅÍ »óÅÂÈ¿°ú N°¨¼Ò
+//---------------------------------------------ëª¬ìŠ¤í„° ìƒíƒœíš¨ê³¼-----------------------------------------------
+            //ëª¬ìŠ¤í„° ìƒíƒœíš¨ê³¼ Nê°ì†Œ
             foreach (var statusEffectType in enemy.GetStatusEffects())
             {
-                //±â°£Á¦ ¹× Á¶°ÇÁ¦¸¸ ½ÇÇà
+                //ê¸°ê°„ì œ ë° ì¡°ê±´ì œë§Œ ì‹¤í–‰
                 var mcType = StatusEffectSystem.Instance.GetMachanicsType(statusEffectType);
                 if (mcType == SEMachanicsType.FixedTerm || mcType == SEMachanicsType.ConditionTerm)
                 {
@@ -120,37 +131,33 @@ public class EnemySystem : Singleton<EnemySystem>
                 }
             }
 
-            //»óÅÂÈ¿°ú - ¾ÇÈ­ »èÁ¦
+            //ìƒíƒœíš¨ê³¼ - ì•…í™” ì‚­ì œ
             bool tdSEExist = enemy.CheckStatusEffectExist(StatusEffectType.POISIONING)
                            || enemy.CheckStatusEffectExist(StatusEffectType.BLEEDING);
             if (!tdSEExist)
                 enemy.RemoveStatusEffect(StatusEffectType.DETERIORATE, 0);
+            //-------------------------------------------------------------------------------------------------------
 
+            //ë‹¤ìŒ í„´ì— í•  í–‰ë™ ë¯¸ë¦¬ ì„¤ì •
+            enemy.ActionInfo = enemy.Enemy.PreJudgeActAction(enemy);
+            enemy.ActionInfo = new(enemy.ActionInfo, enemy.Enemy.PreJudgeMoveAction(enemy));
 
-            //´ÙÀ½ ÅÏ¿¡ ÇÒ Çàµ¿ ¹Ì¸® ¼³Á¤
-            enemy.actAction = enemy.Enemy.JudgeActActions(enemy);
-
-            //´ÙÀ½ ÅÏ¿¡ ÇÒ °ø°İ ºñÁÖ¾ó ±×¸®µå·Î ¹Ì¸® º¸¿©ÁÖ±â
-            if (enemy.actAction is AttackHeroGA attackHeroGA)
-            {
-                foreach (Vector2Int gridPos in attackHeroGA.AttackArea)
-                {
-                    VisualGridCreator.Instance.CreateVisualGrid(enemy.GetInstanceID(), gridPos, "Enemy_Attack");
-                }
-            }
+            //ë¯¸ë¦¬ ë³´ê¸° ì„¤ì •
+            enemy.Enemy.SetDrawActActionVG(true, enemy, enemy.ActionInfo);
+            enemy.Enemy.SetDrawMoveActionVG(true, enemy, enemy.ActionInfo.movePath);
         }
     }
 
     private void EnemysTurnPreReaction(EnemysTurnGA enemysTurnGA)
     {
-        //ÀûµéÀÇ ÅÏ ½ÃÀÛ½Ã, ¹æ¾î¸· ½ºÅÃ Á¦°Å
+        //ì ë“¤ì˜ í„´ ì‹œì‘ì‹œ, ë°©ì–´ë§‰ ìŠ¤íƒ ì œê±°
         foreach (EnemyView enemy in Enemise)
         {
             int armorStack = enemy.GetStatusEffectStacks(StatusEffectType.ARMOR);
             if(armorStack > 0) enemy.RemoveStatusEffect(StatusEffectType.ARMOR, armorStack);
 
-            //»óÅÂ È¿°ú
-            //¾ÇÈ­
+            //ìƒíƒœ íš¨ê³¼
+            //ì•…í™”
             float specialRate = 1;
             bool deteriaorateExist = enemy.CheckStatusEffectExist(StatusEffectType.DETERIORATE);
             if (deteriaorateExist)
@@ -159,7 +166,7 @@ public class EnemySystem : Singleton<EnemySystem>
                 specialRate *= rate;
             }
 
-            //µ¶¹°
+            //ë…ë¬¼
             int poisionStatcks = enemy.GetStatusEffectStacks(StatusEffectType.POISIONING);
             if (poisionStatcks > 0)
             {
@@ -169,7 +176,7 @@ public class EnemySystem : Singleton<EnemySystem>
                 ActionSystem.Instance.AddReaction(dealDamageGA);
             }
 
-            //ÃâÇ÷
+            //ì¶œí˜ˆ
             int bleedingStatcks = enemy.GetStatusEffectStacks(StatusEffectType.BLEEDING);
             if (bleedingStatcks > 0)
             {
