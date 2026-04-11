@@ -336,6 +336,20 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
         return result.ToArray();
     }
 
+    public List<CombatantView> TargetPosesToCombatants(List<Vector2Int> targetPoses)
+    {
+        //대상 기반
+        List<CombatantView> combatants = new();
+        foreach (var targetPos in targetPoses)
+        {
+            Token token = TokenSystem.Instance.GetTokenByPosition(targetPos);
+            if (token != null)
+                combatants.Add(token as CombatantView);
+        }
+        if (combatants.Count > 0) return combatants;
+        return null;
+    }
+
     /// <summary>
     /// 해당 그리드 좌표 사용 가능 여부 확인 (범위 안 & 토큰이 없는가 등)
     /// </summary>
