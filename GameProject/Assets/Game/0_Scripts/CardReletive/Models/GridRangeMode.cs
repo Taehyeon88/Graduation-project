@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -75,7 +75,7 @@ public class PlusRM : GridRangeMode
                 {
                     result.Add(position);
                 }
-                else if (penetration) break;    //°üÅëÇÏ¸é ´ÙÀ½ Å¸ÀÏ ¹«½Ã
+                else if (penetration) break;    //ê´€í†µí•˜ë©´ ë‹¤ìŒ íƒ€ì¼ ë¬´ì‹œ
             }
         }
         return result;

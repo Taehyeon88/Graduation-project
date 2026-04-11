@@ -21,7 +21,7 @@ public class E_AllAroundRM : EnemyRangeMode
             for (int y = minY; y <= maxY; y++)
             {
                 Vector2Int position = new(x, y);
-                if (TokenSystem.Instance.IsGridEmpty(position, true))
+                if (TokenSystem.Instance.IsGridEmpty(position, false, true))
                 {
                     result.Add(position);
                 }
