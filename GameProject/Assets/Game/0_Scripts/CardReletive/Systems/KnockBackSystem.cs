@@ -51,7 +51,7 @@ public class KnockBackSystem : MonoBehaviour
             {
                 Debug.Log("밀리는 애니메이션 시작");
                 Vector2Int pushedPos = knockBackGA.TargetPos + knockBackGA.Direction * pushedDis;
-                moveGA = new(target, pushedPos);
+                moveGA = new(target, pushedPos, true);
                 ActionSystem.Instance.AddReaction(moveGA);
             }
             if (chrash)

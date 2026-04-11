@@ -41,34 +41,16 @@ public class Slime : Enemy
 
     public override void SetDrawActActionVG(bool active, EnemyView enemy, EnemyActionInfo enemyActionInfo)
     {
-        //if (active)
-        //{
-        //    VisualGridCreator.Instance.RemoveVisualGrid(enemy.gameObject.GetInstanceID(), "Enemy_Attack");
-
-        //    var enemyRM = enemyActionInfo.enemyRM;
-        //    int distance = enemyActionInfo.actDistance;
-        //    bool isPenetration = enemyActionInfo.isPenetration;
-
-        //    var poses = enemyRM.GetGridRanges(TokenSystem.Instance.GetTokenPosition(enemy), distance, isPenetration);
-        //    foreach (var pos in poses)
-        //    {
-        //        VisualGridCreator.Instance.CreateVisualGrid(enemy.gameObject.GetInstanceID(), pos, "Enemy_Attack");
-        //    }
-        //}
-        //else
-        //{
-        //    VisualGridCreator.Instance.RemoveVisualGridById(enemy.gameObject.GetInstanceID());
-        //}
-    }
-
-    public override void SetDrawMoveActionVG(bool active, EnemyView enemy, List<Vector2Int> path)
-    {
-        //일단 보류
         if (active)
         {
             VisualGridCreator.Instance.RemoveVisualGrid(enemy.gameObject.GetInstanceID(), "Enemy_Attack");
 
-            foreach (var pos in path)
+            var enemyRM = enemyActionInfo.enemyRM;
+            int distance = enemyActionInfo.actDistance;
+            bool isPenetration = enemyActionInfo.isPenetration;
+
+            var poses = enemyRM.GetGridRanges(TokenSystem.Instance.GetTokenPosition(enemy), distance, isPenetration);
+            foreach (var pos in poses)
             {
                 VisualGridCreator.Instance.CreateVisualGrid(enemy.gameObject.GetInstanceID(), pos, "Enemy_Attack");
             }
@@ -76,6 +58,23 @@ public class Slime : Enemy
         else
         {
             VisualGridCreator.Instance.RemoveVisualGridById(enemy.gameObject.GetInstanceID());
+        }
+    }
+
+    public override void SetDrawMoveActionVG(bool active, EnemyView enemy, List<Vector2Int> path)
+    {
+        //일단 보류
+        if (active)
+        {
+            VisualGridCreator.Instance.RemoveVisualGrid(enemy.gameObject.GetInstanceID(), "Enemy_Move");
+            foreach (var pos in path)
+            {
+                VisualGridCreator.Instance.CreateVisualGrid(enemy.gameObject.GetInstanceID(), pos, "Enemy_Move");
+            }
+        }
+        else
+        {
+            VisualGridCreator.Instance.RemoveVisualGrid(enemy.gameObject.GetInstanceID(), "Enemy_Move");
         }
     }
 

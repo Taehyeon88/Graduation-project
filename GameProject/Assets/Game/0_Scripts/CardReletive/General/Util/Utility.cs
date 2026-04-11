@@ -1,8 +1,9 @@
+﻿using IsoTools;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class MouseUtil
+public static class Utility
 {
     private static Camera camera = Camera.main;
     public static Vector3 GetMousePositionInWorldSpace(float zValue = 0f)
@@ -25,5 +26,15 @@ public static class MouseUtil
             return ray.GetPoint(distance);
         }
         return Vector3.zero;
+    }
+
+    public static Vector3 GridToWorldPoint(Vector2Int gridPosition, int zValue)
+    {
+        IsoWorld isoWorld = TokenSystem.Instance.IsoWorld;
+        if (isoWorld == null) return default;
+
+        Vector2 screenPoint = isoWorld.IsoToScreen(new(gridPosition.x, gridPosition.y, 1));
+        Vector3 worldPoint = Camera.main.ScreenToWorldPoint(new(screenPoint.x, screenPoint.y, zValue));
+        return worldPoint;
     }
 }

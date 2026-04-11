@@ -15,6 +15,8 @@ public class EnemySystem : Singleton<EnemySystem>
         ActionSystem.AttachPerformer<KillEnemyGA>(KillEnemyPerformer);
         ActionSystem.SubscribeReaction<EnemysTurnGA>(EnemysTurnPostReaction, ReactionTiming.POST);
         ActionSystem.SubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
+        ActionSystem.SubscribeReaction<MoveGA>(MoveGAPreReaction, ReactionTiming.PRE);
+        ActionSystem.SubscribeReaction<MoveGA>(MoveGAPostReaction, ReactionTiming.POST);
     }
     void OnDisable()
     {
@@ -24,6 +26,8 @@ public class EnemySystem : Singleton<EnemySystem>
         ActionSystem.DetachPerformer<KillEnemyGA>();
         ActionSystem.UnsubscribeReaction<EnemysTurnGA>(EnemysTurnPostReaction, ReactionTiming.POST);
         ActionSystem.UnsubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
+        ActionSystem.UnsubscribeReaction<MoveGA>(MoveGAPreReaction, ReactionTiming.PRE);
+        ActionSystem.UnsubscribeReaction<MoveGA>(MoveGAPostReaction, ReactionTiming.POST);
     }
 
    //Performers
@@ -184,6 +188,30 @@ public class EnemySystem : Singleton<EnemySystem>
                 float amount = enemy.MaxHealth * (percent / 100f) * specialRate;
                 DealDamageGA dealDamageGA = new(amount, new() { enemy }, enemy, DamageFormulaType.Special);
                 ActionSystem.Instance.AddReaction(dealDamageGA);
+            }
+        }
+    }
+
+    private void MoveGAPreReaction(MoveGA moveGA)
+    {
+        if (moveGA.mover is EnemyView enemyView && moveGA.isKnockBack)
+        {
+            if (enemyView != null)
+            {
+                enemyView.Enemy.SetDrawActActionVG(false, enemyView, enemyView.ActionInfo);
+                enemyView.Enemy.SetDrawMoveActionVG(false, enemyView, null);
+            }
+        }
+    }
+    private void MoveGAPostReaction(MoveGA moveGA)
+    {
+        if (moveGA.mover is EnemyView enemyView && moveGA.isKnockBack)
+        {
+            if (enemyView != null)
+            {
+                enemyView.Enemy.SetDrawActActionVG(true, enemyView, enemyView.ActionInfo);
+                enemyView.ActionInfo.SetMoveInfo(enemyView.Enemy.PreJudgeMoveAction(enemyView));
+                enemyView.Enemy.SetDrawMoveActionVG(true, enemyView, enemyView.ActionInfo.movePath);
             }
         }
     }
