@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 public class EnemyActionInfo
 {
     //행동
-    public Type actType;
+    public EnemyAction enemyAction;
     public EnemyRangeMode enemyRM;
     public int actDistance;
     public bool isPenetration;
@@ -16,7 +15,7 @@ public class EnemyActionInfo
 
     public EnemyActionInfo(EnemyActionInfo actionInfo, List<Vector2Int> movePath)
     {
-        this.actType = actionInfo.actType;
+        this.enemyAction = actionInfo.enemyAction;
         this.enemyRM = actionInfo.enemyRM;
         this.actDistance = actionInfo.actDistance;
         this.isPenetration = actionInfo.isPenetration;
@@ -26,9 +25,9 @@ public class EnemyActionInfo
     public EnemyActionInfo() { }
 
     //Constructor
-    public void SetActionInfo(Type type, EnemyRangeMode enemyRangeMode, int actDistance, bool isPeneration)
+    public void SetActionInfo(EnemyAction enemyAction, EnemyRangeMode enemyRangeMode, int actDistance, bool isPeneration)
     {
-        this.actType = type;
+        this.enemyAction = enemyAction;
         this.enemyRM = enemyRangeMode;
         this.actDistance = actDistance;
         this.isPenetration = isPeneration;

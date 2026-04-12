@@ -6,17 +6,21 @@ using UnityEngine;
 [System.Serializable]
 public class Slime : Enemy
 {
-    [SerializeField] private float Damage = 5;
-
     private const int moveDistance = 1;    //이동 거리
     private const int attackDistance = 1;  //공격 사거리
 
-
-    public override EnemyActionInfo PreJudgeActAction(EnemyView myEnemyView)
+    public override EnemyAction PreJudgeActAction(EnemyView myEnemyView)
     {
-        EnemyActionInfo info = new EnemyActionInfo();
-        info.SetActionInfo(typeof(AttackHeroGA), new E_AllAroundRM(), attackDistance, false);
-        return info;
+        Type type = typeof(Slime_AttackEA);
+        var action = FindEnemyAction(myEnemyView, type);
+        if (action == null)
+            Debug.LogError($"{this}에 {type}라는 행동이 존재하지 않습니다.");
+
+        action.EnemyRM = new E_AllAroundRM();
+        action.ActDistance = attackDistance;
+        action.IsPenetration = false;
+
+        return action;
     }
 
     public override List<Vector2Int> PreJudgeMoveAction(EnemyView myEnemyView)
@@ -38,15 +42,15 @@ public class Slime : Enemy
         else return null;
     }
 
-    public override void SetDrawActActionVG(bool active, EnemyView enemy, EnemyActionInfo enemyActionInfo)
+    public override void SetDrawActActionVG(bool active, EnemyView enemy, EnemyAction enemyAction)
     {
         if (active)
         {
             VisualGridCreator.Instance.RemoveVisualGrid(enemy.gameObject.GetInstanceID(), "Enemy_Attack");
 
-            var enemyRM = enemyActionInfo.enemyRM;
-            int distance = enemyActionInfo.actDistance;
-            bool isPenetration = enemyActionInfo.isPenetration;
+            var enemyRM = enemyAction.EnemyRM;
+            int distance = enemyAction.ActDistance;
+            bool isPenetration = enemyAction.IsPenetration;
 
             var poses = enemyRM.GetGridRanges(TokenSystem.Instance.GetTokenPosition(enemy), distance, isPenetration);
             foreach (var pos in poses)
@@ -75,22 +79,6 @@ public class Slime : Enemy
         {
             VisualGridCreator.Instance.RemoveVisualGrid(enemy.gameObject.GetInstanceID(), "Enemy_Move");
         }
-    }
-
-    public override void PlayActAction(EnemyView enemy, EnemyActionInfo enemyActionInfo)
-    {
-        Type type = enemyActionInfo.actType;
-        var enemyRM = enemyActionInfo.enemyRM;
-        int distance = enemyActionInfo.actDistance;
-        bool isPenetration = enemyActionInfo.isPenetration;
-
-        var poses = enemyRM.GetGridRanges(TokenSystem.Instance.GetTokenPosition(enemy), distance, isPenetration);
-
-        GameAction actAction = null;
-        if (type == typeof(AttackHeroGA))
-            actAction = new AttackHeroGA(enemy, Damage, poses);
-
-        ActionSystem.Instance.AddReaction(actAction);
     }
 
     public override void PlayMoveAction(EnemyView enemy, List<Vector2Int> path)
@@ -129,5 +117,10 @@ public class Slime : Enemy
         }
 
         return (minDistance, targetPath);
+    }
+
+    public override Enemy Clone()
+    {
+        return new Slime();
     }
 }

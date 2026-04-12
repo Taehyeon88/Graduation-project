@@ -1,21 +1,37 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using IsoTools;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EnemyView : CombatantView
 {
-    public string EnemyName { get; private set; }     //적 이름
-    public Sprite EnemySprite { get; private set; }   //적 이미지
-    public float AttackPower { get; set; }            //적 공격력 !추후수정
-    public Enemy Enemy { get; private set; }          //적 모델
+    [SerializeField] private StatusEffectsUI statusEffectsUI;
+    [SerializeField] private Image nextActUIImage;
 
-    public EnemyActionInfo ActionInfo { get; set; }   //몬스터 행동/이동 정보
+    public string EnemyName { get; private set; }         //적 이름
+    public Sprite EnemySprite { get; private set; }       //적 이미지
+    public Enemy Enemy { get; private set; }              //적 모델
+    public List<EnemyAction> Actions { get; private set; }//적 행동들 
+    public List<Vector2Int> NextMovePath { get; set; }    //다음 이동할 경로
+    public EnemyAction NextAction                         //다음에 할 행동
+    {
+        get {  return nextAction; }
+        private set
+        {
+            nextAction = value;
+            UpdateNextActionUI();
+        }
+    }
+    private EnemyAction nextAction;
 
-
+    //상태효과 - NEW개볌 변수
     private bool isEnemysTurn = false;
     private Dictionary<StatusEffectType, (int, Sprite, float[])> newStatusEffectUIs = new();
+
+
     public void SetUp(EnemyData enemyData)
     {
         //Isometric 설정
@@ -26,8 +42,10 @@ public class EnemyView : CombatantView
         //Enemy 데이터 설정
         EnemyName = enemyData.name;
         EnemySprite = enemyData.TokenModel.Sprite;
-        AttackPower = enemyData.AttackPower;
-        Enemy = enemyData.Enemy;
+        Enemy = enemyData.Enemy.Clone();
+        Actions = enemyData.EnemyActions
+                 .Select(e => e.Clone())
+                 .ToList();
         SetUpBase(enemyData.Health, enemyData, isObject);
     }
 
@@ -40,6 +58,19 @@ public class EnemyView : CombatantView
     {
         ActionSystem.UnsubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<EnemysTurnGA>(EnemysTurnPostReaction, ReactionTiming.POST);
+    }
+
+    //Publics
+    public void UpdateNextActionUI()
+    {
+        if (nextActUIImage != null)
+        {
+            nextActUIImage.sprite = NextAction.Icon;
+        }
+    }
+    public void SetNextAction(EnemyAction action)
+    {
+        NextAction = action;
     }
 
     //Subscribers
@@ -61,10 +92,12 @@ public class EnemyView : CombatantView
                 newStatusEffectUIs.Add(type, (1, sprite, infoes));
         }
         base.AddStatusEffect(type, stackCount, sprite, infoes);
+        statusEffectsUI.UpdateStatusEffect(type, GetStatusEffectStacks(type), sprite);
     }
 
     public override void RemoveStatusEffect(StatusEffectType type, int stackCount)
     {
         base.RemoveStatusEffect(type, stackCount);
+        statusEffectsUI.UpdateStatusEffect(type, GetStatusEffectStacks(type));
     }
 }

@@ -69,16 +69,15 @@ public class EnemySystem : Singleton<EnemySystem>
 
         //!! - 고립 조건에 걸리는 행동은 예외처리!!
         //미리 예약한 행동 실행
-        if (enemy.ActionInfo.actType != null
-            && isIsolation == true ? enemy.ActionInfo.actType != typeof(PerformMoveGA) : true)
+        if (enemy.NextAction != null)
         {
-            enemy.Enemy.PlayActAction(enemy, enemy.ActionInfo);
+            enemy.NextAction.PlayEnemyAction(enemy);
         }
 
         //이동 판단 및 실행
-        if (enemy.ActionInfo.movePath != null && !isIsolation)
+        if (enemy.NextMovePath != null && !isIsolation)
         {
-            enemy.Enemy.PlayMoveAction(enemy, enemy.ActionInfo.movePath);
+            enemy.Enemy.PlayMoveAction(enemy, enemy.NextMovePath);
         }
 
         yield return null;
@@ -102,7 +101,7 @@ public class EnemySystem : Singleton<EnemySystem>
         //공격범위에 있을 때, 공격 실행
         if (isExist)
         {
-            DealDamageGA dealDamageGA = new(attacker.AttackPower, new() { HeroSystem.Instance.HeroView }, attackHeroGA.Caster);
+            DealDamageGA dealDamageGA = new(attackHeroGA.DamageAmount, new() { HeroSystem.Instance.HeroView }, attackHeroGA.Caster);
             ActionSystem.Instance.AddReaction(dealDamageGA);
         }
 
@@ -142,12 +141,12 @@ public class EnemySystem : Singleton<EnemySystem>
             //-------------------------------------------------------------------------------------------------------
 
             //다음 턴에 할 행동 미리 설정
-            enemy.ActionInfo = enemy.Enemy.PreJudgeActAction(enemy);
-            enemy.ActionInfo = new(enemy.ActionInfo, enemy.Enemy.PreJudgeMoveAction(enemy));
+            enemy.SetNextAction(enemy.Enemy.PreJudgeActAction(enemy));
+            enemy.NextMovePath = enemy.Enemy.PreJudgeMoveAction(enemy);
 
             //미리 보기 설정
-            enemy.Enemy.SetDrawActActionVG(true, enemy, enemy.ActionInfo);
-            enemy.Enemy.SetDrawMoveActionVG(true, enemy, enemy.ActionInfo.movePath);
+            enemy.Enemy.SetDrawActActionVG(true, enemy, enemy.NextAction);
+            enemy.Enemy.SetDrawMoveActionVG(true, enemy, enemy.NextMovePath);
         }
     }
 
@@ -197,7 +196,7 @@ public class EnemySystem : Singleton<EnemySystem>
         {
             if (enemyView != null)
             {
-                enemyView.Enemy.SetDrawActActionVG(false, enemyView, enemyView.ActionInfo);
+                enemyView.Enemy.SetDrawActActionVG(false, enemyView, enemyView.NextAction);
                 enemyView.Enemy.SetDrawMoveActionVG(false, enemyView, null);
             }
         }
@@ -208,9 +207,9 @@ public class EnemySystem : Singleton<EnemySystem>
         {
             if (enemyView != null)
             {
-                enemyView.Enemy.SetDrawActActionVG(true, enemyView, enemyView.ActionInfo);
-                enemyView.ActionInfo.SetMoveInfo(enemyView.Enemy.PreJudgeMoveAction(enemyView));
-                enemyView.Enemy.SetDrawMoveActionVG(true, enemyView, enemyView.ActionInfo.movePath);
+                enemyView.Enemy.SetDrawActActionVG(true, enemyView, enemyView.NextAction);
+                enemyView.NextMovePath = enemyView.Enemy.PreJudgeMoveAction(enemyView);
+                enemyView.Enemy.SetDrawMoveActionVG(true, enemyView, enemyView.NextMovePath);
             }
         }
     }
