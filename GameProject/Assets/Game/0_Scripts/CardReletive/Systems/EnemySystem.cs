@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class EnemySystem : Singleton<EnemySystem>
 {
-    public List<EnemyView> Enemise => TokenSystem.Instance.EnemyViews;
+    public IReadOnlyList<EnemyView> Enemise => TokenSystem.Instance.EnemyViews;
     void OnEnable()
     {
         ActionSystem.AttachPerformer<EnemysTurnGA>(EnemysTurnPerformer);

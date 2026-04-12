@@ -38,8 +38,8 @@ public class CombatantViewStatusUI : MonoBehaviour
     private int perkCount => perkUI.transform.childCount;
 
     //몬스터
-    private List<EnemyView> enemies => new(TokenSystem.Instance.EnemyViews);
-    private int enemyCount => TokenSystem.Instance.EnemyViews.Count;
+    private List<EnemyView> enemies => new(EnemySystem.Instance.Enemise);
+    private int enemyCount => EnemySystem.Instance.Enemise.Count;
     private List<EnemyUI> enemyUIs = new();
     private EnemyView currentSelectedEnemy;
     private bool isEnemyInfosUIActive = true;

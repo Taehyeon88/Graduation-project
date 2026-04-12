@@ -156,6 +156,7 @@ MonoBehaviour:
   healthSlider: {fileID: 2921891739353095588}
   wrapper: {fileID: 7697686970616833351}
   genTransform: {fileID: 4227913998135678111}
+  EnemyInfoUITrans: {fileID: 9030627351758589470}
   statusEffectsUI: {fileID: 2835355850307062128}
   nextActUIImage: {fileID: 5333210666573721370}
 --- !u!114 &6248386982960127024
@@ -202,6 +203,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CombatantViewBase
       objectReference: {fileID: 0}
+    - target: {fileID: 4210927470297963064, guid: 888032aeab9a6884482de47824ac3084, type: 3}
+      propertyPath: statusEffectPrefab
+      value: 
+      objectReference: {fileID: 3206813154148614427, guid: 9d700cd098c9ffe49a7fa3697bd2c625, type: 3}
     - target: {fileID: 4265433113066331884, guid: 888032aeab9a6884482de47824ac3084, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -242,6 +247,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5010459338478523354, guid: 888032aeab9a6884482de47824ac3084, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6922706419653294092, guid: 888032aeab9a6884482de47824ac3084, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.111
+      objectReference: {fileID: 0}
     - target: {fileID: 7983041931997095288, guid: 888032aeab9a6884482de47824ac3084, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -260,7 +273,7 @@ PrefabInstance:
     - {fileID: 6408857152463756541, guid: 888032aeab9a6884482de47824ac3084, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 6951929019500911958, guid: 888032aeab9a6884482de47824ac3084, type: 3}
-      insertIndex: -1
+      insertIndex: 0
       addedObject: {fileID: 6170797638401574701}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 888032aeab9a6884482de47824ac3084, type: 3}
