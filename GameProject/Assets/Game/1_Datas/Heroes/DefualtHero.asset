@@ -15,9 +15,6 @@ MonoBehaviour:
   <TokenModel>k__BackingField: {fileID: 7542742243444305433, guid: 9aabd052a89f6d345a865c8ebf1ed74a, type: 3}
   <Health>k__BackingField: 44
   <Deck>k__BackingField:
-  - {fileID: 11400000, guid: d79f847ac4de2cc48a4dddfca7bc43e0, type: 2}
-  - {fileID: 11400000, guid: d79f847ac4de2cc48a4dddfca7bc43e0, type: 2}
-  - {fileID: 11400000, guid: d79f847ac4de2cc48a4dddfca7bc43e0, type: 2}
   - {fileID: 11400000, guid: 67480b54d7284a7418c74b4bd6b373e1, type: 2}
   - {fileID: 11400000, guid: 67480b54d7284a7418c74b4bd6b373e1, type: 2}
   - {fileID: 11400000, guid: 67480b54d7284a7418c74b4bd6b373e1, type: 2}

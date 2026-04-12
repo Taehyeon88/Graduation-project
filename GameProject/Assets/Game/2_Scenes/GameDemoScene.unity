@@ -2971,6 +2971,7 @@ Transform:
   - {fileID: 1468115236}
   - {fileID: 1694624815}
   - {fileID: 285826895}
+  - {fileID: 736114716}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &400374385
@@ -6228,7 +6229,7 @@ GameObject:
   - component: {fileID: 736114716}
   - component: {fileID: 736114717}
   m_Layer: 0
-  m_Name: EnemyVisualControlSystem
+  m_Name: EnemyVisualController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6242,12 +6243,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 736114715}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1646912783}
+  m_Father: {fileID: 400129255}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &736114717
 MonoBehaviour:
@@ -8527,7 +8528,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1646912783}
+  m_Father: {fileID: 1431773305}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &969443151
 MonoBehaviour:
@@ -8543,6 +8544,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   combatantViewStatusUI: {fileID: 1734656068}
   pileofCardUI: {fileID: 1381547605}
+  enemyVisualController: {fileID: 736114717}
 --- !u!4 &989357471 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7135897438596925868, guid: 9851229e58487e4449f6fa918f90a7d1, type: 3}
@@ -12581,6 +12583,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 969443150}
   - {fileID: 769043861}
   - {fileID: 1581007527}
   - {fileID: 935188433}
@@ -14174,9 +14177,7 @@ Transform:
   - {fileID: 787004029}
   - {fileID: 2007775425}
   - {fileID: 1585492206}
-  - {fileID: 969443150}
   - {fileID: 997186358}
-  - {fileID: 736114716}
   - {fileID: 897907587}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -16400,6 +16401,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8f7ee0051274fb54aaebf0055386d0b8, type: 2}
   - {fileID: 11400000, guid: 05bba772c27abb249931b5373a626312, type: 2}
   - {fileID: 11400000, guid: edcc7f562d3e6314f9e74febbcdb3d50, type: 2}
+  - {fileID: 11400000, guid: a27ae40fa8dc82b418c061d9e9b79e86, type: 2}
 --- !u!1001 &1983204901
 PrefabInstance:
   m_ObjectHideFlags: 0

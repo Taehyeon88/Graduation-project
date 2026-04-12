@@ -1,4 +1,5 @@
 {
+    "version": 1,
     "name": "GameProjectInput",
     "maps": [
         {
@@ -108,6 +109,15 @@
                     "name": "RestartGame",
                     "type": "Button",
                     "id": "91fc4b69-732e-4753-acec-525fccbd5379",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LookAllEnemyVisuals",
+                    "type": "Button",
+                    "id": "3b3fd030-0900-40b8-af23-63d5420c4ca9",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -266,6 +276,17 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "RestartGame",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "897641da-de7b-4f67-8143-ad08ed311e98",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "LookAllEnemyVisuals",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -1,7 +1,8 @@
+﻿using IsoTools;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
-using IsoTools;
 
 public class HeroView : CombatantView
 {

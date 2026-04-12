@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,10 +6,11 @@ public class UISystem : Singleton<UISystem>
 {
     [SerializeField] private CombatantViewStatusUI combatantViewStatusUI;
     [SerializeField] private PileofCardUI pileofCardUI;
+    [SerializeField] private EnemyVisualController enemyVisualController;
 
 
     /// <summary>
-    /// ¿µ¿õ È¤Àº ¸ó½ºÅÍµé »óÅÂÈ¿°úUI °»½Å ÇÔ¼ö
+    /// ì˜ì›… í˜¹ì€ ëª¬ìŠ¤í„°ë“¤ ìƒíƒœíš¨ê³¼UI ê°±ì‹  í•¨ìˆ˜
     /// </summary>
     /// <param name="combatantView"></param>
     /// <param name="statusEffectType"></param>
@@ -34,5 +35,18 @@ public class UISystem : Singleton<UISystem>
     public void OffPileofCardUI()
     {
         pileofCardUI.OffPileofCardUI();
+    }
+
+    public void ToggleEnemyVisualAllLooking()
+    {
+        enemyVisualController.SetAllLooking();
+    }
+
+    public void SetEnemyVisualSelected(bool active, EnemyView enemyView = null)
+    {
+        if(active)
+            enemyVisualController.SetSelectedTarget(enemyView);
+        else 
+            enemyVisualController.StopSelecting();
     }
 }

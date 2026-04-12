@@ -1,4 +1,4 @@
-using System;
+Ôªøusing System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,18 +10,17 @@ public class VisualGridCreator : Singleton<VisualGridCreator>
     [SerializeField] TokenGrid grid;
     [SerializeField] Transform gridVisualView;
     [SerializeField] VisualGridData[] visualGridDatas;
-    private Dictionary<Token, List<IsoObject>> visualGridsByToken = new();
 
     private Dictionary<Vector2Int, IsoObject> vGByPosition = new();
     private Dictionary<(int, string), List<SpriteRenderer>> visualGridsById = new();
-
+    private List<int> hideList = new();
     void Start()
     {
         Initialize();
     }
     private void Initialize()
     {
-        //ªı∑ŒøÓ πÊΩƒ
+        //ÏÉàÎ°úÏö¥ Î∞©Ïãù
         if (vGByPosition.Count == grid.width * grid.height) return;
 
         var temp2 = gridVisualView.GetComponentsInChildren<IsoObject>(true);
@@ -69,7 +68,8 @@ public class VisualGridCreator : Singleton<VisualGridCreator>
                     {
                         if (sr.gameObject.CompareTag("VG_None"))
                         {
-                            sr.gameObject.SetActive(true);
+                            if(!CheckIsHideId(tokenId))
+                                sr.gameObject.SetActive(true);
                             sr.sprite = sprite;
                             sr.color = color;
                             sr.gameObject.name = vgName;
@@ -133,5 +133,43 @@ public class VisualGridCreator : Singleton<VisualGridCreator>
             }
         }
         return check;
+    }
+
+    public void SetHideVisualGrid(int tokenId)
+    {
+        hideList.Add(tokenId);
+        foreach (var vg in visualGridsById)
+        {
+            if (vg.Key.Item1 == tokenId)
+            {
+                var spriteRenderers = visualGridsById[(tokenId, vg.Key.Item2)];
+                foreach (var sr in spriteRenderers)
+                {
+                    sr.gameObject.SetActive(false);
+                }
+            }
+        }
+    }
+    public void SetReverseVisualGrid(int tokenId)
+    {
+        hideList.Remove(tokenId);
+        foreach (var vg in visualGridsById)
+        {
+            if (vg.Key.Item1 == tokenId)
+            {
+                var spriteRenderers = visualGridsById[(tokenId, vg.Key.Item2)];
+                foreach (var sr in spriteRenderers)
+                {
+                    sr.gameObject.SetActive(true);
+                }
+            }
+        }
+    }
+
+
+    //privates
+    private bool CheckIsHideId(int tokenId)
+    {
+        return hideList.Contains(tokenId);
     }
 }

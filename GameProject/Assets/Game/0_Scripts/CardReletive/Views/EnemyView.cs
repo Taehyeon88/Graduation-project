@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 public class EnemyView : CombatantView
 {
+    [SerializeField] private Transform EnemyInfoUITrans;
     [SerializeField] private StatusEffectsUI statusEffectsUI;
     [SerializeField] private Image nextActUIImage;
 
@@ -71,6 +72,10 @@ public class EnemyView : CombatantView
     public void SetNextAction(EnemyAction action)
     {
         NextAction = action;
+    }
+    public void SetEnemyInfoUIActive(bool active)
+    {
+        EnemyInfoUITrans.gameObject.SetActive(active);
     }
 
     //Subscribers

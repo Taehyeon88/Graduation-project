@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,7 @@ using UnityEngine;
 public class EnemySystem : Singleton<EnemySystem>
 {
     public IReadOnlyList<EnemyView> Enemise => TokenSystem.Instance.EnemyViews;
+    public Action<int> EnemyAddEvent { get; private set; }
     void OnEnable()
     {
         ActionSystem.AttachPerformer<EnemysTurnGA>(EnemysTurnPerformer);

@@ -199,6 +199,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 21989ea81f959934bbfeed02037197b9, type: 3}
+    - target: {fileID: 3865680747253829356, guid: 888032aeab9a6884482de47824ac3084, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4100594146228531356, guid: 888032aeab9a6884482de47824ac3084, type: 3}
       propertyPath: m_Name
       value: CombatantViewBase
@@ -250,6 +254,14 @@ PrefabInstance:
     - target: {fileID: 5010459338478523354, guid: 888032aeab9a6884482de47824ac3084, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6135916408884059983, guid: 888032aeab9a6884482de47824ac3084, type: 3}
+      propertyPath: m_Maskable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6135916408884059983, guid: 888032aeab9a6884482de47824ac3084, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6922706419653294092, guid: 888032aeab9a6884482de47824ac3084, type: 3}
       propertyPath: m_AnchoredPosition.x

@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -6,13 +6,21 @@ using UnityEngine.SceneManagement;
 public enum InteractionCase
 {
     None, 
-    SetUp,      //ÀüÅõ ½ÃÀÛÀü, ¼Â¾÷ ´Ü°è
-    MainGame,   //¸ŞÀÎ ÀüÅõ ´Ü°è
+    SetUp,      //ì „íˆ¬ ì‹œì‘ì „, ì…‹ì—… ë‹¨ê³„
+    MainGame,   //ë©”ì¸ ì „íˆ¬ ë‹¨ê³„
 }
+
+public enum InteractionStep
+{
+    None,
+    CardInteracting,
+}
+
 public class InteractionSystem : Singleton<InteractionSystem>
 {
     public static bool GridSelected { get; private set; } = false;
     public static bool CancelReadyUseCard { get; private set; } = false;
+    public static InteractionStep _InteractionStep { get; set; } = InteractionStep.None;
 
     [SerializeField] private PlayerInput playerInput;
 
@@ -57,25 +65,26 @@ public class InteractionSystem : Singleton<InteractionSystem>
     void OnStartCheat() => CheatSystem.Instance?.StartCheat();
 
     void OnCancel() => UISystem.Instance?.OffPileofCardUI();
+    void OnLookAllEnemyVisuals() => UISystem.Instance?.ToggleEnemyVisualAllLooking();
     void OnSelectCardWithNumber1()
     {
-        Debug.Log("Ä«µå1 ¼±ÅÃ");
+        Debug.Log("ì¹´ë“œ1 ì„ íƒ");
     }
     void OnSelectCardWithNumber2()
     {
-        Debug.Log("Ä«µå2 ¼±ÅÃ");
+        Debug.Log("ì¹´ë“œ2 ì„ íƒ");
     }
     void OnSelectCardWithNumber3()
     {
-        Debug.Log("Ä«µå3 ¼±ÅÃ");
+        Debug.Log("ì¹´ë“œ3 ì„ íƒ");
     }
     void OnSelectCardWithNumber4()
     {
-        Debug.Log("Ä«µå4 ¼±ÅÃ");
+        Debug.Log("ì¹´ë“œ4 ì„ íƒ");
     }
     void OnSelectCardWithNumber5()
     {
-        Debug.Log("Ä«µå5 ¼±ÅÃ");
+        Debug.Log("ì¹´ë“œ5 ì„ íƒ");
     }
 
 

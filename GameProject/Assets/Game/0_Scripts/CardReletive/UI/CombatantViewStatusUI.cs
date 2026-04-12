@@ -38,7 +38,7 @@ public class CombatantViewStatusUI : MonoBehaviour
     private int perkCount => perkUI.transform.childCount;
 
     //몬스터
-    private List<EnemyView> enemies => new(EnemySystem.Instance.Enemise);
+    private IReadOnlyList<EnemyView> enemies => EnemySystem.Instance.Enemise;
     private int enemyCount => EnemySystem.Instance.Enemise.Count;
     private List<EnemyUI> enemyUIs = new();
     private EnemyView currentSelectedEnemy;
@@ -47,7 +47,7 @@ public class CombatantViewStatusUI : MonoBehaviour
     void Update()
     {
         //적 인터렉션 -> 상태 UI 대상 변경
-        if (InteractionSystem.GridSelected)
+        if (InteractionSystem.GridSelected && InteractionSystem._InteractionStep == InteractionStep.None)
         {
             Vector3 pos = TokenSystem.Instance.IsoWorld.MouseIsoTilePosition(1f);
             Vector2Int isoPosition = new((int)pos.x, (int)pos.y);
@@ -109,7 +109,7 @@ public class CombatantViewStatusUI : MonoBehaviour
             //현재 몬스터들에 맞게 UI생성 (자동 생성)
             if (enemyCount != enemyUIs.Count)
             {
-                var temp = this.enemies;
+                List<EnemyView> temp = new(enemies);
                 foreach (var enemyUI in enemyUIs)
                 {
                     if (temp.Contains(enemyUI.enemyView))
@@ -142,11 +142,11 @@ public class CombatantViewStatusUI : MonoBehaviour
         }
         else
         {
-            //현재 설정된 대상 없을 때, 자동 설정
-            //예: 초기 혹은 선택 대상이 사망시 사용
-            var enemies = this.enemies;
-            if (enemies.Count > 0 && enemies[0] != null)
-                SetEnemyUIInfos(enemies[0]);
+            ////현재 설정된 대상 없을 때, 자동 설정
+            ////예: 초기 혹은 선택 대상이 사망시 사용
+            //var enemies = this.enemies;
+            //if (enemies.Count > 0 && enemies[0] != null)
+            //    SetEnemyUIInfos(enemies[0]);
         }
     }
 
@@ -224,6 +224,9 @@ public class CombatantViewStatusUI : MonoBehaviour
                 UI.transform.SetParent(enemy_statusEffectUI);
             }
         }
+
+        //선택된 적 비주얼 갱신
+        UISystem.Instance.SetEnemyVisualSelected(true, enemyView);
 
         currentSelectedEnemy = enemyView;
     }
