@@ -14,18 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <VisualGridTypes>k__BackingField:
   - rid: 5842417105210966052
-  - rid: 5842417105210966053
-  layerDepth: 2
+  - rid: 1062699151546908743
+  layerDepth: 3
   references:
     version: 2
     RefIds:
+    - rid: 1062699151546908743
+      type: {class: SymbolType, ns: , asm: Assembly-CSharp}
+      data:
+        Color: {r: 1, g: 1, b: 1, a: 1}
+        sprite: {fileID: 21300000, guid: 339fd68f6c28d7d4eb0ed43062c42dfb, type: 3}
     - rid: 5842417105210966052
       type: {class: FillType, ns: , asm: Assembly-CSharp}
       data:
-        Color: {r: 0, g: 0.7133577, b: 1, a: 0.5882353}
-        sprite: {fileID: 21300000, guid: c24597d5a32fc364fba168752f092718, type: 3}
-    - rid: 5842417105210966053
-      type: {class: BorderType, ns: , asm: Assembly-CSharp}
-      data:
-        Color: {r: 0, g: 0.56786895, b: 1, a: 0}
-        sprite: {fileID: 21300000, guid: 4b6b9674e5b1c6140a50ea7b1ffe278f, type: 3}
+        Color: {r: 0.2, g: 1, b: 0.6, a: 0.29411766}
+        sprite: {fileID: 21300000, guid: 1b5eb871f1e48904f9d3c980d332d99a, type: 3}

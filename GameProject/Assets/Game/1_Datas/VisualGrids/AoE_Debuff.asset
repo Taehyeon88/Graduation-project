@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9473ac8937d88c54b805a05b80f1aac1, type: 3}
-  m_Name: Hero_CannotUse
-  m_EditorClassIdentifier: 
+  m_Name: AoE_Debuff
+  m_EditorClassIdentifier: Assembly-CSharp::VisualGridData
   <VisualGridTypes>k__BackingField:
-  - rid: 2515386956118491136
+  - rid: 1062699151546908744
   layerDepth: 3
   references:
     version: 2
     RefIds:
-    - rid: 2515386956118491136
-      type: {class: SymbolType, ns: , asm: Assembly-CSharp}
+    - rid: 1062699151546908744
+      type: {class: BorderType, ns: , asm: Assembly-CSharp}
       data:
-        Color: {r: 1, g: 1, b: 1, a: 1}
-        sprite: {fileID: 21300000, guid: a0131d87719628b4da49e4c046ad81c8, type: 3}
+        Color: {r: 0.6, g: 0.2, b: 1, a: 1}
+        sprite: {fileID: 21300000, guid: 8571f140352759d4c9006206faa5453b, type: 3}

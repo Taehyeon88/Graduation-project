@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <VisualGridTypes>k__BackingField:
   - rid: 4818494444620218369
-  layerDepth: 0
+  layerDepth: 3
   references:
     version: 2
     RefIds:
@@ -22,4 +22,4 @@ MonoBehaviour:
       type: {class: SymbolType, ns: , asm: Assembly-CSharp}
       data:
         Color: {r: 1, g: 1, b: 1, a: 1}
-        sprite: {fileID: 21300000, guid: 3bb89eafbdb5d27428fb731241971ad3, type: 3}
+        sprite: {fileID: 21300000, guid: ad2d0a2c32897894489de16a79ab5d5e, type: 3}
