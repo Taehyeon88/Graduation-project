@@ -113,7 +113,7 @@ public class CardSystem : Singleton<CardSystem>
     private IEnumerator DrawCardsPerformer(DrawCardsGA drawCardsGA)
     {
         //카드 드로우 사운드 재생
-        SoundSystem.Instance.PauseSound(16);
+        SoundSystem.Instance.PlaySound(16);
 
         Interactions.Instance.lockInteraction = true;  //카드 드로우시, 카드 인터렉션 잠금
 
@@ -138,7 +138,7 @@ public class CardSystem : Singleton<CardSystem>
     private IEnumerator DiscardAllCardsPerformer(DiscardAllCardsGA discardAllCardsGA)
     {
         //카드 드로우 사운드 재생
-        SoundSystem.Instance.PauseSound(16);
+        SoundSystem.Instance.PlaySound(16);
 
         int handCount = hand.Count;
         foreach (var card in hand.ToList())

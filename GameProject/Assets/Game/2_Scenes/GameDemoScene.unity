@@ -6853,23 +6853,23 @@ MonoBehaviour:
   cheatUITrans: {fileID: 1644346195}
   cardCheatModeText: {fileID: 718147332}
   Attack_Adjacent_CardDeck:
-  - {fileID: 11400000, guid: 570fcdef13c54784fa7091caf2c57c07, type: 2}
   - {fileID: 11400000, guid: cc704643e39670b4e8af3dca66973495, type: 2}
-  - {fileID: 11400000, guid: b3fa60c2e5365024ba71e530c94a21c5, type: 2}
   - {fileID: 11400000, guid: 4bb2181ad44476e44912d6ada97dd27d, type: 2}
-  - {fileID: 11400000, guid: 7cd94dde0a6676b48baeb12c2aa0d504, type: 2}
+  - {fileID: 11400000, guid: 4bb2181ad44476e44912d6ada97dd27d, type: 2}
+  - {fileID: 11400000, guid: 69d831d402003bb42ac8392e95628bd4, type: 2}
+  - {fileID: 11400000, guid: 69d831d402003bb42ac8392e95628bd4, type: 2}
   Attack_Projection_CardDeck:
-  - {fileID: 11400000, guid: b3fa60c2e5365024ba71e530c94a21c5, type: 2}
-  - {fileID: 11400000, guid: c4079ead3a289fc4990942d4dd3a2f92, type: 2}
-  - {fileID: 11400000, guid: 7cd94dde0a6676b48baeb12c2aa0d504, type: 2}
-  - {fileID: 11400000, guid: f8a86a5d882dd3545aff6d733e9085b3, type: 2}
+  - {fileID: 11400000, guid: 67480b54d7284a7418c74b4bd6b373e1, type: 2}
+  - {fileID: 11400000, guid: 67480b54d7284a7418c74b4bd6b373e1, type: 2}
+  - {fileID: 11400000, guid: 67480b54d7284a7418c74b4bd6b373e1, type: 2}
+  - {fileID: 11400000, guid: 4bb2181ad44476e44912d6ada97dd27d, type: 2}
   - {fileID: 11400000, guid: 4bb2181ad44476e44912d6ada97dd27d, type: 2}
   Skill_Sheild_CardDeck:
-  - {fileID: 11400000, guid: ef4bfe78bf4df6241923ba52c4646264, type: 2}
-  - {fileID: 11400000, guid: ef4bfe78bf4df6241923ba52c4646264, type: 2}
-  - {fileID: 11400000, guid: fb40930d403ded6418fd6f94a6ac9468, type: 2}
-  - {fileID: 11400000, guid: fb40930d403ded6418fd6f94a6ac9468, type: 2}
-  - {fileID: 11400000, guid: 4bb2181ad44476e44912d6ada97dd27d, type: 2}
+  - {fileID: 11400000, guid: 6d54b410bde13f643a0a3697622fef01, type: 2}
+  - {fileID: 11400000, guid: 6d54b410bde13f643a0a3697622fef01, type: 2}
+  - {fileID: 11400000, guid: 6d54b410bde13f643a0a3697622fef01, type: 2}
+  - {fileID: 11400000, guid: 9b9483778c262f549a9b6aa829685f7d, type: 2}
+  - {fileID: 11400000, guid: 9b9483778c262f549a9b6aa829685f7d, type: 2}
   Skill_Area_CardDeck:
   - {fileID: 11400000, guid: 4f0755071d662304c89a7e0c6634c70c, type: 2}
   - {fileID: 11400000, guid: 988a46cd39390c94c8fd6edf6517c8d9, type: 2}
@@ -15473,7 +15473,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 491, y: 374}
+  m_AnchoredPosition: {x: 530, y: 426}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!4 &1646569206 stripped
@@ -17862,6 +17862,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af506989c23d84942a57f5456bb014a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <DamageVFX>k__BackingField: {fileID: 1429954232896169633, guid: 83036083a4ebcd34f98131bd3cf6f4d2, type: 3}
+  <DamageSoundId>k__BackingField: 2
 --- !u!1001 &1903776363
 PrefabInstance:
   m_ObjectHideFlags: 0

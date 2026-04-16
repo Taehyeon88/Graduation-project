@@ -3,7 +3,6 @@ using IsoTools;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static CartoonFX.ExpressionParser;
 
 public static class Utility
 {

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class DamageSystem : Singleton<DamageSystem>
 {
-    public GameObject DamageVFX { get; set; }
-    public int DamageSoundId { get; set; }
+    [field : SerializeField] public GameObject DamageVFX { get; set; }
+    [field: SerializeField] public int DamageSoundId { get; set; }
 
     void OnEnable()
     {
