@@ -83,6 +83,9 @@ public class Slime : Enemy
 
     public override void PlayMoveAction(EnemyView enemy, List<Vector2Int> path)
     {
+        path = CheckHeroInPath(path);
+        if (path.Count == 0) return;
+
         PerformMoveGA performMoveGA = new(enemy, path);
         ActionSystem.Instance.AddReaction(performMoveGA);
     }

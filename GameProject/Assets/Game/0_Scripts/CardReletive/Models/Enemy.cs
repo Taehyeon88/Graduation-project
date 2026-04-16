@@ -39,4 +39,15 @@ public abstract class Enemy
         }
         return null;
     }
+
+    protected List<Vector2Int> CheckHeroInPath(List<Vector2Int> path)
+    {
+        var heroPos = TokenSystem.Instance.GetTokenPosition(HeroSystem.Instance.HeroView);
+        int index = path.IndexOf(heroPos);
+        if (index >= 0)
+        {
+            path.RemoveRange(index, path.Count - index);
+        }
+        return path;
+    }
 }
