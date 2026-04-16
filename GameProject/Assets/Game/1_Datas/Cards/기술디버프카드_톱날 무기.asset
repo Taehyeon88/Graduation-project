@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29bd87d4b821bdd419a4bafb4b3ce7b9, type: 3}
   m_Name: "\uAE30\uC220\uB514\uBC84\uD504\uCE74\uB4DC_\uD1B1\uB0A0 \uBB34\uAE30"
   m_EditorClassIdentifier: 
-  <Description>k__BackingField: "\uC774\uAC83\uC740 \uD1B1\uB0A0 \uBB34\uAE30 \uCE74\uB4DC\uC785\uB2C8\uB2E4."
+  <Description>k__BackingField: "\uB2E4\uC74C\uC5D0 \uC0AC\uC6A9\uD558\uB294 [\uC778\uC811]
+    \uACF5\uACA9 \uCE74\uB4DC\uC5D0 [\uCD9C\uD608 2] \uD6A8\uACFC\uB97C \uBD80\uC5EC\uD569\uB2C8\uB2E4."
   <Mana>k__BackingField: 1
   <Image>k__BackingField: {fileID: 0}
   <CardType>k__BackingField: 6

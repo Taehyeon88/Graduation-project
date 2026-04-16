@@ -202,7 +202,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC774\uAC83\uC740 \uCE74\uB4DC \uD504\uB9AC\uD339\uC785\uB2C8\uB2E4."
+  m_text: "\uC801\uC5D0\uAC8C [\uD45C\uC801 2]\uC640 [\uC555\uC0AC \uB300\uAE30 2]\uB97C
+    \uBD80\uC5EC\uD569\uB2C8\uB2E4. \uC774 \uC0C1\uD0DC\uC758 \uC801\uC774 \uBC00\uCCD0\uC838\uC11C
+    \uCDA9\uB3CC\uD558\uBA74 \uC989\uC2DC \uB2E4\uC74C \uD589\uB3D9\uC774 \uBD09\uC1C4\uB418\uB294
+    [\uD589\uB3D9 \uBD88\uAC00] \uC0C1\uD0DC\uAC00 \uB429\uB2C8\uB2E4."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 56753a43c8094084f915356bc89119c6, type: 2}
   m_sharedMaterial: {fileID: -6967317193008042672, guid: 56753a43c8094084f915356bc89119c6, type: 2}
@@ -229,8 +232,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20.666666
-  m_fontSizeBase: 20.666666
+  m_fontSize: 15
+  m_fontSizeBase: 15
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
