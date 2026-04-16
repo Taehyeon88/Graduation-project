@@ -10,32 +10,29 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 64dc824ba590d514e8496bd712e9b3a8, type: 3}
-  m_Name: "\uACF5\uACA9_\uC778\uC811_\uB2E8\uC77C"
+  m_Name: "\uACF5\uACA9_\uC778\uC811_\uAD00\uD1B5"
   m_EditorClassIdentifier: Assembly-CSharp::VisualEffectData
   <CardType>k__BackingField: 1
-  <CardSubType>k__BackingField: 1
+  <CardSubType>k__BackingField: 2
   <CustomSquences>k__BackingField:
   - <CustomSquence>k__BackingField:
-      rid: 1062699251800997954
+      rid: 1062699257858883584
     useSound: 1
-    soundId: 1
+    soundId: 3
   - <CustomSquence>k__BackingField:
-      rid: 1062699251800997957
+      rid: 1062699257858883585
     useSound: 0
     soundId: 0
   <HitVFX>k__BackingField: {fileID: 1429954232896169633, guid: 83036083a4ebcd34f98131bd3cf6f4d2, type: 3}
-  <HitSoundId>k__BackingField: 2
+  <HitSoundId>k__BackingField: 4
   references:
     version: 2
     RefIds:
-    - rid: 1062699251800997954
-      type: {class: Adj_SingleSQ, ns: , asm: Assembly-CSharp}
-      data:
-        duration: 0.15
-        distance: 0.5
-        animationEase: 27
-    - rid: 1062699251800997957
+    - rid: 1062699257858883584
+      type: {class: Adj_PenetrationSQ, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 1062699257858883585
       type: {class: ReturnSQ, ns: , asm: Assembly-CSharp}
       data:
-        duration: 0.2
-        animationEase: 4
+        duration: 0.25
+        animationEase: 5

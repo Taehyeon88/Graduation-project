@@ -88,11 +88,11 @@ public class PlayerCardEffectSystem : Singleton<PlayerCardEffectSystem>
             {
                 //이동 이후, 공격 체인
                 DealDamageGA dealDamageGA = new(shoulderBashGA.Damage, new() { target }, heroView);
-                performMoveGA.PostReactions.Add((dealDamageGA, null));
+                shoulderBashGA.PostReactions.Add((dealDamageGA, null));
 
                 //공격 이후, 대상 넉백 체인
                 KnockBackGA knockBackGA = new(heroView, shoulderBashGA.Distance, attackPos, (path[0] - currentPos));
-                performMoveGA.PostReactions.Add((knockBackGA, null));
+                shoulderBashGA.PostReactions.Add((knockBackGA, null));
             }
             else
             {
