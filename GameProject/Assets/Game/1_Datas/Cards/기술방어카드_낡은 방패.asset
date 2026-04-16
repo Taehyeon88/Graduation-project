@@ -15,7 +15,7 @@ MonoBehaviour:
   <Description>k__BackingField: "\uC774\uAC83\uC740 \uB0A1\uC740 \uBC29\uD328\uC785\uB2C8\uB2E4."
   <Mana>k__BackingField: 1
   <Image>k__BackingField: {fileID: 0}
-  <CardType>k__BackingField: 2
+  <CardType>k__BackingField: 3
   <CardSubType>k__BackingField: 0
   <SelfEffects>k__BackingField:
   - rid: 2515386870715383808
@@ -29,10 +29,13 @@ MonoBehaviour:
     UseSelectVG: 0
     WillSelectVGName: 
     SelectVGName: 
+    <EffectCondition>k__BackingField: 0
     <Effect>k__BackingField:
       rid: -2
-    <_AddedSECondition>k__BackingField: 0
+    <_AddedEffectCondition>k__BackingField: 1
     <AddedEffects>k__BackingField: []
+  OtherOptions: 0
+  LockDiscarding: 0
   references:
     version: 2
     RefIds:

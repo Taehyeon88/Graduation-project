@@ -15,8 +15,8 @@ MonoBehaviour:
   <Description>k__BackingField: "\uC774\uAC83\uC740 \uB9F9\uB3C5\uC758 \uB2AA\uCE74\uB4DC\uC785\uB2C8\uB2E4."
   <Mana>k__BackingField: 1
   <Image>k__BackingField: {fileID: 0}
-  <CardType>k__BackingField: 3
-  <CardSubType>k__BackingField: 7
+  <CardType>k__BackingField: 4
+  <CardSubType>k__BackingField: 8
   <SelfEffects>k__BackingField: []
   <GridTargetMode>k__BackingField:
     <Distance>k__BackingField: 2
@@ -28,10 +28,13 @@ MonoBehaviour:
     UseSelectVG: 1
     WillSelectVGName: Hero_WillAttack
     SelectVGName: Hero_Attack
+    <EffectCondition>k__BackingField: 0
     <Effect>k__BackingField:
       rid: 5842417319833763843
-    <_AddedSECondition>k__BackingField: 0
-    <AddedStatusEffects>k__BackingField: []
+    <_AddedEffectCondition>k__BackingField: 1
+    <AddedEffects>k__BackingField: []
+  OtherOptions: 0
+  LockDiscarding: 0
   references:
     version: 2
     RefIds:

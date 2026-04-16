@@ -71,7 +71,7 @@ public class CardAbilitySystem : Singleton<CardAbilitySystem>
         //다음 인접 카드 50% 증가 - 효과 처리
         if (Abilitys.Contains(CardAbilityType.AddNextAdjDamage))
         {
-            if (playCardGA.Card.CardType == CardType.Attck_Adjacent)
+            if (playCardGA.Card.CardType == CardType.Attack_Adjacent)
             {
                 AddNextAdjDamageEvent = () => 0.5f;
                 Abilitys.Remove(CardAbilityType.AddNextAdjDamage);
@@ -83,7 +83,7 @@ public class CardAbilitySystem : Singleton<CardAbilitySystem>
         //다음 인접 카드 출혈 2 부여
         if (Abilitys.Contains(CardAbilityType.AddNextAdjBleeding))
         {
-            if (performEffectGA.EffectInfo.cardType == CardType.Attck_Adjacent)
+            if (performEffectGA.EffectInfo.cardType == CardType.Attack_Adjacent)
             {
                 var targets = TokenSystem.Instance.TargetPosesToCombatants(performEffectGA.EffectInfo.targetPoses);
                 AddStatusEffectGA addStatusEffectGA = new(StatusEffectType.BLEEDING, 2, targets);

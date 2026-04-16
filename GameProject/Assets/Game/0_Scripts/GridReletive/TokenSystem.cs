@@ -247,12 +247,7 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
 
         if (useAnimation)
         {
-            Tween tween = DOTween.To(() =>
-                    token.TokenTransform.positionXY,
-                    v => token.TokenTransform.positionXY = v,
-                    targetPos,
-                    1f
-                    );
+            Tween tween = Utility.GetTween(token, targetPos, 1f);
             yield return tween.WaitForCompletion();
         }
     }
