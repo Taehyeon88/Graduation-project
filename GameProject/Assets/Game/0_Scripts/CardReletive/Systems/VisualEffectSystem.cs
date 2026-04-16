@@ -37,7 +37,10 @@ public class VisualEffectSystem : Singleton<VisualEffectSystem>
                 Debug.LogError($"{playVEGA.EffectId}의 CustomSquences의 개수가 {playVEGA.Step}보다 적습니다.");
 
             var data = effectDataById[playVEGA.CardTypes].CustomSquences[playVEGA.Step];
-            //사운드 실행 - data.SoundId
+
+            //사운드 재생
+            SoundSystem.Instance.PlaySound(data.SoundId);
+            //모션 재생
             var sqe = data.CustomSquence.GetCustomSquence(playVEGA.Mover, playVEGA.CurrentPos, playVEGA.Direction);
             sqe.Play();
             yield return sqe.WaitForCompletion(); 

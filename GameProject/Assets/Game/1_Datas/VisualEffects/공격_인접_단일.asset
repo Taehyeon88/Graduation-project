@@ -17,8 +17,8 @@ MonoBehaviour:
   <CustomSquences>k__BackingField:
   - <CustomSquence>k__BackingField:
       rid: 1062699251800997954
-    useSound: 0
-    soundId: 0
+    useSound: 1
+    soundId: 1
   - <CustomSquence>k__BackingField:
       rid: 1062699251800997955
     useSound: 0

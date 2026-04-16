@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
+using static UnityEngine.InputSystem.InputSettings;
 
 public class HUDUI : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class HUDUI : MonoBehaviour
 
     [Header("기타(실행형)")]
     [SerializeField] private GameObject feedBackPanel;
+    [SerializeField] private Transform settingUI;
 
     private int heroHP => HeroSystem.Instance.HeroView.CurrentHealth;
     private int heroMaxHP => HeroSystem.Instance.HeroView.MaxHealth;
@@ -30,6 +32,7 @@ public class HUDUI : MonoBehaviour
     private int drawPileCardAmount => CardSystem.Instance.drawPileCA;
     private int discardPileCardAmount => CardSystem.Instance.discardPileCA;
 
+    private bool isSetting = false;
 
     private void Update()
     {
@@ -64,5 +67,7 @@ public class HUDUI : MonoBehaviour
     private void OnSettingUI()
     {
         Debug.Log("설정 활성화");
+        isSetting = !isSetting;
+        settingUI.gameObject.SetActive(isSetting);
     }
 }
