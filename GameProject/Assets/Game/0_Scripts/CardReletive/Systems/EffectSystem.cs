@@ -33,6 +33,7 @@ public class EffectSystem : MonoBehaviour
 
                 //피격 이펙트 전달
                 DamageSystem.Instance.DamageVFX = VisualEffectSystem.Instance.GetHitVEInfo(type).Item2;
+                DamageSystem.Instance.DamageSoundId = VisualEffectSystem.Instance.GetHitVEInfo(type).Item1;
 
                 //실행할 행동
                 GameAction effectAction = performEffectGA.Effect.GetGameAction(performEffectGA.EffectInfo);

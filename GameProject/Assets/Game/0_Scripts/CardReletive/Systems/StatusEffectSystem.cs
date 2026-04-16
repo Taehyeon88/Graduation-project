@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,11 +8,11 @@ public class StatusEffectSystem : Singleton<StatusEffectSystem>
     private Dictionary<StatusEffectType, StatusEffectData> effectDataByType = new();
     void OnEnable()
     {
-        //effectDataµé Å¸ÀÔº°·Î Ä³½Ì
+        //effectDataë“¤ íƒ€ì…ë³„ë¡œ ìºì‹±
         foreach (var data in effectDatas)
         {
             if (!effectDataByType.TryAdd(data.EffectType, data))
-                Debug.LogError($"{data.name}µ¥ÀÌÅÍÀÇ effectTypeÀÌ {effectDataByType[data.EffectType].name}°ú {data.EffectType}À¸·Î Ãæµ¹ÇÔ");
+                Debug.LogError($"{data.name}ë°ì´í„°ì˜ effectTypeì´ {effectDataByType[data.EffectType].name}ê³¼ {data.EffectType}ìœ¼ë¡œ ì¶©ëŒí•¨");
         }
 
         ActionSystem.AttachPerformer<AddStatusEffectGA>(AddStatusEffectPerformer);
@@ -25,6 +25,8 @@ public class StatusEffectSystem : Singleton<StatusEffectSystem>
     //Performers
     private IEnumerator AddStatusEffectPerformer(AddStatusEffectGA addStatusEffectGA)
     {
+        if(addStatusEffectGA.Targets == null) yield break;
+
         foreach (var target in addStatusEffectGA.Targets)
         {
             if (target != null)

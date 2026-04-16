@@ -112,6 +112,9 @@ public class CardSystem : Singleton<CardSystem>
     //Performers
     private IEnumerator DrawCardsPerformer(DrawCardsGA drawCardsGA)
     {
+        //카드 드로우 사운드 재생
+        SoundSystem.Instance.PauseSound(16);
+
         Interactions.Instance.lockInteraction = true;  //카드 드로우시, 카드 인터렉션 잠금
 
         int actualAmount = Mathf.Min(drawCardsGA.Amount, drawPile.Count);
@@ -134,6 +137,9 @@ public class CardSystem : Singleton<CardSystem>
 
     private IEnumerator DiscardAllCardsPerformer(DiscardAllCardsGA discardAllCardsGA)
     {
+        //카드 드로우 사운드 재생
+        SoundSystem.Instance.PauseSound(16);
+
         int handCount = hand.Count;
         foreach (var card in hand.ToList())
         {
@@ -149,6 +155,9 @@ public class CardSystem : Singleton<CardSystem>
 
     private IEnumerator DrawCardFromDiscardPilePerformer(DrawCardFromDiscardPileGA drawCardFDPGA)
     {
+        //카드 되돌리기 사운드 재생
+        SoundSystem.Instance.PlaySound(19);
+
         yield return DrawCardFromDP(drawCardFDPGA.Card);
     }
 
@@ -299,6 +308,11 @@ public class CardSystem : Singleton<CardSystem>
                             PlayCardGA PlayCardGA = new(playCardTargetingGA.Card, targets);
                             ActionSystem.Instance.AddReaction(PlayCardGA);
                             break;
+                        }
+                        else
+                        {
+                            //잘못된 타일 선택 사운드 재생
+                            SoundSystem.Instance.PlaySound(22);
                         }
                     }
                 }

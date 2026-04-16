@@ -5,6 +5,7 @@ using UnityEngine;
 public class DamageSystem : Singleton<DamageSystem>
 {
     public GameObject DamageVFX { get; set; }
+    public int DamageSoundId { get; set; }
 
     void OnEnable()
     {
@@ -71,6 +72,7 @@ public class DamageSystem : Singleton<DamageSystem>
 
             target.Damage(amountInt);
             Instantiate(DamageVFX, target.transform.position, target.transform.rotation);
+            SoundSystem.Instance.PlaySound(DamageSoundId);
 
             yield return new WaitForSeconds(0.15f);
             if (target.CurrentHealth <= 0)

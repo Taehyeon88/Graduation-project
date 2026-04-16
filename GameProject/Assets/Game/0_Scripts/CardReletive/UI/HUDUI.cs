@@ -61,6 +61,9 @@ public class HUDUI : MonoBehaviour
     //Button Event Methods
     private void EndPlayerTurn()
     {
+        //플레이어 턴 종료 사운드 재생
+        SoundSystem.Instance.PlaySound(28);
+
         EnemysTurnGA enemyTurnGA = new();
         ActionSystem.Instance.Perform(enemyTurnGA);
     }

@@ -1,6 +1,7 @@
 ﻿using DG.Tweening;
 using UnityEngine;
 
+[System.Serializable]
 public abstract class CustomSquence
 {
     public abstract Sequence GetCustomSquence(Token token, Vector2Int currentPos, Vector2 dirrection);
@@ -37,6 +38,7 @@ public class Adj_SingleSQ : CustomSquence
     }
 }
 
+[System.Serializable]
 public class ReturnSQ : CustomSquence
 {
     [SerializeField] private float duration;
@@ -52,6 +54,7 @@ public class ReturnSQ : CustomSquence
     }
 }
 
+[System.Serializable]
 public class Adj_PenetrationSQ : CustomSquence
 {
     //연출 컨셉 : 몸 전체를 창처럼 일직선으로 깊게 찔러 넣는 박치기
@@ -112,6 +115,7 @@ public class Adj_PenetrationSQ : CustomSquence
 
 //}
 
+[System.Serializable]
 public class Adj_Cleave : CustomSquence
 {
     //2.4.인접 / 횡베기

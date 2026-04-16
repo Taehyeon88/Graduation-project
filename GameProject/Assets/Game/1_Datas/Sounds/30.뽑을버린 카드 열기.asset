@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad5f4cd64fd1ea9498c76a4d8d89ee0f, type: 3}
+  m_Name: "30.\uBF51\uC744\uBC84\uB9B0 \uCE74\uB4DC \uC5F4\uAE30"
+  m_EditorClassIdentifier: Assembly-CSharp::SoundData
+  <SoundId>k__BackingField: 30
+  <AudioType>k__BackingField: 1
+  <Clip>k__BackingField: {fileID: 8300000, guid: eb325c9bd5fd69746b3e57262e9c8162, type: 3}
+  <Volume>k__BackingField: 1
