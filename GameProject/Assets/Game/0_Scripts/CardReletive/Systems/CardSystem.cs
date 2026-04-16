@@ -180,15 +180,6 @@ public class CardSystem : Singleton<CardSystem>
         yield return handView.AddCard(cardView);
     }
 
-    private bool CheckCanUse(bool[] array, int index)
-    {
-        if (array != null)
-        {
-            return array[index];
-        }
-        return false;
-    }
-
 
     /// <summary>
     /// 카드 사용 전, 그리드 타겟팅 시스템(그리드 미리보기 및 선택)
@@ -412,7 +403,9 @@ public class CardSystem : Singleton<CardSystem>
                     {
                         performEffectGA = new(targetMode.Effect, 
                             new(combatants, 
-                            HeroSystem.Instance.HeroView
+                            HeroSystem.Instance.HeroView,
+                            playCardGA.Card.CardType,
+                            playCardGA.Card.CardSubType
                             ));
                     }
                 }
@@ -448,7 +441,11 @@ public class CardSystem : Singleton<CardSystem>
                 {
                     foreach (var effect in targetMode.AddedEffects)
                     {
-                        PerformEffectGA performTargetEffectGA = new(effect, new(combatants, HeroSystem.Instance.HeroView));
+                        PerformEffectGA performTargetEffectGA = new(effect, 
+                                   new(combatants, 
+                                   HeroSystem.Instance.HeroView, 
+                                   playCardGA.Card.CardType,
+                                   playCardGA.Card.CardSubType));
                         performEffectGA.PostReactions.Add((performTargetEffectGA, null));
                     }
                 }

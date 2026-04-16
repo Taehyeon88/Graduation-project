@@ -15,7 +15,7 @@ MonoBehaviour:
   <Description>k__BackingField: "\uC774\uAC83\uC740 \uD1B1\uB0A0 \uBB34\uAE30 \uCE74\uB4DC\uC785\uB2C8\uB2E4."
   <Mana>k__BackingField: 1
   <Image>k__BackingField: {fileID: 0}
-  <CardType>k__BackingField: 5
+  <CardType>k__BackingField: 6
   <CardSubType>k__BackingField: 0
   <SelfEffects>k__BackingField:
   - rid: 1062699129664700482
