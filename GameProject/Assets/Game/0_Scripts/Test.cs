@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Test : MonoBehaviour
 {
-    [SerializeField] private IsoObject IsoObject;
+    [SerializeField] private Transform test;
 
     private void Update()
     {
@@ -14,6 +14,10 @@ public class Test : MonoBehaviour
         {
             //Tween tween = Utility.GetBezierTween(IsoObject, new(1, 1, 1), new(3, 1, 1), 0.3f);
             //tween.Play();
+            GameClearGA gameClearGA = new GameClearGA();
+            ActionSystem.Instance.Perform(gameClearGA);
+
+            //test.gameObject.SetActive(false);
         }
     }
 }

@@ -81,6 +81,12 @@ public class DamageSystem : Singleton<DamageSystem>
                 {
                     KillEnemyGA killEnemyGA = new KillEnemyGA(enemyView);
                     ActionSystem.Instance.AddReaction(killEnemyGA);
+
+                    if (EnemySystem.Instance.Enemise.Count <= 1)
+                    {
+                        GameClearGA gameClearGA = new();
+                        ActionSystem.Instance.AddReaction(gameClearGA);
+                    }
                 }
                 else
                 {

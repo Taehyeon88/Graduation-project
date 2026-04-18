@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class MatchSetupSystem : MonoBehaviour
 {
-    [SerializeField] private HeroData heroData;
-    //[SerializeField] private PerkData perkData;
-    [SerializeField] private List<EnemyData> enemyDatas;
-    [SerializeField] private List<WallData> wallDatas;
-    [SerializeField] private List<Vector2Int> heroSetUpPositions;
-    [SerializeField] private List<Vector2Int> enemySetUpPositions;
-    [SerializeField] private List<Vector2Int> wallSetUpPositions;
+    private HeroData heroData => GameSystem.Instance.HeroData;
+    private IReadOnlyList<CardData> deck => GameSystem.Instance.Deck;
+    private List<TokenData> enemyDatas => new(GameSystem.Instance.EnemyDatas);
+    private List<TokenData> wallDatas => new(GameSystem.Instance.WallDatas);
+    private List<Vector2Int> heroSetUpPositions => new(GameSystem.Instance.HeroSetUpPositions);
+    private List<Vector2Int> enemySetUpPositions => new(GameSystem.Instance.EnemySetUpPositions);
+    private List<Vector2Int> wallSetUpPositions => new(GameSystem.Instance.WallSetUpPositions);
     private readonly int drawCount = 5;
     private void Start()
     {
@@ -20,22 +20,22 @@ public class MatchSetupSystem : MonoBehaviour
 
     private IEnumerator StartSetting()
     {
-        if (heroData.Deck == null)
+        if (deck == null)
         {
-            Debug.LogError("heroData에 deckData가 설정되지 않았습니다.");
+            Debug.LogError("GameManager에 deckData가 설정되지 않았습니다.");
             yield break;
         }
-        if (heroData.Deck.Count < drawCount)
+        if (deck.Count < drawCount)
         {
-            Debug.LogError($"heroData에 설정된 deckData개수가 {drawCount}개 보다 적습니다.");
+            Debug.LogError($"GameManager에 설정된 deckData개수가 {drawCount}개 보다 적습니다.");
             yield break;
         }
 
         //벽 배치
-        TokenSystem.Instance.StartSetWalls(new(wallDatas), wallSetUpPositions);
+        TokenSystem.Instance.StartSetWalls(wallDatas, wallSetUpPositions);
 
         //몬스터 배치
-        TokenSystem.Instance.StartSettingEnemys(new(enemyDatas), enemySetUpPositions);
+        TokenSystem.Instance.StartSettingEnemys(enemyDatas, enemySetUpPositions);
         //아이템 배치
 
         //영웅 배치
@@ -44,7 +44,7 @@ public class MatchSetupSystem : MonoBehaviour
         InteractionSystem.Instance.EndInteraction();
 
         //기타
-        CardSystem.Instance.SetUp(heroData.Deck.ToList());
+        CardSystem.Instance.SetUp(deck.ToList());
         //PerkSystem.Instance.AddPerk(new(perkData));
 
         StartBattleGA startBattleGA = new();

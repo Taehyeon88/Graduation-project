@@ -7,6 +7,7 @@ public class UISystem : Singleton<UISystem>
     [SerializeField] private CombatantViewStatusUI combatantViewStatusUI;
     [SerializeField] private PileofCardUI pileofCardUI;
     [SerializeField] private EnemyVisualController enemyVisualController;
+    [SerializeField] private GameClearUI gameClearUI;
 
 
     /// <summary>
@@ -48,5 +49,14 @@ public class UISystem : Singleton<UISystem>
             enemyVisualController.SetSelectedTarget(enemyView);
         else 
             enemyVisualController.StopSelecting();
+    }
+
+    public void UpdateRewardCards(Card[] cards)
+    {
+        gameClearUI.UpdateRewardCards(cards);
+    }
+    public void RemoveRewardCards()
+    {
+        gameClearUI.RemoveRewardCards();
     }
 }

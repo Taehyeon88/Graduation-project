@@ -41,6 +41,12 @@ public class CardViewInPile : MonoBehaviour, IPointerEnterHandler, IPointerExitH
             ev.Invoke(card);
             OnPointerExit(null);
         }
+
+        if (GameSystem.Instance.IsGameClear)
+        {
+            GameSystem.Instance.AddDeckCard(card.data);
+            OnPointerExit(null);
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)

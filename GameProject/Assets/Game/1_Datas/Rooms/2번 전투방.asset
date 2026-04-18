@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 793aa16ce5280ce429fcd572fab35001, type: 3}
+  m_Name: "2\uBC88 \uC804\uD22C\uBC29"
+  m_EditorClassIdentifier: Assembly-CSharp::RoomData
+  <Stage>k__BackingField: 1
+  <Level>k__BackingField: 1
+  <enemyDatas>k__BackingField:
+  - {fileID: 11400000, guid: f986d0193a9b5a24cb809616f2851e4d, type: 2}
+  - {fileID: 11400000, guid: f6d546ee499f35a4cac0e5095a4fc723, type: 2}
+  <wallDatas>k__BackingField: []
+  <heroSetUpPositions>k__BackingField:
+  - {x: 0, y: 0}
+  - {x: 0, y: 1}
+  - {x: 0, y: 2}
+  - {x: 0, y: 3}
+  - {x: 0, y: 4}
+  - {x: 1, y: 0}
+  - {x: 1, y: 1}
+  - {x: 1, y: 2}
+  - {x: 1, y: 3}
+  - {x: 1, y: 4}
+  <enemySetUpPositions>k__BackingField:
+  - {x: 4, y: 0}
+  - {x: 4, y: 1}
+  - {x: 4, y: 2}
+  - {x: 4, y: 3}
+  - {x: 4, y: 4}
+  - {x: 3, y: 0}
+  - {x: 3, y: 1}
+  - {x: 3, y: 2}
+  - {x: 3, y: 3}
+  - {x: 3, y: 4}
+  <wallSetUpPositions>k__BackingField: []

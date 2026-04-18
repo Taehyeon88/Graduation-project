@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 {
@@ -11,6 +11,10 @@ public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
             return;
         }
         Instance = this as T;
+    }
+    protected virtual void OnDestroy()
+    {
+        Instance = null;
     }
     protected virtual void OnApplicationQuit()
     {

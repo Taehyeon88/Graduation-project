@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,7 +15,7 @@ public class Card
     public int Mana { get; private set; }
     public bool LockDiscarding { get; set; }
 
-    private readonly CardData data;
+    public readonly CardData data;
 
     public Card(CardData data)
     {

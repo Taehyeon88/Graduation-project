@@ -1,6 +1,7 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using UnityEngine;
 
 public class ActionSystem : Singleton<ActionSystem>
@@ -8,10 +9,11 @@ public class ActionSystem : Singleton<ActionSystem>
     private List<(GameAction, System.Action)> reactions = null;
     public bool IsPerforming { get; private set; } = false;
     public bool IsPausing { get; private set; } = false;
-    private static Dictionary<Type, List<Action<GameAction>>> preSubs = new();
-    private static Dictionary<Type, List<Action<GameAction>>> postSubs = new();
-    private static Dictionary<Type, Func<GameAction, IEnumerator>> performers = new();
+    private static readonly Dictionary<Type, List<Action<GameAction>>> preSubs = new();
+    private static readonly Dictionary<Type, List<Action<GameAction>>> postSubs = new();
+    private static readonly Dictionary<Type, Func<GameAction, IEnumerator>> performers = new();
 
+    private static readonly Dictionary<Delegate, Action<GameAction>> wrapperMap = new();
     private WaitUntil WaitUntilEndPause;
     private void Start()
     {
@@ -37,19 +39,19 @@ public class ActionSystem : Singleton<ActionSystem>
     {
         if (action != null)
         {
-            yield return WaitUntilEndPause;       //ÀÏ½ÃÁ¤Áö ´ë±â
+            yield return WaitUntilEndPause;       //ì¼ì‹œì •ì§€ ëŒ€ê¸°
 
             reactions = action.PreReactions;
             PerformSubscribers(action, preSubs);
             yield return PerformReactions();
 
-            yield return WaitUntilEndPause;       //ÀÏ½ÃÁ¤Áö ´ë±â
+            yield return WaitUntilEndPause;       //ì¼ì‹œì •ì§€ ëŒ€ê¸°
 
             reactions = action.PerformReactions;
             yield return PerformPerformer(action);
             yield return PerformReactions();
 
-            yield return WaitUntilEndPause;       //ÀÏ½ÃÁ¤Áö ´ë±â
+            yield return WaitUntilEndPause;       //ì¼ì‹œì •ì§€ ëŒ€ê¸°
 
             reactions = action.PostReactions;
             PerformSubscribers(action, postSubs);
@@ -117,14 +119,18 @@ public class ActionSystem : Singleton<ActionSystem>
             subs.Add(typeof(T), new());
             subs[typeof(T)].Add(wrappedReaction);
         }
+
+        wrapperMap[reaction] = wrappedReaction;
     }
     public static void UnsubscribeReaction<T>(Action<T> reaction, ReactionTiming timing) where T : GameAction
     {
         Dictionary<Type, List<Action<GameAction>>> subs = timing == ReactionTiming.PRE ? preSubs : postSubs;
         if (subs.ContainsKey(typeof(T)))
         {
-            void wrappedReaction(GameAction action) => reaction((T)action);
-            subs[typeof(T)].Remove(wrappedReaction);
+            if (wrapperMap.TryGetValue(reaction, out var wrapped))
+            {
+                subs[typeof(T)].Remove(wrapped);
+            }
         }
     }
 } 
