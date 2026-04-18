@@ -58,6 +58,8 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
     /// <param name="canSetupPositions"></param>
     public void StartSettingEnemys(List<TokenData> tokenDatas, List<Vector2Int> canSetupPositions)
     {
+        EnemyViews.Clear();
+
         canSetupPositions = grid.GetCanSetPositions(canSetupPositions);
         foreach (TokenData tokenData in tokenDatas)
         {

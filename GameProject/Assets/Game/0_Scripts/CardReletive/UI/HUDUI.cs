@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.InputSystem.InputSettings;
 
 public class HUDUI : MonoBehaviour
 {
     [Header("버튼들(사용자 반응형)")]
     [SerializeField] private Button endTurnButton;
     [SerializeField] private Button onSettingButton;
+    [SerializeField] private Button checkDeckButton;
 
     [Header("시각 데이터들(실시간 갱신형)")]
     [SerializeField] private TMP_Text heroHpText;
@@ -18,10 +18,12 @@ public class HUDUI : MonoBehaviour
     [SerializeField] private TMP_Text manaAmountText;
     [SerializeField] private TMP_Text drawPileCardAmountText;
     [SerializeField] private TMP_Text discardPileCardAmountText;
+    [SerializeField] private TMP_Text deckCountText;
 
     [Header("기타(실행형)")]
     [SerializeField] private GameObject feedBackPanel;
     [SerializeField] private Transform settingUI;
+    [SerializeField] private CheckDeckUI checkDeckUI;
 
     private int heroHP => HeroSystem.Instance.HeroView.CurrentHealth;
     private int heroMaxHP => HeroSystem.Instance.HeroView.MaxHealth;
@@ -33,6 +35,7 @@ public class HUDUI : MonoBehaviour
     private int discardPileCardAmount => CardSystem.Instance.discardPileCA;
 
     private bool isSetting = false;
+    private bool isCheckDeck = false;
 
     private void Update()
     {
@@ -41,21 +44,24 @@ public class HUDUI : MonoBehaviour
             heroHpText.SetText("{0}/{1}", heroHP, heroMaxHP);
         }
         //골드
-        //턴 횟수
+        //턴
         manaAmountText.SetText("{0}/{1}", manaAmount, maxMana);
         drawPileCardAmountText.text = drawPileCardAmount.ToString();
         discardPileCardAmountText.text = discardPileCardAmount.ToString();
+        deckCountText.text = GameSystem.Instance.Deck.Count.ToString();
     }
 
     private void OnEnable()
     {
         endTurnButton.onClick.AddListener(EndPlayerTurn);
         onSettingButton.onClick.AddListener(OnSettingUI);
+        checkDeckButton.onClick.AddListener(OnCheckDeckUI);
     }
     private void OnDisable()
     {
         endTurnButton.onClick.RemoveListener(EndPlayerTurn);
         onSettingButton.onClick.RemoveListener(OnSettingUI);
+        checkDeckButton.onClick.RemoveListener(OnCheckDeckUI);
     }
 
     //Button Event Methods
@@ -72,5 +78,11 @@ public class HUDUI : MonoBehaviour
         Debug.Log("설정 활성화");
         isSetting = !isSetting;
         settingUI.gameObject.SetActive(isSetting);
+    }
+
+    private void OnCheckDeckUI()
+    {
+        isCheckDeck = !isCheckDeck;
+        checkDeckUI.SetCheckDeckUI(isCheckDeck);
     }
 }

@@ -22,7 +22,7 @@ public class EffectSystem : MonoBehaviour
 
             Debug.Log($"이름: {cardTypeString}");
 
-            if (cardTypeString == "Attack")  //전투 공격 연출 사용
+            if (cardTypeString == "Attack" && (performEffectGA.EffectInfo.cardType == CardType.Attack_Adjacent))  //전투 공격 연출 사용
             {
                 var type = (performEffectGA.EffectInfo.cardType, performEffectGA.EffectInfo.cardSubType);
 

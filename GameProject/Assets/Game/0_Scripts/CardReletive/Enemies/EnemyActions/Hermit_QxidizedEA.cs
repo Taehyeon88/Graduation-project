@@ -1,6 +1,5 @@
 ﻿using DG.Tweening;
 using System.Collections.Generic;
-using Unity.ProjectAuditor.Editor;
 using UnityEngine;
 
 public class Hermit_QxidizedEA : EnemyAction
