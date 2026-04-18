@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15ecb23d4f55996479d80b8135290e46, type: 3}
+  m_Name: Mushroom_ParasolMushroom
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyData
+  <TokenModel>k__BackingField: {fileID: 8409466067229185608, guid: 5de08ffd89856694dae4de417ccd7dda, type: 3}
+  <Name>k__BackingField: "\uAC13\uBC84\uC12F"
+  <Sprite>k__BackingField: {fileID: 21300000, guid: d355cfa60ec5444bd9f32c9a106015d6, type: 3}
+  <Health>k__BackingField: 15
+  <Enemy>k__BackingField:
+    rid: 1062699288701173830
+  <EnemyActions>k__BackingField:
+  - rid: 1062699288701173831
+  references:
+    version: 2
+    RefIds:
+    - rid: 1062699288701173830
+      type: {class: ParasolMushroom, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 1062699288701173831
+      type: {class: NormalAttackEA, ns: , asm: Assembly-CSharp}
+      data:
+        damage: 6
+        description: "\uD3EC\uC790 \uC3D8\uAE30 : \uC804\uBC29 \uAD00\uD1B5 4\uCE78\uC5D0
+          \uD3EC\uC790\uB97C \uC3F4 \uD53C\uD574 6 \uC90D\uB2C8\uB2E4."
+        icon: {fileID: 21300000, guid: 497a426bfc3103c48b96e711d6c2b7ab, type: 3}

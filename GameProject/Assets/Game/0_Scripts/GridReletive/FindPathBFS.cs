@@ -1,9 +1,9 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 public static class FindPathBFS
 {
-    public static Vector2Int[] dirs { get; private set; } =
+    public static Vector2Int[] Dirs { get; private set; } =
         {
             new Vector2Int(1,0), new Vector2Int(-1,0), new Vector2Int(0,1), new Vector2Int(0,-1),
             new Vector2Int(1,1), new Vector2Int(-1,1), new Vector2Int(-1,-1), new Vector2Int(1,-1)
@@ -13,28 +13,28 @@ public static class FindPathBFS
     {
         if (map == null)
         {
-            Debug.Log("map ÀÌ ¾øÀ½");
+            Debug.Log("map ì´ ì—†ìŒ");
         }
         map[start.x, start.y] = 0;
         var path = _FindPathBFS(map, start, goal);
 
         if(path != null)
         {
-            //Debug.Log($"°æ·Î ±æÀÌ: {path.Count}");
+            //Debug.Log($"ê²½ë¡œ ê¸¸ì´: {path.Count}");
             //foreach (var p in path)
             //    Debug.Log(p);
 
             return path;
         }
 
-        Debug.Log("°æ·Î ¾øÀ½");
+        Debug.Log("ê²½ë¡œ ì—†ìŒ");
         return null;
     }
     public static List<Vector2Int> FindAllPath(int[,] map, Vector2Int start, int distance)
     {
         if (map == null)
         {
-            Debug.Log("map ÀÌ ¾øÀ½");
+            Debug.Log("map ì´ ì—†ìŒ");
         }
         var path = _FindAllPath(map, start, distance);
 
@@ -46,7 +46,7 @@ public static class FindPathBFS
             return path;
         }
 
-        Debug.Log("°æ·Î ¾øÀ½");
+        Debug.Log("ê²½ë¡œ ì—†ìŒ");
         return null;
     }
     static List<Vector2Int> _FindAllPath(int[,] map, Vector2Int start, int maxDistance)
@@ -67,7 +67,7 @@ public static class FindPathBFS
 
             visited[current.x, current.y] = true;
 
-            foreach (var dir in dirs)
+            foreach (var dir in Dirs)
             {
                 int nx = current.x + dir.x;
                 int ny = current.y + dir.y;
@@ -89,9 +89,9 @@ public static class FindPathBFS
         int w = map.GetLength(0);
         int h = map.GetLength(1);
 
-        int[,] gCost = new int[w, h];                       //Áö±İ±îÁö ¿Â ÃÖ¼Ò ºñ¿ë
-        bool[,] visited = new bool[w, h];                  //È®Á¤ ¿©ºÎ
-        Vector2Int?[,] parent = new Vector2Int?[w, h];     //°æ·Î º¹¿ø¿ë
+        int[,] gCost = new int[w, h];                       //ì§€ê¸ˆê¹Œì§€ ì˜¨ ìµœì†Œ ë¹„ìš©
+        bool[,] visited = new bool[w, h];                  //í™•ì • ì—¬ë¶€
+        Vector2Int?[,] parent = new Vector2Int?[w, h];     //ê²½ë¡œ ë³µì›ìš©
 
         for (int x = 0; x < w; x++)
             for (int y = 0; y < h; y++)
@@ -123,7 +123,7 @@ public static class FindPathBFS
 
             if (cur == goal) return ReconstructPath(parent, start, goal);
 
-            foreach (var d in dirs)
+            foreach (var d in Dirs)
             {
                 int nx = cur.x + d.x;
                 int ny = cur.y + d.y;
@@ -132,7 +132,7 @@ public static class FindPathBFS
                 if (map[nx, ny] == 1) continue;
                 if (visited[nx, ny]) continue;
 
-                int moveCost = TileCost(map[nx, ny]);  //cur -> (nx, my) ºñ¿ë
+                int moveCost = TileCost(map[nx, ny]);  //cur -> (nx, my) ë¹„ìš©
                 int newG = gCost[cur.x, cur.y] + moveCost;
 
                 if (newG < gCost[nx, ny])

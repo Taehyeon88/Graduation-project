@@ -19,7 +19,7 @@ MonoBehaviour:
   <CardSubType>k__BackingField: 11
   <SelfEffects>k__BackingField: []
   <GridTargetMode>k__BackingField:
-    <Distance>k__BackingField: 2
+    <Distance>k__BackingField: 1
     <TargetMode>k__BackingField:
       rid: 5842417105210966016
     <GridRangeMode>k__BackingField:
@@ -47,4 +47,4 @@ MonoBehaviour:
     - rid: 5842417105210966018
       type: {class: PlayerMoveEffect, ns: , asm: Assembly-CSharp}
       data:
-        distance: 2
+        distance: 1

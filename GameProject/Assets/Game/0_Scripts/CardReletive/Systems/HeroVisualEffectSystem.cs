@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class VisualEffectSystem : Singleton<VisualEffectSystem>
+public class HeroVisualEffectSystem : Singleton<HeroVisualEffectSystem>
 {
     [SerializeField] private VisualEffectData[] visualEffectDatas;
     [SerializeField] private Dictionary<(CardType, CardSubType), VisualEffectData> effectDataById = new();
@@ -11,11 +11,11 @@ public class VisualEffectSystem : Singleton<VisualEffectSystem>
     private void OnEnable()
     {
         Initialize();
-        ActionSystem.AttachPerformer<PlayVisualEffectGA>(PlayVisualEffectAnimation);
+        ActionSystem.AttachPerformer<PlayHeroVisualEffectGA>(PlayVisualEffectAnimation);
     }
     private void OnDisable()
     {
-        ActionSystem.DetachPerformer<PlayVisualEffectGA>();
+        ActionSystem.DetachPerformer<PlayHeroVisualEffectGA>();
     }
 
     private void Initialize()
@@ -29,7 +29,7 @@ public class VisualEffectSystem : Singleton<VisualEffectSystem>
         }
     }
 
-    public IEnumerator PlayVisualEffectAnimation(PlayVisualEffectGA playVEGA)
+    public IEnumerator PlayVisualEffectAnimation(PlayHeroVisualEffectGA playVEGA)
     {
         if (effectDataById.ContainsKey(playVEGA.CardTypes))
         {

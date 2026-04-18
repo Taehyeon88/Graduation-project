@@ -1,8 +1,8 @@
-using System.Collections;
+Ôªøusing System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TokenModel : MonoBehaviour   //ƒ≥∏Ø≈Õ «¡∏Æ∆’
+public class TokenModel : MonoBehaviour   //Ï∫êÎ¶≠ÌÑ∞ ÌîÑÎ¶¨Ìåπ
 {
     public Sprite Sprite
     {
@@ -11,6 +11,11 @@ public class TokenModel : MonoBehaviour   //ƒ≥∏Ø≈Õ «¡∏Æ∆’
             if (sprite == null)
                 sprite = GetComponentInChildren<SpriteRenderer>().sprite;
             return sprite;
+        }
+        set
+        {
+            sprite = value;
+            GetComponentInChildren<SpriteRenderer>().sprite = value;
         }
     }
     private Sprite sprite;

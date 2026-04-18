@@ -73,7 +73,10 @@ public class EnemySystem : Singleton<EnemySystem>
         //미리 예약한 행동 실행
         if (enemy.NextAction != null)
         {
-            enemy.NextAction.PlayEnemyAction(enemy);
+            var motion = enemy.NextAction.PlayEnemyAction(enemy);
+            enemy.NextAction.Directions.Clear();
+
+            yield return motion.WaitForCompletion();
         }
 
         //이동 판단 및 실행
@@ -82,16 +85,10 @@ public class EnemySystem : Singleton<EnemySystem>
             enemy.Enemy.PlayMoveAction(enemy, enemy.NextMovePath);
         }
 
-        yield return null;
     }
 
     private IEnumerator AttackHeroPerformer(AttackHeroGA attackHeroGA)
     {
-        EnemyView attacker = attackHeroGA.Attacker;
-        Tween tween = DomoveX(attacker, -1f, 0.15f);
-        yield return tween.WaitForCompletion();
-        DomoveX(attacker, 1f, 0.25f);
-
         //공격범위에 플레이어 존재 여부 체크
         var heroPos = TokenSystem.Instance.GetTokenPosition(HeroSystem.Instance.HeroView);
         bool isExist = false;
@@ -107,10 +104,10 @@ public class EnemySystem : Singleton<EnemySystem>
             ActionSystem.Instance.AddReaction(dealDamageGA);
         }
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.4f);
 
         //미리 보여준 공격 범위 삭제
-        VisualGridCreator.Instance.RemoveVisualGrid(attacker.GetInstanceID(), "Enemy_Attack");
+        VisualGridCreator.Instance.RemoveVisualGrid(attackHeroGA.Caster.GetInstanceID(), "Enemy_Attack");
     }
 
     private IEnumerator KillEnemyPerformer(KillEnemyGA killEnemyGA)

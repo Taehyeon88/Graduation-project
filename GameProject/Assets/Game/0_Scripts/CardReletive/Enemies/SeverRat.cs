@@ -3,20 +3,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class Slime : Enemy
+public class SeverRat : Enemy
 {
     private const int moveDistance = 1;    //이동 거리
     private const int attackDistance = 1;  //공격 사거리
 
     public override EnemyAction PreJudgeActAction(EnemyView myEnemyView)
     {
-        Type type = typeof(Slime_AttackEA);
+        Type type = typeof(NormalAttackEA);
         var action = FindEnemyAction(myEnemyView, type);
         if (action == null)
             Debug.LogError($"{this}에 {type}라는 행동이 존재하지 않습니다.");
 
-        action.EnemyRM = new E_AllAroundRM();
+        var enemyRM = new E_AllAroundRM();
+        var currentPos = TokenSystem.Instance.GetTokenPosition(myEnemyView);
+
+        int minDis = int.MaxValue;
+        var dir = Vector2Int.zero;
+        foreach (var pos in enemyRM.GetGridRanges(currentPos, attackDistance, false))
+        {
+            //플레이어와 가장 가까운 위치를 공격범위로 선정
+            int distance = TokenSystem.Instance.GetDistance(TokenSystem.Instance.HeroView, pos);
+            if (distance < minDis)
+            {
+                minDis = distance;
+                dir = pos - currentPos;
+            }
+        }
+
+        action.Directions.Add(dir);
         action.ActDistance = attackDistance;
         action.IsPenetration = false;
 
@@ -48,13 +63,9 @@ public class Slime : Enemy
         {
             VisualGridCreator.Instance.RemoveVisualGrid(enemy.gameObject.GetInstanceID(), "Enemy_Attack");
 
-            var enemyRM = enemyAction.EnemyRM;
-            int distance = enemyAction.ActDistance;
-            bool isPenetration = enemyAction.IsPenetration;
-
-            var poses = enemyRM.GetGridRanges(TokenSystem.Instance.GetTokenPosition(enemy), distance, isPenetration);
-            foreach (var pos in poses)
+            foreach (var dir in enemyAction.Directions)
             {
+                var pos = TokenSystem.Instance.GetDirectionPos(enemy, dir);
                 VisualGridCreator.Instance.CreateVisualGrid(enemy.gameObject.GetInstanceID(), pos, "Enemy_Attack");
             }
         }
@@ -90,6 +101,11 @@ public class Slime : Enemy
         ActionSystem.Instance.AddReaction(performMoveGA);
     }
 
+    public override Enemy Clone()
+    {
+        return new SeverRat();
+    }
+
 
     //Privates
     private (int, List<Vector2Int>) GetMinValues(List<Vector2Int> canMovePoses, EnemyView myEnemyView)
@@ -120,10 +136,5 @@ public class Slime : Enemy
         }
 
         return (minDistance, targetPath);
-    }
-
-    public override Enemy Clone()
-    {
-        return new Slime();
     }
 }

@@ -179,6 +179,7 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
     /// <returns></returns>
     public List<Vector2Int> GetCanMovePlace(Token token, int maxDistance)
     {
+        Debug.Log($"현재 위치: {gridPosByToken[token]}");
         Vector2Int start = gridPosByToken[token];
         var result = FindPathBFS.FindAllPath((int[,])grid.simpleGrid.Clone(), start, maxDistance);
 
@@ -191,6 +192,24 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
             }
         }
         return result;
+    }
+
+    public List<Vector2Int> GetCanMovePlace2(Token token, int maxDistance)
+    {
+        List<Vector2Int> places = new();
+        Vector2Int start = gridPosByToken[token];
+        for (int dis = 1; dis <= maxDistance; dis++)
+        {
+            foreach (var dir in FindPathBFS.Dirs)
+            {
+                Vector2Int pos = start + dir * dis;
+                if (!grid.CanSetByGridPos(pos)) continue;
+                if (token is HeroView && movedPath.Contains(pos)) continue;
+
+                places.Add(pos);
+            }
+        }
+        return places;
     }
 
     /// <summary>
@@ -310,13 +329,36 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
     }
 
     /// <summary>
+    /// 특정 토큰에서 토큰으로의 거리를 구하는 함수
+    /// </summary>
+    /// <param name="to"></param>
+    /// <param name="from"></param>
+    /// <returns></returns>
+    public Vector2Int GetDirection(Token to, Token from)
+    {
+        return gridPosByToken[to] - gridPosByToken[from];
+    }
+
+    /// <summary>
+    /// 해당 토큰을 기준으로한 방향의 그리드 위치를 얻는 함수
+    /// </summary>
+    /// <param name="token"></param>
+    /// <param name="direction"></param>
+    /// <returns></returns>
+    public Vector2Int GetDirectionPos(Token token, Vector2Int direction)
+    {
+        Vector2Int current = gridPosByToken[token];
+        return current + direction;
+    }
+
+    /// <summary>
     /// 현재 토큰 주변으로 8방향의 그리드 좌표를 받아가는 함수
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
     public Vector2Int[] GetAroundGrids(Token token)
     {
-        var dirs = FindPathBFS.dirs;
+        var dirs = FindPathBFS.Dirs;
         var result = new List<Vector2Int>();
 
         Vector2Int cur = gridPosByToken[token];

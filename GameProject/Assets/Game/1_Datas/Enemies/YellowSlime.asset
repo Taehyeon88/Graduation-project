@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: YellowSlime
   m_EditorClassIdentifier: 
   <TokenModel>k__BackingField: {fileID: 2378948040377817630, guid: a6f7397e5a3e83342a8c37d5db2c902d, type: 3}
+  <Sprite>k__BackingField: {fileID: 21300000, guid: 7126769337a7d43a0a35c2f070ff4996, type: 3}
   <Health>k__BackingField: 12
   <AttackPower>k__BackingField: 4
   <Enemy>k__BackingField:
@@ -22,6 +23,8 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 1062699151546908737
       type: {class: Slime_AttackEA, ns: , asm: Assembly-CSharp}
       data:

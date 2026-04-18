@@ -38,34 +38,34 @@ public class CardSystem : Singleton<CardSystem>
     private void Update()
     {
         //상태이상 - 고립 처리
-        CombatantView hero = HeroSystem.Instance.HeroView;
-        if (hero != null && !Interactions.Instance.lockInteraction)
-        {
-            int isolationStack = hero.GetStatusEffectStacks(StatusEffectType.ISOLATION);
-            if (isolationStack > 0)
-            {
-                //손패의 있는 모든 이동 타입의 카드 비활성화 처리
-                foreach (var card in hand)
-                {
-                    if (card.CardSubType == CardSubType.Move
-                        || card.CardSubType == CardSubType.Dash
-                        || card.CardType == CardType.Skill_Move)
-                        handView.SetCardLockView(true, card);
-                }
-                isIsolation = true;
-            }
-            else if (isIsolation)
-            {
-                foreach (var card in hand)
-                {
-                    if (card.CardSubType == CardSubType.Move
-                        || card.CardSubType == CardSubType.Dash
-                        || card.CardType == CardType.Skill_Move)
-                        handView.SetCardLockView(false, card);
-                }
-                isIsolation = false;
-            }
-        }
+        //CombatantView hero = HeroSystem.Instance.HeroView;
+        //if (hero != null && !Interactions.Instance.lockInteraction)
+        //{
+        //    int isolationStack = hero.GetStatusEffectStacks(StatusEffectType.ISOLATION);
+        //    if (isolationStack > 0)
+        //    {
+        //        //손패의 있는 모든 이동 타입의 카드 비활성화 처리
+        //        foreach (var card in hand)
+        //        {
+        //            if (card.CardSubType == CardSubType.Move
+        //                || card.CardSubType == CardSubType.Dash
+        //                || card.CardType == CardType.Skill_Move)
+        //                handView.SetCardLockView(true, card);
+        //        }
+        //        isIsolation = true;
+        //    }
+        //    else if (isIsolation)
+        //    {
+        //        foreach (var card in hand)
+        //        {
+        //            if (card.CardSubType == CardSubType.Move
+        //                || card.CardSubType == CardSubType.Dash
+        //                || card.CardType == CardType.Skill_Move)
+        //                handView.SetCardLockView(false, card);
+        //        }
+        //        isIsolation = false;
+        //    }
+        //}
     }
 
 

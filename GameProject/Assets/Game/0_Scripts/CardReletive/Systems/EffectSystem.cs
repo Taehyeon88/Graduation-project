@@ -28,19 +28,19 @@ public class EffectSystem : MonoBehaviour
 
                 //시작 모션
                 var casterPos = TokenSystem.Instance.GetTokenPosition(HeroSystem.Instance.HeroView);
-                PlayVisualEffectGA playVisualEffectGA = new(type, 0, HeroSystem.Instance.HeroView, casterPos, performEffectGA.EffectInfo.targetPoses[0] - casterPos);
+                PlayHeroVisualEffectGA playVisualEffectGA = new(type, 0, HeroSystem.Instance.HeroView, casterPos, performEffectGA.EffectInfo.targetPoses[0] - casterPos);
                 ActionSystem.Instance.AddReaction(playVisualEffectGA);
 
                 //피격 이펙트 전달
-                DamageSystem.Instance.DamageVFX = VisualEffectSystem.Instance.GetHitVEInfo(type).Item2;
-                DamageSystem.Instance.DamageSoundId = VisualEffectSystem.Instance.GetHitVEInfo(type).Item1;
+                DamageSystem.Instance.DamageVFX = HeroVisualEffectSystem.Instance.GetHitVEInfo(type).Item2;
+                DamageSystem.Instance.DamageSoundId = HeroVisualEffectSystem.Instance.GetHitVEInfo(type).Item1;
 
                 //실행할 행동
                 GameAction effectAction = performEffectGA.Effect.GetGameAction(performEffectGA.EffectInfo);
                 ActionSystem.Instance.AddReaction(effectAction);
 
                 //회수 모션
-                PlayVisualEffectGA playVisualEffectGA2 = new(type, 1, HeroSystem.Instance.HeroView, casterPos, Vector2Int.zero);
+                PlayHeroVisualEffectGA playVisualEffectGA2 = new(type, 1, HeroSystem.Instance.HeroView, casterPos, Vector2Int.zero);
                 ActionSystem.Instance.AddReaction(playVisualEffectGA2);
             }
             else

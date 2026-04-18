@@ -41,13 +41,14 @@ public class EnemyView : CombatantView
             isObject = gameObject.AddComponent<IsoObject>();
 
         //Enemy 데이터 설정
-        EnemyName = enemyData.name;
-        EnemySprite = enemyData.TokenModel.Sprite;
+        EnemyName = enemyData.Name;
+        EnemySprite = enemyData.Sprite;
         Enemy = enemyData.Enemy.Clone();
         Actions = enemyData.EnemyActions
                  .Select(e => e.Clone())
                  .ToList();
         SetUpBase(enemyData.Health, enemyData, isObject);
+        TokenModel.Sprite = enemyData.Sprite;
     }
 
     private void OnEnable()

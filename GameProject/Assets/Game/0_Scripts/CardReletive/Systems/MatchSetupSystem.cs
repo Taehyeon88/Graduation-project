@@ -7,7 +7,6 @@ public class MatchSetupSystem : MonoBehaviour
 {
     [SerializeField] private HeroData heroData;
     //[SerializeField] private PerkData perkData;
-    [SerializeField] private DiceData diceData;
     [SerializeField] private List<EnemyData> enemyDatas;
     [SerializeField] private List<WallData> wallDatas;
     [SerializeField] private List<Vector2Int> heroSetUpPositions;
