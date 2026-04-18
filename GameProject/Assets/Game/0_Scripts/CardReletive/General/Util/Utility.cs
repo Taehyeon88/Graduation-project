@@ -62,4 +62,28 @@ public static class Utility
         tween.SetEase(ease);
         return tween;
     }
+
+    public static Tween GetBezierTween(Token token, Vector3 start, Vector3 end, float duration, Ease ease = Ease.Unset)
+    {
+        Vector3 control = (start + end) / 2f + new Vector3(0, 0, 1) * 3f; ;
+        float t = 0f;
+
+        Tween tween = DOTween.To(
+            () => t,
+            x =>
+            {
+                t = x;
+
+                Vector3 pos =
+                     Mathf.Pow(1 - t, 2) * start
+                     + 2 * t * (1 - t) * control
+                     + Mathf.Pow(t, 2) * end;
+                token.TokenTransform.position = pos;
+            },
+            1f,
+            duration
+        );
+        tween.SetEase(ease);
+        return tween;
+    }
 }

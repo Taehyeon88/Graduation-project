@@ -27,7 +27,7 @@ public class TokenGrid : MonoBehaviour
         if (endInitialize) return;
 
         int index = 0;
-        var temp = gridTransform.GetComponentsInChildren<IsoObject>();
+        var temp = gridTransform.GetComponentsInChildren<IsoObject>(true);
         if (temp == null)
             Debug.LogError("gridTransform의 자식들에서 isoObject를 가지는 대상을 찾을 수 없습니다.");
 
@@ -44,6 +44,7 @@ public class TokenGrid : MonoBehaviour
 
                 //그리드 타일 처리
                 IsoObject gridTile = temp[index];
+                gridTile.gameObject.SetActive(true);
                 gridTile.position = new Vector3(x, y, 0);
 
                 Vector2Int gridPos = new(x, y);
@@ -53,15 +54,6 @@ public class TokenGrid : MonoBehaviour
                     Debug.LogError($"{gridPos}위치에 {gridTileByPos[gridPos]}와 {gridTile}이 같은 위치로 충돌합니다.");
 
                 index++;
-            }
-        }
-
-        //남은 그리드 타일 비활성화
-        if (temp.Length > index)
-        {
-            for (int i = index; i < temp.Length; i++)
-            {
-                temp[i].gameObject.SetActive(false);
             }
         }
 
