@@ -3913,7 +3913,7 @@ Transform:
   m_GameObject: {fileID: 415542277}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 8.15, z: -100}
+  m_LocalPosition: {x: 0, y: 4.24, z: -100}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4006,7 +4006,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 17
+  orthographic size: 14.33
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -4127,7 +4127,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8241385529586602247, guid: 216766530c0c7c14ba95d2686381b37c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 13.600016
+      value: 13.500015
       objectReference: {fileID: 0}
     - target: {fileID: 8241385529586602247, guid: 216766530c0c7c14ba95d2686381b37c, type: 3}
       propertyPath: m_LocalRotation.w
@@ -7864,30 +7864,20 @@ MonoBehaviour:
   - {x: 0, y: 2}
   - {x: 0, y: 3}
   - {x: 0, y: 4}
-  - {x: 0, y: 5}
-  - {x: 0, y: 6}
-  - {x: 0, y: 7}
   - {x: 1, y: 0}
   - {x: 1, y: 1}
   - {x: 1, y: 2}
   - {x: 1, y: 3}
   - {x: 1, y: 4}
-  - {x: 1, y: 5}
-  - {x: 1, y: 6}
-  - {x: 1, y: 7}
   enemySetUpPositions:
-  - {x: 3, y: 0}
-  - {x: 3, y: 1}
-  - {x: 3, y: 2}
-  - {x: 3, y: 3}
-  - {x: 3, y: 4}
-  - {x: 3, y: 5}
-  - {x: 3, y: 6}
-  - {x: 3, y: 7}
+  - {x: 4, y: 0}
+  - {x: 4, y: 1}
+  - {x: 4, y: 2}
+  - {x: 4, y: 3}
+  - {x: 4, y: 4}
   wallSetUpPositions:
-  - {x: 0, y: 7}
-  - {x: 1, y: 7}
-  - {x: 0, y: 6}
+  - {x: 0, y: 4}
+  - {x: 1, y: 4}
 --- !u!1 &830014049
 GameObject:
   m_ObjectHideFlags: 0
@@ -17542,7 +17532,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8241385529586602247, guid: 216766530c0c7c14ba95d2686381b37c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 13.700016
+      value: 13.600016
       objectReference: {fileID: 0}
     - target: {fileID: 8241385529586602247, guid: 216766530c0c7c14ba95d2686381b37c, type: 3}
       propertyPath: m_LocalRotation.w
@@ -20288,8 +20278,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridTransform: {fileID: 1500705106}
   gridTilePool: {fileID: 255451089}
-  <width>k__BackingField: 8
-  <height>k__BackingField: 8
+  <width>k__BackingField: 5
+  <height>k__BackingField: 5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

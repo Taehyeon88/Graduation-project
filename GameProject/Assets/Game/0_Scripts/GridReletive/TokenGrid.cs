@@ -1,7 +1,8 @@
-﻿using System.Collections;
+﻿using IsoTools;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using IsoTools;
+using static UnityEditor.PlayerSettings;
 
 public class TokenGrid : MonoBehaviour
 {
@@ -14,7 +15,7 @@ public class TokenGrid : MonoBehaviour
 
     private List<Vector2Int> remainCells = new();
 
-    private Dictionary<Vector2Int, IsoObject> dgridTileByPos = new();
+    private Dictionary<Vector2Int, IsoObject> gridTileByPos = new();
 
     private bool endInitialize = false;
     private void Start()
@@ -25,8 +26,9 @@ public class TokenGrid : MonoBehaviour
     {
         if (endInitialize) return;
 
-        var gridTiles = gridTransform.GetComponentsInChildren<IsoObject>();
-        if (gridTiles == null)
+        int index = 0;
+        var temp = gridTransform.GetComponentsInChildren<IsoObject>();
+        if (temp == null)
             Debug.LogError("gridTransform의 자식들에서 isoObject를 가지는 대상을 찾을 수 없습니다.");
 
         grid = new TokenGirdCell[width, height];
@@ -35,21 +37,32 @@ public class TokenGrid : MonoBehaviour
         {
             for (int y = 0; y < grid.GetLength(1); y++)
             {
+                //가상 그리드 처리
                 grid[x, y] = new();
                 simpleGrid[x, y] = 0;
                 remainCells.Add(new(x, y));
+
+                //그리드 타일 처리
+                IsoObject gridTile = temp[index];
+                gridTile.position = new Vector3(x, y, 0);
+
+                Vector2Int gridPos = new(x, y);
+                grid[gridPos.x, gridPos.y].SetField(gridTile);
+
+                if (!gridTileByPos.TryAdd(gridPos, gridTile))
+                    Debug.LogError($"{gridPos}위치에 {gridTileByPos[gridPos]}와 {gridTile}이 같은 위치로 충돌합니다.");
+
+                index++;
             }
         }
 
-        //모든 그리드 타일의 IsoObj를 해당 gird에 저장
-        foreach (var gridTile in gridTiles)
+        //남은 그리드 타일 비활성화
+        if (temp.Length > index)
         {
-            Vector2 pos = gridTile.positionXY;
-            Vector2Int gridPos = new((int)pos.x, (int)pos.y);
-            grid[gridPos.x, gridPos.y].SetField(gridTile);
-
-            if (!dgridTileByPos.TryAdd(gridPos, gridTile))
-                Debug.LogError($"{gridPos}위치에 {dgridTileByPos[gridPos]}와 {gridTile}이 같은 위치로 충돌합니다.");
+            for (int i = index; i < temp.Length; i++)
+            {
+                temp[i].gameObject.SetActive(false);
+            }
         }
 
         endInitialize = true;
@@ -97,7 +110,7 @@ public class TokenGrid : MonoBehaviour
     public void SetField(IsoObject field, Vector2Int pos)
     {
         //기존의 필드가 기본 타일일 경우, pool로 이동 및 보관 / 아닐 경우, 파괴
-        bool isDefualt = dgridTileByPos[pos] == grid[pos.x, pos.y].field;
+        bool isDefualt = gridTileByPos[pos] == grid[pos.x, pos.y].field;
         if (isDefualt)
             grid[pos.x, pos.y].field.gameObject.transform.SetParent(gridTilePool);
         else
@@ -113,7 +126,7 @@ public class TokenGrid : MonoBehaviour
         //기본 타일로 되돌리기
         Destroy(grid[pos.x, pos.y].field.gameObject);
 
-        IsoObject field = dgridTileByPos[pos];
+        IsoObject field = gridTileByPos[pos];
         field.transform.SetParent(gridTransform);
         grid[pos.x, pos.y].SetField(field);
 
