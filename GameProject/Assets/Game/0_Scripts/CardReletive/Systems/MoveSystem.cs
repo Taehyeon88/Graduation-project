@@ -130,7 +130,6 @@ public class MoveSystem : Singleton<MoveSystem>
     private void EnemysTurnPreReaction(EnemysTurnGA enemyTurnGA)   //몬스터 턴 시작 전, 플레이어 이동한 경로 초기화
     {
         TokenSystem.Instance.ResetMovedPath();
-        Debug.Log($"작동한다. 존재 여부: {this == MoveSystem.Instance}");
         VisualGridCreator.Instance.RemoveVisualGridById(gameObject.GetInstanceID()); 
         TokenSystem.Instance.ResetMovedPath();
     }

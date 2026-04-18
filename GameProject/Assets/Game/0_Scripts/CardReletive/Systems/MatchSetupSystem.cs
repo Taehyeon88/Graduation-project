@@ -44,7 +44,7 @@ public class MatchSetupSystem : MonoBehaviour
         InteractionSystem.Instance.EndInteraction();
 
         //기타
-        CardSystem.Instance.SetUp(deck.ToList());
+        CardSystem.Instance.SetUp(new(deck));
         //PerkSystem.Instance.AddPerk(new(perkData));
 
         StartBattleGA startBattleGA = new();

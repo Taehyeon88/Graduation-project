@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class GameSystem : Singleton<GameSystem>
 {
     [field : SerializeField] public HeroData HeroData { get; private set; }
-    public IReadOnlyList<CardData> Deck => deck;                //플레이어 덱
+    public IReadOnlyList<CardData> Deck { get { return deck;} }                //플레이어 덱
     public IReadOnlyList<EnemyData> EnemyDatas => CurrentRoomData.enemyDatas;
     public IReadOnlyList<WallData> WallDatas => CurrentRoomData.wallDatas;
     public IReadOnlyList<Vector2Int> HeroSetUpPositions => CurrentRoomData.heroSetUpPositions;
@@ -23,7 +23,7 @@ public class GameSystem : Singleton<GameSystem>
     protected override void Awake()
     {
         base.Awake();
-        DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad();
     }
 
     private void OnEnable()
@@ -54,6 +54,7 @@ public class GameSystem : Singleton<GameSystem>
     public void GoToNextLevel()
     {
         CurrentLevel++;
+        Debug.Log(CurrentLevel);
         IsGameClear = false;
 
         if (CurrentLevel >= roomDatas.Length)
