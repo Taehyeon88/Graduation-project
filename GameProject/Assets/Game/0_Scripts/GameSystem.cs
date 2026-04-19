@@ -28,15 +28,18 @@ public class GameSystem : Singleton<GameSystem>
 
     private void OnEnable()
     {
+        if(Instance != this) return;
         ActionSystem.AttachPerformer<GameClearGA>(GameClearPerformer);
     }
     private void OnDisable()
     {
+        if (Instance != this) return;
         ActionSystem.DetachPerformer<GameClearGA>();
     }
 
     private IEnumerator GameClearPerformer(GameClearGA gameClearGA)
     {
+        Debug.Log("게임 클리어");
         IsGameClear = true;
 
         Card[] cards = RewardSystem.Instance.GetRewards(3);
