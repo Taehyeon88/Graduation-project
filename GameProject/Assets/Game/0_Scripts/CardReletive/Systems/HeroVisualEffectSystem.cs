@@ -41,14 +41,43 @@ public class HeroVisualEffectSystem : Singleton<HeroVisualEffectSystem>
             //사운드 재생
             SoundSystem.Instance.PlaySound(data.SoundId);
             //모션 재생
-            var sqe = data.CustomSquence.GetCustomSquence(playVEGA.Mover, playVEGA.CurrentPos, playVEGA.Direction);
+            var sqe = data.CustomSquence.GetCustomSquence
+                (
+                     HeroSystem.Instance.HeroView,
+                     TokenSystem.Instance.GetTokenPosition(HeroSystem.Instance.HeroView),
+                     playVEGA.TargetPoses
+                );
             sqe.Play();
             yield return sqe.WaitForCompletion(); 
         }
-        else
-        {
-            yield return null;
-        }
+    }
+
+    //publics
+    public void PlayVisualEffectPreGameAction(CardType cardType, CardSubType cardSubType, List<Vector2Int> targetPoses, bool isPrivateLogic = false)
+    {
+        (CardType, CardSubType) type = (cardType, cardSubType);
+
+        if (!CheckCanPlayVisualEffect(type, isPrivateLogic)) return;
+
+        //시작 모션
+        var casterPos = TokenSystem.Instance.GetTokenPosition(HeroSystem.Instance.HeroView);
+        PlayHeroVisualEffectGA playVisualEffectGA = new(type, 0, targetPoses);
+        ActionSystem.Instance.AddReaction(playVisualEffectGA);
+
+        //피격 이펙트 전달
+        DamageSystem.Instance.DamageVFX = GetHitVEInfo(type).Item2;
+        DamageSystem.Instance.DamageSoundId = GetHitVEInfo(type).Item1;
+    }
+
+    public void PlayVisualEffectPostGameAction(CardType cardType, CardSubType cardSubType, List<Vector2Int> targetPoses, bool isPrivateLogic = false)
+    {
+        (CardType, CardSubType) type = (cardType, cardSubType);
+
+        if (!CheckCanPlayVisualEffect(type, isPrivateLogic)) return;
+
+        //회수 모션
+        PlayHeroVisualEffectGA playVisualEffectGA2 = new(type, 1, targetPoses);
+        ActionSystem.Instance.AddReaction(playVisualEffectGA2);
     }
 
     public (int, GameObject) GetHitVEInfo((CardType, CardSubType) cardTyps)
@@ -60,5 +89,17 @@ public class HeroVisualEffectSystem : Singleton<HeroVisualEffectSystem>
             return (soundId, vfx);
         }
         return default;
+    }
+
+    public bool CheckCanPlayVisualEffect((CardType, CardSubType) cardTyps, bool isPrivateLogic)
+    {
+        if (effectDataById.ContainsKey(cardTyps))
+        {
+            if (effectDataById[cardTyps].UsePrivateLogic != isPrivateLogic)
+                return false;
+
+            return true;
+        }
+        return false;
     }
 }

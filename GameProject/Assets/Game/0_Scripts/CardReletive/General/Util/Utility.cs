@@ -39,6 +39,15 @@ public static class Utility
         return worldPoint;
     }
 
+    public static Vector2 GetSignVector2(Vector2 vector)
+    {
+        return new Vector2
+        (
+             Mathf.Sign(vector.x) * (vector.x != 0 ? 1 : 0),
+             Mathf.Sign(vector.y) * (vector.y != 0 ? 1 : 0)
+        );
+    }
+
     public static Tween GetTween(Token token, Vector2 currentPos, Vector2 direction, float distance, float duration, Ease ease = Ease.Unset)
     {
         Tween tween = DOTween.To(() =>

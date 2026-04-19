@@ -15,41 +15,21 @@ public class EffectSystem : MonoBehaviour
     }
     private IEnumerator PerformEffectPerformer(PerformEffectGA performEffectGA)
     {
-        if (!performEffectGA.IsSkiping)
-        {
-            string cardTypeString = performEffectGA.EffectInfo.cardType.ToString();
-            cardTypeString = cardTypeString.Substring(0, cardTypeString.IndexOf("_"));
+        if(performEffectGA.IsSkiping) yield break;
 
-            Debug.Log($"이름: {cardTypeString}");
+        HeroVisualEffectSystem.Instance.PlayVisualEffectPreGameAction(
+            performEffectGA.EffectInfo.cardType, 
+            performEffectGA.EffectInfo.cardSubType, 
+            performEffectGA.EffectInfo.targetPoses
+            );
 
-            if (cardTypeString == "Attack" && (performEffectGA.EffectInfo.cardType == CardType.Attack_Adjacent))  //전투 공격 연출 사용
-            {
-                var type = (performEffectGA.EffectInfo.cardType, performEffectGA.EffectInfo.cardSubType);
+        GameAction effectAction = performEffectGA.Effect.GetGameAction(performEffectGA.EffectInfo); 
+        ActionSystem.Instance.AddReaction(effectAction);
 
-                //시작 모션
-                var casterPos = TokenSystem.Instance.GetTokenPosition(HeroSystem.Instance.HeroView);
-                PlayHeroVisualEffectGA playVisualEffectGA = new(type, 0, HeroSystem.Instance.HeroView, casterPos, performEffectGA.EffectInfo.targetPoses[0] - casterPos);
-                ActionSystem.Instance.AddReaction(playVisualEffectGA);
-
-                //피격 이펙트 전달
-                DamageSystem.Instance.DamageVFX = HeroVisualEffectSystem.Instance.GetHitVEInfo(type).Item2;
-                DamageSystem.Instance.DamageSoundId = HeroVisualEffectSystem.Instance.GetHitVEInfo(type).Item1;
-
-                //실행할 행동
-                GameAction effectAction = performEffectGA.Effect.GetGameAction(performEffectGA.EffectInfo);
-                ActionSystem.Instance.AddReaction(effectAction);
-
-                //회수 모션
-                PlayHeroVisualEffectGA playVisualEffectGA2 = new(type, 1, HeroSystem.Instance.HeroView, casterPos, Vector2Int.zero);
-                ActionSystem.Instance.AddReaction(playVisualEffectGA2);
-            }
-            else
-            {
-                GameAction effectAction = performEffectGA.Effect.GetGameAction(performEffectGA.EffectInfo);
-                ActionSystem.Instance.AddReaction(effectAction);
-            }
-
-            yield return null;
-        }
+        HeroVisualEffectSystem.Instance.PlayVisualEffectPostGameAction(
+            performEffectGA.EffectInfo.cardType, 
+            performEffectGA.EffectInfo.cardSubType, 
+            performEffectGA.EffectInfo.targetPoses
+            );
     }
 }

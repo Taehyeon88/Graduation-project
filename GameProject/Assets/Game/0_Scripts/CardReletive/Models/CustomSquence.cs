@@ -1,10 +1,11 @@
 ﻿using DG.Tweening;
 using UnityEngine;
+using System.Collections.Generic;
 
 [System.Serializable]
 public abstract class CustomSquence
 {
-    public abstract Sequence GetCustomSquence(Token token, Vector2Int currentPos, Vector2 dirrection);
+    public abstract Sequence GetCustomSquence(Token token, Vector2Int currentPos, List<Vector2Int> targetPoses);
 }
 
 [System.Serializable]
@@ -27,11 +28,12 @@ public class Adj_SingleSQ : CustomSquence
     [SerializeField] private float distance;
     [SerializeField] private Ease animationEase;
 
-    public override Sequence GetCustomSquence(Token token, Vector2Int currentPos, Vector2 dirrection)
+    public override Sequence GetCustomSquence(Token token, Vector2Int currentPos, List<Vector2Int> targetPoses)
     {
+        Vector2 direction = Utility.GetSignVector2(targetPoses[0] - currentPos);
         Sequence sequence = DOTween.Sequence();
 
-        Tween startTween = Utility.GetTween(token, currentPos, dirrection, distance, duration, animationEase);
+        Tween startTween = Utility.GetTween(token, currentPos, direction, distance, duration, animationEase);
         sequence.Append(startTween);
 
         return sequence;
@@ -43,11 +45,11 @@ public class ReturnSQ : CustomSquence
 {
     [SerializeField] private float duration;
     [SerializeField] private Ease animationEase;
-    public override Sequence GetCustomSquence(Token token, Vector2Int currentPos, Vector2 dirrection)
+    public override Sequence GetCustomSquence(Token token, Vector2Int currentPos, List<Vector2Int> targetPoses)
     {
         Sequence sequence = DOTween.Sequence();
 
-        Tween startTween = Utility.GetTween(token, currentPos, dirrection, 0, duration, animationEase);
+        Tween startTween = Utility.GetTween(token, currentPos, duration, animationEase);
         sequence.Append(startTween);
 
         return sequence;
@@ -70,50 +72,51 @@ public class Adj_PenetrationSQ : CustomSquence
     //몸을 당길 때 : 스으읍
     //연쇄 타격음 : 챙 -
 
-    public override Sequence GetCustomSquence(Token token, Vector2Int currentPos, Vector2 dirrection)
+    public override Sequence GetCustomSquence(Token token, Vector2Int currentPos, List<Vector2Int> targetPoses)
     {
+        Vector2 direction = Utility.GetSignVector2(targetPoses[0] - currentPos);
         Sequence sequence = DOTween.Sequence();
 
-        Tween readyTween = Utility.GetTween(token, currentPos, - dirrection, 0.1f, 0.05f, Ease.Unset);
+        Tween readyTween = Utility.GetTween(token, currentPos, -direction, 0.1f, 0.05f, Ease.Linear);
 
-        Vector2 newCurrentPos = currentPos - (dirrection * 0.1f);
-        Tween startTween = Utility.GetTween(token, newCurrentPos, dirrection, 1f, 0.15f, Ease.OutExpo);
+        Vector2 newCurrentPos = currentPos - (direction * 0.1f);
+        Tween startTween = Utility.GetTween(token, newCurrentPos, direction, 1f, 0.15f, Ease.OutExpo);
         sequence.Append(startTween);
 
         return sequence;
     }
 }
 
-//public class Adj_DashSQ : CustomSquence
-//{
-//    //    2.3. 인접/돌진(넉백)
-//    //연출 컨셉 : 지정된 칸으로 이동하여 적을 강하게 들이받은 후, 타격의 반동으로 원래 자리로 되돌아오는 묵직한 돌진
-//    //DOTween 모션:
-//    //이동 및 충돌 : 타겟 타일로 돌진
-//    //Ease : Ease.Inback , 0.2초
-//    //설명 : 살짝 뒤로 움츠렸다가 가속하며 돌진 후 충동 순간 카메라 쉐이크
-//    //복귀 : 원래 위치로 복귀
-//    //Ease : Ease.OutQuad , 0.2초
-//    //설명 : 적 또는 벽에 부딪힌 반동으로 자연스럽게 튕겨져 나오듯 복귀
-//    //시각 효과 : 충돌 지점에 강한 타격 및 먼지 발생
-//    //사용 에셋(적 피격) : CFXR3 Hit Misc A
-//    //사용 에셋(벽 충돌) : CFXR3 Hit Misc F Smoke
-//    //사운드 효과:
-//    //돌진하여 부딪히는 마찰음 : 쾅!
-//    //반동으로 밀려나는 소리 : 스윽-
+public class Adj_DashSQ : CustomSquence
+{
+    //    2.3. 인접/돌진(넉백)
+    //연출 컨셉 : 지정된 칸으로 이동하여 적을 강하게 들이받은 후, 타격의 반동으로 원래 자리로 되돌아오는 묵직한 돌진
+    //DOTween 모션:
+    //이동 및 충돌 : 타겟 타일로 돌진
+    //Ease : Ease.Inback , 0.2초
+    //설명 : 살짝 뒤로 움츠렸다가 가속하며 돌진 후 충동 순간 카메라 쉐이크
+    //복귀 : 원래 위치로 복귀
+    //Ease : Ease.OutQuad , 0.2초
+    //설명 : 적 또는 벽에 부딪힌 반동으로 자연스럽게 튕겨져 나오듯 복귀
+    //시각 효과 : 충돌 지점에 강한 타격 및 먼지 발생
+    //사용 에셋(적 피격) : CFXR3 Hit Misc A
+    //사용 에셋(벽 충돌) : CFXR3 Hit Misc F Smoke
+    //사운드 효과:
+    //돌진하여 부딪히는 마찰음 : 쾅!
+    //반동으로 밀려나는 소리 : 스윽-
 
-//    public override Sequence GetCustomSquence(Token token, Vector2Int currentPos, Vector2 dirrection)
-//    {
-//        Sequence sequence = DOTween.Sequence();
+    public override Sequence GetCustomSquence(Token token, Vector2Int currentPos, List<Vector2Int> targetPoses)
+    {
+        Vector2 direction = Utility.GetSignVector2(targetPoses[0] - currentPos);
+        Sequence sequence = DOTween.Sequence();
 
-//        Vector2 newCurrentPos = currentPos - (dirrection * 0.1f);
-//        Tween startTween = Utility.GetTween(token, newCurrentPos, dirrection, 1f, 0.15f, Ease.InBack);
-//        sequence.Append(startTween);
+        Tween startTween = Utility.GetTween(token, currentPos, direction, 0.5f, 0.2f, Ease.InBack);
+        sequence.Append(startTween);
 
-//        return sequence;
-//    }
+        return sequence;
+    }
 
-//}
+}
 
 [System.Serializable]
 public class Adj_Cleave : CustomSquence
@@ -131,10 +134,11 @@ public class Adj_Cleave : CustomSquence
     //사운드 효과:
     //전방을 가로로 넓게 휩쓰는 예리하고 묵직한 마찰음 : 샤악 -, 쾅!
 
-    public override Sequence GetCustomSquence(Token token, Vector2Int currentPos, Vector2 dirrection)
+    public override Sequence GetCustomSquence(Token token, Vector2Int currentPos, List<Vector2Int> targetPoses)
     {
+        Vector2 direction = Utility.GetSignVector2(targetPoses[1] - currentPos);
         Sequence sequence = DOTween.Sequence();
-        Tween startTween = Utility.GetTween(token, currentPos, dirrection, 0.3f, 0.2f, Ease.OutBack);
+        Tween startTween = Utility.GetTween(token, currentPos, direction, 0.3f, 0.2f, Ease.OutBack);
         sequence.Append(startTween);
 
         return sequence;

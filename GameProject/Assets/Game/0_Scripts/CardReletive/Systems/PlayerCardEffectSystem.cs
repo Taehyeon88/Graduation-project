@@ -86,13 +86,29 @@ public class PlayerCardEffectSystem : Singleton<PlayerCardEffectSystem>
 
             if (target != null)
             {
+                //연출
+                HeroVisualEffectSystem.Instance.PlayVisualEffectPreGameAction(
+                         CardType.Attack_Adjacent,
+                         CardSubType.Dash,
+                         new() { attackPos },
+                         true
+                         );
+
                 //이동 이후, 공격 체인
                 DealDamageGA dealDamageGA = new(shoulderBashGA.Damage, new() { target }, heroView);
-                shoulderBashGA.PostReactions.Add((dealDamageGA, null));
+                ActionSystem.Instance.AddReaction(dealDamageGA);
+
+                //연출
+                HeroVisualEffectSystem.Instance.PlayVisualEffectPostGameAction(
+                         CardType.Attack_Adjacent,
+                         CardSubType.Dash,
+                         new() { attackPos },
+                         true
+                         );
 
                 //공격 이후, 대상 넉백 체인
                 KnockBackGA knockBackGA = new(heroView, shoulderBashGA.Distance, attackPos, (path[0] - currentPos));
-                shoulderBashGA.PostReactions.Add((knockBackGA, null));
+                ActionSystem.Instance.AddReaction(knockBackGA);
             }
             else
             {
