@@ -146,6 +146,43 @@ public class Adj_Cleave : CustomSquence
     }
 }
 
+public class Adj_AllAround : CustomSquence
+{
+    //연출 컨셉 : 제자리에 순간적으로 몸이 납작하게 웅크렸다가(찌부) 탄력 있게 튕겨져 나오며 주변 8방향에 동시다발적으로 타격
+    //캐릭터 DOTween 모션:
+    //압축 및 타격 : 캐릭터의 스케일을 순간적으로 납작하게 찌끄러뜨림(Y축 : 0.7, X축 : 1.2) 찌그러짐이 완료되는 즉시 데미지와 이펙트가 발생
+    //Ease : Ease.OutExpo , 0.1초
+    //설명 : 눈 깜짝할 새 순식간에 찌부됨
+    //복귀 : 찌그러졌던 몸이 탄성 있게 원래 스케일로 튕겨 오르며 복귀
+    //Ease : Ease.OutElastic , 0.3초
+    //설명 : 띠용- 하고 탄력적으로 튕겨져 나오는 느낌
+    //시각 효과 : 캐릭터가 가장 납작해진 순간, 캐릭터 중심에서부터 8방향으로 거센 충격파가 터져 나감
+    //사용 에셋 : CFXR3 Hit Misc A
+    //사운드 효과:
+    //순간적으로 눌린듯한 소리 : 읏-
+    //직후 튕겨져 나가는 폭발적인 방출음 : 파앗!
+
+    [SerializeField] private bool IsStart = true;
+    public override Sequence GetCustomSquence(Token token, Vector2Int currentPos, List<Vector2Int> targetPoses)
+    {
+        Sequence sequence = DOTween.Sequence();
+
+        if (IsStart)
+        {
+            Tween tween = token.TokenModel.transform.DOScale(new Vector3(1.2f, 0.7f, 1f), 0.1f)
+                      .SetEase(Ease.OutExpo);
+            sequence.Append(tween);
+        }
+        else
+        {
+            Tween tween = token.TokenModel.transform.DOScale(Vector3.one * 2, 0.3f)
+                    .SetEase(Ease.OutElastic);
+            sequence.Append(tween);
+        }
+        return sequence;
+    }
+}
+
 public class Prj_SingleSQ : CustomSquence
 {
     //연출 컨셉 : 가벼운 물리 투사체 또는 마법 투사체를 빠르고 정확하게 곡사로 던짐
