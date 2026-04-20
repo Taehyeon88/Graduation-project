@@ -189,6 +189,20 @@ public class CardSystem : Singleton<CardSystem>
         yield return handView.AddCard(cardView);
     }
 
+    private bool[] GetUseConditions(List<Vector2Int> targetPoses)
+    {
+        bool[] conditions = new bool[targetPoses.Count];
+        for (int i = 0; i < targetPoses.Count; i++)
+        {
+            var pos = targetPoses[i];
+            var token = TokenSystem.Instance.GetTokenByPosition(pos) as CombatantView;
+            if(token != null)
+                conditions[i] = true;
+            else
+                conditions[i] = false;
+        }
+        return conditions;
+    }
 
     /// <summary>
     /// 카드 사용 전, 그리드 타겟팅 시스템(그리드 미리보기 및 선택)
@@ -257,8 +271,16 @@ public class CardSystem : Singleton<CardSystem>
                     IUseCondition icondition = card.GridTargetMode.Effect as IUseCondition;
                     if (icondition != null)
                         conditions = icondition.IsMeetCondition(targets);
+                    else
+                    {
+                        string cardTypeString = card.CardType.ToString();
+                        if (cardTypeString.Substring(0, cardTypeString.IndexOf("_")) == "Attack")
+                        {
+                            conditions = GetUseConditions(targets);
+                        }
+                    }
 
-                    string targetStr = string.Join("", targets);
+                        string targetStr = string.Join("", targets);
                     if (curStr != targetStr)
                     {
                         //비주얼 공격 범위 그리드 업데이트
@@ -292,16 +314,14 @@ public class CardSystem : Singleton<CardSystem>
                     //그리드 선택 인터렉션 감지
                     if (InteractionSystem.GridSelected)
                     {
+                        bool canUse = false;
                         if (conditions != null)
                         {
                             for (int i = 0; i < conditions.Length; i++)
-                            {
                                 if (conditions[i])
-                                    targets.Add(targets[i]);
-                            }
-                            targets.RemoveRange(0, conditions.Length);
+                                    canUse = true;
                         }
-                        if (targets.Count > 0)
+                        if (targets.Count > 0 && conditions != null? canUse : true)
                         {
                             playCardTargetingGA.EndSelectAction?.Invoke();
 

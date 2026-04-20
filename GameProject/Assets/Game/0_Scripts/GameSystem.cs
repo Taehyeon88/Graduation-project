@@ -60,7 +60,7 @@ public class GameSystem : Singleton<GameSystem>
         Debug.Log(CurrentLevel);
         IsGameClear = false;
 
-        if (CurrentLevel >= roomDatas.Length)
+        if (CurrentLevel > roomDatas.Length)
             Debug.LogError($"다음 층수 : {CurrentLevel}이고 현재 구현된 층수는 {CurrentLevel - 1}으로 최대 층수에 도달했습니다.");
 
         SceneManager.LoadScene(0);

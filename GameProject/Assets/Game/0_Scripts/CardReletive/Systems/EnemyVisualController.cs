@@ -20,12 +20,14 @@ public class EnemyVisualController : MonoBehaviour
     {
         ActionSystem.SubscribeReaction<StartBattleGA>(StartBattlePreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<KillEnemyGA>(KillEnemyPreReaction, ReactionTiming.PRE);
+        ActionSystem.SubscribeReaction<MoveGA>(MoveGAPostReaction, ReactionTiming.POST);
     }
 
     private void OnDisable()
     {
         ActionSystem.UnsubscribeReaction<StartBattleGA>(StartBattlePreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<KillEnemyGA>(KillEnemyPreReaction, ReactionTiming.PRE);
+        ActionSystem.UnsubscribeReaction<MoveGA>(MoveGAPostReaction, ReactionTiming.POST);
     }
 
     private void Update()
@@ -212,5 +214,25 @@ public class EnemyVisualController : MonoBehaviour
             hidedEnemyIds.Remove(id);
         else if (reversedEnemyIds.Contains(id))
             reversedEnemyIds.Remove(id);
+
+        if (killEnemyGA.EnemyView == selectedTarget)
+        {
+            VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "UI_SelectedEnemy");  //선택 그리드 비활성화
+            selectedTarget = null;
+            isSlecting = false;
+        }
+    }
+
+    private void MoveGAPostReaction(MoveGA moveGA)
+    {
+        if (moveGA.mover == selectedTarget)
+        {
+            VisualGridCreator.Instance.ChangeVisualGrid(
+                moveGA.movePosition,
+                gameObject.GetInstanceID(), 
+                "UI_SelectedEnemy",
+                "UI_SelectedEnemy"
+                );
+        }
     }
 }

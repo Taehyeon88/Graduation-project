@@ -40,7 +40,6 @@ public class SeverRat : Enemy
 
     public override List<Vector2Int> PreJudgeMoveAction(EnemyView myEnemyView)
     {
-        //규칙 : 플레이어 주변 타일로 목표로 1칸 이동
 
         //영웅 주변으로 이동 가능 타일 찾기
         var canMovePoses = TokenSystem.Instance.GetCanMovePlace(HeroSystem.Instance.HeroView, attackDistance);
@@ -51,7 +50,6 @@ public class SeverRat : Enemy
 
         if (distance >= 1 && distance != int.MaxValue)        //이동할 경로를 찾을 수 없음 - int.MaxValue
         {
-            path.RemoveRange(1, path.Count - 1);
             return path;
         }
         else return null;
@@ -81,6 +79,8 @@ public class SeverRat : Enemy
         if (active)
         {
             VisualGridCreator.Instance.RemoveVisualGrid(enemy.gameObject.GetInstanceID(), "Enemy_Move");
+
+            if (path == null) return;
             foreach (var pos in path)
             {
                 VisualGridCreator.Instance.CreateVisualGrid(enemy.gameObject.GetInstanceID(), pos, "Enemy_Move");
@@ -94,6 +94,7 @@ public class SeverRat : Enemy
 
     public override void PlayMoveAction(EnemyView enemy, List<Vector2Int> path)
     {
+        if (path == null) return;
         path = CheckHeroInPath(path);
         if (path.Count == 0) return;
 
