@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class HeroVisualEffectSystem : Singleton<HeroVisualEffectSystem>
 {
+    [field: SerializeField] public ProjectionView ProjectionView { get; private set; }
+
     [SerializeField] private VisualEffectData[] visualEffectDatas;
     [SerializeField] private Dictionary<(CardType, CardSubType), VisualEffectData> effectDataById = new();
 
@@ -57,7 +59,7 @@ public class HeroVisualEffectSystem : Singleton<HeroVisualEffectSystem>
     {
         (CardType, CardSubType) type = (cardType, cardSubType);
 
-        if (!CheckCanPlayVisualEffect(type, isPrivateLogic)) return;
+        if (!CheckCanPlayVisualEffect(type, isPrivateLogic) || targetPoses == null) return;
 
         //시작 모션
         var casterPos = TokenSystem.Instance.GetTokenPosition(HeroSystem.Instance.HeroView);
@@ -65,15 +67,18 @@ public class HeroVisualEffectSystem : Singleton<HeroVisualEffectSystem>
         ActionSystem.Instance.AddReaction(playVisualEffectGA);
 
         //피격 이펙트 전달
-        DamageSystem.Instance.DamageVFX = GetHitVEInfo(type).Item2;
-        DamageSystem.Instance.DamageSoundId = GetHitVEInfo(type).Item1;
+        var infos = GetHitVEInfo(type);
+        if(infos.Item1 > 0)
+            DamageSystem.Instance.DamageSoundId = GetHitVEInfo(type).Item1;
+        if(infos.Item2 != null)
+            DamageSystem.Instance.DamageVFX = GetHitVEInfo(type).Item2;
     }
 
     public void PlayVisualEffectPostGameAction(CardType cardType, CardSubType cardSubType, List<Vector2Int> targetPoses, bool isPrivateLogic = false)
     {
         (CardType, CardSubType) type = (cardType, cardSubType);
 
-        if (!CheckCanPlayVisualEffect(type, isPrivateLogic)) return;
+        if (!CheckCanPlayVisualEffect(type, isPrivateLogic) || targetPoses == null) return;
 
         //회수 모션
         PlayHeroVisualEffectGA playVisualEffectGA2 = new(type, 1, targetPoses);
@@ -101,5 +106,10 @@ public class HeroVisualEffectSystem : Singleton<HeroVisualEffectSystem>
             return true;
         }
         return false;
+    }
+
+    public GameObject PlayVFX(GameObject vfx, Vector3 position)
+    {
+        return Instantiate(vfx, new(position.x, position.y, -25f), vfx.transform.rotation);
     }
 }

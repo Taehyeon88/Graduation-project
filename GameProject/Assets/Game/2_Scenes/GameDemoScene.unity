@@ -1509,11 +1509,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a4805d59974bec4db3b5f49c3bec3b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HeroVisualEffectSystem
+  <ProjectionView>k__BackingField: {fileID: 628265040}
   visualEffectDatas:
   - {fileID: 11400000, guid: 3435848efc47394449b898d40093fece, type: 2}
   - {fileID: 11400000, guid: 7bbab0947f767da49b0d4796c5a2cae7, type: 2}
   - {fileID: 11400000, guid: 6bbb4377d48f9e2459297052e531d24c, type: 2}
   - {fileID: 11400000, guid: 1c548f56d85f3f849832deaa0ae6f983, type: 2}
+  - {fileID: 11400000, guid: bf94666eb2b7b694e86e81258277d569, type: 2}
+  - {fileID: 11400000, guid: 574c3a1117c3dba4ba34137696f5a29d, type: 2}
+  - {fileID: 11400000, guid: 18f777ff38f09d341b8b9bb1a89fdeb8, type: 2}
 --- !u!4 &170968517 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7135897438596925868, guid: 9851229e58487e4449f6fa918f90a7d1, type: 3}
@@ -6007,6 +6011,91 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 216766530c0c7c14ba95d2686381b37c, type: 3}
+--- !u!1001 &628265038
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 4457070332747971071}
+    m_Modifications:
+    - target: {fileID: 2542869319879178668, guid: 4bd0864533eb5504d8a3ed67b8751bd6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 5.999999
+      objectReference: {fileID: 0}
+    - target: {fileID: 2542869319879178668, guid: 4bd0864533eb5504d8a3ed67b8751bd6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 6.014
+      objectReference: {fileID: 0}
+    - target: {fileID: 2542869319879178668, guid: 4bd0864533eb5504d8a3ed67b8751bd6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 7.599995
+      objectReference: {fileID: 0}
+    - target: {fileID: 2542869319879178668, guid: 4bd0864533eb5504d8a3ed67b8751bd6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2542869319879178668, guid: 4bd0864533eb5504d8a3ed67b8751bd6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2542869319879178668, guid: 4bd0864533eb5504d8a3ed67b8751bd6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2542869319879178668, guid: 4bd0864533eb5504d8a3ed67b8751bd6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2542869319879178668, guid: 4bd0864533eb5504d8a3ed67b8751bd6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2542869319879178668, guid: 4bd0864533eb5504d8a3ed67b8751bd6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2542869319879178668, guid: 4bd0864533eb5504d8a3ed67b8751bd6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3845653970979696823, guid: 4bd0864533eb5504d8a3ed67b8751bd6, type: 3}
+      propertyPath: _position.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3845653970979696823, guid: 4bd0864533eb5504d8a3ed67b8751bd6, type: 3}
+      propertyPath: _position.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3845653970979696823, guid: 4bd0864533eb5504d8a3ed67b8751bd6, type: 3}
+      propertyPath: _position.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5708999727464396069, guid: 4bd0864533eb5504d8a3ed67b8751bd6, type: 3}
+      propertyPath: m_Name
+      value: ProjectionView
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4bd0864533eb5504d8a3ed67b8751bd6, type: 3}
+--- !u!4 &628265039 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2542869319879178668, guid: 4bd0864533eb5504d8a3ed67b8751bd6, type: 3}
+  m_PrefabInstance: {fileID: 628265038}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &628265040 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7281755314369991801, guid: 4bd0864533eb5504d8a3ed67b8751bd6, type: 3}
+  m_PrefabInstance: {fileID: 628265038}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 584a33f60fbf8f840ba9bca7583bab97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectionView
 --- !u!1001 &629081884
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7163,7 +7252,7 @@ MonoBehaviour:
   Attack_Adjacent_CardDeck:
   - {fileID: 11400000, guid: ce4e1987d8be0cc4aa6c2fd76ca81ff5, type: 2}
   - {fileID: 11400000, guid: ce4e1987d8be0cc4aa6c2fd76ca81ff5, type: 2}
-  - {fileID: 11400000, guid: b3fa60c2e5365024ba71e530c94a21c5, type: 2}
+  - {fileID: 11400000, guid: f8a86a5d882dd3545aff6d733e9085b3, type: 2}
   - {fileID: 11400000, guid: b3fa60c2e5365024ba71e530c94a21c5, type: 2}
   - {fileID: 11400000, guid: 36e6f9e8e6e28614abd6485f9af53ee3, type: 2}
   - {fileID: 11400000, guid: 36e6f9e8e6e28614abd6485f9af53ee3, type: 2}
@@ -21544,6 +21633,7 @@ Transform:
   - {fileID: 1500705106}
   - {fileID: 255323055}
   - {fileID: 255451089}
+  - {fileID: 628265039}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4607581643916897775

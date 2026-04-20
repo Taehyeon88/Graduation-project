@@ -46,7 +46,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b613a8a8c86efd9488319aaa7ad9b52e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  healthSlider: {fileID: 0}
   wrapper: {fileID: 8574560326372007774}
+  genTransform: {fileID: 0}
 --- !u!114 &3610028875186767296
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -121,7 +123,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8645399055904503311, guid: 888032aeab9a6884482de47824ac3084, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -25
+      value: -5
       objectReference: {fileID: 0}
     - target: {fileID: 8645399055904503311, guid: 888032aeab9a6884482de47824ac3084, type: 3}
       propertyPath: m_LocalRotation.w

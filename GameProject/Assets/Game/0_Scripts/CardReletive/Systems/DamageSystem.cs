@@ -5,7 +5,7 @@ using UnityEngine;
 public class DamageSystem : Singleton<DamageSystem>
 {
     [field : SerializeField] public GameObject DamageVFX { get; set; }
-    [field: SerializeField] public int DamageSoundId { get; set; }
+    [field: SerializeField] public int DamageSoundId { get; set; } = 1;
 
     void OnEnable()
     {
