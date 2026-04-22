@@ -140,7 +140,8 @@ public class CombatantViewStatusUI : MonoBehaviour
                 nextActionText.text = currentSelectedEnemy.NextAction.Description;
             }
 
-            enemyInfosUI.gameObject.SetActive(true);
+            if(isEnemyInfosUIActive)
+                enemyInfosUI.gameObject.SetActive(true);
         }
         else
         {
@@ -149,7 +150,8 @@ public class CombatantViewStatusUI : MonoBehaviour
             //var enemies = this.enemies;
             //if (enemies.Count > 0 && enemies[0] != null)
             //    SetEnemyUIInfos(enemies[0]);
-            enemyInfosUI.gameObject.SetActive(false);
+            if (isEnemyInfosUIActive)
+                enemyInfosUI.gameObject.SetActive(false);
         }
     }
 
