@@ -102,6 +102,14 @@ public class SeverRat : Enemy
         ActionSystem.Instance.AddReaction(performMoveGA);
     }
 
+    public override (EnemyAction, List<Vector2Int>) ReCalculate(EnemyView enemy)
+    {
+        var path = PreJudgeMoveAction(enemy);
+        SetDrawMoveActionVG(true, enemy, path);
+
+        return (null, path);
+    }
+
     public override Enemy Clone()
     {
         return new SeverRat();

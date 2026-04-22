@@ -215,6 +215,8 @@ public class EnemyVisualController : MonoBehaviour
         else if (reversedEnemyIds.Contains(id))
             reversedEnemyIds.Remove(id);
 
+        VisualGridCreator.Instance.RemoveVisualGridById(id);
+
         if (killEnemyGA.EnemyView == selectedTarget)
         {
             VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "UI_SelectedEnemy");  //선택 그리드 비활성화

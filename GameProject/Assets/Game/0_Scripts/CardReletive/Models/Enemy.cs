@@ -11,6 +11,7 @@ public abstract class Enemy
     public abstract void SetDrawActActionVG(bool active, EnemyView enemy, EnemyAction action);               //행동 미리보기 그리기 설정
     public abstract void SetDrawMoveActionVG(bool active, EnemyView enemy, List<Vector2Int> path);           //이동 미리보기 그리기 설정
     public abstract void PlayMoveAction(EnemyView enemy, List<Vector2Int> path);                             //이동 실행
+    public abstract (EnemyAction, List<Vector2Int>) ReCalculate(EnemyView enemy);                            //플레이어 턴중 재계산
     public abstract Enemy Clone();                                                                           //복사 함수
 
 

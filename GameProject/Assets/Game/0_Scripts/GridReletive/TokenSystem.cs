@@ -329,6 +329,12 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
         Vector2Int current = gridPosByToken[token];
         return Mathf.Max(Mathf.Abs(current.x - endPos.x), Mathf.Abs(current.y - endPos.y));
     }
+    public int GetDistance(Token token, Token token2)
+    {
+        Vector2Int current = gridPosByToken[token];
+        Vector2Int endPos = gridPosByToken[token2];
+        return Mathf.Max(Mathf.Abs(current.x - endPos.x), Mathf.Abs(current.y - endPos.y));
+    }
 
     /// <summary>
     /// 특정 토큰에서 토큰으로의 거리를 구하는 함수

@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class Hermit : Enemy
 {
+    private const int checkDistance = 2;
     public override EnemyAction PreJudgeActAction(EnemyView enemy)
     {
         var heroPos = TokenSystem.Instance.GetTokenPosition(HeroSystem.Instance.HeroView);
         var distance = TokenSystem.Instance.GetDistance(enemy, heroPos);
 
         Type type = null;
-        if (distance <= 2)
+        if (distance <= checkDistance)
         {
             type = typeof(Hermit_QxidizedEA);
         }
@@ -36,7 +37,7 @@ public class Hermit : Enemy
         var heroPos = TokenSystem.Instance.GetTokenPosition(HeroSystem.Instance.HeroView);
         var distance = TokenSystem.Instance.GetDistance(enemy, heroPos);
 
-        if (distance <= 2)
+        if (distance <= checkDistance)
         {
             var range = TokenSystem.Instance.GetCanMovePlace(enemy, 1);
             int maxDistance = 0;
@@ -104,6 +105,34 @@ public class Hermit : Enemy
 
         PerformMoveGA performMoveGA = new(enemy, path);
         ActionSystem.Instance.AddReaction(performMoveGA);
+    }
+    public override (EnemyAction, List<Vector2Int>) ReCalculate(EnemyView enemy)
+    {
+        if (enemy.NextAction is Hermit_QxidizedEA)
+        {
+            int dis = TokenSystem.Instance.GetDistance(enemy, HeroSystem.Instance.HeroView);
+            Vector2Int dir = TokenSystem.Instance.GetDirection(HeroSystem.Instance.HeroView, enemy);
+
+            EnemyAction enemyAction = enemy.NextAction;
+
+            if (dis > checkDistance)
+            {
+                var action = FindEnemyAction(enemy, typeof(NormalAttackEA));
+                if (action == null)
+                    Debug.LogError($"{this}에 {typeof(NormalAttackEA)}라는 행동이 존재하지 않습니다.");
+
+                enemyAction = action;
+            }
+
+            enemyAction.Directions.Clear();
+            enemyAction.Directions.Add(dir);
+
+            SetDrawActActionVG(true, enemy, enemyAction);
+
+            return (enemy.NextAction != enemyAction? enemyAction: null, null);
+        }
+
+        return (null, null);
     }
 
     public override Enemy Clone()

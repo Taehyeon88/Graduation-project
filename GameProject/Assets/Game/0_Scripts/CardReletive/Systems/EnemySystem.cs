@@ -211,17 +211,25 @@ public class EnemySystem : Singleton<EnemySystem>
                 enemyView.Enemy.SetDrawMoveActionVG(true, enemyView, enemyView.NextMovePath);
             }
         }
-    }
 
-    //privates
-    private Tween DomoveX(Token token, float dis, float duration)
-    {
-        float startX = token.TokenTransform.positionX;
-        return DOTween.To(() =>
-                 token.TokenTransform.positionX,
-                 x => token.TokenTransform.positionX = x,
-                 startX + dis,
-                 duration
-               );
+        if (moveGA.mover is HeroView heroView)
+        {
+            if (heroView != null)
+            {
+                foreach (var enemy in Enemise)
+                {
+                    var infos = enemy.Enemy.ReCalculate(enemy);
+                    if (infos.Item1 != null)
+                    {
+                        enemy.SetNextAction(infos.Item1);
+                    }
+
+                    if (infos.Item2 != null)
+                    {
+                        enemy.NextMovePath = infos.Item2;
+                    }
+                }
+            }
+        }
     }
 }

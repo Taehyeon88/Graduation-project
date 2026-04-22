@@ -109,6 +109,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 3.5
       objectReference: {fileID: 0}
+    - target: {fileID: 3865680747253829356, guid: 888032aeab9a6884482de47824ac3084, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3970755361663797731, guid: 888032aeab9a6884482de47824ac3084, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 2.93
@@ -164,6 +168,14 @@ PrefabInstance:
     - target: {fileID: 6010521439632665029, guid: 888032aeab9a6884482de47824ac3084, type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.46
+      objectReference: {fileID: 0}
+    - target: {fileID: 6135916408884059983, guid: 888032aeab9a6884482de47824ac3084, type: 3}
+      propertyPath: m_Maskable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6135916408884059983, guid: 888032aeab9a6884482de47824ac3084, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7983041931997095288, guid: 888032aeab9a6884482de47824ac3084, type: 3}
       propertyPath: m_AnchorMax.x

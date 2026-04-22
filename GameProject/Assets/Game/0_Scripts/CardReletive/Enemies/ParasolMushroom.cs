@@ -141,6 +141,8 @@ public class ParasolMushroom : Enemy
         ActionSystem.Instance.AddReaction(performMoveGA);
     }
 
+    public override (EnemyAction, List<Vector2Int>) ReCalculate(EnemyView enemy) { return (null, null); }
+
     public override Enemy Clone()
     {
         return new ParasolMushroom();
