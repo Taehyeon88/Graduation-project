@@ -125,6 +125,7 @@ public class EnemyVisualController : MonoBehaviour
     {
         if (!isAllLooking)
             Hide(selectedTarget);
+        VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "UI_SelectedEnemy");
         isSlecting = false;
         selectedTarget = null;
     }

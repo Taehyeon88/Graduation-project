@@ -139,6 +139,8 @@ public class CombatantViewStatusUI : MonoBehaviour
                 nextActionImage.sprite = currentSelectedEnemy.NextAction.Icon;
                 nextActionText.text = currentSelectedEnemy.NextAction.Description;
             }
+
+            enemyInfosUI.gameObject.SetActive(true);
         }
         else
         {
@@ -147,6 +149,7 @@ public class CombatantViewStatusUI : MonoBehaviour
             //var enemies = this.enemies;
             //if (enemies.Count > 0 && enemies[0] != null)
             //    SetEnemyUIInfos(enemies[0]);
+            enemyInfosUI.gameObject.SetActive(false);
         }
     }
 
@@ -193,6 +196,14 @@ public class CombatantViewStatusUI : MonoBehaviour
     /// <param name="enemyView"></param>
     public void SetEnemyUIInfos(EnemyView enemyView)
     {
+        //같은 적 다시 클릭시, 선택 취소 처리
+        if (currentSelectedEnemy == enemyView)
+        {
+            currentSelectedEnemy = null;
+            UISystem.Instance.SetEnemyVisualSelected(false);
+            return;
+        }
+
         enemyImage.sprite = enemyView.EnemySprite;
         enemyNameText.text = enemyView.EnemyName;
         enemyHPSlider.maxValue = enemyView.MaxHealth;
@@ -236,6 +247,7 @@ public class CombatantViewStatusUI : MonoBehaviour
     {
         isEnemyInfosUIActive = !isEnemyInfosUIActive;
         enemyInfosUI.gameObject.SetActive(isEnemyInfosUIActive);
+        enemysUI.gameObject.SetActive(isEnemyInfosUIActive);
     }
 
     //Combatant
