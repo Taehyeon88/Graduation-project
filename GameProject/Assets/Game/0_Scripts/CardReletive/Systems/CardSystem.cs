@@ -274,7 +274,9 @@ public class CardSystem : Singleton<CardSystem>
                     else
                     {
                         string cardTypeString = card.CardType.ToString();
-                        if (cardTypeString.Substring(0, cardTypeString.IndexOf("_")) == "Attack")
+                        if (cardTypeString.Substring(0, cardTypeString.IndexOf("_")) == "Attack" 
+                                    && card.CardSubType != CardSubType.Dash
+                                    && card.CardSubType != CardSubType.Move)
                         {
                             conditions = GetUseConditions(targets);
                         }

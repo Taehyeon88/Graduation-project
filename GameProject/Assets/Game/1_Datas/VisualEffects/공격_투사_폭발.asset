@@ -24,7 +24,7 @@ MonoBehaviour:
     useSound: 0
     soundId: 0
   <HitVFX>k__BackingField: {fileID: 0}
-  <HitSoundId>k__BackingField: 0
+  <HitSoundId>k__BackingField: 13
   <UsePrivateLogic>k__BackingField: 0
   references:
     version: 2

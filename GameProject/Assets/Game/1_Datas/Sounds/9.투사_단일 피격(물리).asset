@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ad5f4cd64fd1ea9498c76a4d8d89ee0f, type: 3}
-  m_Name: "17.\uCE74\uB4DC \uD638\uBC84\uC74C"
+  m_Name: "9.\uD22C\uC0AC_\uB2E8\uC77C \uD53C\uACA9(\uBB3C\uB9AC)"
   m_EditorClassIdentifier: Assembly-CSharp::SoundData
-  <SoundId>k__BackingField: 17
+  <SoundId>k__BackingField: 9
   <AudioType>k__BackingField: 1
-  <Clip>k__BackingField: {fileID: 8300000, guid: 47215c1faa3c0f841a9c1fbd8fe3d477, type: 3}
+  <Clip>k__BackingField: {fileID: 8300000, guid: ca189cdcefd993245bff9256761f2371, type: 3}
   <Volume>k__BackingField: 1

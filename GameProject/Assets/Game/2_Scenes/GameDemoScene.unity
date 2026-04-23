@@ -2143,7 +2143,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &242505982
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7256,11 +7256,11 @@ MonoBehaviour:
   cardCheatModeText: {fileID: 718147332}
   Attack_Adjacent_CardDeck:
   - {fileID: 11400000, guid: ce4e1987d8be0cc4aa6c2fd76ca81ff5, type: 2}
-  - {fileID: 11400000, guid: ce4e1987d8be0cc4aa6c2fd76ca81ff5, type: 2}
-  - {fileID: 11400000, guid: b3fa60c2e5365024ba71e530c94a21c5, type: 2}
-  - {fileID: 11400000, guid: b3fa60c2e5365024ba71e530c94a21c5, type: 2}
-  - {fileID: 11400000, guid: 36e6f9e8e6e28614abd6485f9af53ee3, type: 2}
-  - {fileID: 11400000, guid: 36e6f9e8e6e28614abd6485f9af53ee3, type: 2}
+  - {fileID: 11400000, guid: c4079ead3a289fc4990942d4dd3a2f92, type: 2}
+  - {fileID: 11400000, guid: 528f980f27add8747ba14142a99bb373, type: 2}
+  - {fileID: 11400000, guid: f8a86a5d882dd3545aff6d733e9085b3, type: 2}
+  - {fileID: 11400000, guid: 70cc7a0f3af93804c8156bd3246dd47a, type: 2}
+  - {fileID: 11400000, guid: c8454026c0aebb14285168494634a9b9, type: 2}
   Attack_Projection_CardDeck:
   - {fileID: 11400000, guid: 4bb2181ad44476e44912d6ada97dd27d, type: 2}
   - {fileID: 11400000, guid: 4bb2181ad44476e44912d6ada97dd27d, type: 2}
@@ -8348,6 +8348,20 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 46a19f66d1723064d9f7b586a8181ace, type: 2}
   - {fileID: 11400000, guid: e1e567fa0c0502040a057cb780d45b62, type: 2}
   - {fileID: 11400000, guid: e92e8bf9bfc3d9e42b32f506e5863af0, type: 2}
+  - {fileID: 11400000, guid: 107dba07b48e9bf408883c9764d089ce, type: 2}
+  - {fileID: 11400000, guid: 0f26242adcd500746b9ba1c569a8fb82, type: 2}
+  - {fileID: 11400000, guid: 248c6fd6e5f7c6a4c9e962b3250d849b, type: 2}
+  - {fileID: 11400000, guid: 1feba0860ae285841ae47296f4a8fe4a, type: 2}
+  - {fileID: 11400000, guid: 324ff2a0969918a4297fc46448302027, type: 2}
+  - {fileID: 11400000, guid: 908221d05fe7461438729be5308d456f, type: 2}
+  - {fileID: 11400000, guid: 20046c257f93a874fac0d44b9031f6d0, type: 2}
+  - {fileID: 11400000, guid: 3405ee8cef6fe9241b1e692334060474, type: 2}
+  - {fileID: 11400000, guid: 7e4fd7f6f0ac59f4d9dbf75b842734e8, type: 2}
+  - {fileID: 11400000, guid: e5d07b87065c4a449842371bc10d60f9, type: 2}
+  - {fileID: 11400000, guid: 67b07f7792eddca49a451f8885f407fd, type: 2}
+  - {fileID: 11400000, guid: 8193bcce234585c4eaa6f503de8e688e, type: 2}
+  - {fileID: 11400000, guid: cd4fe1dfaddfcc542bd41ba3c399e7d1, type: 2}
+  - {fileID: 11400000, guid: 6c4c31d442b64124e93e723d9b108541, type: 2}
   bgmTransform: {fileID: 235483443}
   sfxTransform: {fileID: 1284117664}
   bgmMixerGroup: {fileID: 3467318484203062607, guid: b37b80970932a2f4ab2f6bb207dffa13, type: 2}
@@ -20689,7 +20703,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2090240611
 MonoBehaviour:
   m_ObjectHideFlags: 0

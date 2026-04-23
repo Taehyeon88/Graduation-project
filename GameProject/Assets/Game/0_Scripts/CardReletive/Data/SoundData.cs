@@ -4,7 +4,7 @@ using UnityEngine.Audio;
 [CreateAssetMenu(menuName = "Data/SoundData")]
 public class SoundData : ScriptableObject
 {
-    [field: SerializeField] public int SoundId { get; private set; }
+    public int SoundId => int.Parse(name.Substring(0, name.IndexOf(".")));
     [field: SerializeField] public AudioType AudioType { get; private set; }
     [field: SerializeField] public AudioClip Clip { get; private set; }
 

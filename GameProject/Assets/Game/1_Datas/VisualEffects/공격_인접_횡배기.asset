@@ -17,14 +17,15 @@ MonoBehaviour:
   <CustomSquences>k__BackingField:
   - <CustomSquence>k__BackingField:
       rid: 1062699251800997959
-    useSound: 0
-    soundId: 0
+    useSound: 1
+    soundId: 7
   - <CustomSquence>k__BackingField:
       rid: 1062699251800997960
     useSound: 0
     soundId: 0
   <HitVFX>k__BackingField: {fileID: 1429954232896169633, guid: 83036083a4ebcd34f98131bd3cf6f4d2, type: 3}
-  <HitSoundId>k__BackingField: 0
+  <HitSoundId>k__BackingField: 2
+  <UsePrivateLogic>k__BackingField: 0
   references:
     version: 2
     RefIds:

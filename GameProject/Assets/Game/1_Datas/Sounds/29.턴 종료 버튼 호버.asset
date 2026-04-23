@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SoundData
   <SoundId>k__BackingField: 29
   <AudioType>k__BackingField: 1
-  <Clip>k__BackingField: {fileID: 8300000, guid: 37c65d8af05562244bd387ad8c0e8906, type: 3}
+  <Clip>k__BackingField: {fileID: 8300000, guid: b358490f679ab34479f773a42e4dd4c2, type: 3}
   <Volume>k__BackingField: 1

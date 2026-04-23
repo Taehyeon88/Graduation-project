@@ -232,7 +232,7 @@ public class Prj_SingleSQ : CustomSquence
         projectionTween.OnStart(() =>
         {
             HeroVisualEffectSystem.Instance.ProjectionView.StartFly(null, flyVFX);
-            //투척 사운드 실행 SoundSystem.PlaySound();
+            SoundSystem.Instance.PlaySound(8);
         });
         projectionTween.OnComplete(() =>
         {
@@ -292,7 +292,8 @@ public class Prj_PenetrationSQ : CustomSquence
         projectionTween.OnStart(() =>
         {
             HeroVisualEffectSystem.Instance.ProjectionView.StartFly(null, flyVFX);
-            //투척 사운드 실행 SoundSystem.PlaySound();
+            //투척 사운드 실행
+            SoundSystem.Instance.PlaySound(11);
         });
         projectionTween.OnComplete(() =>
         {
