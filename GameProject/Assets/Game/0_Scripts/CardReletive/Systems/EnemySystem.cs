@@ -8,6 +8,7 @@ public class EnemySystem : Singleton<EnemySystem>
 {
     public IReadOnlyList<EnemyView> Enemise => TokenSystem.Instance.EnemyViews;
     public Action<int> EnemyAddEvent { get; private set; }
+
     void OnEnable()
     {
         ActionSystem.AttachPerformer<EnemysTurnGA>(EnemysTurnPerformer);
@@ -231,5 +232,22 @@ public class EnemySystem : Singleton<EnemySystem>
                 }
             }
         }
+    }
+
+    //publics
+    public List<EnemyView> GetRecalculatedEnemys()
+    {
+        var enemys = new List<EnemyView>();
+        foreach (EnemyView enemy in Enemise)
+        {
+            if (enemy != null)
+            {
+                if (enemy.isContainRecalculateMove)
+                {
+                    enemys.Add(enemy);
+                }
+            }
+        }
+        return enemys;
     }
 }

@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: "2\uBC88 \uC804\uD22C\uBC29"
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   <Stage>k__BackingField: 1
-  <Level>k__BackingField: 1
+  <Level>k__BackingField: 2
   <enemyDatas>k__BackingField:
-  - {fileID: 11400000, guid: f986d0193a9b5a24cb809616f2851e4d, type: 2}
   - {fileID: 11400000, guid: f6d546ee499f35a4cac0e5095a4fc723, type: 2}
+  - {fileID: 11400000, guid: 908e286c60195824f839c7f12c0d62d9, type: 2}
   <wallDatas>k__BackingField: []
   <heroSetUpPositions>k__BackingField:
   - {x: 0, y: 0}

@@ -44,7 +44,10 @@ public class Hermit : Enemy
             Vector2Int position = Vector2Int.zero;
             foreach (var pos in range)
             {
-                int dis = TokenSystem.Instance.GetDistance(HeroSystem.Instance.HeroView, pos);
+                var path = GetEnemyShortestPath(enemy, pos);
+                if (path == null) continue;
+
+                int dis = path.Count;
                 if (dis > maxDistance)
                 {
                     maxDistance = dis;
@@ -100,7 +103,7 @@ public class Hermit : Enemy
     {
         if (path == null) return;
 
-        path = CheckHeroInPath(path);
+        path = CheckTokenInPath(path);
         if (path.Count == 0) return;
 
         PerformMoveGA performMoveGA = new(enemy, path);

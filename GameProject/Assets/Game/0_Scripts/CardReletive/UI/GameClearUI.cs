@@ -3,6 +3,7 @@ using UnityEngine.UI;
 
 public class GameClearUI : MonoBehaviour
 {
+    [SerializeField] private Transform gameClearUITrans;
     [SerializeField] private Transform rewardTransform;
     [SerializeField] private Button gotoNextLevelButton;
 
@@ -11,7 +12,7 @@ public class GameClearUI : MonoBehaviour
     private void OnEnable()
     {
         if(!GameSystem.Instance.IsGameClear)
-            gameObject.SetActive(false);
+            gameClearUITrans.gameObject.SetActive(false);
         gotoNextLevelButton.onClick.AddListener(GoToNextLevel);
     }
     private void OnDisable()
@@ -21,7 +22,7 @@ public class GameClearUI : MonoBehaviour
 
     public void UpdateRewardCards(Card[] cards)
     {
-        gameObject.SetActive(true);
+        gameClearUITrans.gameObject.SetActive(true);
         currentCards = new CardViewInPile[cards.Length];
 
         int index = 0;
@@ -29,6 +30,7 @@ public class GameClearUI : MonoBehaviour
         {
             CardViewInPile cardView = CardViewCreator.Instance.CreatCardViewInPile(card, null);
             cardView.transform.SetParent(rewardTransform);
+            cardView.transform.localScale = Vector3.one;
 
             currentCards[index] = cardView;
             index++;

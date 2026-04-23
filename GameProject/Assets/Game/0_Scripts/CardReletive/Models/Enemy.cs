@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 [Serializable]
@@ -15,22 +16,10 @@ public abstract class Enemy
     public abstract Enemy Clone();                                                                           //복사 함수
 
 
-    //다른 적이 이동 할 위치인지 체크
-    protected bool IsOtherEnemyWillMovePos(Vector2Int targetPos, EnemyView myEnemy)
+    protected List<Vector2Int> GetEnemyShortestPath(EnemyView enemy, Vector2Int goal)
     {
-        var enemys = EnemySystem.Instance.Enemise;
-        foreach (var enemy in enemys)
-        {
-            if (enemy == null) continue;
-            if (enemy == myEnemy) break;
-
-            var path = enemy.NextMovePath;
-            if (path == null) continue;
-
-            if (path[^1] == targetPos)
-                return true;
-        }
-        return false;
+        var recalculatedEnemies = EnemySystem.Instance.GetRecalculatedEnemys();
+        return TokenSystem.Instance.GetEnemyShortestPath(enemy, goal, recalculatedEnemies);
     }
 
     /// <summary>
@@ -48,7 +37,7 @@ public abstract class Enemy
         return null;
     }
 
-    protected List<Vector2Int> CheckHeroInPath(List<Vector2Int> path)
+    protected List<Vector2Int> CheckTokenInPath(List<Vector2Int> path)
     {
         var heroPos = TokenSystem.Instance.GetTokenPosition(HeroSystem.Instance.HeroView);
         int index = path.IndexOf(heroPos);

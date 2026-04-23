@@ -71,20 +71,25 @@ public class ParasolMushroom : Enemy
         }
 
         //공격 하기 좋은 위치 찾기 처리
-        var range = TokenSystem.Instance.GetCanMovePlace(enemy, 3);
+        var range = TokenSystem.Instance.GetCanMovePlace(enemy, 2);
         Vector2Int targetPos = Vector2Int.zero;
+        int maxDistance = 0;
         foreach (var pos in range)
         {
             Vector2Int dir = heroPos - pos;
+            int dis = TokenSystem.Instance.GetDistance(heroPos, pos);
             int absX = Mathf.Abs(dir.x); int absY = Mathf.Abs(dir.y);
-            if (absX == absY)
+            if (absX == absY || absX == 0 || absY == 0)
             {
-                targetPos = pos;
-                break;
+                if (dis > maxDistance)
+                {
+                    targetPos = pos;
+                    maxDistance = dis;
+                }
             }
         }
 
-        var path = TokenSystem.Instance.GetShortestPath(enemy, targetPos);
+        var path = GetEnemyShortestPath(enemy, targetPos);
         if (path != null)
         {
             if (path.Count > 2)
@@ -134,7 +139,7 @@ public class ParasolMushroom : Enemy
     {
         if (path == null) return;
 
-        path = CheckHeroInPath(path);
+        path = CheckTokenInPath(path);
         if (path.Count == 0) return;
 
         PerformMoveGA performMoveGA = new(enemy, path);

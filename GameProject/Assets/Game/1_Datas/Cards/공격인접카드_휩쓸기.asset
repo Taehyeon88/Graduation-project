@@ -17,7 +17,7 @@ MonoBehaviour:
     \uBC00\uCCD0\uB0C5\uB2C8\uB2E4. \uBC00\uB824\uB09C \uC704\uCE58\uC5D0 \uC7A5\uC560\uBB3C\uC774
     \uC788\uC73C\uBA74 \uCD94\uAC00 \uD53C\uD574\uB97C \uC90D\uB2C8\uB2E4."
   <Mana>k__BackingField: 2
-  <Image>k__BackingField: {fileID: 0}
+  <Image>k__BackingField: {fileID: 21300000, guid: 0732928757e85294c9d8fadb4b0bbcbb, type: 3}
   <CardType>k__BackingField: 1
   <CardSubType>k__BackingField: 4
   <SelfEffects>k__BackingField: []

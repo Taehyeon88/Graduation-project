@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29bd87d4b821bdd419a4bafb4b3ce7b9, type: 3}
   m_Name: "\uC774\uB3D9\uCE74\uB4DC_\uAC77\uAE30"
   m_EditorClassIdentifier: 
-  <Description>k__BackingField: "\uC774\uAC83\uC740 \uAC77\uAE30\uC785\uB2C8\uB2E4."
+  <Description>k__BackingField: "\uC774\uAC83\uC740 \uAC77\uAE30 \uCE74\uB4DC\uC785\uB2C8\uB2E4."
   <Mana>k__BackingField: 1
-  <Image>k__BackingField: {fileID: 0}
+  <Image>k__BackingField: {fileID: 21300000, guid: b4da2ef480d385c42ae9d4efcfa18656, type: 3}
   <CardType>k__BackingField: 7
   <CardSubType>k__BackingField: 11
   <SelfEffects>k__BackingField: []

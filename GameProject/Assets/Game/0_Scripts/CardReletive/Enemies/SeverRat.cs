@@ -40,13 +40,14 @@ public class SeverRat : Enemy
 
     public override List<Vector2Int> PreJudgeMoveAction(EnemyView myEnemyView)
     {
-
         //영웅 주변으로 이동 가능 타일 찾기
         var canMovePoses = TokenSystem.Instance.GetCanMovePlace(HeroSystem.Instance.HeroView, attackDistance);
 
         (int, List<Vector2Int>) minValues = GetMinValues(canMovePoses, myEnemyView);  //최소 경로의 목표 위치 찾기
         int distance = minValues.Item1;
         List<Vector2Int> path = minValues.Item2;
+
+        myEnemyView.SetRecalulateMove(true);     //이동 경로 재판단 처리
 
         if (distance >= 1 && distance != int.MaxValue)        //이동할 경로를 찾을 수 없음 - int.MaxValue
         {
@@ -95,7 +96,7 @@ public class SeverRat : Enemy
     public override void PlayMoveAction(EnemyView enemy, List<Vector2Int> path)
     {
         if (path == null) return;
-        path = CheckHeroInPath(path);
+        path = CheckTokenInPath(path);
         if (path.Count == 0) return;
 
         PerformMoveGA performMoveGA = new(enemy, path);
@@ -124,9 +125,8 @@ public class SeverRat : Enemy
         List<Vector2Int> targetPath = null;
         foreach (var pos in canMovePoses)
         {
-            var path = TokenSystem.Instance.GetShortestPath(myEnemyView, pos);   //최소 경로 찾기
+            var path = GetEnemyShortestPath(myEnemyView, pos);  //최소 경로 찾기
             if (path == null) continue;
-            if (IsOtherEnemyWillMovePos(path[^1], myEnemyView)) continue;
 
             int dis = path.Count;
             if (dis < minDistance)

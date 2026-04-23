@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: "3\uBC88 \uC804\uD22C\uBC29"
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   <Stage>k__BackingField: 1
-  <Level>k__BackingField: 1
+  <Level>k__BackingField: 3
   <enemyDatas>k__BackingField:
   - {fileID: 11400000, guid: f986d0193a9b5a24cb809616f2851e4d, type: 2}
   - {fileID: 11400000, guid: f986d0193a9b5a24cb809616f2851e4d, type: 2}

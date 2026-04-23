@@ -17,6 +17,7 @@ public class EnemyView : CombatantView
     public Enemy Enemy { get; private set; }              //적 모델
     public List<EnemyAction> Actions { get; private set; }//적 행동들 
     public List<Vector2Int> NextMovePath { get; set; }    //다음 이동할 경로
+    public bool isContainRecalculateMove { get; private set; }  //다음 이동 재 판단 여부
     public EnemyAction NextAction                         //다음에 할 행동
     {
         get {  return nextAction; }
@@ -73,6 +74,10 @@ public class EnemyView : CombatantView
     public void SetNextAction(EnemyAction action)
     {
         NextAction = action;
+    }
+    public void SetRecalulateMove(bool isContaineRecalculate)
+    {
+        isContainRecalculateMove = isContaineRecalculate;
     }
     public void SetEnemyInfoUIActive(bool active)
     {

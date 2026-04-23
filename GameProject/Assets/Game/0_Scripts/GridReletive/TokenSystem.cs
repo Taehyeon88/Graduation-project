@@ -1,10 +1,11 @@
-﻿using System;
+﻿using DG.Tweening;
+using IsoTools;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using DG.Tweening;
-using IsoTools;
 using UnityEngine;
+using static CartoonFX.ExpressionParser;
 
 public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터, 건물 추가 및 삭제 (게임 중) | 토큰 이동, 등
 {
@@ -220,10 +221,80 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
     /// <param name="token"></param>
     /// <param name="endPosition"></param>
     /// <returns></returns>
-    public List<Vector2Int> GetShortestPath(Token token, Vector2Int isoPosition)
+    public List<Vector2Int> GetShortestPath(Token token, Vector2Int goal)
     {
         Vector2Int start = gridPosByToken[token];
-        return FindPathBFS.FindPath((int[,])grid.simpleGrid.Clone(), start, isoPosition);
+        return FindPathBFS.FindPath((int[,])grid.simpleGrid.Clone(), start, goal);
+    }
+    public List<Vector2Int> GetEnemyShortestPath(EnemyView myEnemy , Vector2Int goal, List<EnemyView> recalculateTargets = null)
+    {
+        var simple = (int[,])grid.simpleGrid.Clone();
+
+        var enemys = EnemyViews;
+        int myId = enemys.IndexOf(myEnemy);
+
+        //< 선턴에 대하여 > - Base
+        //경로 판단 시, 선턴 몬스터들의 도착지점을 경로에서 제외 및
+        //선턴 몬스터들의 현재 지점을 비움
+
+        //<예외처리_재판단 처리>
+        //재판할 대상 or 아닌 대상으로 분리
+        //아닌 대상의 도착지점이 같은 도착지점으로 겹치지X 처리
+
+        //재판단 대상 - 선턴
+        //재판단 대상 - 후턴
+        //----------------------------------------------------------------------------------
+
+        //쥐가 선턴일 경우,
+        //대상 - 쥐보다 후턴 + 미리 판단 대상 +재판단 대상 제외
+
+        //미리 판단한 후턴 몬스터들의 도착지점이 쥐의 도착지가 아닐 경우, 상관없음.
+        //단, 쥐의 도착지일 경우, 제외. (도착 지점 곂침 여부만 판단.)
+
+        //쥐가 후턴일 경우,
+        //대상 - 쥐보다 선턴 + 미리 판단 대상 +재판단 대상(이미 판단함)
+
+        //미리 판단한 선턴 몬스터들의 도착지점을 경로에서 제외
+        //선턴 몬스터들의 현재 지점을 비움
+
+
+        //*자기보다 후 턴만 이동 재판단할 대상들은 미리 판단한 몬스터 대상에서 제외
+
+        for (int i = 0; i < myId; i++)  //선턴에 대한 처리
+        {
+            if(enemys[i].NextMovePath == null) continue;
+
+            var arrive = enemys[i].NextMovePath[^1];
+            var enemyPos = gridPosByToken[enemys[i]];
+
+            simple[arrive.x, arrive.y] = 1;
+            simple[enemyPos.x, enemyPos.y] = 0;
+
+            if (goal == arrive)
+                return null;
+        }
+
+        if (recalculateTargets != null)
+        {
+            if (recalculateTargets.Contains(myEnemy))
+            {
+                for (int i = myId + 1; i < enemys.Count; i++)  //선턴에 대한 처리
+                {
+                    if (recalculateTargets.Contains(enemys[i])
+                        || enemys[i].NextMovePath == null) continue;
+
+                    Debug.Log($"적 아이디: {i}");
+                    Debug.Log($"경로 존재 여부: {enemys[i].NextMovePath != null}");
+
+                    var arrive = enemys[i].NextMovePath[^1];
+                    if (goal == arrive)
+                        return null;
+                }
+            }
+        }
+
+        Vector2Int start = gridPosByToken[myEnemy];
+        return FindPathBFS.FindPath(simple, start, goal);
     }
 
     /// <summary>
@@ -334,6 +405,10 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
         Vector2Int current = gridPosByToken[token];
         Vector2Int endPos = gridPosByToken[token2];
         return Mathf.Max(Mathf.Abs(current.x - endPos.x), Mathf.Abs(current.y - endPos.y));
+    }
+    public int GetDistance(Vector2Int startPos, Vector2Int endPos)
+    {
+        return Mathf.Max(Mathf.Abs(startPos.x - endPos.x), Mathf.Abs(startPos.y - endPos.y));
     }
 
     /// <summary>
