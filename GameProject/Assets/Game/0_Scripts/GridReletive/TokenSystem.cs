@@ -338,7 +338,7 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
 
         if (useAnimation)
         {
-            Tween tween = Utility.GetTween(token, targetPos, 1f);
+            Tween tween = Utility.GetTween(token, targetPos, 0.3f);
             yield return tween.WaitForCompletion();
         }
     }
@@ -468,6 +468,20 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
         }
         if (combatants.Count > 0) return combatants;
         return null;
+    }
+
+    /// <summary>
+    /// 특정 토큰을 기준으로 방향, 거리 값만큼 떨어진 그리드 위치 찾는 함수
+    /// </summary>
+    /// <param name="token"></param>
+    /// <param name="direction"></param>
+    /// <param name="distance"></param>
+    /// <returns></returns>
+    public Vector2Int GetTargetPosByDirection(Token token, Vector2Int direction, int distance = 1)
+    {
+        Vector2Int pos = GetTokenPosition(token);
+        Vector2 dir = Utility.GetSignVector2(direction);
+        return pos + new Vector2Int((int)dir.x, (int)dir.y) * distance;
     }
 
     /// <summary>

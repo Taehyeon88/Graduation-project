@@ -18,15 +18,16 @@ public class ActionSystem : Singleton<ActionSystem>
     {
         WaitUntilEndPause = new(() => !IsPausing);
     }
-    public void Perform(GameAction action, System.Action OnPerformFinished = null)
+    public bool Perform(GameAction action, System.Action OnPerformFinished = null)
     {
-        if (IsPerforming) return;
+        if (IsPerforming) return false;
         IsPerforming = true;
         StartCoroutine(Flow(action, () =>
         {
             IsPerforming = false;
             OnPerformFinished?.Invoke();
         }));
+        return true;
     }
     public void AddReaction(GameAction gameAction, System.Action OnReactionFinished = null)
     {

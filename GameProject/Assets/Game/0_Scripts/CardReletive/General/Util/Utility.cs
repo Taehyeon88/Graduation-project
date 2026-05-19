@@ -6,39 +6,6 @@ using UnityEngine;
 
 public static class Utility
 {
-    private static Camera camera = Camera.main;
-    public static Vector3 GetMousePositionInWorldSpace(float zValue = 0f)
-    {
-        Plane dragPlane = new(camera.transform.forward, new Vector3(0,0, zValue));
-        Ray ray = camera.ScreenPointToRay(Input.mousePosition);
-        if (dragPlane.Raycast(ray, out float distance))
-        {
-            return ray.GetPoint(distance);
-        }
-        return Vector3.zero;
-    }
-
-    public static Vector3 GetMousePositionInWorldSpace()
-    {
-        Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (groundPlane.Raycast(ray, out float distance))
-        {
-            return ray.GetPoint(distance);
-        }
-        return Vector3.zero;
-    }
-
-    public static Vector3 GridToWorldPoint(Vector2Int gridPosition, int zValue)
-    {
-        IsoWorld isoWorld = TokenSystem.Instance.IsoWorld;
-        if (isoWorld == null) return default;
-
-        Vector2 screenPoint = isoWorld.IsoToScreen(new(gridPosition.x, gridPosition.y, 1));
-        Vector3 worldPoint = Camera.main.ScreenToWorldPoint(new(screenPoint.x, screenPoint.y, zValue));
-        return worldPoint;
-    }
-
     public static Vector2 GetSignVector2(Vector2 vector)
     {
         return new Vector2

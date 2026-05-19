@@ -7,7 +7,6 @@ public class CardAbilitySystem : Singleton<CardAbilitySystem>
 {
     public readonly List<CardAbilityType> Abilitys = new();
     public Func<float> AddNextAdjDamageEvent { get; private set; }             //다음 인접 카드 50% 증가
-    public Action<Card> GetCardByDiscardPileEvent { get; private set; }        //버려진 카드 더미에서 카드 가져오기
 
     private void OnEnable()
     {
@@ -30,24 +29,6 @@ public class CardAbilitySystem : Singleton<CardAbilitySystem>
         Debug.Log("카드능력 추가 - " +  addCardAbilityGA.CardAbilityType);
         Abilitys.Add(addCardAbilityGA.CardAbilityType);
 
-
-        //버려진 카드 더미에서 카드 가져오기
-        if (Abilitys.Contains(CardAbilityType.GetCardByDiscardPile))
-        {
-            bool eventInvoke = false;
-            UISystem.Instance.SetPileofCardUI(false, true, true);
-            GetCardByDiscardPileEvent = (card) =>
-            {
-                UISystem.Instance.SetPileofCardUI(false, false, true);
-                eventInvoke = true;
-                Abilitys.Remove(CardAbilityType.GetCardByDiscardPile);
-
-                DrawCardFromDiscardPileGA drawCardFDPGA = new(card);
-                ActionSystem.Instance.AddReaction(drawCardFDPGA);
-            };
-
-            yield return new WaitUntil(() =>  eventInvoke);
-        }
         yield return null;
     }
 

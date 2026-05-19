@@ -12,8 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ce87ac8b57556641b26f2ad232c2752, type: 3}
   m_Name: "\uAC70\uBBF8\uC904 \uD568\uC815"
   m_EditorClassIdentifier: 
-  <AoEModel>k__BackingField: {fileID: 6411639767359750287, guid: 00a70b0f6e2b18642badfa0d289dfe7f,
-    type: 3}
+  <AoEModel>k__BackingField: {fileID: 6411639767359750287, guid: 00a70b0f6e2b18642badfa0d289dfe7f, type: 3}
   <AoEFieldType>k__BackingField: 1
   <AoEType>k__BackingField: 4
   <EntryDamage>k__BackingField: 0
