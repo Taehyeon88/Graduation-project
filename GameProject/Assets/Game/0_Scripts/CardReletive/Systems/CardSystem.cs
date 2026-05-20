@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static UnityEngine.Rendering.GPUSort;
 
 public class CardSystem : Singleton<CardSystem>
 {
@@ -11,16 +10,17 @@ public class CardSystem : Singleton<CardSystem>
 
     private readonly List<Card> hand = new();
 
-
     private void OnEnable()
     {
         ActionSystem.AttachPerformer<PlayCardTargetingGA>(PlayCardTargetingGAPerformer);
         ActionSystem.AttachPerformer<PlayCardGA>(PlayCardPerformer);
+        ActionSystem.SubscribeReaction<EnemysTurnGA>(EnemysTurnPostReaction, ReactionTiming.POST);
     }
     private void OnDisable()
     {
         ActionSystem.DetachPerformer<PlayCardTargetingGA>();
         ActionSystem.DetachPerformer<PlayCardGA>();
+        ActionSystem.UnsubscribeReaction<EnemysTurnGA>(EnemysTurnPostReaction, ReactionTiming.POST);
     }
 
 
@@ -45,6 +45,15 @@ public class CardSystem : Singleton<CardSystem>
         }
     }
 
+    //Subscribers
+    private void EnemysTurnPostReaction(EnemysTurnGA enemyTurnGA)
+    {
+        foreach (var card in hand)
+        {
+            card.RefillAvailable_Cnt();
+        }
+    }
+
     //Helpers
 
     private bool[] GetUseConditions(List<Vector2Int> targetPoses)
@@ -61,6 +70,8 @@ public class CardSystem : Singleton<CardSystem>
         }
         return conditions;
     }
+
+    //Performs
 
     /// <summary>
     /// 카드 사용 전, 그리드 타겟팅 시스템(그리드 미리보기 및 선택)
@@ -235,6 +246,9 @@ public class CardSystem : Singleton<CardSystem>
         {
             SpendManaGA spendManaGA = new(playCardGA.Card.Mana);
             ActionSystem.Instance.AddReaction(spendManaGA);
+
+            //카드 사용 가능 횟수 감소
+            playCardGA.Card.ReduceAvailable_Cnt();
 
             if (playCardGA.Card.SelfEffects != null)
             {

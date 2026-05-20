@@ -19,23 +19,45 @@ public class CardView : MonoBehaviour, IPointerClickHandler
     public Image[] images { get; private set; }
     public bool lockCardUse { get; set; } = false;
 
-    public void SetUp(Card card, bool isHover = false)
+    public void SetUp(Card card)
     {
         this.card = card;
         mana.text = card.Mana.ToString();
         image.sprite = card.Image;
         rectTransform = GetComponent<RectTransform>();
 
-        if (isHover)
+        images = GetComponentsInChildren<Image>(true);
+        images[0] = null;
+    }
+
+    public void Update()
+    {
+        if (card.Available_Cnt <= 0 && !lockCardUse)    //잠금상태가 아님 + 카드 사용 횟수 만료
         {
-            images = GetComponentsInChildren<Image>(true);
+            lockCardUse = true;
+            SetCardLockView(true);
+        }
+        else if (card.Available_Cnt > 0 && lockCardUse) //잠금상태 + 카드 사용 횟수 있음
+        {
+            lockCardUse = false;
+            SetCardLockView(false);
+        }
+    }
+
+    private void SetCardLockView(bool active)
+    {
+        if (active)
+        {
+            foreach (var image in images)
+                if (image != null) image.color = new Color32(100, 100, 100, 255);
         }
         else
         {
-            images = GetComponentsInChildren<Image>(true);
-            images[0] = null;
+            foreach (var image in images)
+                if (image != null) image.color = Color.white;
         }
     }
+
     public void OnPointerClick(PointerEventData eventData)
     {
         if (!Interactions.Instance.PlayerCanTargeting() || lockCardUse) return;

@@ -11,7 +11,7 @@ public class CardViewHoverSystem : Singleton<CardViewHoverSystem>
     public void Show(Card card, Vector2 position, bool isLock = false)
     {
         cardViewHover.gameObject.SetActive(true);
-        cardViewHover.SetUp(card, true);
+        cardViewHover.SetUp(card);
         cardViewHover.GetComponent<RectTransform>().anchoredPosition = position;
         if (isLock)
         {
