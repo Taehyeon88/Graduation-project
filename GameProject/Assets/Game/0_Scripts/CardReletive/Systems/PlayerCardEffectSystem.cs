@@ -39,6 +39,17 @@ public class PlayerCardEffectSystem : Singleton<PlayerCardEffectSystem>
         }
         if (combatants.Count > 0)
         {
+            if (attackEnemyGA.IsRandomTargetMode)
+            {
+                List<CombatantView> randomTargets = new();
+                foreach (var combatant in combatants)
+                {
+                    int randomIndex = UnityEngine.Random.Range(0, combatants.Count - 1);
+                    randomTargets.Add(combatants[randomIndex]);
+                }
+                combatants = randomTargets;
+            }
+
             DealDamageGA dealDamageGA = new(attackEnemyGA.Amount, combatants, HeroSystem.Instance.HeroView);
             ActionSystem.Instance.AddReaction(dealDamageGA);
         }

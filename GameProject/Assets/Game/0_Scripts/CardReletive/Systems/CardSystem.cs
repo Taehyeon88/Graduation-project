@@ -264,7 +264,7 @@ public class CardSystem : Singleton<CardSystem>
                         new(HeroSystem.Instance.HeroView, 
                         playCardGA.Card.CardType, 
                         playCardGA.Card.CardSubType
-                        ));
+                        ),playCardGA.Card.RepeatCnt);
                     ActionSystem.Instance.AddReaction(performEffectGA);
                 }
             }
@@ -290,8 +290,8 @@ public class CardSystem : Singleton<CardSystem>
                         new(targetPoses,
                         HeroSystem.Instance.HeroView,
                         playCardGA.Card.CardType,
-                        playCardGA.Card.CardSubType
-                        ));
+                        playCardGA.Card.CardSubType),
+                        playCardGA.Card.RepeatCnt);
                 }
                 else if (targetMode.EffectCondition == GridTargetMode.EffectTargetCondition.CombatantView)
                 {
@@ -309,8 +309,8 @@ public class CardSystem : Singleton<CardSystem>
                             new(combatants, 
                             HeroSystem.Instance.HeroView,
                             playCardGA.Card.CardType,
-                            playCardGA.Card.CardSubType
-                            ));
+                            playCardGA.Card.CardSubType),
+                            playCardGA.Card.RepeatCnt);
                     }
                 }
             }
@@ -326,8 +326,8 @@ public class CardSystem : Singleton<CardSystem>
                                    new(targetPoses,
                                    HeroSystem.Instance.HeroView,
                                    playCardGA.Card.CardType,
-                                   playCardGA.Card.CardSubType
-                               ));
+                                   playCardGA.Card.CardSubType), 
+                                   playCardGA.Card.RepeatCnt);
                     performEffectGA.PostReactions.Add((performGridEffectGA, null));
                 }
             }
@@ -349,7 +349,8 @@ public class CardSystem : Singleton<CardSystem>
                                    new(combatants, 
                                    HeroSystem.Instance.HeroView, 
                                    playCardGA.Card.CardType,
-                                   playCardGA.Card.CardSubType));
+                                   playCardGA.Card.CardSubType),
+                                   playCardGA.Card.RepeatCnt);
                         performEffectGA.PostReactions.Add((performTargetEffectGA, null));
                     }
                 }

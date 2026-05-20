@@ -15,21 +15,24 @@ public class EffectSystem : MonoBehaviour
     }
     private IEnumerator PerformEffectPerformer(PerformEffectGA performEffectGA)
     {
-        if(performEffectGA.IsSkiping) yield break;
+        if(performEffectGA.Effect == null) yield break;
 
-        HeroVisualEffectSystem.Instance.PlayVisualEffectPreGameAction(
-            performEffectGA.EffectInfo.cardType, 
-            performEffectGA.EffectInfo.cardSubType, 
-            performEffectGA.EffectInfo.targetPoses
-            );
+        for (int i = 0; i < performEffectGA.RepeatCnt; i++)
+        {
+            HeroVisualEffectSystem.Instance.PlayVisualEffectPreGameAction(
+               performEffectGA.EffectInfo.cardType,
+               performEffectGA.EffectInfo.cardSubType,
+               performEffectGA.EffectInfo.targetPoses
+               );
 
-        GameAction effectAction = performEffectGA.Effect.GetGameAction(performEffectGA.EffectInfo); 
-        ActionSystem.Instance.AddReaction(effectAction);
+            GameAction effectAction = performEffectGA.Effect.GetGameAction(performEffectGA.EffectInfo);
+            ActionSystem.Instance.AddReaction(effectAction);
 
-        HeroVisualEffectSystem.Instance.PlayVisualEffectPostGameAction(
-            performEffectGA.EffectInfo.cardType, 
-            performEffectGA.EffectInfo.cardSubType, 
-            performEffectGA.EffectInfo.targetPoses
-            );
+            HeroVisualEffectSystem.Instance.PlayVisualEffectPostGameAction(
+                performEffectGA.EffectInfo.cardType,
+                performEffectGA.EffectInfo.cardSubType,
+                performEffectGA.EffectInfo.targetPoses
+                );
+        }
     }
 }

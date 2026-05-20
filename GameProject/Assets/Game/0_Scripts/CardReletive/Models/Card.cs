@@ -13,6 +13,7 @@ public class Card
     public GridTargetMode GridTargetMode => data.GridTargetMode;
     public string Title { get; private set; }
     public int Mana { get; private set; }
+    public int RepeatCnt { get; private set; }
     public int Available_Cnt { get; private set; }
     public int Max_Available_Cnt { get; private set; }
 
@@ -22,6 +23,7 @@ public class Card
     {
         this.data = data;
         Mana = data.Mana;
+        RepeatCnt = data.RepeatCnt;
         Available_Cnt = Max_Available_Cnt = 1;
 
         string name = data.name;
@@ -36,5 +38,10 @@ public class Card
     public void RefillAvailable_Cnt()
     {
         Available_Cnt = Max_Available_Cnt;
+    }
+
+    public void ReduceRepeatCnt()
+    {
+        RepeatCnt = Mathf.Max(RepeatCnt--, 1);
     }
 }

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,15 +6,15 @@ public class PerformEffectGA : GameAction
 {
     public Effect Effect { get; set; }
     public EffectInfo EffectInfo { get; set; }
-    public bool IsSkiping { get; private set; }
-    public PerformEffectGA(Effect effect, EffectInfo effectInfo)
+    public int RepeatCnt { get; set; }
+    public PerformEffectGA(Effect effect, EffectInfo effectInfo, int repeatCnt)
     {
         Effect = effect;
         EffectInfo = effectInfo;
-        IsSkiping = false;
+        RepeatCnt = repeatCnt;
     }
     public PerformEffectGA()
     {
-        IsSkiping = true;
+
     }
 }
