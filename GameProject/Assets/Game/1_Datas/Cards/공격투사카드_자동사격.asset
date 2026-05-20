@@ -10,46 +10,42 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 29bd87d4b821bdd419a4bafb4b3ce7b9, type: 3}
-  m_Name: "\uAE30\uC220\uB514\uBC84\uD504\uCE74\uB4DC_\uC545\uD654"
-  m_EditorClassIdentifier: 
-  <Description>k__BackingField: "\uC774\uBBF8 \uC911\uB3C5\uC774\uB098 \uCD9C\uD608
-    \uC0C1\uD0DC\uC778 \uC801\uC5D0\uAC8C \uC0AC\uC6A9\uD558\uBA74, \uD574\uB2F9
-    \uC0C1\uD0DC \uC774\uC0C1\uC758 \uC9C0\uC18D \uD53C\uD574\uB7C9\uC744 2\uBC30\uB85C
-    \uAC15\uD654\uD569\uB2C8\uB2E4."
+  m_Name: "\uACF5\uACA9\uD22C\uC0AC\uCE74\uB4DC_\uC790\uB3D9\uC0AC\uACA9"
+  m_EditorClassIdentifier: Assembly-CSharp::CardData
+  <Description>k__BackingField: "\uC774\uAC83\uC740 \uC790\uB3D9\uC0AC\uACA9 \uCE74\uB4DC\uC784"
   <Mana>k__BackingField: 1
+  <RepeatCnt>k__BackingField: 2
   <Image>k__BackingField: {fileID: 0}
-  <CardType>k__BackingField: 6
-  <CardSubType>k__BackingField: 0
+  <CardType>k__BackingField: 2
+  <CardSubType>k__BackingField: 1
   <SelfEffects>k__BackingField: []
   <GridTargetMode>k__BackingField:
     <Distance>k__BackingField: 2
     <TargetMode>k__BackingField:
-      rid: 2515386954168664066
+      rid: 606822020916445184
     <GridRangeMode>k__BackingField:
-      rid: 2515386954168664067
+      rid: 606822020916445185
     UseVisualGrid: 1
     UseSelectVG: 1
     WillSelectVGName: Hero_WillAttack
     SelectVGName: Hero_Attack
-    <EffectCondition>k__BackingField: 1
+    <EffectCondition>k__BackingField: 0
     <Effect>k__BackingField:
-      rid: 2515386954168664070
-    <_AddedEffectCondition>k__BackingField: 0
+      rid: 606822020916445186
+    <_AddedEffectCondition>k__BackingField: 1
     <AddedEffects>k__BackingField: []
   OtherOptions: 0
-  LockDiscarding: 0
   references:
     version: 2
     RefIds:
-    - rid: 2515386954168664066
+    - rid: 606822020916445184
       type: {class: SingleTM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 2515386954168664067
+    - rid: 606822020916445185
       type: {class: AllAroundRM, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 2515386954168664070
-      type: {class: AddStatusEffectEffect, ns: , asm: Assembly-CSharp}
+    - rid: 606822020916445186
+      type: {class: AttackEnemyEffect, ns: , asm: Assembly-CSharp}
       data:
-        statusEffectType: 7
-        stackCount: -1
-        setargetMode: 1
+        amount: 2
+        useRandomTargetMode: 1
