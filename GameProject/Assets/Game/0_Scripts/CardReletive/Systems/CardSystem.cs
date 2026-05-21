@@ -151,7 +151,7 @@ public class CardSystem : Singleton<CardSystem>
                         }
                     }
 
-                        string targetStr = string.Join("", targets);
+                    string targetStr = string.Join("", targets);
                     if (curStr != targetStr)
                     {
                         //비주얼 공격 범위 그리드 업데이트

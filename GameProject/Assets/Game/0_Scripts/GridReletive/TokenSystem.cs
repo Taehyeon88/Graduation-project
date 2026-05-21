@@ -39,9 +39,8 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
                 Token token = TokenCreator.Instance.CreateToken(
                         wallData,
                         TokenType.Wall,
-                        transform.position
+                        new(pos.x, pos.y, 1)
                     );
-                token.TokenTransform.position = new(pos.x, pos.y, 1);
 
                 grid.SetToken(token, pos);
                 WallViews.Add(token as WallView);
@@ -51,6 +50,46 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
             index++;
         }
     }
+
+    /// <summary>
+    /// 토큰 추가 함수
+    /// </summary>
+    /// <param name="token"></param>
+    /// <param name="gridPosition"></param>
+    public void AddToken(TokenData tokenData, Vector2Int gridPosition)
+    {
+        Token token = TokenCreator.Instance.CreateToken(
+               tokenData,
+               TokenType.PowerTotem,
+               new(gridPosition.x, gridPosition.y, 1)
+            );
+
+        //해당 타일에 토큰으로 등록처리 (TokenSystem, Gird)
+        grid.SetToken(token, gridPosition);
+        gridPosByToken.Add(token, gridPosition);
+
+        for (int x = 0; x < grid.simpleGrid.GetLength(0); x++)
+        {
+            for (int y = 0; y < grid.simpleGrid.GetLength(1); y++)
+            {
+                Debug.Log($"({x},{y}) - {grid.simpleGrid[x,y]}");
+            }
+        }
+    }
+
+    /// <summary>
+    /// 토큰 삭제 함수
+    /// </summary>
+    /// <param name="token"></param>
+    public void RemoveToken(Token token)
+    {
+        var pos = GetTokenPosition(token);
+        grid.ResetToken(pos);
+        gridPosByToken.Remove(token);
+
+        Destroy(token.gameObject);
+    }
+
     /// <summary>
     /// 전투 시작시, 모든 몬스터들 비어있는 그리드에 랜덤 배치 함수
     /// </summary>

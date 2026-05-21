@@ -1,10 +1,10 @@
-using System.Collections;
+Ôªøusing System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public enum TokenType
 {
-    Hero, Enemy, Wall
+    Hero, Enemy, Wall, PowerTotem
 }
 
 public class TokenCreator : Singleton<TokenCreator>
@@ -13,7 +13,8 @@ public class TokenCreator : Singleton<TokenCreator>
     [SerializeField] private Token heroTokenPrefab;
     [SerializeField] private Token enemyTokenPrefab;
     [SerializeField] private Token wallTokenPrefab;
-    [SerializeField] private Transform isoWorld;      //≈‰≈´µÈ¿ª ª˝º∫«“ ∫Œ∏ ø¿∫Í¡ß∆Æ
+    [SerializeField] private Token powerTotemTokenPrefab;
+    [SerializeField] private Transform isoWorld;      //ÌÜ†ÌÅ∞Îì§ÏùÑ ÏÉùÏÑ±Ìï† Î∂ÄÎ™® Ïò§Î∏åÏ†ùÌä∏
 
     private Token tokenPrefab;
 
@@ -24,6 +25,7 @@ public class TokenCreator : Singleton<TokenCreator>
             case TokenType.Hero: tokenPrefab = heroTokenPrefab; break;
             case TokenType.Enemy: tokenPrefab = enemyTokenPrefab; break;
             case TokenType.Wall: tokenPrefab = wallTokenPrefab; break;
+            case TokenType.PowerTotem: tokenPrefab = powerTotemTokenPrefab; break;
             default: tokenPrefab = null; break;
         }
         if (tokenPrefab == null) return null;
@@ -43,6 +45,10 @@ public class TokenCreator : Singleton<TokenCreator>
             case TokenType.Wall:
                 WallView wallView = token as WallView;
                 wallView.SetUp(data as WallData);
+                break;
+            case TokenType.PowerTotem:
+                PowerTotemView powerTotemView = token as PowerTotemView;
+                powerTotemView.SetUp(data as PowerTotemData);
                 break;
                 
         }

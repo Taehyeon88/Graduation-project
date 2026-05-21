@@ -17116,12 +17116,12 @@ MonoBehaviour:
   <HeroData>k__BackingField: {fileID: 11400000, guid: e93bb81975e21af4ba578505a4b474fe, type: 2}
   deck:
   - {fileID: 11400000, guid: 4bb2181ad44476e44912d6ada97dd27d, type: 2}
-  - {fileID: 11400000, guid: ce4e1987d8be0cc4aa6c2fd76ca81ff5, type: 2}
-  - {fileID: 11400000, guid: 528f980f27add8747ba14142a99bb373, type: 2}
   - {fileID: 11400000, guid: 3845305673ee0714d946a939e02cee79, type: 2}
   - {fileID: 11400000, guid: c4079ead3a289fc4990942d4dd3a2f92, type: 2}
   - {fileID: 11400000, guid: 70cc7a0f3af93804c8156bd3246dd47a, type: 2}
   - {fileID: 11400000, guid: f6bbeb2603e30724abf3d77f010172f8, type: 2}
+  - {fileID: 11400000, guid: aa53daa14c781d44181f814bb4a3cfe4, type: 2}
+  - {fileID: 11400000, guid: 3e1497434fb99d5489e781590a8f7424, type: 2}
   roomDatas:
   - {fileID: 11400000, guid: 71ec10a25e8e35949811fd451cc122f0, type: 2}
   - {fileID: 11400000, guid: eebe10fe9ec30ed4ebdac833a78f7075, type: 2}
@@ -17788,6 +17788,7 @@ MonoBehaviour:
   heroTokenPrefab: {fileID: 4819093266047866604, guid: 296d8e78ff2395748b1e1d3bb452ad78, type: 3}
   enemyTokenPrefab: {fileID: 8184131505389806249, guid: 358d85ed5d16fef40b0ea0f9411f97ea, type: 3}
   wallTokenPrefab: {fileID: 3401949663337504491, guid: d0a4180de37b5c54f82f2edbf12e6ded, type: 3}
+  powerTotemTokenPrefab: {fileID: 7682714556589710865, guid: 176e086d94eeaf94db389251774af101, type: 3}
   isoWorld: {fileID: 4457070332747971071}
 --- !u!4 &1954904732 stripped
 Transform:
