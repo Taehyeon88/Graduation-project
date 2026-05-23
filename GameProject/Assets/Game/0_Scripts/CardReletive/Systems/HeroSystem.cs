@@ -64,6 +64,9 @@ public class HeroSystem : Singleton<HeroSystem>
     {
         Debug.Log("플레이어 턴 종료");
 
+        DiscardAllCardsGA discardAllCardsGA = new();
+        ActionSystem.Instance.AddReaction(discardAllCardsGA);
+
         //플레이어 상태효과 N감소
         foreach (var statusEffectType in HeroView.GetStatusEffects())
         {
@@ -130,5 +133,15 @@ public class HeroSystem : Singleton<HeroSystem>
             ApplyBurnGA applyBurnGA = new(burnStacks, HeroView);
             ActionSystem.Instance.AddReaction(applyBurnGA);
         }
+
+        //HeroFirstMoveGA heroFristMove = new(1);
+        //ActionSystem.Instance.AddReaction(heroFristMove);
+
+        //플레이어 카드 드로우
+        DrawCardsGA drawCardGA = new(5, false);
+        ActionSystem.Instance.AddReaction(drawCardGA);
     }
+
+    //Finisheds
+    private void FinishedFirstMoveRelated() => CardSystem.Instance.EndLockState();
 }

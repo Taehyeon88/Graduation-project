@@ -16,7 +16,6 @@ MonoBehaviour:
   <Level>k__BackingField: 1
   <enemyDatas>k__BackingField:
   - {fileID: 11400000, guid: f986d0193a9b5a24cb809616f2851e4d, type: 2}
-  - {fileID: 11400000, guid: f986d0193a9b5a24cb809616f2851e4d, type: 2}
   <wallDatas>k__BackingField: []
   <heroSetUpPositions>k__BackingField:
   - {x: 0, y: 0}

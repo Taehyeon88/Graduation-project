@@ -12,6 +12,7 @@ public class MatchSetupSystem : MonoBehaviour
     private List<Vector2Int> heroSetUpPositions => new(GameSystem.Instance.HeroSetUpPositions);
     private List<Vector2Int> enemySetUpPositions => new(GameSystem.Instance.EnemySetUpPositions);
     private List<Vector2Int> wallSetUpPositions => new(GameSystem.Instance.WallSetUpPositions);
+    private readonly int drawCount = 5;
     private void Start()
     {
         StartCoroutine(StartSetting());
@@ -22,6 +23,11 @@ public class MatchSetupSystem : MonoBehaviour
         if (deck == null)
         {
             Debug.LogError("GameManager에 deckData가 설정되지 않았습니다.");
+            yield break;
+        }
+        if (deck.Count < drawCount)
+        {
+            Debug.LogError($"GameManager에 설정된 deckData개수가 {drawCount}개 보다 적습니다.");
             yield break;
         }
 

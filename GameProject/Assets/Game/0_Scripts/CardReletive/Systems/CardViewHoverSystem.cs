@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,12 +6,13 @@ using UnityEngine.UI;
 public class CardViewHoverSystem : Singleton<CardViewHoverSystem>
 {
     [SerializeField] private CardView cardViewHover;
+    [SerializeField] private CardViewInPile cardViewHoverInPile;
 
     private bool isLocked = false;
     public void Show(Card card, Vector2 position, bool isLock = false)
     {
         cardViewHover.gameObject.SetActive(true);
-        cardViewHover.SetUp(card);
+        cardViewHover.SetUp(card, true);
         cardViewHover.GetComponent<RectTransform>().anchoredPosition = position;
         if (isLock)
         {
@@ -28,6 +29,18 @@ public class CardViewHoverSystem : Singleton<CardViewHoverSystem>
             SetCardsLockView(isLocked, cardViewHover);
         }
     }
+
+    public void ShowInPile(Card card, Vector2 position)
+    {
+        cardViewHoverInPile.gameObject.SetActive(true);
+        cardViewHoverInPile.SetUp(card, true);
+        cardViewHoverInPile.GetComponent<RectTransform>().position = position;
+    }
+    public void HideInPile()
+    {
+        cardViewHoverInPile.gameObject.SetActive(false);
+    }
+
 
     private void SetCardsLockView(bool active, CardView cardViewHover)
     {

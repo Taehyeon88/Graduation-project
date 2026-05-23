@@ -5,7 +5,8 @@ public static class FindPathBFS
 {
     public static Vector2Int[] Dirs { get; private set; } =
         {
-            new Vector2Int(1,0), new Vector2Int(-1,0), new Vector2Int(0,1), new Vector2Int(0,-1)
+            new Vector2Int(1,0), new Vector2Int(-1,0), new Vector2Int(0,1), new Vector2Int(0,-1),
+            new Vector2Int(1,1), new Vector2Int(-1,1), new Vector2Int(-1,-1), new Vector2Int(1,-1)
         };
 
     public static List<Vector2Int> FindPath(int[,] map, Vector2Int start, Vector2Int goal)
@@ -29,21 +30,36 @@ public static class FindPathBFS
         Debug.Log("경로 없음");
         return null;
     }
-    public static List<Vector2Int> FindAroundPlaces(Vector2Int start, int distance, bool exceptEnemy = false, bool exceptHero = false)
+    public static List<Vector2Int> FindAllPath(int[,] map, Vector2Int start, int distance)
     {
-        return FindAllAround(start, distance, exceptEnemy, exceptHero);
+        if (map == null)
+        {
+            Debug.Log("map 이 없음");
+        }
+        var path = _FindAllPath(map, start, distance);
+
+        if (path != null)
+        {
+            //foreach (var p in path)
+            //    Debug.Log(p);
+
+            return path;
+        }
+
+        Debug.Log("경로 없음");
+        return null;
     }
-    static List<Vector2Int> FindAllAround(Vector2Int start, int maxDistance, bool exceptEnemy, bool exceptHero)
+    static List<Vector2Int> _FindAllPath(int[,] map, Vector2Int start, int maxDistance)
     {
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
         List<Vector2Int> list = new List<Vector2Int>();
-        bool[,] visited = new bool[TokenSystem.Instance.gridWidth, TokenSystem.Instance.gridHeight];
+        bool[,] visited = new bool[map.GetLength(0), map.GetLength(1)];
 
         queue.Enqueue(start);
         while (queue.Count > 0)
         {
             Vector2Int current = queue.Dequeue();
-            int dis = TokenSystem.Instance.GetDistance(start, current);
+            int dis = Mathf.Max(Mathf.Abs(start.x - current.x), Mathf.Abs(start.y - current.y));
             if (dis > maxDistance) break;
 
             if (current != start)
@@ -57,7 +73,8 @@ public static class FindPathBFS
                 int ny = current.y + dir.y;
                 Vector2Int target = new(nx, ny);
 
-                if (!TokenSystem.Instance.IsGridEmpty(new(nx,ny), exceptEnemy, exceptHero)) continue;
+                if (!InBounds(map, nx, ny)) continue;
+                if (map[nx, ny] == 1) continue;
                 if (visited[nx, ny]) continue;
 
                 if(!queue.Contains(target))

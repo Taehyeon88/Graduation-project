@@ -1,60 +1,193 @@
-﻿using DG.Tweening;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using UnityEngine;
 
 public class CardSystem : Singleton<CardSystem>
 {
+    [SerializeField] private HandView handView;
     [SerializeField] private RectTransform handTransform;
+    [SerializeField] private RectTransform drawPilePoint;
+    [SerializeField] private RectTransform discardPilePoint;
 
+    private readonly List<Card> drawPile = new();
+    private readonly List<Card> discardPile = new();
     private readonly List<Card> hand = new();
+
+    public int drawPileCA => drawPile.Count; public int discardPileCA => discardPile.Count;
+    public List<Card> DiscardPile => new(discardPile); public List<Card> DrawcardPile => new(drawPile);
+    private bool isIsolation;
 
     private void OnEnable()
     {
+        ActionSystem.AttachPerformer<DrawCardsGA>(DrawCardsPerformer);
+        ActionSystem.AttachPerformer<DiscardAllCardsGA>(DiscardAllCardsPerformer);
+        ActionSystem.AttachPerformer<DrawCardFromDiscardPileGA>(DrawCardFromDiscardPilePerformer);
         ActionSystem.AttachPerformer<PlayCardTargetingGA>(PlayCardTargetingGAPerformer);
         ActionSystem.AttachPerformer<PlayCardGA>(PlayCardPerformer);
-        ActionSystem.SubscribeReaction<EnemysTurnGA>(EnemysTurnPostReaction, ReactionTiming.POST);
     }
     private void OnDisable()
     {
+        ActionSystem.DetachPerformer<DrawCardsGA>();
+        ActionSystem.DetachPerformer<DiscardAllCardsGA>();
+        ActionSystem.DetachPerformer<DrawCardFromDiscardPileGA>();
         ActionSystem.DetachPerformer<PlayCardTargetingGA>();
         ActionSystem.DetachPerformer<PlayCardGA>();
-        ActionSystem.UnsubscribeReaction<EnemysTurnGA>(EnemysTurnPostReaction, ReactionTiming.POST);
+    }
+    private void Update()
+    {
+        //상태이상 - 고립 처리
+        //CombatantView hero = HeroSystem.Instance.HeroView;
+        //if (hero != null && !Interactions.Instance.lockInteraction)
+        //{
+        //    int isolationStack = hero.GetStatusEffectStacks(StatusEffectType.ISOLATION);
+        //    if (isolationStack > 0)
+        //    {
+        //        //손패의 있는 모든 이동 타입의 카드 비활성화 처리
+        //        foreach (var card in hand)
+        //        {
+        //            if (card.CardSubType == CardSubType.Move
+        //                || card.CardSubType == CardSubType.Dash
+        //                || card.CardType == CardType.Skill_Move)
+        //                handView.SetCardLockView(true, card);
+        //        }
+        //        isIsolation = true;
+        //    }
+        //    else if (isIsolation)
+        //    {
+        //        foreach (var card in hand)
+        //        {
+        //            if (card.CardSubType == CardSubType.Move
+        //                || card.CardSubType == CardSubType.Dash
+        //                || card.CardType == CardType.Skill_Move)
+        //                handView.SetCardLockView(false, card);
+        //        }
+        //        isIsolation = false;
+        //    }
+        //}
     }
 
 
     //Publics
     public void SetUp(List<CardData> deckData)
     {
-        float spacing = 20f;
-        for (int i = 0; i < deckData.Count; i++)
+        foreach (var cardData in deckData.Shuffle())
         {
-            Card card = new(deckData[i]);
-            hand.Add(card);
-
-            CardView cardView = CardViewCreator.Instance.CreatCardView(card, handTransform, handTransform);
-            int cardCount = deckData.Count;
-            RectTransform cardTrans = cardView.GetComponent<RectTransform>();
-
-            Vector2 start = cardCount % 2 == 1 ?
-                cardCount / 2f * (cardTrans.sizeDelta.x + spacing) * Vector2.left:
-                (cardCount - 1) / 2f * (cardTrans.sizeDelta.x + spacing) * Vector2.left;
-
-            cardTrans.anchoredPosition = start + i * (cardTrans.sizeDelta.x + spacing) * Vector2.right;
+            Card card = new(cardData);
+            drawPile.Add(card);
         }
     }
-
-    //Subscribers
-    private void EnemysTurnPostReaction(EnemysTurnGA enemyTurnGA)
+    public void EndLockState()
     {
-        foreach (var card in hand)
-        {
-            card.RefillAvailable_Cnt();
-        }
+        handView.SetCardsLockView(false);
+        Interactions.Instance.lockInteraction = false;
     }
+
+    public bool Cheat_ChangeCards(List<CardData> deckData)
+    {
+        if (!ActionSystem.Instance.IsPerforming)
+        {            
+            drawPile.Clear();
+            foreach (var cardData in deckData)
+            {
+                Card card = new(cardData);
+                drawPile.Add(card);
+            }
+
+            DiscardAllCardsGA discardAllCardsGA = new();
+            ActionSystem.Instance.Perform(discardAllCardsGA, () =>
+            {
+                discardPile.Clear();
+            });
+
+            DrawCardsGA drawCardsGA = new(5);
+            discardAllCardsGA.PerformReactions.Add((drawCardsGA, null));
+
+            return true;
+        }
+        else return false;
+    }
+
+    //Performers
+    private IEnumerator DrawCardsPerformer(DrawCardsGA drawCardsGA)
+    {
+        //카드 드로우 사운드 재생
+        SoundSystem.Instance.PlaySound(16);
+
+        Interactions.Instance.lockInteraction = true;  //카드 드로우시, 카드 인터렉션 잠금
+
+        int actualAmount = Mathf.Min(drawCardsGA.Amount, drawPile.Count);
+        int notDrawnAmount = Mathf.Min(drawCardsGA.Amount - actualAmount, discardPile.Count);
+        for (int i = 0; i < actualAmount; i++)
+        {
+            yield return DrawCard();
+        }
+        if (notDrawnAmount > 0)
+        {
+            RefillDect();
+            for (int i = 0; i < notDrawnAmount; i++)
+                yield return DrawCard();
+        }
+
+        if (drawCardsGA.IsFirstDraw) handView.SetCardsLockView(true); //첫턴 카드 드로우시, 바로 카드사용 불가 처리
+        else Interactions.Instance.lockInteraction = false;           //드로우 종료후, 잠금 해제
+    }
+
+
+    private IEnumerator DiscardAllCardsPerformer(DiscardAllCardsGA discardAllCardsGA)
+    {
+        //카드 드로우 사운드 재생
+        SoundSystem.Instance.PlaySound(16);
+
+        int handCount = hand.Count;
+        foreach (var card in hand.ToList())
+        {
+            if (!card.LockDiscarding)   //<- 예외처리: 버려지지 않는 카드
+            {
+                CardView cardView = handView.RemoveCard(card);
+                yield return DiscardCard(cardView);
+            }
+            else hand.Add(card);
+        }
+        hand.RemoveRange(0, handCount);
+    }
+
+    private IEnumerator DrawCardFromDiscardPilePerformer(DrawCardFromDiscardPileGA drawCardFDPGA)
+    {
+        //카드 되돌리기 사운드 재생
+        SoundSystem.Instance.PlaySound(19);
+
+        yield return DrawCardFromDP(drawCardFDPGA.Card);
+    }
+
 
     //Helpers
+    private IEnumerator DrawCard()
+    {
+        Card card = drawPile.Draw();
+        hand.Add(card);
+        CardView cardView = CardViewCreator.Instance.CreatCardView(card, drawPilePoint, handTransform);
+        yield return handView.AddCard(cardView);
+    }
+    private void RefillDect() => drawPile.AddRange(discardPile.Shuffle());
+
+    private IEnumerator DiscardCard(CardView cardView)
+    {
+        discardPile.Add(cardView.card);
+        cardView.transform.DOScale(Vector3.zero, 0.15f);
+        Tween tween = cardView.transform.DOMove(discardPilePoint.position, 0.15f);
+        yield return tween.WaitForCompletion();
+        Destroy(cardView.gameObject);
+    }
+
+    private IEnumerator DrawCardFromDP(Card card)
+    {
+        discardPile.Remove(card);
+        hand.Add(card);
+        CardView cardView = CardViewCreator.Instance.CreatCardView(card, discardPilePoint, handTransform);
+        yield return handView.AddCard(cardView);
+    }
 
     private bool[] GetUseConditions(List<Vector2Int> targetPoses)
     {
@@ -70,8 +203,6 @@ public class CardSystem : Singleton<CardSystem>
         }
         return conditions;
     }
-
-    //Performs
 
     /// <summary>
     /// 카드 사용 전, 그리드 타겟팅 시스템(그리드 미리보기 및 선택)
@@ -151,7 +282,7 @@ public class CardSystem : Singleton<CardSystem>
                         }
                     }
 
-                    string targetStr = string.Join("", targets);
+                        string targetStr = string.Join("", targets);
                     if (curStr != targetStr)
                     {
                         //비주얼 공격 범위 그리드 업데이트
@@ -244,11 +375,12 @@ public class CardSystem : Singleton<CardSystem>
     {
         if (playCardGA.IsPart1)
         {
+            hand.Remove(playCardGA.Card);
+            CardView cardView = handView.RemoveCard(playCardGA.Card);
+            yield return DiscardCard(cardView);
+
             SpendManaGA spendManaGA = new(playCardGA.Card.Mana);
             ActionSystem.Instance.AddReaction(spendManaGA);
-
-            //카드 사용 가능 횟수 감소
-            playCardGA.Card.ReduceAvailable_Cnt();
 
             if (playCardGA.Card.SelfEffects != null)
             {
@@ -264,7 +396,7 @@ public class CardSystem : Singleton<CardSystem>
                         new(HeroSystem.Instance.HeroView, 
                         playCardGA.Card.CardType, 
                         playCardGA.Card.CardSubType
-                        ),playCardGA.Card.RepeatCnt);
+                        ));
                     ActionSystem.Instance.AddReaction(performEffectGA);
                 }
             }
@@ -290,8 +422,8 @@ public class CardSystem : Singleton<CardSystem>
                         new(targetPoses,
                         HeroSystem.Instance.HeroView,
                         playCardGA.Card.CardType,
-                        playCardGA.Card.CardSubType),
-                        playCardGA.Card.RepeatCnt);
+                        playCardGA.Card.CardSubType
+                        ));
                 }
                 else if (targetMode.EffectCondition == GridTargetMode.EffectTargetCondition.CombatantView)
                 {
@@ -309,8 +441,8 @@ public class CardSystem : Singleton<CardSystem>
                             new(combatants, 
                             HeroSystem.Instance.HeroView,
                             playCardGA.Card.CardType,
-                            playCardGA.Card.CardSubType),
-                            playCardGA.Card.RepeatCnt);
+                            playCardGA.Card.CardSubType
+                            ));
                     }
                 }
             }
@@ -326,8 +458,8 @@ public class CardSystem : Singleton<CardSystem>
                                    new(targetPoses,
                                    HeroSystem.Instance.HeroView,
                                    playCardGA.Card.CardType,
-                                   playCardGA.Card.CardSubType), 
-                                   playCardGA.Card.RepeatCnt);
+                                   playCardGA.Card.CardSubType
+                               ));
                     performEffectGA.PostReactions.Add((performGridEffectGA, null));
                 }
             }
@@ -349,14 +481,11 @@ public class CardSystem : Singleton<CardSystem>
                                    new(combatants, 
                                    HeroSystem.Instance.HeroView, 
                                    playCardGA.Card.CardType,
-                                   playCardGA.Card.CardSubType),
-                                   playCardGA.Card.RepeatCnt);
+                                   playCardGA.Card.CardSubType));
                         performEffectGA.PostReactions.Add((performTargetEffectGA, null));
                     }
                 }
             }
         }
-
-        yield return null;
     }
 }

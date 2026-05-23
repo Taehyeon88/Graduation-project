@@ -1,4 +1,4 @@
-ï»¿using System.Collections.Generic;
+using System.Collections.Generic;
 using SerializeReferenceEditor;
 using UnityEngine;
 
@@ -7,15 +7,14 @@ public class CardData : ScriptableObject
 {
     [field: SerializeField] public string Description { get; private set; }
     [field: SerializeField] public int Mana { get; private set; }
-    [field: SerializeField] public int RepeatCnt { get; private set; } = 1;
     [field: SerializeField] public Sprite Image { get; private set; }
     [field: SerializeField] public CardType CardType { get; private set; }
     [field: SerializeField] public CardSubType CardSubType { get; private set; }
     [field: SerializeReference, SR] public List<Effect> SelfEffects { get; private set; } = null;
     [field: SerializeField] public GridTargetMode GridTargetMode { get; private set; }
 
-    //ê¸°íƒ€ ì˜µì…˜ë“¤
+    //±âÅ¸ ¿É¼Çµé
     public bool OtherOptions = false;
-    //[ShowIf("OtherOptions")]
-    //public bool LockDiscarding;    //ì†íŒ¨ì— ê·¸ë˜ë¡œ ë‚¨ìŒ! ì‚¬ìš©ì‹œì—ë§Œ ë²„ë ¤ì§
+    [ShowIf("OtherOptions")]
+    public bool LockDiscarding;    //¼ÕÆĞ¿¡ ±×·¡·Î ³²À½! »ç¿ë½Ã¿¡¸¸ ¹ö·ÁÁü
 }

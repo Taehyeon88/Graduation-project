@@ -5,6 +5,7 @@ using UnityEngine;
 public class UISystem : Singleton<UISystem>
 {
     [SerializeField] private CombatantViewStatusUI combatantViewStatusUI;
+    [SerializeField] private PileofCardUI pileofCardUI;
     [SerializeField] private EnemyVisualController enemyVisualController;
     [SerializeField] private GameClearUI gameClearUI;
 
@@ -25,6 +26,16 @@ public class UISystem : Singleton<UISystem>
     {
         if (isAdd) combatantViewStatusUI.AddPerkUI(perk);
         else combatantViewStatusUI.RemovePerkUI(perk);
+    }
+
+    public void SetPileofCardUI(bool isDraw, bool active, bool isAbility = false)
+    {
+        if (isDraw) pileofCardUI.SetDrawPileUI(active, isAbility);
+        else pileofCardUI.SetDiscardPileUI(active, isAbility);
+    }
+    public void OffPileofCardUI()
+    {
+        pileofCardUI.OffPileofCardUI();
     }
 
     public void ToggleEnemyVisualAllLooking()

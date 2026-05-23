@@ -10,6 +10,7 @@ public class MoveSystem : Singleton<MoveSystem>
         ActionSystem.AttachPerformer<PerformMoveGA>(PerformMoveGAPerformer);
         ActionSystem.AttachPerformer<MoveGA>(MoveGAPerformer);
         ActionSystem.SubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
+        ActionSystem.SubscribeReaction<PlayerMoveGA>(PlayerMovePostReaction, ReactionTiming.POST);
     }
     private void OnDisable()
     {
@@ -17,30 +18,86 @@ public class MoveSystem : Singleton<MoveSystem>
         ActionSystem.DetachPerformer<PerformMoveGA>();
         ActionSystem.DetachPerformer<MoveGA>();
         ActionSystem.UnsubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
+        ActionSystem.UnsubscribeReaction<PlayerMoveGA>(PlayerMovePostReaction, ReactionTiming.POST);
     }
 
     //Player
-    public void PlayPlayerMove(PlayerMoveGA playerMoveGA, System.Action OnPerformFinished = null)
+    public void PlayPerformMoveToken(PerformMoveGA performMoveGA, System.Action OnPerformFinished)
     {
-        if (!ManaSystem.Instance.HasEnoughMana(1)
-            || !TokenSystem.Instance.IsGridEmpty(playerMoveGA.TargetPos)
-            || TokenSystem.Instance.CheckContainMovedPath(playerMoveGA.TargetPos))
-            return;
-
-        if (ActionSystem.Instance.Perform(playerMoveGA, OnPerformFinished))
-        {
-            SpendManaGA spendManaGA = new(1);
-            playerMoveGA.PerformReactions.Add((spendManaGA, null));
-        }
+        ActionSystem.Instance.Perform(performMoveGA, OnPerformFinished);
     }
 
     //Performer
     private IEnumerator PlayerMoveGAPerformer(PlayerMoveGA playerMoveGA)
     {
-        MoveGA moveGA = new(HeroSystem.Instance.HeroView, playerMoveGA.TargetPos);
-        ActionSystem.Instance.AddReaction(moveGA);
+        if (playerMoveGA.IsAutoMove)
+        {
+            SPDSystem.Instance.AddSPD(playerMoveGA.Distance);
 
-        yield return null;
+            CombatantView heroView = HeroSystem.Instance.HeroView;
+            Vector2Int targetPos = playerMoveGA.TargetPoses[0];
+            int distance = TokenSystem.Instance.GetDistance(heroView, targetPos);
+            var path = TokenSystem.Instance.GetShortestPath(heroView, targetPos);
+            if (path != null)
+            {
+                SPDSystem.Instance.SpendSPD(distance);
+
+                PerformMoveGA performMoveGA = new(heroView, path);
+                ActionSystem.Instance.AddReaction(performMoveGA);
+
+                yield break;
+            }
+        }
+        else
+        {
+            SPDSystem.Instance.AddSPD(playerMoveGA.Distance);
+
+            //현재 SPD가 없어서 이동 불가일 경우, 반환처리
+            int curSPD = SPDSystem.Instance.RemainSPD();
+            if (curSPD <= 0) yield break;
+
+            //비주얼 그리드 설정
+            VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "Hero_Move");            //이동 가능 타일 초기화
+            var positions = TokenSystem.Instance.GetCanMovePlace(HeroSystem.Instance.HeroView, curSPD); //이동 가능 타일 미리 보여주기
+            foreach (var pos in positions)
+            {
+                VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), pos, "Hero_Move");
+            }
+
+            while (true)
+            {
+                if (InteractionSystem.GridSelected)
+                {
+                    Vector3 mousePosition = TokenSystem.Instance.IsoWorld.MouseIsoTilePosition(1f);
+                    Vector2Int isoPosition = new((int)mousePosition.x, (int)mousePosition.y);
+                    CombatantView heroView = HeroSystem.Instance.HeroView;
+
+                    if (TokenSystem.Instance.CheckContainMovedPath(isoPosition)) yield return null;
+
+                    int distance = TokenSystem.Instance.GetDistance(heroView, isoPosition);
+
+                    if (SPDSystem.Instance.RemainSPD() >= distance)
+                    {
+                        var path = TokenSystem.Instance.GetShortestPath(heroView, isoPosition);
+                        if (path != null)
+                        {
+                            SPDSystem.Instance.SpendSPD(distance);
+
+                            PerformMoveGA performMoveGA = new(heroView, path);
+                            ActionSystem.Instance.AddReaction(performMoveGA);
+
+                            yield break;
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("거리의 밖 구역으로 이동할 수 없습니다.");
+                    }
+                }
+
+                yield return null;
+            }
+        }
     }
 
     private IEnumerator PerformMoveGAPerformer(PerformMoveGA performMoveGA)
@@ -75,5 +132,27 @@ public class MoveSystem : Singleton<MoveSystem>
         TokenSystem.Instance.ResetMovedPath();
         VisualGridCreator.Instance.RemoveVisualGridById(gameObject.GetInstanceID()); 
         TokenSystem.Instance.ResetMovedPath();
+    }
+
+    private void PlayerMovePostReaction(PlayerMoveGA _playerMoveGA)
+    {
+        int curSPD = SPDSystem.Instance.RemainSPD();
+        if (curSPD >= 1)  //새로운 비주얼 그리드 그려서 보여주기
+        {
+            PlayerMoveGA playerMoveGA = new(curSPD);
+            ActionSystem.Instance.AddReaction(playerMoveGA);
+        }
+        else
+        {
+            if (_playerMoveGA.IsFirstMove)
+            {
+                VisualGridCreator.Instance.RemoveVisualGridById(gameObject.GetInstanceID());
+                TokenSystem.Instance.ResetMovedPath();
+            }
+            else
+            {
+                VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "Hero_Move");
+            }
+        }
     }
 }

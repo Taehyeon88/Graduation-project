@@ -16,10 +16,14 @@ public class HUDUI : MonoBehaviour
     [SerializeField] private TMP_Text goldAmountText;
     [SerializeField] private TMP_Text turnCountText;
     [SerializeField] private TMP_Text manaAmountText;
+    [SerializeField] private TMP_Text drawPileCardAmountText;
+    [SerializeField] private TMP_Text discardPileCardAmountText;
+    [SerializeField] private TMP_Text deckCountText;
 
     [Header("기타(실행형)")]
     [SerializeField] private GameObject feedBackPanel;
     [SerializeField] private Transform settingUI;
+    [SerializeField] private CheckDeckUI checkDeckUI;
 
     private int heroHP => HeroSystem.Instance.HeroView.CurrentHealth;
     private int heroMaxHP => HeroSystem.Instance.HeroView.MaxHealth;
@@ -27,6 +31,8 @@ public class HUDUI : MonoBehaviour
     //턴 횟수
     private int manaAmount => ManaSystem.Instance.CurrentMana;
     private int maxMana => ManaSystem.Instance.MaxMana;
+    private int drawPileCardAmount => CardSystem.Instance.drawPileCA;
+    private int discardPileCardAmount => CardSystem.Instance.discardPileCA;
 
     private bool isSetting = false;
     private bool isCheckDeck = false;
@@ -40,17 +46,22 @@ public class HUDUI : MonoBehaviour
         //골드
         //턴
         manaAmountText.SetText("{0}/{1}", manaAmount, maxMana);
+        drawPileCardAmountText.text = drawPileCardAmount.ToString();
+        discardPileCardAmountText.text = discardPileCardAmount.ToString();
+        deckCountText.text = GameSystem.Instance.Deck.Count.ToString();
     }
 
     private void OnEnable()
     {
         endTurnButton.onClick.AddListener(EndPlayerTurn);
         onSettingButton.onClick.AddListener(OnSettingUI);
+        checkDeckButton.onClick.AddListener(OnCheckDeckUI);
     }
     private void OnDisable()
     {
         endTurnButton.onClick.RemoveListener(EndPlayerTurn);
         onSettingButton.onClick.RemoveListener(OnSettingUI);
+        checkDeckButton.onClick.RemoveListener(OnCheckDeckUI);
     }
 
     //Button Event Methods
@@ -67,5 +78,11 @@ public class HUDUI : MonoBehaviour
         Debug.Log("설정 활성화");
         isSetting = !isSetting;
         settingUI.gameObject.SetActive(isSetting);
+    }
+
+    private void OnCheckDeckUI()
+    {
+        isCheckDeck = !isCheckDeck;
+        checkDeckUI.SetCheckDeckUI(isCheckDeck);
     }
 }

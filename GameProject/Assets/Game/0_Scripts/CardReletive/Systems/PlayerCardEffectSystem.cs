@@ -7,8 +7,6 @@ public class PlayerCardEffectSystem : Singleton<PlayerCardEffectSystem>
     private void OnEnable()
     {
         ActionSystem.AttachPerformer<AttackEnemyGA>(AttackEnemyGAPerformer);
-        ActionSystem.AttachPerformer<PlacePowerTotemGA>(PlacePowerTotemPerformer);
-        ActionSystem.AttachPerformer<PowerTotemEmissionGA>(PowerTotemEmissionPerformer);
         ActionSystem.AttachPerformer<ShoulderBashGA>(ShoulderBashGAPerformer);
         ActionSystem.AttachPerformer<ShieldBashGA>(ShieldBashGAPerformer);
         ActionSystem.AttachPerformer<SplashGA>(SplashGAPerformer);
@@ -16,8 +14,6 @@ public class PlayerCardEffectSystem : Singleton<PlayerCardEffectSystem>
     private void OnDisable()
     {
         ActionSystem.DetachPerformer<AttackEnemyGA>();
-        ActionSystem.DetachPerformer<PlacePowerTotemGA>();
-        ActionSystem.DetachPerformer<PowerTotemEmissionGA>();
         ActionSystem.DetachPerformer<ShoulderBashGA>();
         ActionSystem.DetachPerformer<ShieldBashGA>();
         ActionSystem.DetachPerformer<SplashGA>();
@@ -43,17 +39,6 @@ public class PlayerCardEffectSystem : Singleton<PlayerCardEffectSystem>
         }
         if (combatants.Count > 0)
         {
-            if (attackEnemyGA.IsRandomTargetMode)
-            {
-                List<CombatantView> randomTargets = new();
-                foreach (var combatant in combatants)
-                {
-                    int randomIndex = UnityEngine.Random.Range(0, combatants.Count - 1);
-                    randomTargets.Add(combatants[randomIndex]);
-                }
-                combatants = randomTargets;
-            }
-
             DealDamageGA dealDamageGA = new(attackEnemyGA.Amount, combatants, HeroSystem.Instance.HeroView);
             ActionSystem.Instance.AddReaction(dealDamageGA);
         }
@@ -63,41 +48,6 @@ public class PlayerCardEffectSystem : Singleton<PlayerCardEffectSystem>
         }
 
         yield return null;
-    }
-
-    /// <summary>
-    /// 파워 토큰 설치
-    /// </summary>
-    /// <param name="placePowerTotemGA"></param>
-    /// <returns></returns>
-    private IEnumerator PlacePowerTotemPerformer(PlacePowerTotemGA placePowerTotemGA)
-    {
-        //받은 범위안에 토큰 배치 처리
-        foreach (var pos in placePowerTotemGA.TargetPoses)
-            TokenSystem.Instance.AddToken(placePowerTotemGA.PowerTotemData, pos);
-
-        yield return null;
-    }
-
-    private IEnumerator PowerTotemEmissionPerformer(PowerTotemEmissionGA powerTotemEmissionGA)
-    {
-        //모든 파워 토템을 찾아서 인접 범위를 받아서 순차적으로 폭발 및 데미지 처리
-        //순서 : 토템 1 -> 폭발 -> 토템 2 -> 폭발
-
-        var tokens = TokenSystem.Instance.GetAllTokens();
-        foreach (var token in tokens)
-        {
-            if (token is PowerTotemView powerTotemView)
-            {
-                Vector2Int currentPos = TokenSystem.Instance.GetTokenPosition(token);
-                List<Vector2Int> poses = TokenSystem.Instance.GetAllAroundPlaces(currentPos, 1, true);
-
-                AttackEnemyGA attackEnemyGA = new(poses, powerTotemEmissionGA.Damage, false, true);
-                ActionSystem.Instance.AddReaction(attackEnemyGA);
-            }
-        }
-
-        return null;
     }
 
     /// <summary>

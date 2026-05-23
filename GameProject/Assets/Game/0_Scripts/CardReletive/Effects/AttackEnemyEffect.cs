@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,10 +6,9 @@ using UnityEngine;
 public class AttackEnemyEffect : Effect
 {
     [SerializeField] private float amount;
-    [SerializeField] private bool useRandomTargetMode;
     public override GameAction GetGameAction(EffectInfo effectInfo)
     {
-        AttackEnemyGA attackEnemyGA = new(effectInfo.targetPoses, amount, useRandomTargetMode);
+        AttackEnemyGA attackEnemyGA = new(effectInfo.targetPoses, amount);
         return attackEnemyGA;
     }
 }

@@ -1,11 +1,10 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 
 public class ManaSystem : Singleton<ManaSystem>
 {
-    public int MaxMana { get; private set; } = 5;
+    public int MaxMana { get; private set; } = 3;
     public int CurrentMana { get; private set; }
-    public int RefillAmount { get; private set; } = 3;
 
     private void OnEnable()
     {
@@ -23,13 +22,9 @@ public class ManaSystem : Singleton<ManaSystem>
     {
         return CurrentMana >= mana;
     }
-    public void ChangeMaxMana(int amount)
+    public void Cheat_ChangeMaxMana(int amount)
     {
         MaxMana = amount;
-    }
-    public void ChangeRefillAmount(int amount)
-    {
-        RefillAmount = amount;
     }
     private IEnumerator SpendManaPerformer(SpendManaGA spendManaGA)
     {
@@ -38,7 +33,7 @@ public class ManaSystem : Singleton<ManaSystem>
     }
     private IEnumerator RefillManaPerformer(RefillManaGA refillManaGA)
     {
-        CurrentMana = Mathf.Min(MaxMana, CurrentMana + RefillAmount);
+        CurrentMana = MaxMana;
         yield return null;
     }
 

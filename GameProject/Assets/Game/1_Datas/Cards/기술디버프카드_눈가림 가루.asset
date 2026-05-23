@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29bd87d4b821bdd419a4bafb4b3ce7b9, type: 3}
+  m_Name: "\uAE30\uC220\uB514\uBC84\uD504\uCE74\uB4DC_\uB208\uAC00\uB9BC \uAC00\uB8E8"
+  m_EditorClassIdentifier: 
+  <Description>k__BackingField: "\uC801\uC5D0\uAC8C [\uD63C\uB780 1] \uC0C1\uD0DC\uB97C
+    \uBD80\uC5EC\uD569\uB2C8\uB2E4."
+  <Mana>k__BackingField: 1
+  <Image>k__BackingField: {fileID: 0}
+  <CardType>k__BackingField: 6
+  <CardSubType>k__BackingField: 0
+  <SelfEffects>k__BackingField: []
+  <GridTargetMode>k__BackingField:
+    <Distance>k__BackingField: 2
+    <TargetMode>k__BackingField:
+      rid: 2515386870715383814
+    <GridRangeMode>k__BackingField:
+      rid: 2515386870715383815
+    UseVisualGrid: 1
+    UseSelectVG: 1
+    WillSelectVGName: Hero_WillAttack
+    SelectVGName: Hero_Attack
+    <EffectCondition>k__BackingField: 1
+    <Effect>k__BackingField:
+      rid: 2515386954168664074
+    <_AddedEffectCondition>k__BackingField: 0
+    <AddedEffects>k__BackingField: []
+  OtherOptions: 0
+  LockDiscarding: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 2515386870715383814
+      type: {class: SingleTM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 2515386870715383815
+      type: {class: AllAroundRM, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 2515386954168664074
+      type: {class: AddStatusEffectEffect, ns: , asm: Assembly-CSharp}
+      data:
+        statusEffectType: 1
+        stackCount: 1
+        setargetMode: 1

@@ -62,15 +62,9 @@ public class InteractionSystem : Singleton<InteractionSystem>
         CancelReadyUseCard = m_CancelReadyUseCard.WasPressedThisFrame();
     }
 
-    void OnMoveUp() => PlayMove(Vector2Int.up);
-    void OnMoveDown() => PlayMove(Vector2Int.down);
-    void OnMoveRight() => PlayMove(Vector2Int.right);
-    void OnMoveLeft() => PlayMove(Vector2Int.left);
-    void PlayMove(Vector2Int direction)
-    {
-        var targetPos = TokenSystem.Instance.GetTargetPosByDirection(HeroSystem.Instance.HeroView, direction);
-        MoveSystem.Instance.PlayPlayerMove(new PlayerMoveGA(targetPos));
-    }
+    void OnStartCheat() => CheatSystem.Instance?.StartCheat();
+
+    void OnCancel() => UISystem.Instance?.OffPileofCardUI();
     void OnLookAllEnemyVisuals() => UISystem.Instance?.ToggleEnemyVisualAllLooking();
     void OnSelectCardWithNumber1()
     {

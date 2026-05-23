@@ -6,8 +6,10 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class CardView : MonoBehaviour, IPointerClickHandler
+public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
+    [SerializeField] private TMP_Text title;
+    [SerializeField] private TMP_Text description;
     [SerializeField] private TMP_Text mana;
     [SerializeField] private Image image;
     [SerializeField] private GameObject wrapper;
@@ -19,45 +21,25 @@ public class CardView : MonoBehaviour, IPointerClickHandler
     public Image[] images { get; private set; }
     public bool lockCardUse { get; set; } = false;
 
-    public void SetUp(Card card)
+    public void SetUp(Card card, bool isHover = false)
     {
         this.card = card;
+        title.text = card.Title;
+        description.text = card.Description;
         mana.text = card.Mana.ToString();
         image.sprite = card.Image;
         rectTransform = GetComponent<RectTransform>();
 
-        images = GetComponentsInChildren<Image>(true);
-        images[0] = null;
-    }
-
-    public void Update()
-    {
-        if (card.Available_Cnt <= 0 && !lockCardUse)    //잠금상태가 아님 + 카드 사용 횟수 만료
+        if (isHover)
         {
-            lockCardUse = true;
-            SetCardLockView(true);
-        }
-        else if (card.Available_Cnt > 0 && lockCardUse) //잠금상태 + 카드 사용 횟수 있음
-        {
-            lockCardUse = false;
-            SetCardLockView(false);
-        }
-    }
-
-    private void SetCardLockView(bool active)
-    {
-        if (active)
-        {
-            foreach (var image in images)
-                if (image != null) image.color = new Color32(100, 100, 100, 255);
+            images = GetComponentsInChildren<Image>(true);
         }
         else
         {
-            foreach (var image in images)
-                if (image != null) image.color = Color.white;
+            images = GetComponentsInChildren<Image>(true);
+            images[0] = null;
         }
     }
-
     public void OnPointerClick(PointerEventData eventData)
     {
         if (!Interactions.Instance.PlayerCanTargeting() || lockCardUse) return;
@@ -70,16 +52,16 @@ public class CardView : MonoBehaviour, IPointerClickHandler
             Interactions.Instance.PlayerIsTargeting = true;
 
             //플레이어 타겟팅 모드 진입
-            //wrapper.SetActive(false);
-            //Vector2 pos = rectTransform.anchoredPosition + Vector2.up * 125f;
-            //CardViewHoverSystem.Instance.Show(card, pos);
+            wrapper.SetActive(false);
+            Vector2 pos = rectTransform.anchoredPosition + Vector2.up * 125f;
+            CardViewHoverSystem.Instance.Show(card, pos);
 
             Action endSelectGrid = () =>
             {
                 Interactions.Instance.PlayerIsTargeting = false;
-                //CardViewHoverSystem.Instance.Hide();
-                //if (wrapper != null)
-                    //wrapper.SetActive(true);
+                CardViewHoverSystem.Instance.Hide();
+                if (wrapper != null)
+                    wrapper.SetActive(true);
             };
 
             PlayCardTargetingGA playCardTargetingGA = new(card, endSelectGrid);
@@ -94,96 +76,96 @@ public class CardView : MonoBehaviour, IPointerClickHandler
         }
     }
 
-    //public void OnPointerEnter(PointerEventData eventData)
-    //{
-    //    if (!Interactions.Instance.PlayerCanHover()) return;
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (!Interactions.Instance.PlayerCanHover()) return;
 
-    //    //카드 호버 사운드 재생
-    //    SoundSystem.Instance.PlaySound(17);
+        //카드 호버 사운드 재생
+        SoundSystem.Instance.PlaySound(17);
 
-    //    wrapper.SetActive(false);
-    //    Vector2 pos = rectTransform.anchoredPosition + Vector2.up * 120f;
-    //    CardViewHoverSystem.Instance.Show(card, pos, 
-    //                    Interactions.Instance.lockInteraction || lockCardUse);
-    //}
+        wrapper.SetActive(false);
+        Vector2 pos = rectTransform.anchoredPosition + Vector2.up * 120f;
+        CardViewHoverSystem.Instance.Show(card, pos, 
+                        Interactions.Instance.lockInteraction || lockCardUse);
+    }
 
-    //public void OnPointerExit(PointerEventData eventData)
-    //{
-    //    if (!Interactions.Instance.PlayerCanHover()) return;
-    //    CardViewHoverSystem.Instance.Hide();
-    //    wrapper.SetActive(true);
-    //}
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (!Interactions.Instance.PlayerCanHover()) return;
+        CardViewHoverSystem.Instance.Hide();
+        wrapper.SetActive(true);
+    }
 
-    //public void OnBeginDrag(PointerEventData eventData)
-    //{
-    //    if (!Interactions.Instance.PlayerCanDraging() || lockCardUse) return;
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        if (!Interactions.Instance.PlayerCanDraging() || lockCardUse) return;
 
-    //    Interactions.Instance.PlayerIsDraging = true;
-    //    wrapper.SetActive(true);
-    //    CardViewHoverSystem.Instance.Hide();
-    //    dragStartPosition = transform.position;
-    //    dragStartRotation = transform.rotation;
-    //    transform.rotation = Quaternion.Euler(0, 0, 0);
-    //    transform.position = eventData.position;
-    //}
+        Interactions.Instance.PlayerIsDraging = true;
+        wrapper.SetActive(true);
+        CardViewHoverSystem.Instance.Hide();
+        dragStartPosition = transform.position;
+        dragStartRotation = transform.rotation;
+        transform.rotation = Quaternion.Euler(0, 0, 0);
+        transform.position = eventData.position;
+    }
 
-    //public void OnDrag(PointerEventData eventData)
-    //{
-    //    if (!Interactions.Instance.PlayerCanDraging() || lockCardUse) return;
+    public void OnDrag(PointerEventData eventData)
+    {
+        if (!Interactions.Instance.PlayerCanDraging() || lockCardUse) return;
 
-    //    transform.position = eventData.position;
+        transform.position = eventData.position;
 
-    //    //그리드 미리보기
-    //    if (card.SelfEffects != null && card.SelfEffects.Count > 0 && card.GridTargetMode.GridRangeMode == null)
-    //    {
-    //        Vector2Int heroPos = TokenSystem.Instance.GetTokenPosition(HeroSystem.Instance.HeroView);
-    //        VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), heroPos, "Hero_UseSelf");
-    //    }
-    //}
-    //public void OnEndDrag(PointerEventData eventData)
-    //{
-    //    if (!Interactions.Instance.PlayerCanDraging() || lockCardUse) return;
+        //그리드 미리보기
+        if (card.SelfEffects != null && card.SelfEffects.Count > 0 && card.GridTargetMode.GridRangeMode == null)
+        {
+            Vector2Int heroPos = TokenSystem.Instance.GetTokenPosition(HeroSystem.Instance.HeroView);
+            VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), heroPos, "Hero_UseSelf");
+        }
+    }
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        if (!Interactions.Instance.PlayerCanDraging() || lockCardUse) return;
 
-    //    if (!Interactions.Instance.PlayerIsDraging) return;
+        if (!Interactions.Instance.PlayerIsDraging) return;
 
-    //    if (ManaSystem.Instance.HasEnoughMana(card.Mana) && rectTransform.anchoredPosition.y > 250f) //카드가 y좌표 250를 넘었음 = DropArea
-    //    {
-    //        if (card.GridTargetMode.GridRangeMode != null)
-    //        {
-    //            transform.position = dragStartPosition;
-    //            transform.rotation = dragStartRotation;
+        if (ManaSystem.Instance.HasEnoughMana(card.Mana) && rectTransform.anchoredPosition.y > 250f) //카드가 y좌표 250를 넘었음 = DropArea
+        {
+            if (card.GridTargetMode.GridRangeMode != null)
+            {
+                transform.position = dragStartPosition;
+                transform.rotation = dragStartRotation;
 
-    //            //플레이어 타겟팅 모드 진입
-    //            Interactions.Instance.PlayerIsTargeting = true;
-    //            wrapper.SetActive(false);
-    //            Vector2 pos = rectTransform.anchoredPosition + Vector2.up * 125f;
-    //            CardViewHoverSystem.Instance.Show(card, pos);
+                //플레이어 타겟팅 모드 진입
+                Interactions.Instance.PlayerIsTargeting = true;
+                wrapper.SetActive(false);
+                Vector2 pos = rectTransform.anchoredPosition + Vector2.up * 125f;
+                CardViewHoverSystem.Instance.Show(card, pos);
 
-    //            Action endSelectGrid = () =>
-    //            {
-    //                Interactions.Instance.PlayerIsTargeting = false;
-    //                CardViewHoverSystem.Instance.Hide();
-    //                if (wrapper != null)
-    //                    wrapper.SetActive(true);
-    //            };
+                Action endSelectGrid = () =>
+                {
+                    Interactions.Instance.PlayerIsTargeting = false;
+                    CardViewHoverSystem.Instance.Hide();
+                    if (wrapper != null)
+                        wrapper.SetActive(true);
+                };
 
-    //            PlayCardTargetingGA playCardTargetingGA = new(card, endSelectGrid);
-    //            ActionSystem.Instance.Perform(playCardTargetingGA, endSelectGrid);
-    //        }
-    //        else
-    //        {
-    //            PlayCardGA playCardGA = new(card, null);
-    //            ActionSystem.Instance.Perform(playCardGA);
-    //        }
-    //    }
-    //    else
-    //    {
-    //        transform.position = dragStartPosition;
-    //        transform.rotation = dragStartRotation;
-    //    }
+                PlayCardTargetingGA playCardTargetingGA = new(card, endSelectGrid);
+                ActionSystem.Instance.Perform(playCardTargetingGA, endSelectGrid);
+            }
+            else
+            {
+                PlayCardGA playCardGA = new(card, null);
+                ActionSystem.Instance.Perform(playCardGA);
+            }
+        }
+        else
+        {
+            transform.position = dragStartPosition;
+            transform.rotation = dragStartRotation;
+        }
 
-    //    //미리보기 취소
-    //    VisualGridCreator.Instance.RemoveVisualGridById(gameObject.GetInstanceID());
-    //    Interactions.Instance.PlayerIsDraging = false;
-    //}
+        //미리보기 취소
+        VisualGridCreator.Instance.RemoveVisualGridById(gameObject.GetInstanceID());
+        Interactions.Instance.PlayerIsDraging = false;
+    }
 }

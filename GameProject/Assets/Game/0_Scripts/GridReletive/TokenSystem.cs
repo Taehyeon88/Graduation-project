@@ -8,13 +8,13 @@ using UnityEngine;
 
 public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 | 몬스터, 건물 추가 및 삭제 (게임 중) | 토큰 이동, 등
 {
+    public const float CellSize = 1f;
     [SerializeField] private TokenGrid grid;
     [field : SerializeField] public IsoWorld IsoWorld { get; private set; }
 
     public HeroView HeroView { get; private set; }
     public List<EnemyView> EnemyViews { get; private set; } = new();
     public List<WallView> WallViews { get; private set; } = new();
-    public int gridWidth => grid.width; public int gridHeight => grid.height;
 
     private Dictionary<Token, Vector2Int> gridPosByToken = new();
     private TokenPreview preview;
@@ -39,8 +39,9 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
                 Token token = TokenCreator.Instance.CreateToken(
                         wallData,
                         TokenType.Wall,
-                        new(pos.x, pos.y, 1)
+                        transform.position
                     );
+                token.TokenTransform.position = new(pos.x, pos.y, 1);
 
                 grid.SetToken(token, pos);
                 WallViews.Add(token as WallView);
@@ -50,46 +51,6 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
             index++;
         }
     }
-
-    /// <summary>
-    /// 토큰 추가 함수
-    /// </summary>
-    /// <param name="token"></param>
-    /// <param name="gridPosition"></param>
-    public void AddToken(TokenData tokenData, Vector2Int gridPosition)
-    {
-        Token token = TokenCreator.Instance.CreateToken(
-               tokenData,
-               TokenType.PowerTotem,
-               new(gridPosition.x, gridPosition.y, 1)
-            );
-
-        //해당 타일에 토큰으로 등록처리 (TokenSystem, Gird)
-        grid.SetToken(token, gridPosition);
-        gridPosByToken.Add(token, gridPosition);
-
-        for (int x = 0; x < grid.simpleGrid.GetLength(0); x++)
-        {
-            for (int y = 0; y < grid.simpleGrid.GetLength(1); y++)
-            {
-                Debug.Log($"({x},{y}) - {grid.simpleGrid[x,y]}");
-            }
-        }
-    }
-
-    /// <summary>
-    /// 토큰 삭제 함수
-    /// </summary>
-    /// <param name="token"></param>
-    public void RemoveToken(Token token)
-    {
-        var pos = GetTokenPosition(token);
-        grid.ResetToken(pos);
-        gridPosByToken.Remove(token);
-
-        Destroy(token.gameObject);
-    }
-
     /// <summary>
     /// 전투 시작시, 모든 몬스터들 비어있는 그리드에 랜덤 배치 함수
     /// </summary>
@@ -222,7 +183,7 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
     {
         Debug.Log($"현재 위치: {gridPosByToken[token]}");
         Vector2Int start = gridPosByToken[token];
-        var result = FindPathBFS.FindAroundPlaces(start, maxDistance);
+        var result = FindPathBFS.FindAllPath((int[,])grid.simpleGrid.Clone(), start, maxDistance);
 
         if (token is HeroView)
         {
@@ -235,9 +196,22 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
         return result;
     }
 
-    public List<Vector2Int> GetAllAroundPlaces(Vector2Int currentPosition, int maxDistance, bool exceptEnemy = false, bool exceptHero = false)
+    public List<Vector2Int> GetCanMovePlace2(Token token, int maxDistance)
     {
-        return FindPathBFS.FindAroundPlaces(currentPosition, maxDistance, exceptEnemy, exceptHero);
+        List<Vector2Int> places = new();
+        Vector2Int start = gridPosByToken[token];
+        for (int dis = 1; dis <= maxDistance; dis++)
+        {
+            foreach (var dir in FindPathBFS.Dirs)
+            {
+                Vector2Int pos = start + dir * dis;
+                if (!grid.CanSetByGridPos(pos)) continue;
+                if (token is HeroView && movedPath.Contains(pos)) continue;
+
+                places.Add(pos);
+            }
+        }
+        return places;
     }
 
     /// <summary>
@@ -364,7 +338,7 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
 
         if (useAnimation)
         {
-            Tween tween = Utility.GetTween(token, targetPos, 0.3f);
+            Tween tween = Utility.GetTween(token, targetPos, 1f);
             yield return tween.WaitForCompletion();
         }
     }
@@ -423,17 +397,17 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
     public int GetDistance(Token token, Vector2Int endPos)
     {
         Vector2Int current = gridPosByToken[token];
-        return Mathf.Abs(current.x - endPos.x) + Mathf.Abs(current.y - endPos.y);
+        return Mathf.Max(Mathf.Abs(current.x - endPos.x), Mathf.Abs(current.y - endPos.y));
     }
     public int GetDistance(Token token, Token token2)
     {
         Vector2Int current = gridPosByToken[token];
         Vector2Int endPos = gridPosByToken[token2];
-        return Mathf.Abs(current.x - endPos.x) + Mathf.Abs(current.y - endPos.y);
+        return Mathf.Max(Mathf.Abs(current.x - endPos.x), Mathf.Abs(current.y - endPos.y));
     }
     public int GetDistance(Vector2Int startPos, Vector2Int endPos)
     {
-        return Mathf.Abs(startPos.x - endPos.x) + Mathf.Abs(startPos.y - endPos.y);
+        return Mathf.Max(Mathf.Abs(startPos.x - endPos.x), Mathf.Abs(startPos.y - endPos.y));
     }
 
     /// <summary>
@@ -494,20 +468,6 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
         }
         if (combatants.Count > 0) return combatants;
         return null;
-    }
-
-    /// <summary>
-    /// 특정 토큰을 기준으로 방향, 거리 값만큼 떨어진 그리드 위치 찾는 함수
-    /// </summary>
-    /// <param name="token"></param>
-    /// <param name="direction"></param>
-    /// <param name="distance"></param>
-    /// <returns></returns>
-    public Vector2Int GetTargetPosByDirection(Token token, Vector2Int direction, int distance = 1)
-    {
-        Vector2Int pos = GetTokenPosition(token);
-        Vector2 dir = Utility.GetSignVector2(direction);
-        return pos + new Vector2Int((int)dir.x, (int)dir.y) * distance;
     }
 
     /// <summary>
