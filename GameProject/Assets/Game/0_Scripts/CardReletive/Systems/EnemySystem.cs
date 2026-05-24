@@ -80,7 +80,7 @@ public class EnemySystem : Singleton<EnemySystem>
             var motion = enemy.NextAction.PlayEnemyAction(enemy);
             enemy.NextAction.Directions.Clear();
 
-            yield return motion.WaitForCompletion();
+            yield return motion?.WaitForCompletion();
         }
 
         //이동 판단 및 실행
@@ -145,7 +145,9 @@ public class EnemySystem : Singleton<EnemySystem>
             //-------------------------------------------------------------------------------------------------------
 
             //다음 턴에 할 행동 미리 설정
-            enemy.SetNextAction(enemy.Enemy.PreJudgeActAction(enemy));
+            EnemyAction action = enemy.Enemy.PreJudgeActAction(enemy);
+            if (action != null)
+                enemy.SetNextAction(action);
 
             //미리 보기 설정
             enemy.Enemy.SetDrawActActionVG(true, enemy, enemy.NextAction);
@@ -194,9 +196,9 @@ public class EnemySystem : Singleton<EnemySystem>
         }
     }
 
-    //몬스터 넉백 전, 공격 예고 범위 재판단 함수
     private void MoveGAPreReaction(MoveGA moveGA)
     {
+        //몬스터 넉백 전, 공격 예고 범위 재판단
         if (moveGA.mover is EnemyView enemyView && moveGA.isKnockBack)
         {
             if (enemyView != null)
@@ -204,22 +206,27 @@ public class EnemySystem : Singleton<EnemySystem>
         }
     }
 
-    //몬스터 넉백 후, 예외처리 함수
     private void MoveGAPostReaction(MoveGA moveGA)
     {
+        //몬스터 넉백 후, 예외처리
         if (moveGA.mover is EnemyView enemyView && moveGA.isKnockBack)
         {
             if (enemyView != null)
                 enemyView.Enemy.SetDrawActActionVG(true, enemyView, enemyView.NextAction);
         }
 
-        //영웅이 이동 했을 때, 예고한 행동 재판단 함수
+        //영웅이 이동 했을 때, 예고한 행동 재판단
         if (moveGA.mover is HeroView heroView)
         {
             if (heroView != null)
             {
                 foreach (var enemy in Enemise)
                 {
+                    if (enemy.NextAction is WaitEA waitEA)
+                    {
+                        waitEA.ShouldStopWaiting(enemy);
+                    }
+
                     EnemyAction action = enemy.Enemy.ReCalculate(enemy);
                     if(action != null)
                         enemy.SetNextAction(action);

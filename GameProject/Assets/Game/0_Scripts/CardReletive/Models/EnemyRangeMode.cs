@@ -6,7 +6,6 @@ public abstract class EnemyRangeMode
     public abstract List<Vector2Int> GetGridRanges(Vector2Int currentPosition, int distance = 1, bool penetration = false);
 }
 
-
 public class E_AllAroundRM : EnemyRangeMode
 {
     public override List<Vector2Int> GetGridRanges(Vector2Int currentPosition, int distance = 1, bool penetration = false)
@@ -30,6 +29,7 @@ public class E_AllAroundRM : EnemyRangeMode
         return result;
     }
 }
+
 public class E_SnowRM : EnemyRangeMode
 {
     public override List<Vector2Int> GetGridRanges(Vector2Int currentPosition, int distance, bool penetration = false)

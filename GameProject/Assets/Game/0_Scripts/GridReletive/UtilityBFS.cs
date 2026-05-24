@@ -1,39 +1,60 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-public static class FindPathBFS
+public static class UtilityBFS
 {
     public static Vector2Int[] Dirs { get; private set; } =
         {
             new Vector2Int(1,0), new Vector2Int(-1,0), new Vector2Int(0,1), new Vector2Int(0,-1)
         };
 
-    public static List<Vector2Int> FindPath(int[,] map, Vector2Int start, Vector2Int goal)
+    //인접(거리) 범위 안에서 선택할 수 있는 모든 위치 받는 함수
+    public static List<Vector2Int> FindAllPlaces(Vector2Int start, int maxDistance, bool exceptEnemy, bool exceptHero)
     {
-        if (map == null)
+        Queue<Vector2Int> queue = new Queue<Vector2Int>();
+        List<Vector2Int> list = new List<Vector2Int>();
+        bool[,] visited = new bool[TokenSystem.Instance.gridWidth, TokenSystem.Instance.gridHeight];
+
+        queue.Enqueue(start);
+        while (queue.Count > 0)
         {
-            Debug.Log("map 이 없음");
-        }
-        map[start.x, start.y] = 0;
-        var path = _FindPathBFS(map, start, goal);
+            Vector2Int current = queue.Dequeue();
+            int dis = TokenSystem.Instance.GetDistance(start, current);
+            if (dis > maxDistance) break;
 
-        if(path != null)
+            if (current != start)
+                list.Add(current);
+
+            visited[current.x, current.y] = true;
+
+            foreach (var dir in Dirs)
+            {
+                int nx = current.x + dir.x;
+                int ny = current.y + dir.y;
+                Vector2Int target = new(nx, ny);
+
+                if (!TokenSystem.Instance.IsBound(target)) continue;
+                if (visited[nx, ny]) continue;
+
+                if (!queue.Contains(target))
+                    queue.Enqueue(target);
+            }
+        }
+
+        foreach (var pos in list.ToList())
         {
-            //Debug.Log($"경로 길이: {path.Count}");
-            //foreach (var p in path)
-            //    Debug.Log(p);
-
-            return path;
+            if (!TokenSystem.Instance.IsGridEmpty(pos, exceptEnemy, exceptHero))
+            {
+                list.Remove(pos);
+            }
         }
 
-        Debug.Log("경로 없음");
-        return null;
+        return list;
     }
-    public static List<Vector2Int> FindAroundPlaces(Vector2Int start, int distance, bool exceptEnemy = false, bool exceptHero = false)
-    {
-        return FindAllAround(start, distance, exceptEnemy, exceptHero);
-    }
-    static List<Vector2Int> FindAllAround(Vector2Int start, int maxDistance, bool exceptEnemy, bool exceptHero)
+
+    //인접(거리)까지의 범위 내에서 시작 위치에서 이어질 수 있는 모든 경로를 반는 함수
+    public static List<Vector2Int> FindALLRoots(Vector2Int start, int maxDistance, bool exceptEnemy = false, bool exceptHero = false)
     {
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
         List<Vector2Int> list = new List<Vector2Int>();
@@ -67,8 +88,10 @@ public static class FindPathBFS
 
         return list;
     }
-    static List<Vector2Int> _FindPathBFS(int[,] map, Vector2Int start, Vector2Int goal)
+    public static List<Vector2Int> FindShortestPath(int[,] map, Vector2Int start, Vector2Int goal)
     {
+        map[start.x, start.y] = 0;
+
         int w = map.GetLength(0);
         int h = map.GetLength(1);
 

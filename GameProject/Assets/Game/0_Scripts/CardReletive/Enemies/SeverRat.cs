@@ -6,34 +6,26 @@ using UnityEngine;
 
 public class SeverRat : Enemy
 {
-    private const int attackDistance = 1;  //공격 사거리
-
-    public override EnemyAction PreJudgeActAction(EnemyView myEnemyView)
+    public override EnemyAction PreJudgeActAction(EnemyView enemy)
     {
         Type type = typeof(NormalAttackEA);
-        var action = FindEnemyAction(myEnemyView, type);
+        var action = FindEnemyAction(enemy, type);
         if (action == null)
             Debug.LogError($"{this}에 {type}라는 행동이 존재하지 않습니다.");
 
         var enemyRM = new E_AllAroundRM();
-        var currentPos = TokenSystem.Instance.GetTokenPosition(myEnemyView);
+        var currentPos = TokenSystem.Instance.GetTokenPosition(enemy);
 
-        int minDis = int.MaxValue;
-        var dir = Vector2Int.zero;
-        foreach (var pos in enemyRM.GetGridRanges(currentPos, attackDistance, false))
-        {
-            //플레이어와 가장 가까운 위치를 공격범위로 선정
-            int distance = TokenSystem.Instance.GetDistance(TokenSystem.Instance.HeroView, pos);
-            if (distance < minDis)
-            {
-                minDis = distance;
-                dir = pos - currentPos;
-            }
-        }
-
-        action.Directions.Add(dir);
-        action.ActDistance = attackDistance;
+        action.EnemyRM = enemyRM;
+        action.ActDistance = 1;
         action.IsPenetration = false;
+
+        if (!ChangeToWaitEA(enemy, action, currentPos))
+        {
+            Vector2Int dir = HeroSystem.Instance.HeroPosition - currentPos;
+            action.Directions.Add(dir);
+        }
+        else return null;
 
         return action;
     }
@@ -96,6 +88,8 @@ public class SeverRat : Enemy
         Vector2Int myPos = TokenSystem.Instance.GetTokenPosition(enemy);
 
         var allPlaces = TokenSystem.Instance.GetAllAroundPlaces(heroPos, D_detect);
+
+        Debug.Log(string.Join(", ", allPlaces));
         foreach (var place in allPlaces)
         {
             int dis = TokenSystem.Instance.GetDistance(heroPos, place);

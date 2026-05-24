@@ -20,9 +20,15 @@ MonoBehaviour:
     rid: 1062699288701173829
   <EnemyActions>k__BackingField:
   - rid: 1062699288701173827
+  - rid: 606822111444205635
   references:
     version: 2
     RefIds:
+    - rid: 606822111444205635
+      type: {class: WaitEA, ns: , asm: Assembly-CSharp}
+      data:
+        description: "\uC774\uAC83\uC740 \uB300\uAE30\uC785\uB2C8\uB2E4."
+        icon: {fileID: 21300000, guid: 132298884e902104b96280f0aca19c8f, type: 3}
     - rid: 1062699288701173827
       type: {class: NormalAttackEA, ns: , asm: Assembly-CSharp}
       data:

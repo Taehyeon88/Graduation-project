@@ -222,7 +222,7 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
     {
         Debug.Log($"현재 위치: {gridPosByToken[token]}");
         Vector2Int start = gridPosByToken[token];
-        var result = FindPathBFS.FindAroundPlaces(start, maxDistance);
+        var result = UtilityBFS.FindALLRoots(start, maxDistance);
 
         if (token is HeroView)
         {
@@ -237,7 +237,7 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
 
     public List<Vector2Int> GetAllAroundPlaces(Vector2Int currentPosition, int maxDistance, bool exceptEnemy = false, bool exceptHero = false)
     {
-        return FindPathBFS.FindAroundPlaces(currentPosition, maxDistance, exceptEnemy, exceptHero);
+        return UtilityBFS.FindAllPlaces(currentPosition, maxDistance, exceptEnemy, exceptHero);
     }
 
     /// <summary>
@@ -249,7 +249,7 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
     public List<Vector2Int> GetShortestPath(Token token, Vector2Int goal)
     {
         Vector2Int start = gridPosByToken[token];
-        return FindPathBFS.FindPath((int[,])grid.simpleGrid.Clone(), start, goal);
+        return UtilityBFS.FindShortestPath((int[,])grid.simpleGrid.Clone(), start, goal);
     }
 
     /// <summary>
@@ -396,7 +396,7 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
     /// <returns></returns>
     public Vector2Int[] GetAroundGrids(Token token)
     {
-        var dirs = FindPathBFS.Dirs;
+        var dirs = UtilityBFS.Dirs;
         var result = new List<Vector2Int>();
 
         Vector2Int cur = gridPosByToken[token];
