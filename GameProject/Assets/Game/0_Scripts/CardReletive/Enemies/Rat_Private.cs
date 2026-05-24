@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public class SeverRat : Enemy
+public class Rat_Private : Enemy
 {
     public override EnemyAction PreJudgeActAction(EnemyView enemy)
     {
@@ -69,7 +69,7 @@ public class SeverRat : Enemy
 
     public override Enemy Clone()
     {
-        return new SeverRat();
+        return new Rat_Private();
     }
 
 
@@ -89,7 +89,6 @@ public class SeverRat : Enemy
 
         var allPlaces = TokenSystem.Instance.GetAllAroundPlaces(heroPos, D_detect);
 
-        Debug.Log(string.Join(", ", allPlaces));
         foreach (var place in allPlaces)
         {
             int dis = TokenSystem.Instance.GetDistance(heroPos, place);

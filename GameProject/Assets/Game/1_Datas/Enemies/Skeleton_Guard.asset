@@ -10,31 +10,31 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 15ecb23d4f55996479d80b8135290e46, type: 3}
-  m_Name: Rat_SewerRat
+  m_Name: Skeleton_Guard
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   <TokenModel>k__BackingField: {fileID: 8409466067229185608, guid: 5de08ffd89856694dae4de417ccd7dda, type: 3}
-  <Name>k__BackingField: "\uC2DC\uAD81\uCC3D \uC950"
-  <Sprite>k__BackingField: {fileID: 21300000, guid: d66d13218ef414e45881aa163287253f, type: 3}
-  <Health>k__BackingField: 12
+  <Name>k__BackingField: "\uC2A4\uCF08\uB808\uD1A4 \uAC00\uB4DC"
+  <Sprite>k__BackingField: {fileID: 21300000, guid: aa0d1c860cb904911a6d086803e590ca, type: 3}
+  <Health>k__BackingField: 6
   <Enemy>k__BackingField:
-    rid: 606822111444205646
+    rid: 606822114776318017
   <EnemyActions>k__BackingField:
-  - rid: 1062699288701173827
-  - rid: 606822111444205635
+  - rid: 606822114776318018
+  - rid: 606822114776318019
   references:
     version: 2
     RefIds:
-    - rid: 606822111444205635
-      type: {class: WaitEA, ns: , asm: Assembly-CSharp}
-      data:
-        description: "\uC774\uAC83\uC740 \uB300\uAE30\uC785\uB2C8\uB2E4."
-        icon: {fileID: 21300000, guid: 132298884e902104b96280f0aca19c8f, type: 3}
-    - rid: 606822111444205646
-      type: {class: Rat_Private, ns: , asm: Assembly-CSharp}
+    - rid: 606822114776318017
+      type: {class: Skeleton_Warrior, ns: , asm: Assembly-CSharp}
       data: 
-    - rid: 1062699288701173827
+    - rid: 606822114776318018
       type: {class: NormalAttackEA, ns: , asm: Assembly-CSharp}
       data:
-        damage: 4
-        description: "\uD53C\uD574\uB97C 4 \uC90D\uB2C8\uB2E4."
+        damage: 6
+        description: "\uC774\uAC83\uC740 \uAE30\uBCF8 \uACF5\uACA9\uC785\uB2C8\uB2E4"
         icon: {fileID: 21300000, guid: 497a426bfc3103c48b96e711d6c2b7ab, type: 3}
+    - rid: 606822114776318019
+      type: {class: WaitEA, ns: , asm: Assembly-CSharp}
+      data:
+        description: "\uC774\uAC83\uC740 \uB300\uAE30 \uC785\uB2C8\uB2E4."
+        icon: {fileID: 21300000, guid: 132298884e902104b96280f0aca19c8f, type: 3}

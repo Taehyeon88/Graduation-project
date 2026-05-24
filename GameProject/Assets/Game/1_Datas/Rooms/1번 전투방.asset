@@ -15,8 +15,9 @@ MonoBehaviour:
   <Stage>k__BackingField: 1
   <Level>k__BackingField: 1
   <enemyDatas>k__BackingField:
-  - {fileID: 11400000, guid: f986d0193a9b5a24cb809616f2851e4d, type: 2}
-  <wallDatas>k__BackingField: []
+  - {fileID: 11400000, guid: 388d58dfb854fcb4a9b6043d9c42de5b, type: 2}
+  <wallDatas>k__BackingField:
+  - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
   <heroSetUpPositions>k__BackingField:
   - {x: 0, y: 0}
   - {x: 0, y: 1}
@@ -39,4 +40,5 @@ MonoBehaviour:
   - {x: 4, y: 2}
   - {x: 4, y: 3}
   - {x: 4, y: 4}
-  <wallSetUpPositions>k__BackingField: []
+  <wallSetUpPositions>k__BackingField:
+  - {x: 2, y: 1}

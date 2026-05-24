@@ -367,6 +367,20 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
     }
 
     /// <summary>
+    /// 해당 토큰과 위치의 최단 거리 반환 함수
+    /// </summary>
+    /// <param name="token"></param>
+    /// <param name="endPos"></param>
+    /// <returns></returns>
+    public int GetMinDistance(Token token, Vector2Int endPos)
+    {
+        var path = GetShortestPath(token, endPos);
+        if (path == null) return 0;
+
+        return path.Count;
+    }
+
+    /// <summary>
     /// 특정 토큰에서 토큰으로의 거리를 구하는 함수
     /// </summary>
     /// <param name="to"></param>

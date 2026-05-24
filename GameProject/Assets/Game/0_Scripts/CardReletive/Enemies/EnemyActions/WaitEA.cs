@@ -35,6 +35,8 @@ public class WaitEA : EnemyAction
             Vector2Int dir = HeroSystem.Instance.HeroPosition - enemyPos;
             enemy.NextAction.Directions.Clear();
             enemy.NextAction.Directions.Add(dir);
+            //공격 범위 그리기
+            enemy.Enemy.SetDrawActActionVG(true, enemy, enemy.NextAction);
         }
     }
 
