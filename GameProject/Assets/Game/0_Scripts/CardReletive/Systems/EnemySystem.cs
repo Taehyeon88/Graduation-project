@@ -33,6 +33,8 @@ public class EnemySystem : Singleton<EnemySystem>
     }
 
    //Performers
+
+    //몬스터 턴 시작
     private IEnumerator EnemysTurnPerformer(EnemysTurnGA enemysTurn)
     {
         if (enemysTurn.isStartGame) yield break;   //게임 시작시, 반환처리
@@ -47,6 +49,7 @@ public class EnemySystem : Singleton<EnemySystem>
         yield return null;
     }
 
+    //각 몬스터 턴 실행
     private IEnumerator EnemyTurnPerformer(EnemyTurnGA enemyTurn)
     {
         EnemyView enemy = enemyTurn.EnemyView;
@@ -81,10 +84,8 @@ public class EnemySystem : Singleton<EnemySystem>
         }
 
         //이동 판단 및 실행
-        if (enemy.NextMovePath != null && !isIsolation)
-        {
-            enemy.Enemy.PlayMoveAction(enemy, enemy.NextMovePath);
-        }
+        if (!isIsolation)
+            enemy.Enemy.JudgeAndPlayMove(enemy);
 
     }
 
@@ -117,7 +118,10 @@ public class EnemySystem : Singleton<EnemySystem>
     }
 
     //Reactions
-    private void EnemysTurnPostReaction(EnemysTurnGA enemysTurnGA)   //모든 적들 다음으로 할 행동 판단 및 보여주기
+
+    //몬스터들 턴 종료 전
+    //모든 적들 다음으로 할 행동 판단 및 보여주기
+    private void EnemysTurnPostReaction(EnemysTurnGA enemysTurnGA)
     {
         foreach (EnemyView enemy in Enemise)
         {
@@ -142,14 +146,14 @@ public class EnemySystem : Singleton<EnemySystem>
 
             //다음 턴에 할 행동 미리 설정
             enemy.SetNextAction(enemy.Enemy.PreJudgeActAction(enemy));
-            enemy.NextMovePath = enemy.Enemy.PreJudgeMoveAction(enemy);
 
             //미리 보기 설정
             enemy.Enemy.SetDrawActActionVG(true, enemy, enemy.NextAction);
-            enemy.Enemy.SetDrawMoveActionVG(true, enemy, enemy.NextMovePath);
         }
     }
 
+
+    //몬스터 들 턴 시작 전
     private void EnemysTurnPreReaction(EnemysTurnGA enemysTurnGA)
     {
         //적들의 턴 시작시, 방어막 스택 제거
@@ -190,64 +194,37 @@ public class EnemySystem : Singleton<EnemySystem>
         }
     }
 
+    //몬스터 넉백 전, 공격 예고 범위 재판단 함수
     private void MoveGAPreReaction(MoveGA moveGA)
     {
         if (moveGA.mover is EnemyView enemyView && moveGA.isKnockBack)
         {
             if (enemyView != null)
-            {
                 enemyView.Enemy.SetDrawActActionVG(false, enemyView, enemyView.NextAction);
-                enemyView.Enemy.SetDrawMoveActionVG(false, enemyView, null);
-            }
         }
     }
+
+    //몬스터 넉백 후, 예외처리 함수
     private void MoveGAPostReaction(MoveGA moveGA)
     {
         if (moveGA.mover is EnemyView enemyView && moveGA.isKnockBack)
         {
             if (enemyView != null)
-            {
                 enemyView.Enemy.SetDrawActActionVG(true, enemyView, enemyView.NextAction);
-                enemyView.NextMovePath = enemyView.Enemy.PreJudgeMoveAction(enemyView);
-                enemyView.Enemy.SetDrawMoveActionVG(true, enemyView, enemyView.NextMovePath);
-            }
         }
 
+        //영웅이 이동 했을 때, 예고한 행동 재판단 함수
         if (moveGA.mover is HeroView heroView)
         {
             if (heroView != null)
             {
                 foreach (var enemy in Enemise)
                 {
-                    var infos = enemy.Enemy.ReCalculate(enemy);
-                    if (infos.Item1 != null)
-                    {
-                        enemy.SetNextAction(infos.Item1);
-                    }
-
-                    if (infos.Item2 != null)
-                    {
-                        enemy.NextMovePath = infos.Item2;
-                    }
+                    EnemyAction action = enemy.Enemy.ReCalculate(enemy);
+                    if(action != null)
+                        enemy.SetNextAction(action);
                 }
             }
         }
-    }
-
-    //publics
-    public List<EnemyView> GetRecalculatedEnemys()
-    {
-        var enemys = new List<EnemyView>();
-        foreach (EnemyView enemy in Enemise)
-        {
-            if (enemy != null)
-            {
-                if (enemy.isContainRecalculateMove)
-                {
-                    enemys.Add(enemy);
-                }
-            }
-        }
-        return enemys;
     }
 }

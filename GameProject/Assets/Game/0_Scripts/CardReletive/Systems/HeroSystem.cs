@@ -5,6 +5,7 @@ using UnityEngine;
 public class HeroSystem : Singleton<HeroSystem>
 {
     public HeroView HeroView => TokenSystem.Instance.HeroView;
+    public Vector2Int HeroPosition => TokenSystem.Instance.GetTokenPosition(HeroView);
 
     private void OnEnable()
     {

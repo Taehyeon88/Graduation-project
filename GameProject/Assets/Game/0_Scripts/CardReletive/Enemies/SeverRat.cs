@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class SeverRat : Enemy
 {
-    private const int moveDistance = 1;    //이동 거리
     private const int attackDistance = 1;  //공격 사거리
 
     public override EnemyAction PreJudgeActAction(EnemyView myEnemyView)
@@ -38,24 +38,6 @@ public class SeverRat : Enemy
         return action;
     }
 
-    public override List<Vector2Int> PreJudgeMoveAction(EnemyView myEnemyView)
-    {
-        //영웅 주변으로 이동 가능 타일 찾기
-        var canMovePoses = TokenSystem.Instance.GetCanMovePlace(HeroSystem.Instance.HeroView, attackDistance);
-
-        (int, List<Vector2Int>) minValues = GetMinValues(canMovePoses, myEnemyView);  //최소 경로의 목표 위치 찾기
-        int distance = minValues.Item1;
-        List<Vector2Int> path = minValues.Item2;
-
-        myEnemyView.SetRecalulateMove(true);     //이동 경로 재판단 처리
-
-        if (distance >= 1 && distance != int.MaxValue)        //이동할 경로를 찾을 수 없음 - int.MaxValue
-        {
-            return path;
-        }
-        else return null;
-    }
-
     public override void SetDrawActActionVG(bool active, EnemyView enemy, EnemyAction enemyAction)
     {
         if (active)
@@ -74,42 +56,24 @@ public class SeverRat : Enemy
         }
     }
 
-    public override void SetDrawMoveActionVG(bool active, EnemyView enemy, List<Vector2Int> path)
+    public override void JudgeAndPlayMove(EnemyView enemy)
     {
-        //일단 보류
-        if (active)
-        {
-            VisualGridCreator.Instance.RemoveVisualGrid(enemy.gameObject.GetInstanceID(), "Enemy_Move");
+        //경로 받기
+        //행동 실행
 
-            if (path == null) return;
-            foreach (var pos in path)
-            {
-                VisualGridCreator.Instance.CreateVisualGrid(enemy.gameObject.GetInstanceID(), pos, "Enemy_Move");
-            }
+        var path = GetMinValue(enemy);
+        if (path != null)
+        {
+            PerformMoveGA performMoveGA = new(enemy, path);
+            ActionSystem.Instance.AddReaction(performMoveGA);
         }
         else
         {
-            VisualGridCreator.Instance.RemoveVisualGrid(enemy.gameObject.GetInstanceID(), "Enemy_Move");
+            Debug.LogWarning($"몬스터_{enemy.name}이 다음으로 이동할 경로를 찾을 수 없음");
         }
     }
 
-    public override void PlayMoveAction(EnemyView enemy, List<Vector2Int> path)
-    {
-        if (path == null) return;
-        path = CheckTokenInPath(path);
-        if (path.Count == 0) return;
-
-        PerformMoveGA performMoveGA = new(enemy, path);
-        ActionSystem.Instance.AddReaction(performMoveGA);
-    }
-
-    public override (EnemyAction, List<Vector2Int>) ReCalculate(EnemyView enemy)
-    {
-        var path = PreJudgeMoveAction(enemy);
-        SetDrawMoveActionVG(true, enemy, path);
-
-        return (null, path);
-    }
+    public override EnemyAction ReCalculate(EnemyView enemy) { return null; }
 
     public override Enemy Clone()
     {
@@ -118,32 +82,42 @@ public class SeverRat : Enemy
 
 
     //Privates
-    private (int, List<Vector2Int>) GetMinValues(List<Vector2Int> canMovePoses, EnemyView myEnemyView)
+    private List<Vector2Int> GetMinValue(EnemyView enemy)
     {
-        //해당 타일들 중, 가장 거리가 가까운 타일 선정
-        int minDistance = int.MaxValue;
-        List<Vector2Int> targetPath = null;
-        foreach (var pos in canMovePoses)
-        {
-            var path = GetEnemyShortestPath(myEnemyView, pos);  //최소 경로 찾기
-            if (path == null) continue;
+        //플레이어 주위 타일 받기
+        //영웅과의 최소 거리의 타일 선정
+        //해당 타일로 최소 경로 찾기
 
-            int dis = path.Count;
+        int minDistance = int.MaxValue;
+        Vector2Int targetPos = default;
+        const int D_detect = 3;
+
+        Vector2Int heroPos = HeroSystem.Instance.HeroPosition;
+        Vector2Int myPos = TokenSystem.Instance.GetTokenPosition(enemy);
+
+        var allPlaces = TokenSystem.Instance.GetAllAroundPlaces(heroPos, D_detect);
+        foreach (var place in allPlaces)
+        {
+            int dis = TokenSystem.Instance.GetDistance(heroPos, place);
+
             if (dis < minDistance)
             {
                 minDistance = dis;
-                targetPath = path;
+                targetPos = place;
             }
-            else if (dis == minDistance)  //같은 거리일 경우, 50퍼센트의 확률로 바뀜
+            else if (dis == minDistance)
             {
-                float randomValue = UnityEngine.Random.value;
-                if (randomValue > 0.5f)
+                //30퍼센트 확률로 바뀌게 설정
+                float r_value = UnityEngine.Random.value;
+                if (r_value <= 0.3f)
                 {
-                    targetPath = path;
+                    targetPos = place;
                 }
             }
         }
 
-        return (minDistance, targetPath);
+        if (minDistance == int.MaxValue) return null;
+
+        return TokenSystem.Instance.GetShortestPath(enemy, targetPos);
     }
 }

@@ -8,19 +8,10 @@ public abstract class Enemy
 {
     //Fuctions
     public abstract EnemyAction PreJudgeActAction(EnemyView enemy);                                          //다음 할 행동 미리 판단 (미리보기 포함)
-    public abstract List<Vector2Int> PreJudgeMoveAction(EnemyView enemy);                                    //다음 이동 미리 판단 (미리보기 포함)
+    public abstract void JudgeAndPlayMove(EnemyView enemy);                                                  //판단 후 다음 할 행동 실행
     public abstract void SetDrawActActionVG(bool active, EnemyView enemy, EnemyAction action);               //행동 미리보기 그리기 설정
-    public abstract void SetDrawMoveActionVG(bool active, EnemyView enemy, List<Vector2Int> path);           //이동 미리보기 그리기 설정
-    public abstract void PlayMoveAction(EnemyView enemy, List<Vector2Int> path);                             //이동 실행
-    public abstract (EnemyAction, List<Vector2Int>) ReCalculate(EnemyView enemy);                            //플레이어 턴중 재계산
+    public abstract EnemyAction ReCalculate(EnemyView enemy);                                                //플레이어 턴중 재계산
     public abstract Enemy Clone();                                                                           //복사 함수
-
-
-    protected List<Vector2Int> GetEnemyShortestPath(EnemyView enemy, Vector2Int goal)
-    {
-        var recalculatedEnemies = EnemySystem.Instance.GetRecalculatedEnemys();
-        return TokenSystem.Instance.GetEnemyShortestPath(enemy, goal, recalculatedEnemies);
-    }
 
     /// <summary>
     /// 현재 EnemyView가 가지고 있는 EnemyAction을 가져오는 함수
