@@ -15,7 +15,7 @@ MonoBehaviour:
   <Stage>k__BackingField: 1
   <Level>k__BackingField: 1
   <enemyDatas>k__BackingField:
-  - {fileID: 11400000, guid: 41ccd5a0068c9f44cbc4f8ea51eaff2a, type: 2}
+  - {fileID: 11400000, guid: 60a57da98d55dc74db0a1b916a334f8f, type: 2}
   <obstacleDatas>k__BackingField:
   - {fileID: 11400000, guid: ac14cb94c2804674bb04462ebbb12e20, type: 2}
   - {fileID: 11400000, guid: ac14cb94c2804674bb04462ebbb12e20, type: 2}

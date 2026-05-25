@@ -3,34 +3,113 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Skeleton_Warrior : Enemy
+public class Rat_General : Enemy
 {
-    private const int atkDistance = 1;
     private const int movePoint = 2;
     public override EnemyAction PreJudgeActAction(EnemyView enemy)
     {
-        Type type = typeof(NormalAttackEA);
-        var action = FindEnemyAction(enemy, type);
+        //타겟 범위 == 1? (인접 1칸) -> 확률 = 50%? -> 대검 휘두리기
+        Vector2Int currentPos = TokenSystem.Instance.GetTokenPosition(enemy);
+        Vector2Int heroPos = HeroSystem.Instance.HeroPosition;
+
+        EnemyRangeMode enemyRM;  EnemyTargetMode enemyTM;
+        List<Vector2Int> range;  Type type;
+        EnemyAction action;
+
+        int dis = Mathf.Max(Mathf.Abs(currentPos.x - heroPos.x), Mathf.Abs(currentPos.y - heroPos.y));
+        if (dis <= 1)
+        {
+            float r_value = UnityEngine.Random.value;
+            if (r_value <= 0.5f)
+            {
+                //대검 휘두리기 실행
+                type = typeof(RatSwingGreatsSwordEA);
+                action = FindEnemyAction(enemy, type);
+                if (action == null)
+                    Debug.LogError($"{this}에 {type}라는 행동이 존재하지 않습니다.");
+
+                enemyRM = new E_AllEightAroundRM();
+                enemyTM = new E_ConeTM();
+
+                range = enemyRM.GetGridRanges(currentPos, 1);
+                if (range.Contains(heroPos))
+                {
+                    var dirs = enemyTM.GetDirections(range, heroPos, currentPos, 1);
+                    action.EnemyRM = enemyRM;
+                    action.EnemyTM = enemyTM;
+                    action.ActDistance = 1;
+                    action.Directions = dirs;
+                    return action;
+                }
+            }
+        }
+
+        //타겟 범위 <= 2? (X 2칸 이내) -> 공격 범위 내 첫 1칸에 몬스터가 없을 시 -> 돌진
+        type = typeof(RatDashEA);
+        action = FindEnemyAction(enemy, type);
         if (action == null)
             Debug.LogError($"{this}에 {type}라는 행동이 존재하지 않습니다.");
 
-        var enemyRM = new E_AllAroundRM();
-        var enemyTM = new E_SingleTM();
-        var currentPos = TokenSystem.Instance.GetTokenPosition(enemy);
+        enemyRM = new E_CrossRM();
+        enemyTM = new E_LineOneTM();
+
+        range = enemyRM.GetGridRanges(currentPos, 2);
+        if (range.Contains(heroPos))
+        {
+            var dir2s = enemyTM.GetDirections(range, heroPos, currentPos, 2);
+            Vector2Int targetPos = currentPos + dir2s[0];
+            if (TokenSystem.Instance.IsGridEmpty(targetPos, false, true, true))
+            {
+                action.EnemyRM = enemyRM;
+                action.EnemyTM = enemyTM;
+                action.ActDistance = 2;
+                action.Directions = dir2s;
+                return action;
+            }
+        }
+
+        //타겟 범위 2칸 이내 -> 돌던지기
+        type = typeof(RatThrowingStoneEA);
+        action = FindEnemyAction(enemy, type);
+        if (action == null)
+            Debug.LogError($"{this}에 {type}라는 행동이 존재하지 않습니다.");
+
+        enemyRM = new E_AllAroundRM();
+        enemyTM = new E_SingleTM();
 
         action.EnemyRM = enemyRM;
         action.EnemyTM = enemyTM;
-        action.ActDistance = atkDistance;
+        action.ActDistance = 2;
 
-        if (!ChangeToWaitEA(enemy, action, currentPos))
+        range = enemyRM.GetGridRanges(currentPos, 2);
+        if (range.Contains(heroPos))
         {
-            var range = enemyRM.GetGridRanges(currentPos, atkDistance);
-            var dirs = enemyTM.GetDirections(range, HeroSystem.Instance.HeroPosition, currentPos, atkDistance);
-            action.Directions = dirs;
+            var dir3s = enemyTM.GetDirections(range, heroPos, currentPos, 2);
+            action.Directions = dir3s;
+            return action;
         }
-        else return null;
 
-        return action;
+        WaitEA waitEA = FindEnemyAction(enemy, typeof(WaitEA)) as WaitEA;
+        waitEA.ReservedEA = action;
+        return waitEA;
+    }
+
+    public override void SetDrawActActionVG(bool active, EnemyView enemy, EnemyAction enemyAction)
+    {
+        if (active)
+        {
+            VisualGridCreator.Instance.RemoveVisualGrid(enemy.gameObject.GetInstanceID(), "Enemy_Attack");
+
+            foreach (var dir in enemyAction.Directions)
+            {
+                var pos = TokenSystem.Instance.GetDirectionPos(enemy, dir);
+                VisualGridCreator.Instance.CreateVisualGrid(enemy.gameObject.GetInstanceID(), pos, "Enemy_Attack");
+            }
+        }
+        else
+        {
+            VisualGridCreator.Instance.RemoveVisualGridById(enemy.gameObject.GetInstanceID());
+        }
     }
 
     public override void JudgeAndPlayMove(EnemyView enemy)
@@ -74,30 +153,13 @@ public class Skeleton_Warrior : Enemy
         }
     }
 
-    public override void SetDrawActActionVG(bool active, EnemyView enemy, EnemyAction action)
-    {
-        if (active)
-        {
-            VisualGridCreator.Instance.RemoveVisualGrid(enemy.gameObject.GetInstanceID(), "Enemy_Attack");
-
-            foreach (var dir in action.Directions)
-            {
-                var pos = TokenSystem.Instance.GetDirectionPos(enemy, dir);
-                VisualGridCreator.Instance.CreateVisualGrid(enemy.gameObject.GetInstanceID(), pos, "Enemy_Attack");
-            }
-        }
-        else
-        {
-            VisualGridCreator.Instance.RemoveVisualGridById(enemy.gameObject.GetInstanceID());
-        }
-    }
-
     public override EnemyAction ReCalculate(EnemyView enemy) { return null; }
 
     public override Enemy Clone()
     {
-        return new Skeleton_Warrior();
+        return new Rat_General();
     }
+
 
     //Privates
     private List<Vector2Int> GetAllPlaceByOne(EnemyView enemy)

@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,10 +25,7 @@ public class LineTM : TargetMode
     {
         if (range.Contains(targetPos))
         {
-            int dirX = (targetPos - currentPos).x != 0 ? (targetPos - currentPos).x / Mathf.Abs((targetPos - currentPos).x) : 0;
-            int dirY = (targetPos - currentPos).y != 0 ? (targetPos - currentPos).y / Mathf.Abs((targetPos - currentPos).y) : 0;
-
-            Vector2Int dir = new(dirX, dirY);
+            Vector2Int dir = Utility.GetSignVector2Int(targetPos - currentPos);
             List<Vector2Int> result = new();
 
             for (int i = 1; i <= distance; i++)
@@ -58,7 +55,7 @@ public class ConeTM : TargetMode
             Vector2Int dir = (targetPos - currentPos);
             List<Vector2Int> result = new();
 
-            //¿¹½Ã : 1,1 <- 1,0 | 1,-1 <- 0,-1 | -1,-1 <- -1,0 | -1,1 <- 0,1
+            //ì˜ˆì‹œ : 1,1 <- 1,0 | 1,-1 <- 0,-1 | -1,-1 <- -1,0 | -1,1 <- 0,1
             if (dir == new Vector2Int(1, 0)) dir = new(1, 1);
             else if (dir == new Vector2Int(0, -1)) dir = new(1, -1);
             else if (dir == new Vector2Int(-1, 0)) dir = new(-1, -1);
@@ -95,9 +92,9 @@ public class GlobalTM : TargetMode
 
 public enum GridTargetingType
 {
-    Single,     //´ÜÀÏ 
-    Line,       //°üÅë
-    Cone,       //È¾º£±â
-    Radius,     //Æø¹ß
-    Global      //Àü¹æÀ§
+    Single,     //ë‹¨ì¼ 
+    Line,       //ê´€í†µ
+    Cone,       //íš¡ë² ê¸°
+    Radius,     //í­ë°œ
+    Global      //ì „ë°©ìœ„
 }

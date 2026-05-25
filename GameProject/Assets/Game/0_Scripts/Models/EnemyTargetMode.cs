@@ -91,3 +91,38 @@ public class E_GlobalTM : EnemyTargetMode
         else return null;
     }
 }
+
+/// <summary>
+/// ㄴ자로 횡베기 방향값들 반환 (8방향 범위 필요)
+/// </summary>
+public class E_ConeTM : EnemyTargetMode
+{
+    public override List<Vector2Int> GetDirections(List<Vector2Int> range, Vector2Int targetPos, Vector2Int currentPos, int distance)
+    {
+        if (range.Contains(targetPos))
+        {
+            Vector2Int dir = (targetPos - currentPos);
+            List<Vector2Int> result = new();
+
+            //예시 : 1,1 <- 1,0 | 1,-1 <- 0,-1 | -1,-1 <- -1,0 | -1,1 <- 0,1
+            if (dir == new Vector2Int(1, 0)) dir = new(1, 1);
+            else if (dir == new Vector2Int(0, -1)) dir = new(1, -1);
+            else if (dir == new Vector2Int(-1, 0)) dir = new(-1, -1);
+            else if (dir == new Vector2Int(0, 1)) dir = new(-1, 1);
+
+            Vector2Int target = currentPos + dir;
+
+            foreach (var r in range)
+            {
+                int dis = Mathf.Max(Mathf.Abs(r.x - target.x), Mathf.Abs(r.y - target.y));
+                if (dis <= 1)
+                    result.Add(r - currentPos);
+            }
+            return result;
+        }
+        else
+        {
+            return null;
+        }
+    }
+}
