@@ -15,9 +15,9 @@ MonoBehaviour:
   <Stage>k__BackingField: 1
   <Level>k__BackingField: 1
   <enemyDatas>k__BackingField:
-  - {fileID: 11400000, guid: 12d6250f5b4c12248b0c225bdac899b2, type: 2}
-  - {fileID: 11400000, guid: da232fa34fbef4641a30f62c8e55cf49, type: 2}
+  - {fileID: 11400000, guid: 41ccd5a0068c9f44cbc4f8ea51eaff2a, type: 2}
   <obstacleDatas>k__BackingField:
+  - {fileID: 11400000, guid: ac14cb94c2804674bb04462ebbb12e20, type: 2}
   - {fileID: 11400000, guid: ac14cb94c2804674bb04462ebbb12e20, type: 2}
   <heroSetUpPositions>k__BackingField:
   - {x: 0, y: 0}
@@ -42,4 +42,5 @@ MonoBehaviour:
   - {x: 4, y: 3}
   - {x: 4, y: 4}
   <obstacleSetUpPositions>k__BackingField:
-  - {x: 0, y: 0}
+  - {x: 1, y: 0}
+  - {x: 0, y: 1}

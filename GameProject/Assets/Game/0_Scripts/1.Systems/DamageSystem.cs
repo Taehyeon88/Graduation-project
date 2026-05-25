@@ -72,7 +72,7 @@ public class DamageSystem : Singleton<DamageSystem>
             }
 
             int amountInt = Mathf.CeilToInt(amount);
-            Debug.Log($"{target.name}에게 구 - {temp}데미지 | 실 - {amountInt}데미지");
+            Debug.Log($"{dealDamageGA.Caster?.name}가 {target.name}에게 구 - {temp}데미지 | 실 - {amountInt}데미지");
 
             target.Damage(amountInt);
             Instantiate(DamageVFX, target.transform.position, target.transform.rotation);
@@ -84,13 +84,16 @@ public class DamageSystem : Singleton<DamageSystem>
                 if (target is not HeroView)
                 {
                     KillGA killGA = new KillGA(target);
-                    ActionSystem.Instance.AddReaction(killGA);
-
-                    if (EnemySystem.Instance.Enemise.Count <= 1)
+                    dealDamageGA.PerformReactions.Add((killGA, () =>
                     {
-                        GameClearGA gameClearGA = new();
-                        ActionSystem.Instance.AddReaction(gameClearGA);
+                        Debug.Log($"게임 종료 체크 - 남은 개수: {EnemySystem.Instance.Enemise.Count}");
+                        if (EnemySystem.Instance.Enemise.Count <= 0)
+                        {
+                            GameClearGA gameClearGA = new();
+                            dealDamageGA.PostReactions.Add((gameClearGA, null));
+                        }
                     }
+                    ));
                 }
                 else
                 {

@@ -1,21 +1,19 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
-public class Rat_Private : Enemy
+public class Rat_Assault : Enemy
 {
-    private const int atkDistance = 1;
+    private const int atkDistance = 2;
     public override EnemyAction PreJudgeActAction(EnemyView enemy)
     {
-        Type type = typeof(NormalAttackEA);
+        Type type = typeof(RatDashEA);
         var action = FindEnemyAction(enemy, type);
         if (action == null)
             Debug.LogError($"{this}에 {type}라는 행동이 존재하지 않습니다.");
 
-        var enemyRM = new E_AllAroundRM();
-        var enemyTM = new E_SingleTM();
+        var enemyRM = new E_CrossRM();
+        var enemyTM = new E_LineOneTM();
         var currentPos = TokenSystem.Instance.GetTokenPosition(enemy);
 
         action.EnemyRM = enemyRM;
@@ -72,7 +70,7 @@ public class Rat_Private : Enemy
 
     public override Enemy Clone()
     {
-        return new Rat_Private();
+        return new Rat_Assault();
     }
 
 

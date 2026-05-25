@@ -14,6 +14,7 @@ public class EnemySystem : Singleton<EnemySystem>
         ActionSystem.AttachPerformer<EnemysTurnGA>(EnemysTurnPerformer);
         ActionSystem.AttachPerformer<EnemyTurnGA>(EnemyTurnPerformer);
         ActionSystem.AttachPerformer<AttackHeroGA>(AttackHeroPerformer);
+        ActionSystem.AttachPerformer<EnemyMoveGA>(EnemyMoveGAPerformer);
         ActionSystem.SubscribeReaction<EnemysTurnGA>(EnemysTurnPostReaction, ReactionTiming.POST);
         ActionSystem.SubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<MoveGA>(MoveGAPreReaction, ReactionTiming.PRE);
@@ -24,6 +25,7 @@ public class EnemySystem : Singleton<EnemySystem>
         ActionSystem.DetachPerformer<EnemysTurnGA>();
         ActionSystem.DetachPerformer<EnemyTurnGA>();
         ActionSystem.DetachPerformer<AttackHeroGA>();
+        ActionSystem.DetachPerformer<EnemyMoveGA>();
         ActionSystem.UnsubscribeReaction<EnemysTurnGA>(EnemysTurnPostReaction, ReactionTiming.POST);
         ActionSystem.UnsubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<MoveGA>(MoveGAPreReaction, ReactionTiming.PRE);
@@ -81,10 +83,17 @@ public class EnemySystem : Singleton<EnemySystem>
             yield return motion?.WaitForCompletion();
         }
 
-        //이동 판단 및 실행
-        if (!isIsolation)
-            enemy.Enemy.JudgeAndPlayMove(enemy);
+        EnemyMoveGA enemyMoveGA = new(enemy, isIsolation);
+        ActionSystem.Instance.AddReaction(enemyMoveGA);
+    }
 
+    private IEnumerator EnemyMoveGAPerformer(EnemyMoveGA enemyMove)
+    {
+        //이동 판단 및 실행
+        if (!enemyMove.IsIsolation)
+            enemyMove.EnemyView.Enemy.JudgeAndPlayMove(enemyMove.EnemyView);
+
+        yield return null;
     }
 
     private IEnumerator AttackHeroPerformer(AttackHeroGA attackHeroGA)

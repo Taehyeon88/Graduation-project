@@ -36,8 +36,7 @@ public abstract class Enemy
 
         EnemyRangeMode enemyRM = enemyAction.EnemyRM;
         int distance = enemyAction.ActDistance;
-        bool penetration = enemyAction.IsPenetration;
-        var range = enemyRM.GetGridRanges(currentPosition, distance, penetration);
+        var range = enemyRM.GetGridRanges(currentPosition, distance);
 
         if (!range.Contains(HeroSystem.Instance.HeroPosition))
         {

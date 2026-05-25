@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using UnityEngine;
 
 public class Skeleton_Warrior : Enemy
 {
+    private const int atkDistance = 1;
     private const int movePoint = 2;
     public override EnemyAction PreJudgeActAction(EnemyView enemy)
     {
@@ -14,16 +16,18 @@ public class Skeleton_Warrior : Enemy
             Debug.LogError($"{this}에 {type}라는 행동이 존재하지 않습니다.");
 
         var enemyRM = new E_AllAroundRM();
+        var enemyTM = new E_SingleTM();
         var currentPos = TokenSystem.Instance.GetTokenPosition(enemy);
 
         action.EnemyRM = enemyRM;
-        action.ActDistance = 1;
-        action.IsPenetration = false;
+        action.EnemyTM = enemyTM;
+        action.ActDistance = atkDistance;
 
         if (!ChangeToWaitEA(enemy, action, currentPos))
         {
-            Vector2Int dir = HeroSystem.Instance.HeroPosition - currentPos;
-            action.Directions.Add(dir);
+            var range = enemyRM.GetGridRanges(currentPos, atkDistance);
+            var dirs = enemyTM.GetDirections(range, HeroSystem.Instance.HeroPosition, currentPos, atkDistance);
+            action.Directions = dirs;
         }
         else return null;
 

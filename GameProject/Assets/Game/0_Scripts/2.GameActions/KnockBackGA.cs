@@ -1,20 +1,15 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class KnockBackGA : GameAction
 {
-    public CombatantView Caster { get; private set; } //½ÃÀüÀÚ
-    public int Distance { get; private set; }         //³Ë¹é È¿°ú(¹Ğ·Á³ª´Â) °Å¸®
-    public bool IsSingle { get; private set; }        //´ÜÀÏ ´ë»ó ÁöÁ¤ ¿©ºÎ 
+    public CombatantView Caster { get; private set; } //ì‹œì „ì
+    public int Distance { get; private set; }         //ë„‰ë°± íš¨ê³¼(ë°€ë ¤ë‚˜ëŠ”) ê±°ë¦¬
 
     //Single - Target
-    public Vector2Int TargetPos { get; private set; }  //ÇÇ°İÀÚ
-    public Vector2Int Direction { get; private set; }  //³Ë¹é ½ÃÅ³ ¹æÇâ
-
-    //Multi - Target
-    public List<Vector2Int> TargetPoses { get; private set; }  //ÇÇ°İÀÚµé
-    public List<Vector2Int> Directions { get; private set; }   //³Ë¹é ½ÃÅ³ ¹æÇâµé
+    public Vector2Int TargetPos { get; private set; }  //í”¼ê²©ì
+    public Vector2Int Direction { get; private set; }  //ë„‰ë°± ì‹œí‚¬ ë°©í–¥
 
     public KnockBackGA(CombatantView caster, int distance, Vector2Int targetPos, Vector2Int direction)
     {
@@ -22,15 +17,5 @@ public class KnockBackGA : GameAction
         Distance = distance;
         TargetPos = targetPos;
         Direction = direction;
-        IsSingle = true;
-    }
-
-    public KnockBackGA(CombatantView caster, int distance, List<Vector2Int> targetPoses, List<Vector2Int> directions)
-    {
-        Caster = caster;
-        Distance = distance;
-        TargetPoses = targetPoses;
-        Directions = directions;
-        IsSingle = false;
     }
 }

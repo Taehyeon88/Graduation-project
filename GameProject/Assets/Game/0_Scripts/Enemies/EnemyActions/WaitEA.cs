@@ -22,19 +22,18 @@ public class WaitEA : EnemyAction
     {
         Vector2Int enemyPos = TokenSystem.Instance.GetTokenPosition(enemy);
         EnemyRangeMode enemyRM = ReservedEA.EnemyRM;
+        EnemyTargetMode enemyTM = ReservedEA.EnemyTM;
         int distance = ReservedEA.ActDistance;
-        bool penetration = ReservedEA.IsPenetration;
 
-        var range = enemyRM.GetGridRanges(enemyPos, distance, penetration);
+        var range = enemyRM.GetGridRanges(enemyPos, distance);
 
         if (range.Contains(HeroSystem.Instance.HeroPosition))
         {
             //행동 상태로 변경
             enemy.SetNextAction(ReservedEA);
             //방향 설정
-            Vector2Int dir = HeroSystem.Instance.HeroPosition - enemyPos;
-            enemy.NextAction.Directions.Clear();
-            enemy.NextAction.Directions.Add(dir);
+            var dirs = enemyTM.GetDirections(range, HeroSystem.Instance.HeroPosition, enemyPos, distance);
+            enemy.NextAction.Directions = dirs;
             //공격 범위 그리기
             enemy.Enemy.SetDrawActActionVG(true, enemy, enemy.NextAction);
         }

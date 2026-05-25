@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15ecb23d4f55996479d80b8135290e46, type: 3}
+  m_Name: Rat_Assault
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyData
+  <TokenModel>k__BackingField: {fileID: 8409466067229185608, guid: 5de08ffd89856694dae4de417ccd7dda, type: 3}
+  <Name>k__BackingField: "\uC950 \uB3CC\uACA9\uBCD1"
+  <Sprite>k__BackingField: {fileID: 21300000, guid: d66d13218ef414e45881aa163287253f, type: 3}
+  useHealth: 1
+  Health: 5
+  <Enemy>k__BackingField:
+    rid: 606822132331315266
+  <EnemyActions>k__BackingField:
+  - rid: 606822132331315267
+  - rid: 606822132331315268
+  references:
+    version: 2
+    RefIds:
+    - rid: 606822132331315266
+      type: {class: Rat_Assault, ns: , asm: Assembly-CSharp}
+      data: 
+    - rid: 606822132331315267
+      type: {class: RatDashEA, ns: , asm: Assembly-CSharp}
+      data:
+        damage: 6
+        distance: 2
+        description: "\uC774\uAC83\uC740 \uB3CC\uACBD \uACF5\uACA9\uC785\uB2C8\uB2E4."
+        icon: {fileID: 21300000, guid: 497a426bfc3103c48b96e711d6c2b7ab, type: 3}
+    - rid: 606822132331315268
+      type: {class: WaitEA, ns: , asm: Assembly-CSharp}
+      data:
+        description: "\uC774\uAC83\uC740 \uB300\uAE30\uC0C1\uD0DC\uC785\uB2C8\uB2E4."
+        icon: {fileID: 21300000, guid: 132298884e902104b96280f0aca19c8f, type: 3}

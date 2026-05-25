@@ -48,6 +48,15 @@ public static class Utility
         );
     }
 
+    public static Vector2Int GetSignVector2Int(Vector2Int vector)
+    {
+        return new Vector2Int
+        (
+             (int) Mathf.Sign(vector.x) * (vector.x != 0 ? 1 : 0),
+             (int) Mathf.Sign(vector.y) * (vector.y != 0 ? 1 : 0)
+        );
+    }
+
     public static Tween GetTween(Token token, Vector2 currentPos, Vector2 direction, float distance, float duration, Ease ease = Ease.Unset)
     {
         Tween tween = DOTween.To(() =>
