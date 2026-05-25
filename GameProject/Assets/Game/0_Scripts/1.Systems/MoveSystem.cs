@@ -9,7 +9,6 @@ public class MoveSystem : Singleton<MoveSystem>
         ActionSystem.AttachPerformer<PlayerMoveGA>(PlayerMoveGAPerformer);
         ActionSystem.AttachPerformer<PerformMoveGA>(PerformMoveGAPerformer);
         ActionSystem.AttachPerformer<MoveGA>(MoveGAPerformer);
-        ActionSystem.SubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<PlayerMoveGA>(PlayerMovePostReaction, ReactionTiming.POST);
     }
     private void OnDisable()
@@ -17,7 +16,6 @@ public class MoveSystem : Singleton<MoveSystem>
         ActionSystem.DetachPerformer<PlayerMoveGA>();
         ActionSystem.DetachPerformer<PerformMoveGA>();
         ActionSystem.DetachPerformer<MoveGA>();
-        ActionSystem.UnsubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<PlayerMoveGA>(PlayerMovePostReaction, ReactionTiming.POST);
     }
 
@@ -72,8 +70,6 @@ public class MoveSystem : Singleton<MoveSystem>
                     Vector2Int isoPosition = new((int)mousePosition.x, (int)mousePosition.y);
                     CombatantView heroView = HeroSystem.Instance.HeroView;
 
-                    if (TokenSystem.Instance.CheckContainMovedPath(isoPosition)) yield return null;
-
                     int distance = TokenSystem.Instance.GetDistance(heroView, isoPosition);
 
                     if (SPDSystem.Instance.RemainSPD() >= distance)
@@ -127,12 +123,6 @@ public class MoveSystem : Singleton<MoveSystem>
     }
 
     //Subscribers
-    private void EnemysTurnPreReaction(EnemysTurnGA enemyTurnGA)   //몬스터 턴 시작 전, 플레이어 이동한 경로 초기화
-    {
-        TokenSystem.Instance.ResetMovedPath();
-        VisualGridCreator.Instance.RemoveVisualGridById(gameObject.GetInstanceID()); 
-        TokenSystem.Instance.ResetMovedPath();
-    }
 
     private void PlayerMovePostReaction(PlayerMoveGA _playerMoveGA)
     {
@@ -147,7 +137,6 @@ public class MoveSystem : Singleton<MoveSystem>
             if (_playerMoveGA.IsFirstMove)
             {
                 VisualGridCreator.Instance.RemoveVisualGridById(gameObject.GetInstanceID());
-                TokenSystem.Instance.ResetMovedPath();
             }
             else
             {

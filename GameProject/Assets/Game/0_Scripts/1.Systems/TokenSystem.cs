@@ -20,7 +20,6 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
     private TokenPreview preview;
     private TokenData tokenData;
     private List<Vector2Int> heroSetupPositions = new();
-    private List<Vector2Int> movedPath = new();
 
     /// <summary>
     /// 정해진 위치좌표들에 각 벽들을 생성하는 함수
@@ -232,15 +231,6 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
         //Debug.Log($"현재 위치: {gridPosByToken[token]}");
         Vector2Int start = gridPosByToken[token];
         var result = UtilityBFS.FindALLRoots(start, maxDistance);
-
-        if (token is HeroView)
-        {
-            foreach (var r in result.ToList())
-            {
-                if (movedPath.Contains(r))
-                    result.Remove(r);
-            }
-        }
         return result;
     }
 
@@ -262,41 +252,13 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
     }
 
     /// <summary>
-    ///현재 턴의 영웅 혹은 몬스터가 현재 턴에 이동한 모든 그리드들 받기
-    /// </summary>
-    /// <returns></returns>
-    public List<Vector2Int> GetMovedPath() => new(movedPath);
-
-    /// <summary>
     /// 토큰(영웅, 적, 건물) 이동 함수
     /// </summary>
     /// <param name="token"></param>
     /// <param name="path"></param>
     /// <returns></returns>
     public IEnumerator MoveToken(Token token, Vector2Int targetPos, bool useAnimation = true, bool useMovedPath = true)
-    {
-        if (token is HeroView && useMovedPath)   //이전 위치를 이동한 경로에 저장 (영웅 한정)
-        {
-            if(!movedPath.Contains(gridPosByToken[token]))
-            {
-                movedPath.Add(gridPosByToken[token]);
-                VisualGridCreator.Instance.ChangeVisualGrid(gridPosByToken[token], 
-                    MoveSystem.Instance.gameObject.GetInstanceID(), 
-                    "Hero_Move", 
-                    "Hero_Moved"
-                    );
-            }
-            if (!movedPath.Contains(targetPos))
-            {
-                movedPath.Add(targetPos);
-                VisualGridCreator.Instance.ChangeVisualGrid(targetPos,
-                    MoveSystem.Instance.gameObject.GetInstanceID(), 
-                    "Hero_Move", 
-                    "Hero_Moved"
-                    );
-            }
-        }
-        
+    {      
         grid.ResetToken(gridPosByToken[token]);
         grid.SetToken(token, targetPos);
         gridPosByToken[token] = targetPos;
@@ -307,16 +269,6 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
             yield return tween.WaitForCompletion();
         }
     }
-    /// <summary>
-    /// 영웅만 이동 턴 종료후, 필수!! 실행 초기화 함수
-    /// </summary>
-    public void ResetMovedPath() => movedPath.Clear();
-    /// <summary>
-    /// 영웅만 이동한 경로에 포함 되는 그리드 존재 여부 확인 함수
-    /// </summary>
-    /// <param name="pos"></param>
-    /// <returns></returns>
-    public bool CheckContainMovedPath(Vector2Int pos) => movedPath.Contains(pos);
 
     /// <summary>
     /// 특정 토큰의 현재 위치를 받아가는 함수
