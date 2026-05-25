@@ -10,7 +10,7 @@ public class E_AllAroundRM : EnemyRangeMode
 {
     public override List<Vector2Int> GetGridRanges(Vector2Int currentPosition, int distance = 1, bool penetration = false)
     {
-        return TokenSystem.Instance.GetAllAroundPlaces(currentPosition, distance, false, true);
+        return TokenSystem.Instance.GetAllAroundPlaces(currentPosition, distance, false, true, true);
     }
 }
 

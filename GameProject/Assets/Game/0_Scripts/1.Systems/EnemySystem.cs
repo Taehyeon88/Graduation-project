@@ -14,7 +14,6 @@ public class EnemySystem : Singleton<EnemySystem>
         ActionSystem.AttachPerformer<EnemysTurnGA>(EnemysTurnPerformer);
         ActionSystem.AttachPerformer<EnemyTurnGA>(EnemyTurnPerformer);
         ActionSystem.AttachPerformer<AttackHeroGA>(AttackHeroPerformer);
-        ActionSystem.AttachPerformer<KillEnemyGA>(KillEnemyPerformer);
         ActionSystem.SubscribeReaction<EnemysTurnGA>(EnemysTurnPostReaction, ReactionTiming.POST);
         ActionSystem.SubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<MoveGA>(MoveGAPreReaction, ReactionTiming.PRE);
@@ -25,7 +24,6 @@ public class EnemySystem : Singleton<EnemySystem>
         ActionSystem.DetachPerformer<EnemysTurnGA>();
         ActionSystem.DetachPerformer<EnemyTurnGA>();
         ActionSystem.DetachPerformer<AttackHeroGA>();
-        ActionSystem.DetachPerformer<KillEnemyGA>();
         ActionSystem.UnsubscribeReaction<EnemysTurnGA>(EnemysTurnPostReaction, ReactionTiming.POST);
         ActionSystem.UnsubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<MoveGA>(MoveGAPreReaction, ReactionTiming.PRE);
@@ -110,11 +108,6 @@ public class EnemySystem : Singleton<EnemySystem>
 
         //미리 보여준 공격 범위 삭제
         VisualGridCreator.Instance.RemoveVisualGrid(attackHeroGA.Caster.GetInstanceID(), "Enemy_Attack");
-    }
-
-    private IEnumerator KillEnemyPerformer(KillEnemyGA killEnemyGA)
-    {
-        yield return TokenSystem.Instance.RemoveEnemy(killEnemyGA.EnemyView);
     }
 
     //Reactions

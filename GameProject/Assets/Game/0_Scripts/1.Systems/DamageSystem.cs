@@ -10,11 +10,15 @@ public class DamageSystem : Singleton<DamageSystem>
     void OnEnable()
     {
         ActionSystem.AttachPerformer<DealDamageGA>(DealDamagePerformer);
+        ActionSystem.AttachPerformer<KillGA>(KillPerformer);
     }
     void OnDisable()
     {
         ActionSystem.DetachPerformer<DealDamageGA>();
+        ActionSystem.DetachPerformer<KillGA>();
     }
+
+    //Performers
 
     private IEnumerator DealDamagePerformer(DealDamageGA dealDamageGA)
     {
@@ -77,10 +81,10 @@ public class DamageSystem : Singleton<DamageSystem>
             yield return new WaitForSeconds(0.15f);
             if (target.CurrentHealth <= 0)
             {
-                if (target is EnemyView enemyView)
+                if (target is not HeroView)
                 {
-                    KillEnemyGA killEnemyGA = new KillEnemyGA(enemyView);
-                    ActionSystem.Instance.AddReaction(killEnemyGA);
+                    KillGA killGA = new KillGA(target);
+                    ActionSystem.Instance.AddReaction(killGA);
 
                     if (EnemySystem.Instance.Enemise.Count <= 1)
                     {
@@ -95,5 +99,10 @@ public class DamageSystem : Singleton<DamageSystem>
                 }
             }
         }
+    }
+
+    private IEnumerator KillPerformer(KillGA killGA)
+    {
+        yield return TokenSystem.Instance.RemoveToken(killGA.Token);
     }
 }

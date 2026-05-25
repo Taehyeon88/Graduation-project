@@ -10,7 +10,7 @@ public static class UtilityBFS
         };
 
     //인접(거리) 범위 안에서 선택할 수 있는 모든 위치 받는 함수
-    public static List<Vector2Int> FindAllPlaces(Vector2Int start, int maxDistance, bool exceptEnemy, bool exceptHero)
+    public static List<Vector2Int> FindAllPlaces(Vector2Int start, int maxDistance, bool exceptEnemy, bool exceptHero, bool exceptDestructable = false)
     {
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
         List<Vector2Int> list = new List<Vector2Int>();
@@ -44,7 +44,7 @@ public static class UtilityBFS
 
         foreach (var pos in list.ToList())
         {
-            if (!TokenSystem.Instance.IsGridEmpty(pos, exceptEnemy, exceptHero))
+            if (!TokenSystem.Instance.IsGridEmpty(pos, exceptEnemy, exceptHero, exceptDestructable))
             {
                 list.Remove(pos);
             }

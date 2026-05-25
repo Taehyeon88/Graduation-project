@@ -13,7 +13,7 @@ public class AllAroundRM : GridRangeMode
 {
     public override List<Vector2Int> GetGridRanges(Vector2Int currentPosition, int distance = 1, bool penetration = false)
     {
-        return TokenSystem.Instance.GetAllAroundPlaces(currentPosition, distance, true);
+        return TokenSystem.Instance.GetAllAroundPlaces(currentPosition, distance, true, false, true);
     }
 }
 
@@ -22,7 +22,7 @@ public class AllAround_ExpceptEnemyRM : GridRangeMode
 {
     public override List<Vector2Int> GetGridRanges(Vector2Int currentPosition, int distance = 1, bool penetration = false)
     {
-        return TokenSystem.Instance.GetAllAroundPlaces(currentPosition, distance);
+        return TokenSystem.Instance.GetAllAroundPlaces(currentPosition, distance, false, false, true);
     }
 }
 

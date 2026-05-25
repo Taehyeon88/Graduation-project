@@ -19,14 +19,14 @@ public class EnemyVisualController : MonoBehaviour
     private void OnEnable()
     {
         ActionSystem.SubscribeReaction<StartBattleGA>(StartBattlePreReaction, ReactionTiming.PRE);
-        ActionSystem.SubscribeReaction<KillEnemyGA>(KillEnemyPreReaction, ReactionTiming.PRE);
+        ActionSystem.SubscribeReaction<KillGA>(KillGAPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<MoveGA>(MoveGAPostReaction, ReactionTiming.POST);
     }
 
     private void OnDisable()
     {
         ActionSystem.UnsubscribeReaction<StartBattleGA>(StartBattlePreReaction, ReactionTiming.PRE);
-        ActionSystem.UnsubscribeReaction<KillEnemyGA>(KillEnemyPreReaction, ReactionTiming.PRE);
+        ActionSystem.UnsubscribeReaction<KillGA>(KillGAPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<MoveGA>(MoveGAPostReaction, ReactionTiming.POST);
     }
 
@@ -207,9 +207,11 @@ public class EnemyVisualController : MonoBehaviour
         }
     }
 
-    private void KillEnemyPreReaction(KillEnemyGA killEnemyGA)
+    private void KillGAPreReaction(KillGA killGA)
     {
-        int id = killEnemyGA.EnemyView.gameObject.GetInstanceID();
+        if (killGA.Token is not EnemyView) return;
+        
+        int id = killGA.Token.gameObject.GetInstanceID();
 
         if (hidedEnemyIds.Contains(id))
             hidedEnemyIds.Remove(id);
@@ -218,7 +220,7 @@ public class EnemyVisualController : MonoBehaviour
 
         VisualGridCreator.Instance.RemoveVisualGridById(id);
 
-        if (killEnemyGA.EnemyView == selectedTarget)
+        if (killGA.Token == selectedTarget)
         {
             VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "UI_SelectedEnemy");  //선택 그리드 비활성화
             selectedTarget = null;

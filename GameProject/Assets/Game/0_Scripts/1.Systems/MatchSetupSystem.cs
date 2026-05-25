@@ -8,10 +8,10 @@ public class MatchSetupSystem : MonoBehaviour
     private HeroData heroData => GameSystem.Instance.HeroData;
     private IReadOnlyList<CardData> deck => GameSystem.Instance.Deck;
     private List<TokenData> enemyDatas => new(GameSystem.Instance.EnemyDatas);
-    private List<TokenData> wallDatas => new(GameSystem.Instance.WallDatas);
+    private List<TokenData> obstacleDatas => new(GameSystem.Instance.ObstacleDatas);
     private List<Vector2Int> heroSetUpPositions => new(GameSystem.Instance.HeroSetUpPositions);
     private List<Vector2Int> enemySetUpPositions => new(GameSystem.Instance.EnemySetUpPositions);
-    private List<Vector2Int> wallSetUpPositions => new(GameSystem.Instance.WallSetUpPositions);
+    private List<Vector2Int> obstacleSetUpPositions => new(GameSystem.Instance.ObstacleSetUpPositions);
     private readonly int drawCount = 5;
     private void Start()
     {
@@ -31,8 +31,8 @@ public class MatchSetupSystem : MonoBehaviour
             yield break;
         }
 
-        //벽 배치
-        TokenSystem.Instance.StartSetWalls(wallDatas, wallSetUpPositions);
+        //장애물 배치
+        TokenSystem.Instance.StartSetObstacles(obstacleDatas, obstacleSetUpPositions);
 
         //몬스터 배치
         TokenSystem.Instance.StartSettingEnemys(enemyDatas, enemySetUpPositions);

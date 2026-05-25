@@ -152,7 +152,7 @@ public class TokenGrid : MonoBehaviour
         if (!grid[x, y].IsEmpty()) return false;
         return true;
     }
-    public bool CanSetByGridPosExceptionToken(Vector2Int pos, bool exceptEnemy = false, bool exceptHero = false)
+    public bool CanSetByGridPosExceptionToken(Vector2Int pos, bool exceptEnemy = false, bool exceptHero = false, bool exceptDestructable = false)
     {
         int x = pos.x; int y = pos.y;
         if (x < 0 || x >= width || y < 0 || y >= height) return false;
@@ -160,6 +160,7 @@ public class TokenGrid : MonoBehaviour
         {
             if (exceptEnemy && grid[x, y].token is EnemyView) return true;
             else if (exceptHero && grid[x, y].token is HeroView) return true;
+            else if (exceptDestructable && grid[x, y].token is DestructibleView) return true;
             else return false;
         }
         return true;

@@ -25,25 +25,30 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
     /// <summary>
     /// 정해진 위치좌표들에 각 벽들을 생성하는 함수
     /// </summary>
-    /// <param name="wallDatas"></param>
+    /// <param name="TokenDatas"></param>
     /// <param name="setupPositions"></param>
-    public void StartSetWalls(List<TokenData> wallDatas, List<Vector2Int> setupPositions)
+    public void StartSetObstacles(List<TokenData> TokenDatas, List<Vector2Int> setupPositions)
     {
         int index = 0;
-        foreach (var wallData in wallDatas)
+        foreach (var tokenData in TokenDatas)
         {
             if (setupPositions.Count > index)
             {
                 Vector2Int pos = setupPositions[index];
 
+                TokenType tokenType = TokenType.None;
+                if (tokenData is WallData) tokenType = TokenType.Wall;
+                else if (tokenData is DestructibleData) tokenType = TokenType.Destructible;
+
                 Token token = TokenCreator.Instance.CreateToken(
-                        wallData,
-                        TokenType.Wall,
+                        tokenData,
+                        tokenType,
                         new(pos.x, pos.y, 1)
                     );
 
                 grid.SetToken(token, pos);
-                WallViews.Add(token as WallView);
+                if (token is WallView wallview)
+                    WallViews.Add(wallview);
                 gridPosByToken.Add(token, pos);
             }
 
@@ -81,12 +86,16 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
     /// 토큰 삭제 함수
     /// </summary>
     /// <param name="token"></param>
-    public void RemoveToken(Token token)
+    public IEnumerator RemoveToken(Token token)
     {
-        var pos = GetTokenPosition(token);
-        grid.ResetToken(pos);
+        if (token is EnemyView enemyView)
+        {
+            EnemyViews.Remove(enemyView);
+        }
+        grid.ResetToken(gridPosByToken[token]);
         gridPosByToken.Remove(token);
-
+        Tween tween = token.transform.DOScale(Vector3.zero, 0.25f);
+        yield return tween.WaitForCompletion();
         Destroy(token.gameObject);
     }
 
@@ -235,9 +244,9 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
         return result;
     }
 
-    public List<Vector2Int> GetAllAroundPlaces(Vector2Int currentPosition, int maxDistance, bool exceptEnemy = false, bool exceptHero = false)
+    public List<Vector2Int> GetAllAroundPlaces(Vector2Int currentPosition, int maxDistance, bool exceptEnemy = false, bool exceptHero = false, bool exceptDestructable = false)
     {
-        return UtilityBFS.FindAllPlaces(currentPosition, maxDistance, exceptEnemy, exceptHero);
+        return UtilityBFS.FindAllPlaces(currentPosition, maxDistance, exceptEnemy, exceptHero, exceptDestructable);
     }
 
     /// <summary>
@@ -459,10 +468,10 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
     /// </summary>
     /// <param name="isPosition"></param>
     /// <returns></returns>
-    public bool IsGridEmpty(Vector2Int isPosition, bool enemyException = false, bool heroException = false)
+    public bool IsGridEmpty(Vector2Int isPosition, bool enemyException = false, bool heroException = false, bool destructableExcpt = false)
     {
         if (enemyException || heroException) 
-            return grid.CanSetByGridPosExceptionToken(isPosition, enemyException, heroException);
+            return grid.CanSetByGridPosExceptionToken(isPosition, enemyException, heroException, destructableExcpt);
         else return grid.CanSetByGridPos(isPosition);
     }
 

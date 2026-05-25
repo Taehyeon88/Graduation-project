@@ -8,10 +8,10 @@ public class GameSystem : Singleton<GameSystem>
     [field : SerializeField] public HeroData HeroData { get; private set; }
     public IReadOnlyList<CardData> Deck { get { return deck;} }                //플레이어 덱
     public IReadOnlyList<EnemyData> EnemyDatas => CurrentRoomData.enemyDatas;
-    public IReadOnlyList<WallData> WallDatas => CurrentRoomData.wallDatas;
+    public IReadOnlyList<TokenData> ObstacleDatas => CurrentRoomData.obstacleDatas;
     public IReadOnlyList<Vector2Int> HeroSetUpPositions => CurrentRoomData.heroSetUpPositions;
     public IReadOnlyList<Vector2Int> EnemySetUpPositions => CurrentRoomData.enemySetUpPositions;
-    public IReadOnlyList<Vector2Int> WallSetUpPositions => CurrentRoomData.wallSetUpPositions;
+    public IReadOnlyList<Vector2Int> ObstacleSetUpPositions => CurrentRoomData.obstacleSetUpPositions;
 
     public int CurrentLevel { get; private set; } = 1;                                 //현재 층 수
     public RoomData CurrentRoomData { get { return roomDatas[CurrentLevel - 1]; } }    //현재 층 데이터

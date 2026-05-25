@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Data/Hero")]
+[CreateAssetMenu(menuName = "Data/Token/Hero")]
 public class HeroData : TokenData
 {
     [field : SerializeField] public List<CardData> Deck { get; private set; }
