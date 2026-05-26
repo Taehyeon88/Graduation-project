@@ -98,18 +98,24 @@ public class EnemySystem : Singleton<EnemySystem>
 
     private IEnumerator AttackHeroPerformer(AttackHeroGA attackHeroGA)
     {
-        //공격범위에 플레이어 존재 여부 체크
-        var heroPos = TokenSystem.Instance.GetTokenPosition(HeroSystem.Instance.HeroView);
-        bool isExist = false;
+        var attackTargets = new List<CombatantView>();
         foreach (var attackPos in attackHeroGA.AttackArea)
         {
-            if(attackPos == heroPos) isExist = true;
+            CombatantView attackTarget = TokenSystem.Instance.GetTokenByPosition(attackPos) as CombatantView;
+
+            //공격범위 안에 공격 가능 대상 존재 여부 체크
+            if (attackTarget != null)
+            {
+                if (attackTarget is HeroView || attackTarget is DestructibleView)
+                {
+                    attackTargets.Add(attackTarget);
+                }
+            }
         }
 
-        //공격범위에 있을 때, 공격 실행
-        if (isExist)
+        if (attackTargets.Count > 0)
         {
-            DealDamageGA dealDamageGA = new(attackHeroGA.DamageAmount, new() { HeroSystem.Instance.HeroView }, attackHeroGA.Caster);
+            DealDamageGA dealDamageGA = new(attackHeroGA.DamageAmount, attackTargets, attackHeroGA.Caster);
             ActionSystem.Instance.AddReaction(dealDamageGA);
         }
 

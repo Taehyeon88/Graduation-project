@@ -27,7 +27,7 @@ public class RatSwingGreatsSwordEA : EnemyAction
             poses.Add(TokenSystem.Instance.GetDirectionPos(enemy, dir));
 
         var curPos = TokenSystem.Instance.GetTokenPosition(enemy);
-        Tween attackTween = Utility.GetTween(enemy, poses[1], 0.15f);
+        Tween attackTween = Utility.GetTween(enemy, poses[0], 0.15f);
         Tween backTween = Utility.GetTween(enemy, curPos, 0.25f);
 
         Sequence squ = DOTween.Sequence();
