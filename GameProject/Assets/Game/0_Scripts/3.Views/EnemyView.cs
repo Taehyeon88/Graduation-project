@@ -28,7 +28,7 @@ public class EnemyView : CombatantView
     private EnemyAction nextAction;
 
     //상태효과 - NEW개볌 변수
-    private bool isEnemysTurn = false;
+    private bool isEnemysTurn => EnemySystem.Instance.IsEnemyTurn;
     private Dictionary<StatusEffectType, (int, Sprite, float[])> newStatusEffectUIs = new();
 
 
@@ -49,12 +49,10 @@ public class EnemyView : CombatantView
 
     private void OnEnable()
     {
-        ActionSystem.SubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<EnemysTurnGA>(EnemysTurnPostReaction, ReactionTiming.POST);
     }
     private void OnDisable()
     {
-        ActionSystem.UnsubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<EnemysTurnGA>(EnemysTurnPostReaction, ReactionTiming.POST);
     }
 
@@ -76,10 +74,8 @@ public class EnemyView : CombatantView
     }
 
     //Subscribers
-    private void EnemysTurnPreReaction(EnemysTurnGA enemysTurnGA) => isEnemysTurn = true;
     private void EnemysTurnPostReaction(EnemysTurnGA enemysTurnGA)
     {
-        isEnemysTurn = false;
         foreach (var seUI in newStatusEffectUIs)
             AddStatusEffect(seUI.Key, seUI.Value.Item1, seUI.Value.Item2, seUI.Value.Item3);
         newStatusEffectUIs.Clear();

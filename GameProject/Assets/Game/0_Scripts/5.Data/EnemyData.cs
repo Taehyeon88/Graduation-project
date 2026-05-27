@@ -8,4 +8,5 @@ public class EnemyData : TokenData
 {
     [field : SerializeReference, SR]public Enemy Enemy { get; private set; }
     [field : SerializeReference, SR]public List<EnemyAction> EnemyActions { get; private set; }
+    [field : SerializeField]public EnemyGenerateType[] EnemyGenerateTypes { get; private set; }
 }

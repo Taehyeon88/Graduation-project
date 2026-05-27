@@ -72,12 +72,9 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
         grid.SetToken(token, gridPosition);
         gridPosByToken.Add(token, gridPosition);
 
-        for (int x = 0; x < grid.simpleGrid.GetLength(0); x++)
+        if (token is EnemyView enemyView)
         {
-            for (int y = 0; y < grid.simpleGrid.GetLength(1); y++)
-            {
-                Debug.Log($"({x},{y}) - {grid.simpleGrid[x,y]}");
-            }
+            EnemyViews.Add(enemyView);
         }
     }
 

@@ -86,11 +86,17 @@ public class DamageSystem : Singleton<DamageSystem>
                     KillGA killGA = new KillGA(target);
                     dealDamageGA.PerformReactions.Add((killGA, () =>
                     {
-                        Debug.Log($"게임 종료 체크 - 남은 개수: {EnemySystem.Instance.Enemise.Count}");
                         if (EnemySystem.Instance.Enemise.Count <= 0)
                         {
-                            GameClearGA gameClearGA = new();
-                            dealDamageGA.PostReactions.Add((gameClearGA, null));
+                            if (WaveSystem.Instance.IsWaveRunning)
+                            {
+                                WaveSystem.Instance.GenerateEnemy();
+                            }
+                            else
+                            {
+                                GameClearGA gameClearGA = new();
+                                dealDamageGA.PostReactions.Add((gameClearGA, null));
+                            }
                         }
                     }
                     ));

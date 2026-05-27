@@ -143,8 +143,6 @@ public static class Utility
                 //회전 처리
                 float angle = Mathf.Atan2(tangent.z, tangent.x) * Mathf.Rad2Deg;
                 arrowTrans.rotation = Quaternion.Euler(0, 0, angle - 90f);
-
-                Debug.Log(tangent);
             },
             1f,
             duration

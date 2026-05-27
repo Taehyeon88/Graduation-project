@@ -60,7 +60,7 @@ public class Skeleton_Warrior : Enemy
 
         if (path != null)
         {
-            Debug.Log(string.Join(", ", path));
+            //Debug.Log(string.Join(", ", path));
             //개수 2 이상일 겨우, 나머지는 컷
             if (path.Count > movePoint)
                 path.RemoveRange(movePoint, path.Count - movePoint);

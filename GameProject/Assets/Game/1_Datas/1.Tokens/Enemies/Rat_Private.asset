@@ -22,6 +22,7 @@ MonoBehaviour:
   <EnemyActions>k__BackingField:
   - rid: 1062699288701173827
   - rid: 606822111444205635
+  <EnemyGenerateTypes>k__BackingField: 00000000
   references:
     version: 2
     RefIds:

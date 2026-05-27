@@ -7,10 +7,10 @@ public class MatchSetupSystem : MonoBehaviour
 {
     private HeroData heroData => GameSystem.Instance.HeroData;
     private IReadOnlyList<CardData> deck => GameSystem.Instance.Deck;
-    private List<TokenData> enemyDatas => new(GameSystem.Instance.EnemyDatas);
+    private IReadOnlyList<EnemyData> enemyDatas => GameSystem.Instance.EnemyDatas;
     private List<TokenData> obstacleDatas => new(GameSystem.Instance.ObstacleDatas);
     private List<Vector2Int> heroSetUpPositions => new(GameSystem.Instance.HeroSetUpPositions);
-    private List<Vector2Int> enemySetUpPositions => new(GameSystem.Instance.EnemySetUpPositions);
+    private IReadOnlyList<int> enemyCountsPerWave => GameSystem.Instance.EnemyCountsPerWave;
     private List<Vector2Int> obstacleSetUpPositions => new(GameSystem.Instance.ObstacleSetUpPositions);
     private readonly int drawCount = 5;
     private void Start()
@@ -34,8 +34,8 @@ public class MatchSetupSystem : MonoBehaviour
         //장애물 배치
         TokenSystem.Instance.StartSetObstacles(obstacleDatas, obstacleSetUpPositions);
 
-        //몬스터 배치
-        TokenSystem.Instance.StartSettingEnemys(enemyDatas, enemySetUpPositions);
+        //웨이브 시스템(몬스터 배치)
+        WaveSystem.Instance.SetUp(enemyDatas, enemyCountsPerWave);
         //아이템 배치
 
         //영웅 배치

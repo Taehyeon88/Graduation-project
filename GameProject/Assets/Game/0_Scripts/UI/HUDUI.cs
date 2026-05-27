@@ -15,6 +15,7 @@ public class HUDUI : MonoBehaviour
     [SerializeField] private TMP_Text heroHpText;
     [SerializeField] private TMP_Text goldAmountText;
     [SerializeField] private TMP_Text turnCountText;
+    [SerializeField] private TMP_Text waveCountText;
     [SerializeField] private TMP_Text manaAmountText;
     [SerializeField] private TMP_Text drawPileCardAmountText;
     [SerializeField] private TMP_Text discardPileCardAmountText;
@@ -28,7 +29,8 @@ public class HUDUI : MonoBehaviour
     private int heroHP => HeroSystem.Instance.HeroView.CurrentHealth;
     private int heroMaxHP => HeroSystem.Instance.HeroView.MaxHealth;
     //골드
-    //턴 횟수
+    private int turnCount => WaveSystem.Instance.CurrentTurn;
+    private int waveCount => WaveSystem.Instance.RemainWaveTurn;
     private int manaAmount => ManaSystem.Instance.CurrentMana;
     private int maxMana => ManaSystem.Instance.MaxMana;
     private int drawPileCardAmount => CardSystem.Instance.drawPileCA;
@@ -45,6 +47,8 @@ public class HUDUI : MonoBehaviour
         }
         //골드
         //턴
+        turnCountText.SetText("턴: {0}", turnCount);
+        waveCountText.SetText("다음 웨이브: {0}턴", waveCount);
         manaAmountText.SetText("{0}/{1}", manaAmount, maxMana);
         drawPileCardAmountText.text = drawPileCardAmount.ToString();
         discardPileCardAmountText.text = discardPileCardAmount.ToString();

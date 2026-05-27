@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class EnemySystem : Singleton<EnemySystem>
 {
+    public bool IsEnemyTurn { get; private set; }
     public IReadOnlyList<EnemyView> Enemise => TokenSystem.Instance.EnemyViews;
     public Action<int> EnemyAddEvent { get; private set; }
 
@@ -131,6 +132,8 @@ public class EnemySystem : Singleton<EnemySystem>
     //모든 적들 다음으로 할 행동 판단 및 보여주기
     private void EnemysTurnPostReaction(EnemysTurnGA enemysTurnGA)
     {
+        IsEnemyTurn = false;
+
         foreach (EnemyView enemy in Enemise)
         {
 //---------------------------------------------몬스터 상태효과-----------------------------------------------
@@ -166,6 +169,8 @@ public class EnemySystem : Singleton<EnemySystem>
     //몬스터 들 턴 시작 전
     private void EnemysTurnPreReaction(EnemysTurnGA enemysTurnGA)
     {
+        IsEnemyTurn = true;
+
         //적들의 턴 시작시, 방어막 스택 제거
         foreach (EnemyView enemy in Enemise)
         {

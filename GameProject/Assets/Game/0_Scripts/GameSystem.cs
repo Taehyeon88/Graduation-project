@@ -10,8 +10,10 @@ public class GameSystem : Singleton<GameSystem>
     public IReadOnlyList<EnemyData> EnemyDatas => CurrentRoomData.enemyDatas;
     public IReadOnlyList<TokenData> ObstacleDatas => CurrentRoomData.obstacleDatas;
     public IReadOnlyList<Vector2Int> HeroSetUpPositions => CurrentRoomData.heroSetUpPositions;
-    public IReadOnlyList<Vector2Int> EnemySetUpPositions => CurrentRoomData.enemySetUpPositions;
+    public IReadOnlyList<int> EnemyCountsPerWave => CurrentRoomData.enemyCountsPerWave;
     public IReadOnlyList<Vector2Int> ObstacleSetUpPositions => CurrentRoomData.obstacleSetUpPositions;
+
+    private IReadOnlyCollection<Vector2Int> d;
 
     public int CurrentLevel { get; private set; } = 1;                                 //현재 층 수
     public RoomData CurrentRoomData { get { return roomDatas[CurrentLevel - 1]; } }    //현재 층 데이터
