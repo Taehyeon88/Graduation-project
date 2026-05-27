@@ -358,7 +358,7 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
     /// <param name="token"></param>
     /// <param name="direction"></param>
     /// <returns></returns>
-    public Vector2Int GetDirectionPos(Token token, Vector2Int direction)
+    public Vector2Int GetPositionByDirection(Token token, Vector2Int direction)
     {
         Vector2Int current = gridPosByToken[token];
         return current + direction;

@@ -119,7 +119,7 @@ public class EnemySystem : Singleton<EnemySystem>
             ActionSystem.Instance.AddReaction(dealDamageGA);
         }
 
-        yield return new WaitForSeconds(0.4f);
+        yield return new WaitForSeconds(0.1f);
 
         //미리 보여준 공격 범위 삭제
         VisualGridCreator.Instance.RemoveVisualGrid(attackHeroGA.Caster.GetInstanceID(), "Enemy_Attack");

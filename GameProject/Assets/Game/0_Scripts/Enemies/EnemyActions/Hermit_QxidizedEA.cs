@@ -26,7 +26,7 @@ public class Hermit_QxidizedEA : EnemyAction
         var target = new List<CombatantView>();
 
         var dir = Directions[0];
-        var pos = TokenSystem.Instance.GetDirectionPos(enemy, dir);
+        var pos = TokenSystem.Instance.GetPositionByDirection(enemy, dir);
         var hero = TokenSystem.Instance.GetTokenByPosition(pos) as HeroView;
         if (hero != null)
         {

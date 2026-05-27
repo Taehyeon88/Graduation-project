@@ -82,7 +82,7 @@ public class Skeleton_Warrior : Enemy
 
             foreach (var dir in action.Directions)
             {
-                var pos = TokenSystem.Instance.GetDirectionPos(enemy, dir);
+                var pos = TokenSystem.Instance.GetPositionByDirection(enemy, dir);
                 VisualGridCreator.Instance.CreateVisualGrid(enemy.gameObject.GetInstanceID(), pos, "Enemy_Attack");
             }
         }

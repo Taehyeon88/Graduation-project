@@ -102,7 +102,7 @@ public class Rat_General : Enemy
 
             foreach (var dir in enemyAction.Directions)
             {
-                var pos = TokenSystem.Instance.GetDirectionPos(enemy, dir);
+                var pos = TokenSystem.Instance.GetPositionByDirection(enemy, dir);
                 VisualGridCreator.Instance.CreateVisualGrid(enemy.gameObject.GetInstanceID(), pos, "Enemy_Attack");
             }
         }

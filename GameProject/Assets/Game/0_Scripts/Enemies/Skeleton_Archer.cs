@@ -10,7 +10,7 @@ public class Skeleton_Archer : Enemy
     private const int movePoint = 2;
     public override EnemyAction PreJudgeActAction(EnemyView enemy)
     {
-        Type type = typeof(NormalAttackEA);
+        Type type = typeof(SkeletonFireArrowEA);
         var action = FindEnemyAction(enemy, type);
         if (action == null)
             Debug.LogError($"{this}에 {type}라는 행동이 존재하지 않습니다.");
@@ -131,7 +131,7 @@ public class Skeleton_Archer : Enemy
 
             foreach (var dir in action.Directions)
             {
-                var pos = TokenSystem.Instance.GetDirectionPos(enemy, dir);
+                var pos = TokenSystem.Instance.GetPositionByDirection(enemy, dir);
                 VisualGridCreator.Instance.CreateVisualGrid(enemy.gameObject.GetInstanceID(), pos, "Enemy_Attack");
             }
         }

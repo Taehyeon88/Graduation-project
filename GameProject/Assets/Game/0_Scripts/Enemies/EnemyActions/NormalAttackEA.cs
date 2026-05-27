@@ -24,7 +24,7 @@ public class NormalAttackEA : EnemyAction
     {
         var poses = new List<Vector2Int>();
         foreach (var dir in Directions)
-            poses.Add(TokenSystem.Instance.GetDirectionPos(enemy, dir));
+            poses.Add(TokenSystem.Instance.GetPositionByDirection(enemy, dir));
 
         var curPos = TokenSystem.Instance.GetTokenPosition(enemy);
         Tween attackTween = Utility.GetTween(enemy, poses[0], 0.15f);

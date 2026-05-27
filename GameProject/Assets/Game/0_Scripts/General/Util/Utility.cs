@@ -117,4 +117,39 @@ public static class Utility
         tween.SetEase(ease);
         return tween;
     }
+
+    public static Tween GetArrowBezierTween(IsoObject isoObject, Transform arrowTrans, Vector3 start, Vector3 end, float duration, Ease ease = Ease.Unset, float heighRate = 1)
+    {
+        Vector3 control = (start + end) / 2f + new Vector3(0, 0, 1) * 3f * heighRate;
+        float t = 0f;
+
+        Tween tween = DOTween.To(
+            () => t,
+            x =>
+            {
+                t = x;
+
+                Vector3 pos =
+                     Mathf.Pow(1 - t, 2) * start
+                     + 2 * t * (1 - t) * control
+                     + Mathf.Pow(t, 2) * end;
+                isoObject.position = pos;
+
+                // 접선(기울기) 계산
+                Vector3 tangent =
+                    2 * (1 - t) * (control - start)
+                    + 2 * t * (end - control);
+
+                //회전 처리
+                float angle = Mathf.Atan2(tangent.z, tangent.x) * Mathf.Rad2Deg;
+                arrowTrans.rotation = Quaternion.Euler(0, 0, angle - 90f);
+
+                Debug.Log(tangent);
+            },
+            1f,
+            duration
+        );
+        tween.SetEase(ease);
+        return tween;
+    }
 }

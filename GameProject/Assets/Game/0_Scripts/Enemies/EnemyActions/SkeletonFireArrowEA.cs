@@ -3,7 +3,7 @@ using IsoTools;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RatThrowingStoneEA : EnemyAction
+public class SkeletonFireArrowEA : EnemyAction
 {
     public override Sprite Icon
     {
@@ -33,8 +33,8 @@ public class RatThrowingStoneEA : EnemyAction
         if (arrow == null)
         {
             arrow = ProjectionCreator.Instance.CreateProjection(
-                ProjectionType.RatGeneralStone,
-                enemy.transform.position,
+                ProjectionType.SkeletonArrow, 
+                enemy.transform.position, 
                 TokenSystem.Instance.IsoWorld.transform
                 );
         }
@@ -45,8 +45,9 @@ public class RatThrowingStoneEA : EnemyAction
 
         Tween startTween = Utility.GetTween(enemy, currentPos, -direction, 0.2f, 0.1f, Ease.OutCubic);
         Tween returnTween = Utility.GetTween(enemy, currentPos, 0.1f);
-        Tween projectionTween = Utility.GetBezierTween(
+        Tween projectionTween = Utility.GetArrowBezierTween(
             arrow,
+            arrow.transform.GetChild(0).transform,
             new(currentPos.x, currentPos.y, 1),
             new(targetPos.x, targetPos.y, 1),
             0.3f,
@@ -73,7 +74,7 @@ public class RatThrowingStoneEA : EnemyAction
 
     public override EnemyAction Clone()
     {
-        return new RatThrowingStoneEA()
+        return new SkeletonFireArrowEA()
         {
             icon = icon,
             description = description,
