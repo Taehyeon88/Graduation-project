@@ -137,7 +137,7 @@ public class Adj_Cleave : CustomSquence
 
     public override Sequence GetCustomSquence(Token token, Vector2Int currentPos, List<Vector2Int> targetPoses)
     {
-        Vector2 direction = Utility.GetSignVector2(targetPoses[1] - currentPos);
+        Vector2 direction = Utility.GetSignVector2(targetPoses[0] - currentPos);
         Sequence sequence = DOTween.Sequence();
         Tween startTween = Utility.GetTween(token, currentPos, direction, 0.3f, 0.2f, Ease.OutBack);
         sequence.Append(startTween);

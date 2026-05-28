@@ -145,6 +145,8 @@ public class WaveSystem : Singleton<WaveSystem>
         if (!IsWaveRunning) return;
 
         CurrentTurn++;
+
+        if (enemysTurnGA.isStartGame) return;
         RemainWaveTurn--;
 
         if (RemainWaveTurn <= 0)

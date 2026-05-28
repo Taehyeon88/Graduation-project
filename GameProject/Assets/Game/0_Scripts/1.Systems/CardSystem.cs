@@ -17,7 +17,6 @@ public class CardSystem : Singleton<CardSystem>
 
     public int drawPileCA => drawPile.Count; public int discardPileCA => discardPile.Count;
     public List<Card> DiscardPile => new(discardPile); public List<Card> DrawcardPile => new(drawPile);
-    private bool isIsolation;
 
     private void OnEnable()
     {

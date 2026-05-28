@@ -18701,7 +18701,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ef4bfe78bf4df6241923ba52c4646264, type: 2}
   - {fileID: 11400000, guid: ef4bfe78bf4df6241923ba52c4646264, type: 2}
   roomDatas:
-  - {fileID: 11400000, guid: 48895f1e74c36144ba45a6945b7dd134, type: 2}
+  - {fileID: 11400000, guid: 1335a53e4b9ffde4382621861d753cd0, type: 2}
 --- !u!1001 &1844958692
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19365,6 +19365,7 @@ MonoBehaviour:
   enemyTokenPrefab: {fileID: 8184131505389806249, guid: 358d85ed5d16fef40b0ea0f9411f97ea, type: 3}
   wallTokenPrefab: {fileID: 3401949663337504491, guid: d0a4180de37b5c54f82f2edbf12e6ded, type: 3}
   destructablePrefab: {fileID: 5070491306041797036, guid: 17dc86a2db4288341ac252d83b43dbeb, type: 3}
+  trapPrefab: {fileID: 2645201253344765402, guid: b09c5ead1cbfc934ca4ec52f1d1586a2, type: 3}
   isoWorld: {fileID: 4457070332747971071}
 --- !u!4 &1954904732 stripped
 Transform:

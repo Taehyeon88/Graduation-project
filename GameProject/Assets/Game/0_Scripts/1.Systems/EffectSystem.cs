@@ -19,7 +19,7 @@ public class EffectSystem : MonoBehaviour
 
         HeroVisualEffectSystem.Instance.PlayVisualEffectPreGameAction(
             performEffectGA.EffectInfo.cardType, 
-            performEffectGA.EffectInfo.cardSubType, 
+            performEffectGA.EffectInfo.cardSubType,
             performEffectGA.EffectInfo.targetPoses
             );
 

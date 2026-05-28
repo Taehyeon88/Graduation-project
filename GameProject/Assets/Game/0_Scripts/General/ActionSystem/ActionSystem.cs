@@ -14,6 +14,10 @@ public class ActionSystem : Singleton<ActionSystem>
 
     private static readonly Dictionary<Delegate, Action<GameAction>> wrapperMap = new();
     private WaitUntil WaitUntilEndPause;
+
+    private (Type, bool) currentSub;  //타입, pre여부
+    private List<Action> willRemoveSubs = new List<Action>();
+
     private void Start()
     {
         WaitUntilEndPause = new(() => !IsPausing);
@@ -73,6 +77,8 @@ public class ActionSystem : Singleton<ActionSystem>
 
     private void PerformSubscribers(GameAction action, Dictionary<Type, List<Action<GameAction>>> subs)
     {
+        currentSub = (action.GetType(), subs == preSubs);
+
         Type type = action.GetType();
         if (subs.ContainsKey(type))
         {
@@ -80,6 +86,13 @@ public class ActionSystem : Singleton<ActionSystem>
             {
                 sub(action);
             }
+        }
+        currentSub = (null,false);
+        if (willRemoveSubs.Count > 0)
+        {
+            foreach (var sub in willRemoveSubs)
+                sub.Invoke();
+            willRemoveSubs.Clear();
         }
     }
 
@@ -124,6 +137,29 @@ public class ActionSystem : Singleton<ActionSystem>
     public static void UnsubscribeReaction<T>(Action<T> reaction, ReactionTiming timing) where T : GameAction
     {
         Dictionary<Type, List<Action<GameAction>>> subs = timing == ReactionTiming.PRE ? preSubs : postSubs;
+
+        if (Instance == null)
+            return;
+
+        if (Instance.currentSub.Item1 != null)
+        {
+            bool ispreSub = timing == ReactionTiming.PRE;
+            if (Instance.currentSub.Item1 == typeof(T) && Instance.currentSub.Item2 == ispreSub)
+            {
+                Instance.willRemoveSubs.Add(() =>
+                {
+                    if (subs.ContainsKey(typeof(T)))
+                    {
+                        if (wrapperMap.TryGetValue(reaction, out var wrapped))
+                        {
+                            subs[typeof(T)].Remove(wrapped);
+                        }
+                    }
+                });
+                return;
+            }
+        }
+
         if (subs.ContainsKey(typeof(T)))
         {
             if (wrapperMap.TryGetValue(reaction, out var wrapped))

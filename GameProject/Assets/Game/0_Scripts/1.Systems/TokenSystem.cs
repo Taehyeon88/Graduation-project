@@ -38,12 +38,13 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
                 TokenType tokenType = TokenType.None;
                 if (tokenData is WallData) tokenType = TokenType.Wall;
                 else if (tokenData is DestructibleData) tokenType = TokenType.Destructible;
+                else if (tokenData is TrapData) tokenType = TokenType.Trap;
 
-                Token token = TokenCreator.Instance.CreateToken(
-                        tokenData,
-                        tokenType,
-                        new(pos.x, pos.y, 1)
-                    );
+                    Token token = TokenCreator.Instance.CreateToken(
+                            tokenData,
+                            tokenType,
+                            new(pos.x, pos.y, 1)
+                        );
 
                 grid.SetToken(token, pos);
                 if (token is WallView wallview)
@@ -88,10 +89,28 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
         {
             EnemyViews.Remove(enemyView);
         }
-        grid.ResetToken(gridPosByToken[token]);
+        grid.ResetToken(token, gridPosByToken[token]);
         gridPosByToken.Remove(token);
+
         Tween tween = token.transform.DOScale(Vector3.zero, 0.25f);
         yield return tween.WaitForCompletion();
+        Destroy(token.gameObject);
+    }
+
+    /// <summary>
+    /// 임시 토큰 제거 함수(CombatantView가 아닌 것들의 제거)
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public void RemoveToken2(Token token)
+    {
+        if (token is EnemyView enemyView)
+        {
+            EnemyViews.Remove(enemyView);
+        }
+        grid.ResetToken(token, gridPosByToken[token]);
+        gridPosByToken.Remove(token);
+
         Destroy(token.gameObject);
     }
 
@@ -123,38 +142,6 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
                 gridPosByToken.Add(token, gridPosition);
             }
         }
-    }
-
-    /// <summary>
-    /// 전투 중, 지정된 위치로 몬스터 배치 함수
-    /// </summary>
-    /// <param name="enemyData"></param>
-    /// <param name="position"></param>
-    public void AddEnemy(EnemyData enemyData, Vector3 position)
-    {
-        //Vector3 snappedPos = GetSnappedCenterPosition(position);
-        //if (!grid.CanSet(snappedPos))
-        //{
-        //    Debug.Log("해당 위치에는 적을 생성할 수 없습니다.");
-        //    return;
-        //}
-        //PlaceToken(snappedPos, enemyData, TokenType.Enemy);
-        //EnemySystem.Instance?.EnemyAddEvent?.Invoke()
-    }
-
-    /// <summary>
-    /// 특정 몬스터를 그리드에서 제거하는 함수
-    /// </summary>
-    /// <param name="enemyView"></param>
-    /// <returns></returns>
-    public IEnumerator RemoveEnemy(EnemyView enemyView)
-    {
-        EnemyViews.Remove(enemyView);
-        grid.ResetToken(gridPosByToken[enemyView]);
-        gridPosByToken.Remove(enemyView);
-        Tween tween = enemyView.transform.DOScale(Vector3.zero, 0.25f);
-        yield return tween.WaitForCompletion();
-        Destroy(enemyView.gameObject);
     }
 
 
@@ -256,7 +243,7 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
     /// <returns></returns>
     public IEnumerator MoveToken(Token token, Vector2Int targetPos, bool useAnimation = true, bool useMovedPath = true)
     {      
-        grid.ResetToken(gridPosByToken[token]);
+        grid.ResetToken(token, gridPosByToken[token]);
         grid.SetToken(token, targetPos);
         gridPosByToken[token] = targetPos;
 
@@ -281,15 +268,22 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
     public List<Token> GetAllTokens() => gridPosByToken.Keys.ToList();
 
     /// <summary>
+    /// 해당 토큰이 존재 여부 확인 함수
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public bool IsTokenExist(Token token) => gridPosByToken.ContainsKey(token);
+
+    /// <summary>
     /// 특정 위치의 토큰을 받아가는 함수
     /// </summary>
     /// <param name="position"></param>
     /// <returns></returns>
-    public Token GetTokenByPosition(Vector2Int position)
+    public Token GetTokenByPosition(Vector2Int position, bool IsField = false)
     {
         foreach (var dic in gridPosByToken)
         {
-            if (dic.Value == position)
+            if (dic.Value == position && dic.Key.TokenData.IsField == IsField)
                 return dic.Key;
         }
         return null;

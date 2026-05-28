@@ -8,6 +8,7 @@ public class TokenData : ScriptableObject   // 프리팹을 갖고 있는데 데
     [field: SerializeField] public TokenModel TokenModel { get; private set; }
     [field: SerializeField] public string Name { get; private set; }
     [field: SerializeField] public Sprite Sprite { get; private set; }
+    [field: SerializeField] public bool IsField { get; private set; } = false;
 
     public bool useHealth;
     [ShowIf("useHealth")]

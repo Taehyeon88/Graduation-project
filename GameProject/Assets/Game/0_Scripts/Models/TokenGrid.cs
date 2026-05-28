@@ -83,17 +83,20 @@ public class TokenGrid : MonoBehaviour
         return pos;
     }
 
-    public Vector2Int SetToken(Token token, Vector2Int pos)
+    public void SetToken(Token token, Vector2Int pos)
     {
+        if (token.TokenData.IsField) return;  //Token_Field로 따로 분류
+
         if (grid == null) Initialize();
 
         grid[pos.x, pos.y].SetToken(token);
         simpleGrid[pos.x, pos.y] = 1;
         remainCells.Remove(pos);
-        return pos;
     }
-    public void ResetToken(Vector2Int pos)
+    public void ResetToken(Token token, Vector2Int pos)
     {
+        if (token.TokenData.IsField) return;  //Token_Field로 따로 분류
+
         grid[pos.x, pos.y].ResetToken();
         simpleGrid[pos.x, pos.y] = 0;
         remainCells.Add(pos);
