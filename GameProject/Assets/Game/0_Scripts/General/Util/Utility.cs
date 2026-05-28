@@ -122,6 +122,8 @@ public static class Utility
     {
         Vector3 control = (start + end) / 2f + new Vector3(0, 0, 1) * 3f * heighRate;
         float t = 0f;
+        Vector2 preScreenPos = start;
+
 
         Tween tween = DOTween.To(
             () => t,
@@ -135,13 +137,14 @@ public static class Utility
                      + Mathf.Pow(t, 2) * end;
                 isoObject.position = pos;
 
-                // 접선(기울기) 계산
-                Vector3 tangent =
-                    2 * (1 - t) * (control - start)
-                    + 2 * t * (end - control);
+
+                Vector2 currenPos = TokenSystem.Instance.IsoWorld.IsoToScreen(pos);
+                Vector2 direction = currenPos - preScreenPos;
+
+                preScreenPos = currenPos;
 
                 //회전 처리
-                float angle = Mathf.Atan2(tangent.z, tangent.x) * Mathf.Rad2Deg;
+                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
                 arrowTrans.rotation = Quaternion.Euler(0, 0, angle - 90f);
             },
             1f,
