@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,20 +7,21 @@ public class Interactions : Singleton<Interactions>
     public bool lockInteraction { get; set; } = false;
     public bool PlayerIsDraging { get; set; } = false;
     public bool PlayerIsTargeting { get; set; } = false;
-    public bool PlayerCanDraging()           //µå·¡±× °¡´É <- ¼öÇàÇÏ´Â ¾×¼Ç ¾øÀ½, Å¸°Ù ¸ðµåX
+    public bool IsMovpDetecting { get; set; } = false;
+    public bool PlayerCanDraging()           //ë“œëž˜ê·¸ ê°€ëŠ¥ <- ìˆ˜í–‰í•˜ëŠ” ì•¡ì…˜ ì—†ìŒ, íƒ€ê²Ÿ ëª¨ë“œX
     {
         if(ActionSystem.Instance.IsPerforming 
             || PlayerIsTargeting
             || lockInteraction) return false;
         else return true;
     }
-    public bool PlayerCanHover()           //È£¹ö °¡´É <- Å¸°Ù ¸ðµåX, µå·¡±×X
+    public bool PlayerCanHover()           //í˜¸ë²„ ê°€ëŠ¥ <- íƒ€ê²Ÿ ëª¨ë“œX, ë“œëž˜ê·¸X
     {
         if (PlayerIsTargeting 
             || PlayerIsDraging) return false;
         else return true;
     }
-    public bool PlayerCanTargeting()       //Å¸°Ù ¸ðµå °¡´É <- µå·¡±×X, ¼öÇàÇÏ´Â ¾×¼Ç ¾øÀ½
+    public bool PlayerCanTargeting()       //íƒ€ê²Ÿ ëª¨ë“œ ê°€ëŠ¥ <- ë“œëž˜ê·¸X, ìˆ˜í–‰í•˜ëŠ” ì•¡ì…˜ ì—†ìŒ
     {
         if (ActionSystem.Instance.IsPerforming
             || PlayerIsDraging 

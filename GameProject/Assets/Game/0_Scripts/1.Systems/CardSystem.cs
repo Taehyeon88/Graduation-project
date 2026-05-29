@@ -21,6 +21,7 @@ public class CardSystem : Singleton<CardSystem>
     private void OnEnable()
     {
         ActionSystem.AttachPerformer<DrawCardsGA>(DrawCardsPerformer);
+        ActionSystem.AttachPerformer<DiscardCardGA>(DiscardCardGAPerformer);
         ActionSystem.AttachPerformer<DiscardAllCardsGA>(DiscardAllCardsPerformer);
         ActionSystem.AttachPerformer<DrawCardFromDiscardPileGA>(DrawCardFromDiscardPilePerformer);
         ActionSystem.AttachPerformer<PlayCardTargetingGA>(PlayCardTargetingGAPerformer);
@@ -29,6 +30,7 @@ public class CardSystem : Singleton<CardSystem>
     private void OnDisable()
     {
         ActionSystem.DetachPerformer<DrawCardsGA>();
+        ActionSystem.DetachPerformer<DiscardCardGA>();
         ActionSystem.DetachPerformer<DiscardAllCardsGA>();
         ActionSystem.DetachPerformer<DrawCardFromDiscardPileGA>();
         ActionSystem.DetachPerformer<PlayCardTargetingGA>();
@@ -108,6 +110,13 @@ public class CardSystem : Singleton<CardSystem>
         else return false;
     }
 
+    public IEnumerator DiscardCardGAPerformer(DiscardCardGA discardCardGA)
+    {
+        hand.Remove(discardCardGA.CardView.Card);
+        CardView cardView = handView.RemoveCard(discardCardGA.CardView.Card);
+        yield return DiscardCard(discardCardGA.CardView);
+    }
+
     //Performers
     private IEnumerator DrawCardsPerformer(DrawCardsGA drawCardsGA)
     {
@@ -173,7 +182,7 @@ public class CardSystem : Singleton<CardSystem>
 
     private IEnumerator DiscardCard(CardView cardView)
     {
-        discardPile.Add(cardView.card);
+        discardPile.Add(cardView.Card);
         cardView.transform.DOScale(Vector3.zero, 0.15f);
         Tween tween = cardView.transform.DOMove(discardPilePoint.position, 0.15f);
         yield return tween.WaitForCompletion();

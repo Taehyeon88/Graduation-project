@@ -30,8 +30,6 @@ public class MoveSystem : Singleton<MoveSystem>
     {
         if (playerMoveGA.IsAutoMove)
         {
-            SPDSystem.Instance.AddSPD(playerMoveGA.Distance);
-
             CombatantView heroView = HeroSystem.Instance.HeroView;
             Vector2Int targetPos = playerMoveGA.TargetPoses[0];
             int distance = TokenSystem.Instance.GetDistance(heroView, targetPos);
@@ -48,10 +46,8 @@ public class MoveSystem : Singleton<MoveSystem>
         }
         else
         {
-            SPDSystem.Instance.AddSPD(playerMoveGA.Distance);
-
             //현재 SPD가 없어서 이동 불가일 경우, 반환처리
-            int curSPD = SPDSystem.Instance.RemainSPD();
+            int curSPD = SPDSystem.Instance.currentSPD;
             if (curSPD <= 0) yield break;
 
             //비주얼 그리드 설정
@@ -72,7 +68,7 @@ public class MoveSystem : Singleton<MoveSystem>
 
                     int distance = TokenSystem.Instance.GetDistance(heroView, isoPosition);
 
-                    if (SPDSystem.Instance.RemainSPD() >= distance)
+                    if (SPDSystem.Instance.currentSPD >= distance)
                     {
                         var path = TokenSystem.Instance.GetShortestPath(heroView, isoPosition);
                         if (path != null)
@@ -126,7 +122,7 @@ public class MoveSystem : Singleton<MoveSystem>
 
     private void PlayerMovePostReaction(PlayerMoveGA _playerMoveGA)
     {
-        int curSPD = SPDSystem.Instance.RemainSPD();
+        int curSPD = SPDSystem.Instance.currentSPD;
         if (curSPD >= 1)  //새로운 비주얼 그리드 그려서 보여주기
         {
             PlayerMoveGA playerMoveGA = new(curSPD);

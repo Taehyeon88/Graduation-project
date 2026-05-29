@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -46,12 +46,12 @@ public class CardViewHoverSystem : Singleton<CardViewHoverSystem>
     {
         if (active)
         {
-            foreach (var image in cardViewHover.images)
+            foreach (var image in cardViewHover.Images)
                 if (image != null) image.color = new Color32(100, 100, 100, 255);
         }
         else
         {
-            foreach (var image in cardViewHover.images)
+            foreach (var image in cardViewHover.Images)
                 if (image != null) image.color = Color.white;
         }
     }

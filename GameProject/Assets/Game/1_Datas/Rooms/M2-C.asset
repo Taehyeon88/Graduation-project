@@ -39,6 +39,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
   - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
   - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
+  - {fileID: 11400000, guid: d594895ab5dc8cc49bc4ab1194c7a0c7, type: 2}
   <obstacleSetUpPositions>k__BackingField:
   - {x: 0, y: 5}
   - {x: 1, y: 5}
@@ -50,3 +51,4 @@ MonoBehaviour:
   - {x: 5, y: 3}
   - {x: 6, y: 3}
   - {x: 7, y: 3}
+  - {x: 2, y: 2}

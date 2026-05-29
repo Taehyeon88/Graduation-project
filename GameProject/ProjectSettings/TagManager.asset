@@ -7,6 +7,7 @@ TagManager:
   - FxTemporaire
   - VG_None
   - VG_Using
+  - MOVP
   layers:
   - Default
   - TransparentFX

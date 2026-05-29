@@ -8,6 +8,10 @@ using UnityEngine.UI;
 
 public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
+    public Card Card { get; private set; }
+    public Image[] Images { get; private set; }
+    public bool LockCardUse { get; set; } = false;
+
     [SerializeField] private TMP_Text title;
     [SerializeField] private TMP_Text description;
     [SerializeField] private TMP_Text mana;
@@ -17,13 +21,12 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
     private RectTransform rectTransform;
     private Vector3 dragStartPosition;
     private Quaternion dragStartRotation;
-    public Card card { get; private set; }
-    public Image[] images { get; private set; }
-    public bool lockCardUse { get; set; } = false;
+
+    private GraphicRaycaster raycaster;
 
     public void SetUp(Card card, bool isHover = false)
     {
-        this.card = card;
+        this.Card = card;
         title.text = card.Title;
         description.text = card.Description;
         mana.text = card.Mana.ToString();
@@ -32,19 +35,21 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
 
         if (isHover)
         {
-            images = GetComponentsInChildren<Image>(true);
+            Images = GetComponentsInChildren<Image>(true);
         }
         else
         {
-            images = GetComponentsInChildren<Image>(true);
-            images[0] = null;
+            Images = GetComponentsInChildren<Image>(true);
+            Images[0] = null;
         }
+
+        raycaster = GetComponentInParent<GraphicRaycaster>();
     }
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (!Interactions.Instance.PlayerCanTargeting() || lockCardUse) return;
+        if (!Interactions.Instance.PlayerCanTargeting() || LockCardUse) return;
 
-        if (ManaSystem.Instance.HasEnoughMana(card.Mana))
+        if (ManaSystem.Instance.HasEnoughMana(Card.Mana))
         {
             //카드 선택 사운드 재생
             SoundSystem.Instance.PlaySound(18);
@@ -54,7 +59,7 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
             //플레이어 타겟팅 모드 진입
             wrapper.SetActive(false);
             Vector2 pos = rectTransform.anchoredPosition + Vector2.up * 125f;
-            CardViewHoverSystem.Instance.Show(card, pos);
+            CardViewHoverSystem.Instance.Show(Card, pos);
 
             Action endSelectGrid = () =>
             {
@@ -64,7 +69,7 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
                     wrapper.SetActive(true);
             };
 
-            PlayCardTargetingGA playCardTargetingGA = new(card, endSelectGrid);
+            PlayCardTargetingGA playCardTargetingGA = new(Card, endSelectGrid);
             ActionSystem.Instance.Perform(playCardTargetingGA, endSelectGrid);
         }
         else
@@ -85,8 +90,8 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
 
         wrapper.SetActive(false);
         Vector2 pos = rectTransform.anchoredPosition + Vector2.up * 120f;
-        CardViewHoverSystem.Instance.Show(card, pos, 
-                        Interactions.Instance.lockInteraction || lockCardUse);
+        CardViewHoverSystem.Instance.Show(Card, pos, 
+                        Interactions.Instance.lockInteraction || LockCardUse);
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -98,7 +103,7 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (!Interactions.Instance.PlayerCanDraging() || lockCardUse) return;
+        if (!Interactions.Instance.PlayerCanDraging() || LockCardUse) return;
 
         Interactions.Instance.PlayerIsDraging = true;
         wrapper.SetActive(true);
@@ -111,26 +116,62 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (!Interactions.Instance.PlayerCanDraging() || lockCardUse) return;
+        if (!Interactions.Instance.PlayerCanDraging() || LockCardUse) return;
 
         transform.position = eventData.position;
 
         //그리드 미리보기
-        if (card.SelfEffects != null && card.SelfEffects.Count > 0 && card.GridTargetMode.GridRangeMode == null)
+        if (Card.SelfEffects != null && Card.SelfEffects.Count > 0 && Card.GridTargetMode.GridRangeMode == null)
         {
             Vector2Int heroPos = TokenSystem.Instance.GetTokenPosition(HeroSystem.Instance.HeroView);
             VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), heroPos, "Hero_UseSelf");
         }
+
+        //다른 UI 감지
+        bool isDetecting = false;
+        List<RaycastResult> results = new List<RaycastResult>();
+
+        raycaster.Raycast(eventData, results);
+        foreach (RaycastResult result in results)
+        {
+            if (result.gameObject.CompareTag("MOVP"))
+                isDetecting = true;
+        }
+
+        if (isDetecting && !Interactions.Instance.IsMovpDetecting)
+        {
+            //감지됨 처리
+
+            Interactions.Instance.IsMovpDetecting = true;
+        }
+        else if (!isDetecting && Interactions.Instance.IsMovpDetecting)
+        {
+            //감지됨 취소 처리
+
+            Interactions.Instance.IsMovpDetecting = false;
+        }
     }
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (!Interactions.Instance.PlayerCanDraging() || lockCardUse) return;
+        if (!Interactions.Instance.PlayerCanDraging() || LockCardUse) return;
 
         if (!Interactions.Instance.PlayerIsDraging) return;
 
-        if (ManaSystem.Instance.HasEnoughMana(card.Mana) && rectTransform.anchoredPosition.y > 250f) //카드가 y좌표 250를 넘었음 = DropArea
+        if (Interactions.Instance.IsMovpDetecting)
         {
-            if (card.GridTargetMode.GridRangeMode != null)
+            //해당 카드 버리기 및 이동 포인트 증가
+            AddSpdGA addSpdGA = new AddSpdGA();
+            ActionSystem.Instance.Perform(addSpdGA);
+
+            DiscardCardGA discardCardGA = new DiscardCardGA(this);
+            ActionSystem.Instance.AddReaction(discardCardGA);
+
+            return;
+        }
+
+        if (ManaSystem.Instance.HasEnoughMana(Card.Mana) && rectTransform.anchoredPosition.y > 250f) //카드가 y좌표 250를 넘었음 = DropArea
+        {
+            if (Card.GridTargetMode.GridRangeMode != null)
             {
                 transform.position = dragStartPosition;
                 transform.rotation = dragStartRotation;
@@ -139,7 +180,7 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
                 Interactions.Instance.PlayerIsTargeting = true;
                 wrapper.SetActive(false);
                 Vector2 pos = rectTransform.anchoredPosition + Vector2.up * 125f;
-                CardViewHoverSystem.Instance.Show(card, pos);
+                CardViewHoverSystem.Instance.Show(Card, pos);
 
                 Action endSelectGrid = () =>
                 {
@@ -149,12 +190,12 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
                         wrapper.SetActive(true);
                 };
 
-                PlayCardTargetingGA playCardTargetingGA = new(card, endSelectGrid);
+                PlayCardTargetingGA playCardTargetingGA = new(Card, endSelectGrid);
                 ActionSystem.Instance.Perform(playCardTargetingGA, endSelectGrid);
             }
             else
             {
-                PlayCardGA playCardGA = new(card, null);
+                PlayCardGA playCardGA = new(Card, null);
                 ActionSystem.Instance.Perform(playCardGA);
             }
         }

@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
@@ -33,7 +33,7 @@ public class HandView : MonoBehaviour
         {
             foreach (var card in cards)
             {
-                foreach (var image in card.images)
+                foreach (var image in card.Images)
                     if (image != null) image.color = new Color32(100, 100, 100, 255);
             }
         }
@@ -41,7 +41,7 @@ public class HandView : MonoBehaviour
         {
             foreach (var card in cards)
             {
-                foreach (var image in card.images)
+                foreach (var image in card.Images)
                     if (image != null) image.color = Color.white;
             }
         }
@@ -53,27 +53,27 @@ public class HandView : MonoBehaviour
 
         if(card == null) return;
 
-        if (active && !card.lockCardUse)
+        if (active && !card.LockCardUse)
         {
-            //»ç¿ë ºÒ°¡ ½ÇÁ¦ Ã³¸®
-            card.lockCardUse = true;
-            //»ç¿ë ºÒ°¡ ºñÁÖ¾óÃ³¸®
-            foreach (var image in card.images)
+            //ì‚¬ìš© ë¶ˆê°€ ì‹¤ì œ ì²˜ë¦¬
+            card.LockCardUse = true;
+            //ì‚¬ìš© ë¶ˆê°€ ë¹„ì£¼ì–¼ì²˜ë¦¬
+            foreach (var image in card.Images)
                 if (image != null) image.color = new Color32(100, 100, 100, 255);
         }
-        else if (!active && card.lockCardUse)
+        else if (!active && card.LockCardUse)
         {
-            //»ç¿ë ºÒ°¡ ÇØÁ¦ ½ÇÁ¦ Ã³¸®
-            card.lockCardUse = false;
-            //»ç¿ë ºÒ°¡ ÇØÁ¦ ºñÁÖ¾óÃ³¸®
-            foreach (var image in card.images)
+            //ì‚¬ìš© ë¶ˆê°€ í•´ì œ ì‹¤ì œ ì²˜ë¦¬
+            card.LockCardUse = false;
+            //ì‚¬ìš© ë¶ˆê°€ í•´ì œ ë¹„ì£¼ì–¼ì²˜ë¦¬
+            foreach (var image in card.Images)
                 if (image != null) image.color = Color.white;
         }
     }
 
     private CardView GetCardView(Card card)
     {
-        return cards.Find(cardView => cardView.card == card);
+        return cards.Find(cardView => cardView.Card == card);
     }
     private IEnumerator UpdateCardPositions(float duration)
     {

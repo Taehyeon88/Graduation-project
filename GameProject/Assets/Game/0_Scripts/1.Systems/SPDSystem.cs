@@ -1,39 +1,37 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class SPDSystem : Singleton<SPDSystem>
 {
-    int maxSPD = 0;
-    private int currentSPD = 0;
+    public int currentSPD { get; private set; }
 
 
     private void OnEnable()
     {
-        ActionSystem.SubscribeReaction<EnemyTurnGA>(EnemyTurnProReaction, ReactionTiming.PRE);
+        ActionSystem.AttachPerformer<AddSpdGA>(AddSpdGAPerformer);
+        ActionSystem.AttachPerformer<ResetSpdGA>(ResetSpdGAPerformer);
     }
     private void OnDisable()
     {
-        ActionSystem.UnsubscribeReaction<EnemyTurnGA>(EnemyTurnProReaction, ReactionTiming.PRE);
+        ActionSystem.DetachPerformer<AddSpdGA>();
+        ActionSystem.DetachPerformer<ResetSpdGA>();
     }
 
-    public bool HasEnoughSPD(int amount)
+    private IEnumerator AddSpdGAPerformer(AddSpdGA addSpdGA)
     {
-        return currentSPD >= amount;
+        currentSPD += addSpdGA.Amount;
+        yield return null;
     }
-    public int RemainSPD() => currentSPD;
-    public void AddSPD(int amount)
+    private IEnumerator ResetSpdGAPerformer(ResetSpdGA resetSpdGA)
     {
-        currentSPD = maxSPD = amount;
+        currentSPD = 0;
+        yield return null;
     }
+
     public void SpendSPD(int amount)
     {
         currentSPD -= amount;
-    }
-
-    private void EnemyTurnProReaction(EnemyTurnGA enemyTurnGA)
-    {
-        currentSPD = 0;
     }
 }
