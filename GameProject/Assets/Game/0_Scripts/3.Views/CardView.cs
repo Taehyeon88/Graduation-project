@@ -141,13 +141,13 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
         if (isDetecting && !Interactions.Instance.IsMovpDetecting)
         {
             //감지됨 처리
-
+            //Debug.Log("이동으로 사용 감지중 시작");
             Interactions.Instance.IsMovpDetecting = true;
         }
         else if (!isDetecting && Interactions.Instance.IsMovpDetecting)
         {
             //감지됨 취소 처리
-
+            //Debug.Log("이동으로 사용 감지중 종료");
             Interactions.Instance.IsMovpDetecting = false;
         }
     }
@@ -164,12 +164,12 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
             ActionSystem.Instance.Perform(addSpdGA);
 
             DiscardCardGA discardCardGA = new DiscardCardGA(this);
-            ActionSystem.Instance.AddReaction(discardCardGA);
+            addSpdGA.PerformReactions.Add((discardCardGA, null));
 
-            return;
+            Interactions.Instance.IsMovpDetecting = false;
+
         }
-
-        if (ManaSystem.Instance.HasEnoughMana(Card.Mana) && rectTransform.anchoredPosition.y > 250f) //카드가 y좌표 250를 넘었음 = DropArea
+        else if (ManaSystem.Instance.HasEnoughMana(Card.Mana) && rectTransform.anchoredPosition.y > 250f) //카드가 y좌표 250를 넘었음 = DropArea
         {
             if (Card.GridTargetMode.GridRangeMode != null)
             {

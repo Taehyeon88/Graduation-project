@@ -347,7 +347,7 @@ public class CardSystem : Singleton<CardSystem>
                     }
                 }
                 //카드 사용 준비 취소 인터렉션 감지
-                if (InteractionSystem.CancelReadyUseCard)
+                if (InteractionSystem.CancelUse)
                     break;
 
                 yield return null;
@@ -366,7 +366,7 @@ public class CardSystem : Singleton<CardSystem>
                     break;
                 }
                 //카드 사용 준비 취소 인터렉션 감지
-                if (InteractionSystem.CancelReadyUseCard)
+                if (InteractionSystem.CancelUse)
                     break;
 
                 yield return null;

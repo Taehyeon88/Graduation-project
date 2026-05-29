@@ -28,67 +28,57 @@ public class MoveSystem : Singleton<MoveSystem>
     //Performer
     private IEnumerator PlayerMoveGAPerformer(PlayerMoveGA playerMoveGA)
     {
-        if (playerMoveGA.IsAutoMove)
+        //현재 SPD가 없어서 이동 불가일 경우, 반환처리
+        int curSPD = SPDSystem.Instance.currentSPD;
+        if (curSPD <= 0) yield break;
+
+        //비주얼 그리드 설정
+        VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "Hero_Move");            //이동 가능 타일 초기화
+        var positions = TokenSystem.Instance.GetCanMovePlace(HeroSystem.Instance.HeroView, curSPD); //이동 가능 타일 미리 보여주기
+        foreach (var pos in positions)
         {
-            CombatantView heroView = HeroSystem.Instance.HeroView;
-            Vector2Int targetPos = playerMoveGA.TargetPoses[0];
-            int distance = TokenSystem.Instance.GetDistance(heroView, targetPos);
-            var path = TokenSystem.Instance.GetShortestPath(heroView, targetPos);
-            if (path != null)
-            {
-                SPDSystem.Instance.SpendSPD(distance);
-
-                PerformMoveGA performMoveGA = new(heroView, path);
-                ActionSystem.Instance.AddReaction(performMoveGA);
-
-                yield break;
-            }
+            VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), pos, "Hero_Move");
         }
-        else
+
+        while (true)
         {
-            //현재 SPD가 없어서 이동 불가일 경우, 반환처리
-            int curSPD = SPDSystem.Instance.currentSPD;
-            if (curSPD <= 0) yield break;
-
-            //비주얼 그리드 설정
-            VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "Hero_Move");            //이동 가능 타일 초기화
-            var positions = TokenSystem.Instance.GetCanMovePlace(HeroSystem.Instance.HeroView, curSPD); //이동 가능 타일 미리 보여주기
-            foreach (var pos in positions)
+            if (InteractionSystem.GridSelected)
             {
-                VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), pos, "Hero_Move");
-            }
+                Vector3 mousePosition = TokenSystem.Instance.IsoWorld.MouseIsoTilePosition(1f);
+                Vector2Int isoPosition = new((int)mousePosition.x, (int)mousePosition.y);
+                CombatantView heroView = HeroSystem.Instance.HeroView;
 
-            while (true)
-            {
-                if (InteractionSystem.GridSelected)
+                int distance = TokenSystem.Instance.GetDistance(heroView, isoPosition);
+
+                if (SPDSystem.Instance.currentSPD >= distance)
                 {
-                    Vector3 mousePosition = TokenSystem.Instance.IsoWorld.MouseIsoTilePosition(1f);
-                    Vector2Int isoPosition = new((int)mousePosition.x, (int)mousePosition.y);
-                    CombatantView heroView = HeroSystem.Instance.HeroView;
-
-                    int distance = TokenSystem.Instance.GetDistance(heroView, isoPosition);
-
-                    if (SPDSystem.Instance.currentSPD >= distance)
+                    var path = TokenSystem.Instance.GetShortestPath(heroView, isoPosition);
+                    if (path != null)
                     {
-                        var path = TokenSystem.Instance.GetShortestPath(heroView, isoPosition);
-                        if (path != null)
-                        {
-                            SPDSystem.Instance.SpendSPD(distance);
+                        SPDSystem.Instance.SpendSPD(distance);
 
-                            PerformMoveGA performMoveGA = new(heroView, path);
-                            ActionSystem.Instance.AddReaction(performMoveGA);
+                        PerformMoveGA performMoveGA = new(heroView, path);
+                        ActionSystem.Instance.AddReaction(performMoveGA);
 
-                            yield break;
-                        }
-                    }
-                    else
-                    {
-                        Debug.Log("거리의 밖 구역으로 이동할 수 없습니다.");
+                        yield break;
                     }
                 }
-
-                yield return null;
+                else
+                {
+                    Debug.Log("거리의 밖 구역으로 이동할 수 없습니다.");
+                }
             }
+
+            //이동 모드 취소 처리
+            if (InteractionSystem.CancelUse || !SPDSystem.Instance.IsMoveMode)
+            {
+                VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "Hero_Move");
+                if (SPDSystem.Instance.IsMoveMode)
+                    SPDSystem.Instance.ChangeMoveMode();  //InteractionSystem.CancelUse으로 취소 될시의 마무리
+                break;
+            }
+
+            yield return null;
         }
     }
 
@@ -122,6 +112,8 @@ public class MoveSystem : Singleton<MoveSystem>
 
     private void PlayerMovePostReaction(PlayerMoveGA _playerMoveGA)
     {
+        if (!SPDSystem.Instance.IsMoveMode) return;
+
         int curSPD = SPDSystem.Instance.currentSPD;
         if (curSPD >= 1)  //새로운 비주얼 그리드 그려서 보여주기
         {
@@ -130,14 +122,8 @@ public class MoveSystem : Singleton<MoveSystem>
         }
         else
         {
-            if (_playerMoveGA.IsFirstMove)
-            {
-                VisualGridCreator.Instance.RemoveVisualGridById(gameObject.GetInstanceID());
-            }
-            else
-            {
-                VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "Hero_Move");
-            }
+            VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "Hero_Move");
+            UISystem.Instance.ToggleMoveMode();   //이동 모드 종료 처리
         }
     }
 }

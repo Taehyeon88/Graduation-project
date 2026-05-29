@@ -10,6 +10,7 @@ public class HUDUI : MonoBehaviour
     [SerializeField] private Button endTurnButton;
     [SerializeField] private Button onSettingButton;
     [SerializeField] private Button checkDeckButton;
+    [SerializeField] private Button onSpdModeButton;  //이동 모드로 전환 버튼
 
     [Header("시각 데이터들(실시간 갱신형)")]
     [SerializeField] private TMP_Text heroHpText;
@@ -20,6 +21,8 @@ public class HUDUI : MonoBehaviour
     [SerializeField] private TMP_Text drawPileCardAmountText;
     [SerializeField] private TMP_Text discardPileCardAmountText;
     [SerializeField] private TMP_Text deckCountText;
+    [SerializeField] private TMP_Text spdAmountText;   //이동 포인트 텍스트
+    [SerializeField] private Slider spdResourceSlider; //이동 자원 슬라이드 
 
     [Header("기타(실행형)")]
     [SerializeField] private GameObject feedBackPanel;
@@ -35,6 +38,9 @@ public class HUDUI : MonoBehaviour
     private int maxMana => ManaSystem.Instance.MaxMana;
     private int drawPileCardAmount => CardSystem.Instance.drawPileCA;
     private int discardPileCardAmount => CardSystem.Instance.discardPileCA;
+    private int spdAmount => SPDSystem.Instance.currentSPD;
+    private int maxspdResource => SPDSystem.Instance.maxResourceCount;
+    private int currentspdResource => SPDSystem.Instance.currentResourceCount;
 
     private bool isSetting = false;
     private bool isCheckDeck = false;
@@ -46,13 +52,15 @@ public class HUDUI : MonoBehaviour
             heroHpText.SetText("{0}/{1}", heroHP, heroMaxHP);
         }
         //골드
-        //턴
         turnCountText.SetText("턴: {0}", turnCount);
         waveCountText.SetText("다음 웨이브: {0}턴", waveCount);
         manaAmountText.SetText("{0}/{1}", manaAmount, maxMana);
         drawPileCardAmountText.text = drawPileCardAmount.ToString();
         discardPileCardAmountText.text = discardPileCardAmount.ToString();
         deckCountText.text = GameSystem.Instance.Deck.Count.ToString();
+        spdAmountText.SetText(spdAmount.ToString());
+        spdResourceSlider.maxValue = maxspdResource;
+        spdResourceSlider.value = currentspdResource;
     }
 
     private void OnEnable()
@@ -60,19 +68,22 @@ public class HUDUI : MonoBehaviour
         endTurnButton.onClick.AddListener(EndPlayerTurn);
         onSettingButton.onClick.AddListener(OnSettingUI);
         checkDeckButton.onClick.AddListener(OnCheckDeckUI);
+        onSpdModeButton.onClick.AddListener(SwitchMoveMode);
     }
     private void OnDisable()
     {
         endTurnButton.onClick.RemoveListener(EndPlayerTurn);
         onSettingButton.onClick.RemoveListener(OnSettingUI);
         checkDeckButton.onClick.RemoveListener(OnCheckDeckUI);
+        onSpdModeButton.onClick.RemoveListener(SwitchMoveMode);
     }
 
     //Button Event Methods
     private void EndPlayerTurn()
     {
         //플레이어 턴 종료 사운드 재생
-        SoundSystem.Instance.PlaySound(28);
+        if(!ActionSystem.Instance.IsPerforming)
+            SoundSystem.Instance.PlaySound(28);
 
         EnemysTurnGA enemyTurnGA = new();
         ActionSystem.Instance.Perform(enemyTurnGA);
@@ -88,5 +99,10 @@ public class HUDUI : MonoBehaviour
     {
         isCheckDeck = !isCheckDeck;
         checkDeckUI.SetCheckDeckUI(isCheckDeck);
+    }
+
+    private void SwitchMoveMode()
+    {
+        UISystem.Instance?.ToggleMoveMode();
     }
 }

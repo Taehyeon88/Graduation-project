@@ -38,11 +38,11 @@ public class UISystem : Singleton<UISystem>
         pileofCardUI.OffPileofCardUI();
     }
 
+    //몬스터 시각효과들용
     public void ToggleEnemyVisualAllLooking()
     {
         enemyVisualController.SetAllLooking();
     }
-
     public void SetEnemyVisualSelected(bool active, EnemyView enemyView = null)
     {
         if(active)
@@ -51,6 +51,7 @@ public class UISystem : Singleton<UISystem>
             enemyVisualController.StopSelecting();
     }
 
+    //카드 보상UI용
     public void UpdateRewardCards(Card[] cards)
     {
         gameClearUI.UpdateRewardCards(cards);
@@ -58,5 +59,11 @@ public class UISystem : Singleton<UISystem>
     public void RemoveRewardCards()
     {
         gameClearUI.RemoveRewardCards();
+    }
+
+    //플레이어 이동 모드용
+    public void ToggleMoveMode()
+    {
+        SPDSystem.Instance.ChangeMoveMode();
     }
 }

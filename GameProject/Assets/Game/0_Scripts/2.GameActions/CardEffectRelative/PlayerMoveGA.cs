@@ -1,28 +1,15 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMoveGA : GameAction
 {
     public int Distance { get; private set; }
-    public bool IsFirstMove { get; private set; }
-    public bool IsAutoMove { get; private set; }
     public List<Vector2Int> TargetPoses { get; private set; }
 
-    //ÇØ´ç Performer¿¡¼­ Á÷Á¢ ´ÙÀ½ ÀÌµ¿ÇÒ ±×¸®µå ÀÎÅÍ·º¼ÇÀ» ÇÒ °æ¿ì.
-    public PlayerMoveGA(int distance, bool isFirstMove = false)
+    //í•´ë‹¹ Performerì—ì„œ ì§ì ‘ ë‹¤ìŒ ì´ë™í•  ê·¸ë¦¬ë“œ ì¸í„°ë ‰ì…˜ì„ í•  ê²½ìš°.
+    public PlayerMoveGA(int distance)
     {
         this.Distance = distance;
-        this.IsFirstMove = isFirstMove;
-        this.IsAutoMove = false; ;
-    }
-
-    //ÀÌ¹Ì Á¤ÇØÁø À§Ä¡·Î ÀÚµ¿ ÀÌµ¿À» »ç¿ëÇÒ °æ¿ì.
-    public PlayerMoveGA(int distance, List<Vector2Int> targetPoses)
-    {
-        this.Distance = distance;
-        this.TargetPoses = targetPoses;
-        this.IsFirstMove = false;
-        this.IsAutoMove = true;
     }
 }

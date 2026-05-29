@@ -19,18 +19,17 @@ public enum InteractionStep
 public class InteractionSystem : Singleton<InteractionSystem>
 {
     public static bool GridSelected { get; private set; } = false;
-    public static bool CancelReadyUseCard { get; private set; } = false;
+    public static bool CancelUse { get; private set; } = false;
     public static InteractionStep _InteractionStep { get; set; } = InteractionStep.None;
 
     [SerializeField] private PlayerInput playerInput;
 
     private InputAction m_SelectGrid;
-    private InputAction m_CancelReadyUseCard;
+    private InputAction m_CancelUse;
     private InputAction m_ChangeCheatMode;
     private InteractionCase currentInteraction;
 
     private event Action<bool> updatedAction;
-
     private event Action<bool> cheatUpdatedAction;
     private void Start()
     {
@@ -39,7 +38,7 @@ public class InteractionSystem : Singleton<InteractionSystem>
     private void Initialze()
     {
         m_SelectGrid = playerInput.actions["SelectGrid"];
-        m_CancelReadyUseCard = playerInput.actions["CancelReadyUseCard"];
+        m_CancelUse = playerInput.actions["CancelUse"];
         m_ChangeCheatMode = playerInput.actions["ChangeCheatMode"];
     }
 
@@ -59,13 +58,14 @@ public class InteractionSystem : Singleton<InteractionSystem>
         cheatUpdatedAction?.Invoke(m_ChangeCheatMode.WasPerformedThisFrame());
 
         GridSelected = m_SelectGrid.WasPressedThisFrame();
-        CancelReadyUseCard = m_CancelReadyUseCard.WasPressedThisFrame();
+        CancelUse = m_CancelUse.WasPressedThisFrame();
     }
 
     void OnStartCheat() => CheatSystem.Instance?.StartCheat();
 
     void OnCancel() => UISystem.Instance?.OffPileofCardUI();
     void OnLookAllEnemyVisuals() => UISystem.Instance?.ToggleEnemyVisualAllLooking();
+    void OnSwitchMoveMode() => UISystem.Instance?.ToggleMoveMode();
     void OnSelectCardWithNumber1()
     {
         Debug.Log("카드1 선택");
