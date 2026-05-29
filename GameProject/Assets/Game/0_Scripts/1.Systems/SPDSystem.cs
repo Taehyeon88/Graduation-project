@@ -39,6 +39,7 @@ public class SPDSystem : Singleton<SPDSystem>
     {
         currentSPD = 0;
         currentResourceCount = 0;
+        maxResourceCount = 1;
         yield return null;
     }
 
