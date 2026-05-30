@@ -13,7 +13,7 @@ public class CardViewCreator : Singleton<CardViewCreator>
         CardView cardView = Instantiate(cardViewPrefab, spawnPos.position, Quaternion.identity, parent);
         cardView.transform.SetSiblingIndex(3);
         cardView.transform.localScale = Vector3.zero;
-        cardView.transform.DOScale(Vector3.one, 0.15f);
+        cardView.transform.DOScale(new Vector3(0.7f, 0.7f, 0.7f), 0.15f);  //임시
         cardView.SetUp(card);
         return cardView;
     }

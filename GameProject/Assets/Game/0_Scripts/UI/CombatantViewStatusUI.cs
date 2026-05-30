@@ -44,6 +44,7 @@ public class CombatantViewStatusUI : MonoBehaviour
     private EnemyView currentSelectedEnemy;
     private bool isEnemyInfosUIActive = true;
 
+
     void Update()
     {
         //적 인터렉션 -> 상태 UI 대상 변경
@@ -198,11 +199,13 @@ public class CombatantViewStatusUI : MonoBehaviour
     /// <param name="enemyView"></param>
     public void SetEnemyUIInfos(EnemyView enemyView)
     {
+        if (enemyView == null) return;
+
         //같은 적 다시 클릭시, 선택 취소 처리
         if (currentSelectedEnemy == enemyView)
         {
+            VisualGridCreator.Instance.RemoveVisualGrid(currentSelectedEnemy.gameObject.GetInstanceID(), "UI_SelectedEnemy");
             currentSelectedEnemy = null;
-            UISystem.Instance.SetEnemyVisualSelected(false);
             return;
         }
 
@@ -238,8 +241,10 @@ public class CombatantViewStatusUI : MonoBehaviour
             }
         }
 
-        //선택된 적 비주얼 갱신
-        UISystem.Instance.SetEnemyVisualSelected(true, enemyView);
+        if(currentSelectedEnemy != null)
+            VisualGridCreator.Instance.RemoveVisualGrid(currentSelectedEnemy.gameObject.GetInstanceID(), "UI_SelectedEnemy");
+        Vector2Int pos = TokenSystem.Instance.GetTokenPosition(enemyView);
+        VisualGridCreator.Instance.CreateVisualGrid(enemyView.gameObject.GetInstanceID(), pos, "UI_SelectedEnemy");
 
         currentSelectedEnemy = enemyView;
     }

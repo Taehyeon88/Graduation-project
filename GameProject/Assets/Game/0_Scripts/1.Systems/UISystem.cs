@@ -6,7 +6,6 @@ public class UISystem : Singleton<UISystem>
 {
     [SerializeField] private CombatantViewStatusUI combatantViewStatusUI;
     [SerializeField] private PileofCardUI pileofCardUI;
-    [SerializeField] private EnemyVisualController enemyVisualController;
     [SerializeField] private GameClearUI gameClearUI;
 
 
@@ -38,19 +37,6 @@ public class UISystem : Singleton<UISystem>
         pileofCardUI.OffPileofCardUI();
     }
 
-    //몬스터 시각효과들용
-    public void ToggleEnemyVisualAllLooking()
-    {
-        enemyVisualController.SetAllLooking();
-    }
-    public void SetEnemyVisualSelected(bool active, EnemyView enemyView = null)
-    {
-        if(active)
-            enemyVisualController.SetSelectedTarget(enemyView);
-        else 
-            enemyVisualController.StopSelecting();
-    }
-
     //카드 보상UI용
     public void UpdateRewardCards(Card[] cards)
     {
@@ -59,11 +45,5 @@ public class UISystem : Singleton<UISystem>
     public void RemoveRewardCards()
     {
         gameClearUI.RemoveRewardCards();
-    }
-
-    //플레이어 이동 모드용
-    public void ToggleMoveMode()
-    {
-        SPDSystem.Instance.ChangeMoveMode();
     }
 }

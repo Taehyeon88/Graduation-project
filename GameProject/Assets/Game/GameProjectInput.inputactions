@@ -113,24 +113,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "LookAllEnemyVisuals",
-                    "type": "Button",
-                    "id": "3b3fd030-0900-40b8-af23-63d5420c4ca9",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "SwitchMoveMode",
-                    "type": "Button",
-                    "id": "a3d44e57-f4b8-4efa-b822-5ecfa36f11f2",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -285,28 +267,6 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "RestartGame",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "897641da-de7b-4f67-8143-ad08ed311e98",
-                    "path": "<Keyboard>/tab",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "LookAllEnemyVisuals",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "5ce9747e-2217-4b4b-9f34-cc91aed7b9ad",
-                    "path": "<Keyboard>/s",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "SwitchMoveMode",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

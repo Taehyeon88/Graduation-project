@@ -11,6 +11,7 @@ using UnityEngine.UI;
 public class CombatantView : Token
 {
     [SerializeField] private Slider healthSlider;
+    [SerializeField] private TMP_Text healthText;
 
     protected Dictionary<StatusEffectType, int> statusEffectUIs = new();
     private StatusEffectStorage effectInfo = new();
@@ -48,6 +49,10 @@ public class CombatantView : Token
         {
             healthSlider.maxValue = MaxHealth;
             healthSlider.value = CurrentHealth;
+        }
+        if (healthText != null)
+        {
+            healthText.SetText($"{CurrentHealth}/{MaxHealth}");
         }
     }
 

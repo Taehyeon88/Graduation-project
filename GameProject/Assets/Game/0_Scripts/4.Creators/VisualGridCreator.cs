@@ -135,6 +135,18 @@ public class VisualGridCreator : Singleton<VisualGridCreator>
         return check;
     }
 
+    public bool ContainVisualGrid(int tokenId, string vgName)
+    {
+        if (visualGridsById.ContainsKey((tokenId, vgName)))
+        {
+            if(visualGridsById[(tokenId, vgName)].Count > 0)
+                return true;
+            else
+                return false;
+        }
+        return false;
+    }
+
     public void SetHideVisualGrid(int tokenId)
     {
         hideList.Add(tokenId);

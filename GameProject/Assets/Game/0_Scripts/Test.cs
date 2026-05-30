@@ -1,23 +1,30 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using DG.Tweening;
-using IsoTools;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Test : MonoBehaviour
 {
-    [SerializeField] private Transform test;
+    [SerializeField] private RoomData[] roomDatas;
+    [SerializeField] private Button[] buttons;
 
-    private void Update()
+    private RoomData roomData;
+
+    private void OnEnable()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        for (int i = 0; i < roomDatas.Length; i++)
         {
-            //Tween tween = Utility.GetBezierTween(IsoObject, new(1, 1, 1), new(3, 1, 1), 0.3f);
-            //tween.Play();
-            GameClearGA gameClearGA = new GameClearGA();
-            ActionSystem.Instance.Perform(gameClearGA);
-
-            //test.gameObject.SetActive(false);
+            int index = i;
+            roomData = roomDatas[index];
+            buttons[index].onClick.AddListener(() =>
+            {
+                ChangeRoom(index);
+            });
         }
+    }
+    private void ChangeRoom(int index)
+    {
+        RoomData roomData = roomDatas[index];
+        GameSystem.Instance.SetCurrentRoomData(roomData);
     }
 }

@@ -50,10 +50,14 @@ public class EnemyView : CombatantView
     private void OnEnable()
     {
         ActionSystem.SubscribeReaction<EnemysTurnGA>(EnemysTurnPostReaction, ReactionTiming.POST);
+        ActionSystem.SubscribeReaction<MoveGA>(MoveGAPostReaction, ReactionTiming.POST);
+        ActionSystem.SubscribeReaction<KillGA>(KillGAPreReaction, ReactionTiming.PRE);
     }
     private void OnDisable()
     {
         ActionSystem.UnsubscribeReaction<EnemysTurnGA>(EnemysTurnPostReaction, ReactionTiming.POST);
+        ActionSystem.UnsubscribeReaction<MoveGA>(MoveGAPostReaction, ReactionTiming.POST);
+        ActionSystem.UnsubscribeReaction<KillGA>(KillGAPreReaction, ReactionTiming.PRE);
     }
 
     //Publics
@@ -79,6 +83,28 @@ public class EnemyView : CombatantView
         foreach (var seUI in newStatusEffectUIs)
             AddStatusEffect(seUI.Key, seUI.Value.Item1, seUI.Value.Item2, seUI.Value.Item3);
         newStatusEffectUIs.Clear();
+    }
+    private void MoveGAPostReaction(MoveGA moveGA)
+    {
+        if (!VisualGridCreator.Instance.ContainVisualGrid(gameObject.GetInstanceID(), "UI_SelectedEnemy")) return;
+
+        Debug.Log($"{EnemyName}, {VisualGridCreator.Instance.ContainVisualGrid(gameObject.GetInstanceID(), "UI_SelectedEnemy")}");
+
+        if (moveGA.mover == this)
+        {
+            VisualGridCreator.Instance.ChangeVisualGrid(
+                moveGA.movePosition,
+                gameObject.GetInstanceID(),
+                "UI_SelectedEnemy",
+                "UI_SelectedEnemy"
+                );
+        }
+    }
+    private void KillGAPreReaction(KillGA killGA)
+    {
+        if (killGA.Token != this) return;
+
+        VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "UI_SelectedEnemy");  //선택 그리드 비활성화
     }
 
     //overrides

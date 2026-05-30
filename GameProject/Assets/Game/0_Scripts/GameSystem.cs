@@ -66,4 +66,17 @@ public class GameSystem : Singleton<GameSystem>
 
         SceneManager.LoadScene(0);
     }
+
+    /// <summary>
+    /// 테스트용
+    /// </summary>
+    /// <param name="roomData"></param>
+    public void SetCurrentRoomData(RoomData roomData)
+    {
+        CurrentLevel = 1;
+        roomDatas[0] = roomData;
+        IsGameClear = false;
+
+        SceneManager.LoadScene(0);
+    }
 }

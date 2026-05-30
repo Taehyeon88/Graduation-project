@@ -17,7 +17,7 @@ MonoBehaviour:
   <Sprite>k__BackingField: {fileID: 21300000, guid: d66d13218ef414e45881aa163287253f, type: 3}
   <IsField>k__BackingField: 0
   useHealth: 1
-  Health: 4
+  Health: 3
   <Enemy>k__BackingField:
     rid: 606822111444205646
   <EnemyActions>k__BackingField:

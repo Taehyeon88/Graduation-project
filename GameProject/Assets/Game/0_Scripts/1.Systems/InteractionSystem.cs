@@ -64,8 +64,6 @@ public class InteractionSystem : Singleton<InteractionSystem>
     void OnStartCheat() => CheatSystem.Instance?.StartCheat();
 
     void OnCancel() => UISystem.Instance?.OffPileofCardUI();
-    void OnLookAllEnemyVisuals() => UISystem.Instance?.ToggleEnemyVisualAllLooking();
-    void OnSwitchMoveMode() => UISystem.Instance?.ToggleMoveMode();
     void OnSelectCardWithNumber1()
     {
         Debug.Log("카드1 선택");
