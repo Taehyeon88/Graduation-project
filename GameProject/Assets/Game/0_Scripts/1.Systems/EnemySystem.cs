@@ -123,7 +123,7 @@ public class EnemySystem : Singleton<EnemySystem>
         yield return new WaitForSeconds(0.1f);
 
         //미리 보여준 공격 범위 삭제
-        VisualGridCreator.Instance.RemoveVisualGrid(attackHeroGA.Caster.GetInstanceID(), "Enemy_Attack");
+        VisualGridCreator.Instance.RemoveVisualGrid(attackHeroGA.Caster.gameObject.GetInstanceID(), "Enemy_Attack");
     }
 
     //Reactions

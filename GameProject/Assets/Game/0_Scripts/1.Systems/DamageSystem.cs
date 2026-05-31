@@ -113,6 +113,11 @@ public class DamageSystem : Singleton<DamageSystem>
 
     private IEnumerator KillPerformer(KillGA killGA)
     {
+        if (killGA.Token is EnemyView)
+        {
+            VisualGridCreator.Instance.RemoveVisualGridById(killGA.Token.gameObject.GetInstanceID());
+        }
+
         yield return TokenSystem.Instance.RemoveToken(killGA.Token);
     }
 }
