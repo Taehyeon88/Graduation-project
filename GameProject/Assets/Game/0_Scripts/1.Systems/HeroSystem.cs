@@ -139,10 +139,10 @@ public class HeroSystem : Singleton<HeroSystem>
         //ActionSystem.Instance.AddReaction(heroFristMove);
 
         //플레이어 카드 드로우
-        DrawCardsGA drawCardGA = new(5, false);
+        int drawCount = TutorialSystem.Instance.IsTutorialing 
+            && WaveSystem.Instance.CurrentTurn == 1 ? 
+            3 : 5;
+        DrawCardsGA drawCardGA = new(drawCount, false);
         ActionSystem.Instance.AddReaction(drawCardGA);
     }
-
-    //Finisheds
-    private void FinishedFirstMoveRelated() => CardSystem.Instance.EndLockState();
 }

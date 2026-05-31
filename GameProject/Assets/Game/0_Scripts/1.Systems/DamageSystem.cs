@@ -90,7 +90,8 @@ public class DamageSystem : Singleton<DamageSystem>
                         {
                             if (WaveSystem.Instance.IsWaveRunning)
                             {
-                                WaveSystem.Instance.GenerateEnemy();
+                                SpawnWaveGA spawnWave = new();
+                                dealDamageGA.PostReactions.Add((spawnWave, null));
                             }
                             else
                             {

@@ -5,39 +5,54 @@ using UnityEngine.SceneManagement;
 
 public class GameSystem : Singleton<GameSystem>
 {
-    [field : SerializeField] public HeroData HeroData { get; private set; }
-    public IReadOnlyList<CardData> Deck { get { return deck;} }                //플레이어 덱
-    public IReadOnlyList<EnemyData> EnemyDatas => CurrentRoomData.enemyDatas;
-    public IReadOnlyList<TokenData> ObstacleDatas => CurrentRoomData.obstacleDatas;
-    public IReadOnlyList<Vector2Int> HeroSetUpPositions => CurrentRoomData.heroSetUpPositions;
-    public IReadOnlyList<int> EnemyCountsPerWave => CurrentRoomData.enemyCountsPerWave;
-    public IReadOnlyList<Vector2Int> ObstacleSetUpPositions => CurrentRoomData.obstacleSetUpPositions;
+    [field : SerializeField] public HeroData HeroData { get; private set; } //영웅 데이터
+    public int CurrentLevel { get; private set; } = 1;                      //현재 층 수
+    public bool IsGameClear { get; private set; }                           //게임 종료
+    public bool IsTutorial { get; private set; } = true;                    //튜토리얼
+    public IReadOnlyList<CardData> Deck                                     //플레이어 덱
+    {
+        get
+        {
+            if(IsTutorial || TutorialSystem.Instance.IsTutorialing)
+                return tutorilaDeck;
+            return deck;
+        }
+    }
+    public RoomData CurrentRoomData                                         //게임 셋업 때, 딱 1번 실행
+    {
+         get 
+        { 
+            if(IsTutorial)
+            {
+                IsTutorial = false;
+                StartCoroutine(TutorialSystem.Instance.StartTutorial()); //튜토리얼 시작
+                return tutorialRoomData;
+            }
+            return roomDatas[CurrentLevel - 1]; 
+        } 
+    }
 
 
-    public int CurrentLevel { get; private set; } = 1;                                 //현재 층 수
-    public RoomData CurrentRoomData { get { return roomDatas[CurrentLevel - 1]; } }    //현재 층 데이터
-    public bool IsGameClear { get; private set; }                                      //게임 종료
-
-    [SerializeField] private List<CardData> deck;                                      //카드 덱
-    [SerializeField] private RoomData[] roomDatas = new RoomData[1];                   //스테이지 데이터
+    [SerializeField] private List<CardData> deck;                     //카드 덱
+    [SerializeField] private RoomData[] roomDatas;                    //방 데이터
+    [SerializeField] private RoomData tutorialRoomData;               //튜토리얼 방 데이터
+    [SerializeField] private List<CardData> tutorilaDeck;             //튜토리얼 덱
 
     protected override void Awake()
     {
         base.Awake();
         DontDestroyOnLoad();
-    }
 
-    private void OnEnable()
-    {
-        if(Instance != this) return;
+        //첫 인스턴스만 체인처리
         ActionSystem.AttachPerformer<GameClearGA>(GameClearPerformer);
     }
     private void OnDisable()
     {
-        if (Instance != this) return;
-        ActionSystem.DetachPerformer<GameClearGA>();
+        if (Instance != this)
+            ActionSystem.DetachPerformer<GameClearGA>();
     }
 
+    //Performers
     private IEnumerator GameClearPerformer(GameClearGA gameClearGA)
     {
         Debug.Log("게임 클리어");
@@ -49,6 +64,7 @@ public class GameSystem : Singleton<GameSystem>
         yield return null;
     }
 
+    //Publics
     public void AddDeckCard(CardData cardData)
     {
         deck.Add(cardData);
@@ -67,10 +83,7 @@ public class GameSystem : Singleton<GameSystem>
         SceneManager.LoadScene(0);
     }
 
-    /// <summary>
-    /// 테스트용
-    /// </summary>
-    /// <param name="roomData"></param>
+    //Tests
     public void SetCurrentRoomData(RoomData roomData)
     {
         CurrentLevel = 1;

@@ -19,6 +19,11 @@ public static class UtilityRandomGenerator
     /// <returns></returns>
     public static Vector2Int GetSpawnPosition(List<Vector2Int> candidates, EnemyGenerateType[] enemyGenerateTypes)
     {
+        if (HeroSystem.Instance.HeroView == null)
+        {
+            return GetFirstGenPos(candidates);
+        }
+
         if (enemyGenerateTypes == null)
         {
             Debug.LogError($"몬스터 생성 대상 타입이 존재하지 않습니다.");

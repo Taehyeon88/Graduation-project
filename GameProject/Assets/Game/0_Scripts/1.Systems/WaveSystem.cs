@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using JetBrains.Annotations;
+using NUnit.Framework;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -21,13 +24,15 @@ public class WaveSystem : Singleton<WaveSystem>
     private void OnEnable()
     {
         ActionSystem.SubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
+        ActionSystem.AttachPerformer<SpawnWaveGA>(SpawnWaveGAPerformer);
     }
     private void OnDisable()
     {
         ActionSystem.UnsubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
+        ActionSystem.DetachPerformer<SpawnWaveGA>();
     }
 
-    public void SetUp(IReadOnlyList<EnemyData> enemys, IReadOnlyList<int> enemyCntPerWave)
+    public IEnumerator SetUp(IReadOnlyList<EnemyData> enemys, IReadOnlyList<int> enemyCntPerWave)
     {
         enemyDatas = enemys.ToArray();
         enemyCountsPerWave = enemyCntPerWave.ToArray();
@@ -43,32 +48,38 @@ public class WaveSystem : Singleton<WaveSystem>
         if (total != enemyDatas.Length)
             Debug.LogError($"총 필요 몬스터 수와 몬스터 데이터 개수가 다름. 적 데이터 수적 데이터 수: { enemyDatas.Length}, 총 웨이브 필요 몬스터 수: { total }");
 
-        ReadyToGenerate();
-        GenerateEnemy();
+        yield return ReadyToGenerate(true);
+        yield return GenerateEnemy();
+    }
+
+    //Performers
+    private IEnumerator SpawnWaveGAPerformer(SpawnWaveGA spawnWaveGA)
+    {
+        if (IsWaveRunning)
+        {
+            yield return GenerateEnemy();
+        }
+
+        yield return null;
     }
 
     //몬스터 생성
-    public void GenerateEnemy()
+    public IEnumerator GenerateEnemy()
     {
-        if (!IsWaveRunning) return;
-
         //Debug.Log("몬스터 생성");
 
-        int enemyCount = enemyCountsPerWave[currentWave];  //생성할 몬스터 수
+        int enemyCount = enemyCountsPerWave[currentWave];  //생성할 몬스터 수 받기
         for (int i = 0; i < enemyCount; i++)
         {
             EnemyData enemy = enemyDatas[genIndex];
 
-            //해당 몬스터 해당 위치에 생성 처리
+            //몬스터 생성
             Vector2Int genPos = savedPosition[0];
             if (TokenSystem.Instance.IsGridEmpty(genPos))
             {
-                TokenSystem.Instance.AddToken(enemy, TokenType.Enemy, savedPosition[0]);
+                TokenSystem.Instance.AddToken(enemy, TokenType.Enemy, genPos);
             }
-            else
-            {
-                Debug.Log($"{genPos} 위치에 다른 대상이 있어서 생성 안됨!");
-            }
+            else Debug.Log($"{genPos} 위치에 다른 대상이 있어서 생성 안됨!");
             savedPosition.RemoveAt(0);
 
             //이전 생성 위치 시각 효과 종료
@@ -81,7 +92,7 @@ public class WaveSystem : Singleton<WaveSystem>
 
         if (currentWave <= maxWave)
         {
-            ReadyToGenerate();
+            yield return ReadyToGenerate();
         }
         else
         {
@@ -91,7 +102,7 @@ public class WaveSystem : Singleton<WaveSystem>
     }
 
     //몬스터 생성 준비
-    private void ReadyToGenerate()
+    private IEnumerator ReadyToGenerate(bool isFirst = false)
     {
         //Debug.Log("몬스터 생성 준비");
         //Debug.Log($"현 웨이브: {currentWave}, 최대 웨이브: {maxWave}");
@@ -107,11 +118,10 @@ public class WaveSystem : Singleton<WaveSystem>
         for (int i = 0; i < enemyCount; i++)
         {
             EnemyData enemy = enemyDatas[idx];
-            Vector2Int pos;
-            if (idx < enemyCountsPerWave[0] + enemyCountsPerWave[1])
-                pos = UtilityRandomGenerator.GetFirstGenPos(GetCandidates());
-            else
-                pos = UtilityRandomGenerator.GetSpawnPosition(GetCandidates(), enemy.EnemyGenerateTypes);
+            Vector2Int pos = UtilityRandomGenerator.GetSpawnPosition(
+                GetCandidates(), 
+                enemy.EnemyGenerateTypes
+                );
             savedPosition.Add(pos);
 
             VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), pos, "Hero_SetUp_False");
@@ -119,9 +129,32 @@ public class WaveSystem : Singleton<WaveSystem>
             //생성 준비 연출(현재 생략)
             idx++;
         }
+
+        yield return null;
     }
 
     private List<Vector2Int> GetCandidates()
+    {
+        bool isTutorial = TutorialSystem.Instance.IsTutorialing;
+
+        if (currentWave == 0)
+        {
+            if (isTutorial) return GetTutoPos();
+            else return GetAllPoses();
+        }
+        else if (currentWave == 1)
+        {
+            if (isTutorial) return GetTutoPos();
+            else return GetOutLinePoses();
+        }
+        else
+        {
+            if (isTutorial) return GetAllPoses();
+            else return GetOutLinePoses();
+        }
+    }
+
+    private List<Vector2Int> GetOutLinePoses()
     {
         var list = new List<Vector2Int>();
         for (int x = 0; x < TokenSystem.Instance.gridWidth; x++)
@@ -134,6 +167,38 @@ public class WaveSystem : Singleton<WaveSystem>
                         list.Add(new Vector2Int(x, y));
                 }
             }
+        }
+        return list;
+    }
+    private List<Vector2Int> GetAllPoses()
+    {
+        var list = new List<Vector2Int>();
+        for (int x = 0; x < TokenSystem.Instance.gridWidth; x++)
+        {
+            for (int y = 0; y < TokenSystem.Instance.gridHeight; y++)
+            {
+                if (TokenSystem.Instance.IsGridEmpty(new(x, y)) && !savedPosition.Contains(new(x, y)))
+                    list.Add(new Vector2Int(x, y));
+            }
+        }
+        return list;
+    }
+    private List<Vector2Int> GetTutoPos()
+    {
+        var list = new List<Vector2Int>();
+
+        if (currentWave == 0)
+        {
+            list.Add(new(2, 3));
+        }
+        else if (currentWave == 1)
+        {
+            Vector2Int pos1 = new(4, 0);
+            Vector2Int pos2 = new(3, 6);
+            if(!savedPosition.Contains(pos1))
+                list.Add(pos1);
+            else
+                list.Add(pos2);
         }
         return list;
     }
@@ -151,7 +216,8 @@ public class WaveSystem : Singleton<WaveSystem>
 
         if (RemainWaveTurn <= 0)
         {
-            GenerateEnemy();
+            SpawnWaveGA spawnWave = new();
+            ActionSystem.Instance.AddReaction(spawnWave);
         }
     }
 
