@@ -7,11 +7,14 @@ public class CardViewHoverSystem : Singleton<CardViewHoverSystem>
 {
     [SerializeField] private CardView cardViewHover;
     [SerializeField] private CardViewInPile cardViewHoverInPile;
+    [SerializeField] private CardViewInPile cardViewHoverInReward;
 
     private bool isLocked = false;
     public void Show(Card card, Vector2 position, bool isLock = false)
     {
         cardViewHover.gameObject.SetActive(true);
+        cardViewHover.transform.SetAsLastSibling();
+
         cardViewHover.SetUp(card, true);
         cardViewHover.GetComponent<RectTransform>().anchoredPosition = position;
         if (isLock)
@@ -39,6 +42,17 @@ public class CardViewHoverSystem : Singleton<CardViewHoverSystem>
     public void HideInPile()
     {
         cardViewHoverInPile.gameObject.SetActive(false);
+    }
+
+    public void ShowInReward(Card card, Vector2 position)
+    {
+        cardViewHoverInReward.gameObject.SetActive(true);
+        cardViewHoverInReward.SetUp(card, true);
+        cardViewHoverInReward.GetComponent<RectTransform>().position = position;
+    }
+    public void HideInReward()
+    {
+        cardViewHoverInReward.gameObject.SetActive(false);
     }
 
 

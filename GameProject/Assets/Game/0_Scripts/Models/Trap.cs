@@ -60,7 +60,6 @@ public class SpikeTrap : Trap
             if (moveGA.movePosition == TokenSystem.Instance.GetTokenPosition(myToken))
             {
                 //가시 공격
-                
                 DealDamageGA dealDamageGA = new(damage, new() { moveGA.mover }, null);
                 ActionSystem.Instance.AddReaction(dealDamageGA);
                 targetExist = true;

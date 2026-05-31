@@ -11,7 +11,7 @@ public class CardViewInPile : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     [SerializeField] private TMP_Text description;
     [SerializeField] private TMP_Text mana;
     [SerializeField] private Image image;
-    [SerializeField] private GameObject wrapper;
+    [SerializeField] private CanvasGroup wrapper;
 
     private RectTransform rectTransform;
     public Card card { get; private set; }
@@ -29,7 +29,7 @@ public class CardViewInPile : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     private void Update()
     {
         //카드 더미의 호버 카드 위치 = 현재 카드 위치 (실시간 업데이트) 
-        if (!wrapper.activeSelf)
+        if (wrapper.alpha == 0f)
             CardViewHoverSystem.Instance.ShowInPile(card, rectTransform.position);
     }
 
@@ -56,14 +56,28 @@ public class CardViewInPile : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         //카드 호버 사운드 재생
         SoundSystem.Instance.PlaySound(23);
 
-        wrapper.SetActive(false);
-        CardViewHoverSystem.Instance.ShowInPile(card, rectTransform.position);
+        wrapper.alpha = 0f;
+        if (GameSystem.Instance.IsGameClear)
+        {
+            CardViewHoverSystem.Instance.ShowInReward(card, rectTransform.position);
+        }
+        else
+        {
+            CardViewHoverSystem.Instance.ShowInPile(card, rectTransform.position);
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         if (!Interactions.Instance.PlayerCanHover() || lockCardUse) return;
-        CardViewHoverSystem.Instance.HideInPile();
-        wrapper.SetActive(true);
+        if (GameSystem.Instance.IsGameClear)
+        {
+            CardViewHoverSystem.Instance.HideInReward();
+        }
+        else
+        {
+            CardViewHoverSystem.Instance.HideInPile();
+        }
+        wrapper.alpha = 1f;
     }
 }

@@ -16,7 +16,7 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
     [SerializeField] private TMP_Text description;
     [SerializeField] private TMP_Text mana;
     [SerializeField] private Image image;
-    [SerializeField] private GameObject wrapper;
+    [SerializeField] private CanvasGroup wrapper;
 
     private RectTransform rectTransform;
     private Vector3 dragStartPosition;
@@ -57,7 +57,7 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
             Interactions.Instance.PlayerIsTargeting = true;
 
             //플레이어 타겟팅 모드 진입
-            wrapper.SetActive(false);
+            wrapper.alpha = 0f;
             Vector2 pos = rectTransform.anchoredPosition + Vector2.up * 125f;
             CardViewHoverSystem.Instance.Show(Card, pos);
 
@@ -66,7 +66,7 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
                 Interactions.Instance.PlayerIsTargeting = false;
                 CardViewHoverSystem.Instance.Hide();
                 if (wrapper != null)
-                    wrapper.SetActive(true);
+                    wrapper.alpha = 1f;
             };
 
             PlayCardTargetingGA playCardTargetingGA = new(Card, endSelectGrid);
@@ -88,17 +88,21 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
         //카드 호버 사운드 재생
         SoundSystem.Instance.PlaySound(17);
 
-        wrapper.SetActive(false);
+        Debug.Log($"{Card.Title} : 호버감지");
+
+        wrapper.alpha = 0f;
         Vector2 pos = rectTransform.anchoredPosition + Vector2.up * 60f;
         CardViewHoverSystem.Instance.Show(Card, pos, 
-                        Interactions.Instance.lockInteraction || LockCardUse);
+          Interactions.Instance.lockInteraction || LockCardUse);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         if (!Interactions.Instance.PlayerCanHover()) return;
         CardViewHoverSystem.Instance.Hide();
-        wrapper.SetActive(true);
+
+        Debug.Log($"{Card.Title} : 호버감지 취소");
+        wrapper.alpha = 1f;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -106,7 +110,7 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
         if (!Interactions.Instance.PlayerCanDraging() || LockCardUse) return;
 
         Interactions.Instance.PlayerIsDraging = true;
-        wrapper.SetActive(true);
+        wrapper.alpha = 1f;
         CardViewHoverSystem.Instance.Hide();
         dragStartPosition = transform.position;
         dragStartRotation = transform.rotation;
@@ -142,7 +146,7 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
 
                 //플레이어 타겟팅 모드 진입
                 Interactions.Instance.PlayerIsTargeting = true;
-                wrapper.SetActive(false);
+                wrapper.alpha = 0f;
                 Vector2 pos = rectTransform.anchoredPosition + Vector2.up * 125f;
                 CardViewHoverSystem.Instance.Show(Card, pos);
 
@@ -151,7 +155,7 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
                     Interactions.Instance.PlayerIsTargeting = false;
                     CardViewHoverSystem.Instance.Hide();
                     if (wrapper != null)
-                        wrapper.SetActive(true);
+                        wrapper.alpha = 1f;
                 };
 
                 PlayCardTargetingGA playCardTargetingGA = new(Card, endSelectGrid);
