@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using TMPro;
 using System.Collections;
 
@@ -8,7 +9,8 @@ public class TutorialUI : MonoBehaviour
     [SerializeField] private float duration = 0.12f;
     [SerializeField] private GameObject backPanel;
     [SerializeField] private GameObject blockUI;
-    [SerializeField] private GameObject backPanel2;
+    [SerializeField] private GameObject blockUI2;
+    [SerializeField] private GameObject blockUI3;
 
     private WaitForSecondsRealtime WaitForSeconds;
 
@@ -20,9 +22,18 @@ public class TutorialUI : MonoBehaviour
         descriptionText.SetText(title + "\n");
 
         char[] chars = description.ToCharArray();
+        int jumpIndex = Array.IndexOf(chars, 'n');
         for (int i = 0; i < chars.Length; i++)
         {
-            descriptionText.text += chars[i];
+            if (i == jumpIndex - 1)
+            {
+                descriptionText.text += "\n";
+                i++;
+            }
+            else
+            {
+                descriptionText.text += chars[i];
+            }
             yield return WaitForSeconds;
         }
     }
@@ -30,7 +41,8 @@ public class TutorialUI : MonoBehaviour
     public void SetBackPanelActive(bool active) => backPanel.SetActive(active);
     public void SetBlockUIActive(bool active) => blockUI.SetActive(active);
     public void SetTextEmpty() => descriptionText.SetText(string.Empty);
-    public void SetBackPanel2Active(bool active) => backPanel2.SetActive(active);
+    public void SetBlockUI2Active(bool active) => blockUI2.SetActive(active);
+    public void SetBlockUI3Active(bool active) => blockUI3.SetActive(active);
 
     private void Initialized()
     {

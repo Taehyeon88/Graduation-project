@@ -40,7 +40,8 @@ public class HUDUI : MonoBehaviour
     private bool isSetting = false;
     private bool isCheckDeck = false;
 
-    private bool isOnTesting = false;
+    //타겟 모드 감지 변수
+    private bool isTargetMode = false;
 
     private void Update()
     {
@@ -62,24 +63,20 @@ public class HUDUI : MonoBehaviour
         endTurnButton.onClick.AddListener(EndPlayerTurn);
         onSettingButton.onClick.AddListener(OnSettingUI);
         checkDeckButton.onClick.AddListener(OnCheckDeckUI);
+
+        ActionSystem.SubscribeReaction<PlayCardTargetingGA>(PlayCardTargetingGAPreReaction, ReactionTiming.PRE);
+        ActionSystem.SubscribeReaction<PlayCardTargetingGA>(PlayCardTargetingGAPostReaction, ReactionTiming.POST);
     }
     private void OnDisable()
     {
         endTurnButton.onClick.RemoveListener(EndPlayerTurn);
         onSettingButton.onClick.RemoveListener(OnSettingUI);
         checkDeckButton.onClick.RemoveListener(OnCheckDeckUI);
+
+        ActionSystem.UnsubscribeReaction<PlayCardTargetingGA>(PlayCardTargetingGAPreReaction, ReactionTiming.PRE);
+        ActionSystem.UnsubscribeReaction<PlayCardTargetingGA>(PlayCardTargetingGAPostReaction, ReactionTiming.POST);
     }
 
-    //Button Event Methods
-    private void EndPlayerTurn()
-    {
-        //플레이어 턴 종료 사운드 재생
-        if(!ActionSystem.Instance.IsPerforming)
-            SoundSystem.Instance.PlaySound(28);
-
-        EnemysTurnGA enemyTurnGA = new();
-        ActionSystem.Instance.Perform(enemyTurnGA);
-    }
     private void OnSettingUI()
     {
         Debug.Log("설정 활성화");
@@ -91,5 +88,41 @@ public class HUDUI : MonoBehaviour
     {
         isCheckDeck = !isCheckDeck;
         checkDeckUI.SetCheckDeckUI(isCheckDeck);
+    }
+
+    //Button Event Methods
+    PlayCardTargetingGA playCardTargetingGA = null;
+    private void EndPlayerTurn()
+    {
+        if (playCardTargetingGA != null)
+        {
+            CardSystem.Instance.CancelTargetMode = true;  //타겟 모드 강제 취소
+
+            //플레이어 턴 종료 사운드 재생
+            if (!ActionSystem.Instance.IsPerforming)
+                SoundSystem.Instance.PlaySound(28);
+
+            EnemysTurnGA enemyTurnGA = new();
+            playCardTargetingGA.PostReactions.Add((enemyTurnGA, null));
+        }
+        else
+        {
+            //플레이어 턴 종료 사운드 재생
+            if (!ActionSystem.Instance.IsPerforming)
+                SoundSystem.Instance.PlaySound(28);
+
+            EnemysTurnGA enemyTurnGA = new();
+            ActionSystem.Instance.Perform(enemyTurnGA);
+        }
+    }
+
+    //SubScribers
+    private void PlayCardTargetingGAPreReaction(PlayCardTargetingGA playCardTargetingGA)
+    {
+        this.playCardTargetingGA = playCardTargetingGA;
+    }
+    private void PlayCardTargetingGAPostReaction(PlayCardTargetingGA playCardTargetingGA)
+    {
+        this.playCardTargetingGA = null;
     }
 }

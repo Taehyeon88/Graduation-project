@@ -13,6 +13,8 @@ public class TutorialSystem : Singleton<TutorialSystem>
         IsTutorialing = true;
         tutorialUI.SetBackPanelActive(true);
         tutorialUI.SetBlockUIActive(true);
+        tutorialUI.SetBlockUI2Active(false);
+        tutorialUI.SetBlockUI3Active(false);
         foreach (var data in tutorialDatas)
             if(data.point != null)
                 data.point.SetActive(false);
@@ -35,6 +37,7 @@ public class TutorialSystem : Singleton<TutorialSystem>
                 yield return new WaitUntil(() => InteractionSystem.CancelUse);        //클릭 인터렉션 대기
                 tutorialUI.SetBackPanelActive(false);
                 tutorialUI.SetBlockUIActive(false);
+                tutorialUI.SetBlockUI3Active(true);
                 tutorialUI.SetTextEmpty();
 
                 yield return new WaitUntil(() =>
@@ -60,18 +63,19 @@ public class TutorialSystem : Singleton<TutorialSystem>
 
                 tutorialUI.SetBackPanelActive(true);
                 tutorialUI.SetBlockUIActive(true);
+                tutorialUI.SetBlockUI3Active(false);
             }
             else if (i == 9)
             {
                 tutorialUI.SetBlockUIActive(false);
-                tutorialUI.SetBackPanel2Active(true);
+                tutorialUI.SetBlockUI2Active(true);
 
                 yield return new WaitUntil(() => ActionSystem.Instance.IsPerforming);
 
                 PauseSystem.Instance.SetPause(true); //일시정지 처리
 
                 tutorialUI.SetBlockUIActive(true);
-                tutorialUI.SetBackPanel2Active(false);
+                tutorialUI.SetBlockUI2Active(false);
             }
             else if ( i == 10)
             {

@@ -19,6 +19,7 @@ public class CardSystem : Singleton<CardSystem>
     public int discardPileCA => discardPile.Count;
     public int handCA => hand.Count;
     public List<Card> DiscardPile => new(discardPile); public List<Card> DrawcardPile => new(drawPile);
+    public bool CancelTargetMode { get; set; } = false;  //외부에서 타겟모드 강제 종료용 변수
 
     private void OnEnable()
     {
@@ -38,39 +39,6 @@ public class CardSystem : Singleton<CardSystem>
         ActionSystem.DetachPerformer<PlayCardTargetingGA>();
         ActionSystem.DetachPerformer<PlayCardGA>();
     }
-    private void Update()
-    {
-        //상태이상 - 고립 처리
-        //CombatantView hero = HeroSystem.Instance.HeroView;
-        //if (hero != null && !Interactions.Instance.lockInteraction)
-        //{
-        //    int isolationStack = hero.GetStatusEffectStacks(StatusEffectType.ISOLATION);
-        //    if (isolationStack > 0)
-        //    {
-        //        //손패의 있는 모든 이동 타입의 카드 비활성화 처리
-        //        foreach (var card in hand)
-        //        {
-        //            if (card.CardSubType == CardSubType.Move
-        //                || card.CardSubType == CardSubType.Dash
-        //                || card.CardType == CardType.Skill_Move)
-        //                handView.SetCardLockView(true, card);
-        //        }
-        //        isIsolation = true;
-        //    }
-        //    else if (isIsolation)
-        //    {
-        //        foreach (var card in hand)
-        //        {
-        //            if (card.CardSubType == CardSubType.Move
-        //                || card.CardSubType == CardSubType.Dash
-        //                || card.CardType == CardType.Skill_Move)
-        //                handView.SetCardLockView(false, card);
-        //        }
-        //        isIsolation = false;
-        //    }
-        //}
-    }
-
 
     //Publics
     public void SetUp(List<CardData> deckData)
@@ -153,6 +121,13 @@ public class CardSystem : Singleton<CardSystem>
     {
         //카드 드로우 사운드 재생
         SoundSystem.Instance.PlaySound(16);
+
+        //현재 호버 중인 카드 호버 취소
+        CardView hoveredCardView = CardViewHoverSystem.Instance.CurrentHoveredCardView;
+        if (hoveredCardView != null)
+        {
+            hoveredCardView.EndHovering();
+        }
 
         int handCount = hand.Count;
         foreach (var card in hand.ToList())
@@ -353,8 +328,11 @@ public class CardSystem : Singleton<CardSystem>
                     }
                 }
                 //카드 사용 준비 취소 인터렉션 감지
-                if (InteractionSystem.CancelUse)
+                if (InteractionSystem.CancelUse || CancelTargetMode)
+                {
+                    CancelTargetMode = false;
                     break;
+                }
 
                 yield return null;
             }
@@ -372,8 +350,11 @@ public class CardSystem : Singleton<CardSystem>
                     break;
                 }
                 //카드 사용 준비 취소 인터렉션 감지
-                if (InteractionSystem.CancelUse)
+                if (InteractionSystem.CancelUse || CancelTargetMode)
+                {
+                    CancelTargetMode = false;
                     break;
+                }
 
                 yield return null;
             }

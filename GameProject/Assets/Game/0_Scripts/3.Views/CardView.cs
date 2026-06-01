@@ -59,7 +59,7 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
             //플레이어 타겟팅 모드 진입
             wrapper.alpha = 0f;
             Vector2 pos = rectTransform.anchoredPosition + Vector2.up * 125f;
-            CardViewHoverSystem.Instance.Show(Card, pos);
+            CardViewHoverSystem.Instance.Show(this, pos);
 
             Action endSelectGrid = () =>
             {
@@ -92,13 +92,18 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
 
         wrapper.alpha = 0f;
         Vector2 pos = rectTransform.anchoredPosition + Vector2.up * 60f;
-        CardViewHoverSystem.Instance.Show(Card, pos, 
+        CardViewHoverSystem.Instance.Show(this, pos, 
           Interactions.Instance.lockInteraction || LockCardUse);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         if (!Interactions.Instance.PlayerCanHover()) return;
+        EndHovering();
+    }
+
+    public void EndHovering()
+    {
         CardViewHoverSystem.Instance.Hide();
 
         Debug.Log($"{Card.Title} : 호버감지 취소");
@@ -148,7 +153,7 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
                 Interactions.Instance.PlayerIsTargeting = true;
                 wrapper.alpha = 0f;
                 Vector2 pos = rectTransform.anchoredPosition + Vector2.up * 125f;
-                CardViewHoverSystem.Instance.Show(Card, pos);
+                CardViewHoverSystem.Instance.Show(this, pos);
 
                 Action endSelectGrid = () =>
                 {

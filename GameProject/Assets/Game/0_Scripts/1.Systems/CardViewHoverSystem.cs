@@ -9,13 +9,16 @@ public class CardViewHoverSystem : Singleton<CardViewHoverSystem>
     [SerializeField] private CardViewInPile cardViewHoverInPile;
     [SerializeField] private CardViewInPile cardViewHoverInReward;
 
+    public CardView CurrentHoveredCardView { get; private set; }
+
     private bool isLocked = false;
-    public void Show(Card card, Vector2 position, bool isLock = false)
+    public void Show(CardView cardView, Vector2 position, bool isLock = false)
     {
+        CurrentHoveredCardView = cardView;
         cardViewHover.gameObject.SetActive(true);
         cardViewHover.transform.SetAsLastSibling();
 
-        cardViewHover.SetUp(card, true);
+        cardViewHover.SetUp(cardView.Card, true);
         cardViewHover.GetComponent<RectTransform>().anchoredPosition = position;
         if (isLock)
         {
@@ -25,6 +28,7 @@ public class CardViewHoverSystem : Singleton<CardViewHoverSystem>
     }
     public void Hide()
     {
+        CurrentHoveredCardView = null;
         cardViewHover.gameObject.SetActive(false);
         if (isLocked)
         {
