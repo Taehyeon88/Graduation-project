@@ -138,25 +138,25 @@ public class ActionSystem : Singleton<ActionSystem>
     {
         Dictionary<Type, List<Action<GameAction>>> subs = timing == ReactionTiming.PRE ? preSubs : postSubs;
 
-        if (Instance == null)
-            return;
-
-        if (Instance.currentSub.Item1 != null)
+        if (Instance != null)
         {
-            bool ispreSub = timing == ReactionTiming.PRE;
-            if (Instance.currentSub.Item1 == typeof(T) && Instance.currentSub.Item2 == ispreSub)
+            if (Instance.currentSub.Item1 != null)
             {
-                Instance.willRemoveSubs.Add(() =>
+                bool ispreSub = timing == ReactionTiming.PRE;
+                if (Instance.currentSub.Item1 == typeof(T) && Instance.currentSub.Item2 == ispreSub)
                 {
-                    if (subs.ContainsKey(typeof(T)))
+                    Instance.willRemoveSubs.Add(() =>
                     {
-                        if (wrapperMap.TryGetValue(reaction, out var wrapped))
+                        if (subs.ContainsKey(typeof(T)))
                         {
-                            subs[typeof(T)].Remove(wrapped);
+                            if (wrapperMap.TryGetValue(reaction, out var wrapped))
+                            {
+                                subs[typeof(T)].Remove(wrapped);
+                            }
                         }
-                    }
-                });
-                return;
+                    });
+                    return;
+                }
             }
         }
 
@@ -164,7 +164,20 @@ public class ActionSystem : Singleton<ActionSystem>
         {
             if (wrapperMap.TryGetValue(reaction, out var wrapped))
             {
+                Debug.Log($"구독 해제 - 타입명: {reaction.GetType()}");
                 subs[typeof(T)].Remove(wrapped);
+                wrapperMap.Remove(reaction);
+            }
+        }
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            foreach (var key in wrapperMap.Keys)
+            {
+                Debug.Log($"구독 중인 타입명: {key.GetType()}");
             }
         }
     }

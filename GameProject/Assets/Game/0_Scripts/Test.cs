@@ -7,7 +7,7 @@ public class Test : MonoBehaviour
 {
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.C))
+        if (Input.GetKeyDown(KeyCode.V))
         {
             GameClearGA gameClearGA = new();
             ActionSystem.Instance.Perform(gameClearGA);

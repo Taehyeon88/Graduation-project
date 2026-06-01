@@ -48,7 +48,6 @@ public class CardSystem : Singleton<CardSystem>
 
         foreach (var cardData in deckData)
         {
-            Debug.Log($"카드 이름: {cardData.name}");
             Card card = new(cardData);
             drawPile.Add(card);
         }
