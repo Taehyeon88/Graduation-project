@@ -7,6 +7,7 @@ public class UISystem : Singleton<UISystem>
     [SerializeField] private CombatantViewStatusUI combatantViewStatusUI;
     [SerializeField] private PileofCardUI pileofCardUI;
     [SerializeField] private GameClearUI gameClearUI;
+    [SerializeField] private GameOverUI gameOverUI;
 
 
     /// <summary>
@@ -37,7 +38,7 @@ public class UISystem : Singleton<UISystem>
         pileofCardUI.OffPileofCardUI();
     }
 
-    //카드 보상UI용
+    //카드 보상UI용 (게임 클리어)
     public void UpdateRewardCards(Card[] cards)
     {
         gameClearUI.UpdateRewardCards(cards);
@@ -45,5 +46,11 @@ public class UISystem : Singleton<UISystem>
     public void RemoveRewardCards()
     {
         gameClearUI.RemoveRewardCards();
+    }
+
+    //게임 종료
+    public void OnGameOverUI()
+    {
+        gameOverUI.gameObject.SetActive(true);
     }
 }

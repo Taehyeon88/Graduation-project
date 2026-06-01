@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6862983212806239959
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2369140202396045200}
+  - component: {fileID: 1463536655479911621}
+  m_Layer: 0
+  m_Name: GameSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2369140202396045200
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6862983212806239959}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 72.9027, y: 0, z: 10.48658}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1463536655479911621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6862983212806239959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89490b300cdea2b41a5305c10302cb49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameSystem
+  <HeroData>k__BackingField: {fileID: 11400000, guid: e93bb81975e21af4ba578505a4b474fe, type: 2}
+  deck:
+  - {fileID: 11400000, guid: 4bb2181ad44476e44912d6ada97dd27d, type: 2}
+  - {fileID: 11400000, guid: 4bb2181ad44476e44912d6ada97dd27d, type: 2}
+  - {fileID: 11400000, guid: c4079ead3a289fc4990942d4dd3a2f92, type: 2}
+  - {fileID: 11400000, guid: 528f980f27add8747ba14142a99bb373, type: 2}
+  - {fileID: 11400000, guid: 528f980f27add8747ba14142a99bb373, type: 2}
+  - {fileID: 11400000, guid: ef4bfe78bf4df6241923ba52c4646264, type: 2}
+  - {fileID: 11400000, guid: ef4bfe78bf4df6241923ba52c4646264, type: 2}
+  - {fileID: 11400000, guid: ef4bfe78bf4df6241923ba52c4646264, type: 2}
+  - {fileID: 11400000, guid: d79f847ac4de2cc48a4dddfca7bc43e0, type: 2}
+  - {fileID: 11400000, guid: d79f847ac4de2cc48a4dddfca7bc43e0, type: 2}
+  roomDatas:
+  - {fileID: 11400000, guid: 71ec10a25e8e35949811fd451cc122f0, type: 2}
+  - {fileID: 11400000, guid: 8345326bcd70d81468d7bf9c666881b2, type: 2}
+  - {fileID: 11400000, guid: 933e20e8aee4a3d4ea6b9992b4a5e0a8, type: 2}
+  tutorialRoomData: {fileID: 11400000, guid: 9ffa97a05146f494182b7dacee048bcb, type: 2}
+  tutorilaDeck:
+  - {fileID: 11400000, guid: 4bb2181ad44476e44912d6ada97dd27d, type: 2}
+  - {fileID: 11400000, guid: d79f847ac4de2cc48a4dddfca7bc43e0, type: 2}
+  - {fileID: 11400000, guid: ef4bfe78bf4df6241923ba52c4646264, type: 2}
+  - {fileID: 11400000, guid: ef4bfe78bf4df6241923ba52c4646264, type: 2}
+  - {fileID: 11400000, guid: d79f847ac4de2cc48a4dddfca7bc43e0, type: 2}
+  - {fileID: 11400000, guid: 4bb2181ad44476e44912d6ada97dd27d, type: 2}
+  - {fileID: 11400000, guid: 528f980f27add8747ba14142a99bb373, type: 2}

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class HUDUI : MonoBehaviour
@@ -10,6 +11,7 @@ public class HUDUI : MonoBehaviour
     [SerializeField] private Button endTurnButton;
     [SerializeField] private Button onSettingButton;
     [SerializeField] private Button checkDeckButton;
+    [SerializeField] private Button endGameButton;
 
     [Header("시각 데이터들(실시간 갱신형)")]
     [SerializeField] private TMP_Text heroHpText;
@@ -25,7 +27,6 @@ public class HUDUI : MonoBehaviour
     [SerializeField] private GameObject feedBackPanel;
     [SerializeField] private Transform settingUI;
     [SerializeField] private CheckDeckUI checkDeckUI;
-    [SerializeField] private Transform testMapUI;
 
     private int heroHP => HeroSystem.Instance.HeroView.CurrentHealth;
     private int heroMaxHP => HeroSystem.Instance.HeroView.MaxHealth;
@@ -63,6 +64,7 @@ public class HUDUI : MonoBehaviour
         endTurnButton.onClick.AddListener(EndPlayerTurn);
         onSettingButton.onClick.AddListener(OnSettingUI);
         checkDeckButton.onClick.AddListener(OnCheckDeckUI);
+        endGameButton.onClick.AddListener(EndGame);
 
         ActionSystem.SubscribeReaction<PlayCardTargetingGA>(PlayCardTargetingGAPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<PlayCardTargetingGA>(PlayCardTargetingGAPostReaction, ReactionTiming.POST);
@@ -72,6 +74,7 @@ public class HUDUI : MonoBehaviour
         endTurnButton.onClick.RemoveListener(EndPlayerTurn);
         onSettingButton.onClick.RemoveListener(OnSettingUI);
         checkDeckButton.onClick.RemoveListener(OnCheckDeckUI);
+        endGameButton.onClick.RemoveListener(EndGame);
 
         ActionSystem.UnsubscribeReaction<PlayCardTargetingGA>(PlayCardTargetingGAPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<PlayCardTargetingGA>(PlayCardTargetingGAPostReaction, ReactionTiming.POST);
@@ -81,6 +84,7 @@ public class HUDUI : MonoBehaviour
     {
         Debug.Log("설정 활성화");
         isSetting = !isSetting;
+        endGameButton.gameObject.SetActive(isSetting);
         settingUI.gameObject.SetActive(isSetting);
     }
 
@@ -88,6 +92,11 @@ public class HUDUI : MonoBehaviour
     {
         isCheckDeck = !isCheckDeck;
         checkDeckUI.SetCheckDeckUI(isCheckDeck);
+    }
+
+    private void EndGame()
+    {
+        SceneManager.LoadScene("StartScene");
     }
 
     //Button Event Methods

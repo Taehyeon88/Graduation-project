@@ -104,8 +104,8 @@ public class DamageSystem : Singleton<DamageSystem>
                 }
                 else
                 {
-                    //Do some Game over logic here
-                    //Open Game over Scene
+                    GameOverGA gameOverGA = new();
+                    ActionSystem.Instance.AddReaction(gameOverGA);
                 }
             }
         }

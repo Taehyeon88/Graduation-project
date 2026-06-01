@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,8 +8,9 @@ public class GameSystem : Singleton<GameSystem>
 {
     [field : SerializeField] public HeroData HeroData { get; private set; } //영웅 데이터
     public int CurrentLevel { get; private set; } = 1;                      //현재 층 수
-    public bool IsGameClear { get; private set; }                           //게임 종료
-    public bool IsTutorial { get; private set; } = true;                    //튜토리얼
+    public bool IsGameClear { get; private set; }                           //게임 클리어
+    public bool IsGameOver { get; private set; }                            //게임 오버
+    public bool IsTutorial { get; set; } = false;                            //튜토리얼
     public IReadOnlyList<CardData> Deck                                     //플레이어 덱
     {
         get
@@ -32,24 +34,30 @@ public class GameSystem : Singleton<GameSystem>
         } 
     }
 
-
-    [SerializeField] private List<CardData> deck;                     //카드 덱
     [SerializeField] private RoomData[] roomDatas;                    //방 데이터
     [SerializeField] private RoomData tutorialRoomData;               //튜토리얼 방 데이터
     [SerializeField] private List<CardData> tutorilaDeck;             //튜토리얼 덱
+    private List<CardData> deck;                                      //카드 덱
 
     protected override void Awake()
     {
         base.Awake();
         DontDestroyOnLoad();
 
+        deck = HeroData.Deck.ToList();  //덱 데이터 받기
+
         //첫 인스턴스만 체인처리
         ActionSystem.AttachPerformer<GameClearGA>(GameClearPerformer);
+        ActionSystem.AttachPerformer<GameOverGA>(GameOverPerformer);
     }
     private void OnDisable()
     {
         if (Instance != this)
+        {
             ActionSystem.DetachPerformer<GameClearGA>();
+            ActionSystem.DetachPerformer<GameOverGA>();
+        }
+            
     }
 
     //Performers
@@ -61,6 +69,15 @@ public class GameSystem : Singleton<GameSystem>
         Card[] cards = RewardSystem.Instance.GetRewards(3);
         UISystem.Instance.UpdateRewardCards(cards);
 
+        yield return null;
+    }
+    private IEnumerator GameOverPerformer(GameOverGA gameOverGA)
+    {
+        IsGameOver = true;
+        if (UISystem.Instance != null)
+        {
+            UISystem.Instance.OnGameOverUI();
+        }
         yield return null;
     }
 
@@ -80,7 +97,17 @@ public class GameSystem : Singleton<GameSystem>
         if (CurrentLevel > roomDatas.Length)
             Debug.LogError($"다음 층수 : {CurrentLevel}이고 현재 구현된 층수는 {CurrentLevel - 1}으로 최대 층수에 도달했습니다.");
 
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene("GameDemoScene");
+    }
+
+    public void StartFromScratch()
+    {
+        CurrentLevel = 1;
+        IsGameOver = false;
+        IsGameClear = false;
+        deck = HeroData.Deck.ToList();
+
+        SceneManager.LoadScene("GameDemoScene");
     }
 
     //Tests
@@ -90,6 +117,6 @@ public class GameSystem : Singleton<GameSystem>
         roomDatas[0] = roomData;
         IsGameClear = false;
 
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene("GameDemoScene");
     }
 }

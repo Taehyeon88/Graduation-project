@@ -11,14 +11,38 @@ public class AudioMixerController : MonoBehaviour
 
     //슬라이더 MinValue 0.001 사운드 볼륨은 Log10 단위로 되어있기 때문에
 
-    private void Awake()
+    private void OnEnable()
     {
-        //마스터 슬라이더의 값이 변경될때 리스터를 통해서 함수에 값을 전달한다.
+        if (!PlayerPrefs.HasKey("Master"))
+            PlayerPrefs.SetFloat("Master", 1f);
+        if (!PlayerPrefs.HasKey("BGM"))
+            PlayerPrefs.SetFloat("BGM", 1f);
+        if (!PlayerPrefs.HasKey("SFX"))
+            PlayerPrefs.SetFloat("SFX", 1f);
+
+        //받아오기
+        musicMasterSlider.value = PlayerPrefs.GetFloat("Master");
+        musicBGMSlider.value = PlayerPrefs.GetFloat("BGM");
+        musicSFXSlider.value = PlayerPrefs.GetFloat("SFX");
+        //적용
+        SetMasterVolume(musicMasterSlider.value);
+        SetBGMVolume(musicBGMSlider.value);
+        SetSFXVolume(musicSFXSlider.value);
+
         musicMasterSlider.onValueChanged.AddListener(SetMasterVolume);
-        //BGM 슬라이더의 값이 변경될때 리스너를 통해서 함수에 값을 전달한다.
         musicBGMSlider.onValueChanged.AddListener(SetBGMVolume);
-        //SFX 슬라이더의 값이 변경될때 리스너를 통해서 함수에 값을 전달한다.
         musicSFXSlider.onValueChanged.AddListener(SetSFXVolume);
+    }
+    private void OnDisable()
+    {
+        //저장
+        PlayerPrefs.SetFloat("Master", musicMasterSlider.value);
+        PlayerPrefs.SetFloat("BGM", musicBGMSlider.value);
+        PlayerPrefs.SetFloat("SFX", musicSFXSlider.value);
+
+        musicMasterSlider.onValueChanged.RemoveListener(SetMasterVolume);
+        musicBGMSlider.onValueChanged.RemoveListener(SetBGMVolume);
+        musicSFXSlider.onValueChanged.RemoveListener(SetSFXVolume);
     }
 
     public void SetMasterVolume(float volume)

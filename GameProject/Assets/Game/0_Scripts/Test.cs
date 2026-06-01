@@ -5,26 +5,18 @@ using UnityEngine.UI;
 
 public class Test : MonoBehaviour
 {
-    [SerializeField] private RoomData[] roomDatas;
-    [SerializeField] private Button[] buttons;
-
-    private RoomData roomData;
-
-    private void OnEnable()
+    private void Update()
     {
-        for (int i = 0; i < roomDatas.Length; i++)
+        if (Input.GetKeyDown(KeyCode.C))
         {
-            int index = i;
-            roomData = roomDatas[index];
-            buttons[index].onClick.AddListener(() =>
-            {
-                ChangeRoom(index);
-            });
+            GameClearGA gameClearGA = new();
+            ActionSystem.Instance.Perform(gameClearGA);
         }
-    }
-    private void ChangeRoom(int index)
-    {
-        RoomData roomData = roomDatas[index];
-        GameSystem.Instance.SetCurrentRoomData(roomData);
+
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            GameOverGA gameOverGA = new();
+            ActionSystem.Instance.Perform(gameOverGA);
+        }
     }
 }
