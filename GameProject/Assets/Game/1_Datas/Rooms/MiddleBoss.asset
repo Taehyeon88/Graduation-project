@@ -10,24 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 793aa16ce5280ce429fcd572fab35001, type: 3}
-  m_Name: M1-B
+  m_Name: MiddleBoss
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   <Stage>k__BackingField: 1
   <heroSetUpPositions>k__BackingField:
   - {x: 2, y: 0}
   - {x: 3, y: 0}
   - {x: 4, y: 0}
-  - {x: 5, y: 0}
   <enemyDatas>k__BackingField:
-  - {fileID: 11400000, guid: f986d0193a9b5a24cb809616f2851e4d, type: 2}
-  - {fileID: 11400000, guid: f986d0193a9b5a24cb809616f2851e4d, type: 2}
-  - {fileID: 11400000, guid: 41ccd5a0068c9f44cbc4f8ea51eaff2a, type: 2}
-  - {fileID: 11400000, guid: 41ccd5a0068c9f44cbc4f8ea51eaff2a, type: 2}
+  - {fileID: 11400000, guid: 60a57da98d55dc74db0a1b916a334f8f, type: 2}
   - {fileID: 11400000, guid: f986d0193a9b5a24cb809616f2851e4d, type: 2}
   - {fileID: 11400000, guid: 41ccd5a0068c9f44cbc4f8ea51eaff2a, type: 2}
+  - {fileID: 11400000, guid: f986d0193a9b5a24cb809616f2851e4d, type: 2}
   - {fileID: 11400000, guid: 41ccd5a0068c9f44cbc4f8ea51eaff2a, type: 2}
-  - {fileID: 11400000, guid: 41ccd5a0068c9f44cbc4f8ea51eaff2a, type: 2}
-  <enemyCountsPerWave>k__BackingField: 02000000020000000200000002000000
+  <enemyCountsPerWave>k__BackingField: 010000000200000002000000
   <obstacleDatas>k__BackingField:
   - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
   - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
@@ -35,12 +31,16 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
   - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
   - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
+  - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
+  - {fileID: 11400000, guid: 22071e69a2026664cb16baf2d482dddd, type: 2}
   - {fileID: 11400000, guid: 22071e69a2026664cb16baf2d482dddd, type: 2}
   <obstacleSetUpPositions>k__BackingField:
-  - {x: 2, y: 4}
-  - {x: 5, y: 4}
-  - {x: 1, y: 6}
-  - {x: 2, y: 6}
-  - {x: 5, y: 6}
+  - {x: 0, y: 0}
+  - {x: 0, y: 6}
+  - {x: 1, y: 4}
+  - {x: 4, y: 6}
+  - {x: 5, y: 2}
+  - {x: 6, y: 0}
   - {x: 6, y: 6}
-  - {x: 1, y: 5}
+  - {x: 3, y: 4}
+  - {x: 4, y: 4}
