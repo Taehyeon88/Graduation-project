@@ -29,8 +29,10 @@ public class CardViewInPile : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     private void Update()
     {
         //카드 더미의 호버 카드 위치 = 현재 카드 위치 (실시간 업데이트) 
-        if (wrapper.alpha == 0f)
+        if (wrapper.alpha == 0f && !GameSystem.Instance.IsGameClear)
             CardViewHoverSystem.Instance.ShowInPile(card, rectTransform.position);
+
+        //Debug.Log("현재 : " + GameSystem.Instance.IsGameClear);
     }
 
     public void OnPointerClick(PointerEventData eventData)

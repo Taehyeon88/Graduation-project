@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using SerializeReferenceEditor;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ public class UISystem : Singleton<UISystem>
     [SerializeField] private PileofCardUI pileofCardUI;
     [SerializeField] private GameClearUI gameClearUI;
     [SerializeField] private GameOverUI gameOverUI;
+    [SerializeField] private DemoUI endDemoUI;
 
 
     /// <summary>
@@ -52,5 +54,11 @@ public class UISystem : Singleton<UISystem>
     public void OnGameOverUI()
     {
         gameOverUI.gameObject.SetActive(true);
+    }
+
+    //데모 종료
+    public void EndDemoUI()
+    {
+        endDemoUI.gameObject.SetActive(true);
     }
 }

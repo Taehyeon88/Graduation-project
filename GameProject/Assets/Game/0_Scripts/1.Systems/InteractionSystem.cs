@@ -61,7 +61,7 @@ public class InteractionSystem : Singleton<InteractionSystem>
         CancelUse = m_CancelUse.WasPressedThisFrame();
     }
 
-    void OnStartCheat() => CheatSystem.Instance?.StartCheat();
+    //void OnStartCheat() => CheatSystem.Instance?.StartCheat();
 
     void OnCancel()
     {

@@ -164,20 +164,9 @@ public class ActionSystem : Singleton<ActionSystem>
         {
             if (wrapperMap.TryGetValue(reaction, out var wrapped))
             {
-                Debug.Log($"구독 해제 - 타입명: {reaction.GetType()}");
+                //Debug.Log($"구독 해제 - 타입명: {reaction.GetType()}");
                 subs[typeof(T)].Remove(wrapped);
                 wrapperMap.Remove(reaction);
-            }
-        }
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            foreach (var key in wrapperMap.Keys)
-            {
-                Debug.Log($"구독 중인 타입명: {key.GetType()}");
             }
         }
     }
