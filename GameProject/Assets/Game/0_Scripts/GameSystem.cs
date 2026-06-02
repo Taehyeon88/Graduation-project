@@ -42,6 +42,8 @@ public class GameSystem : Singleton<GameSystem>
     protected override void Awake()
     {
         base.Awake();
+        if (Instance != this) return;
+
         DontDestroyOnLoad();
 
         deck = HeroData.Deck.ToList();  //덱 데이터 받기
@@ -52,14 +54,12 @@ public class GameSystem : Singleton<GameSystem>
     }
     private void OnDisable()
     {
-        if (Instance != this)
-        {
-            ActionSystem.DetachPerformer<GameClearGA>();
-            ActionSystem.DetachPerformer<GameOverGA>();
-        }
-            
-    }
+        if (Instance != this) return;
 
+        ActionSystem.DetachPerformer<GameClearGA>();
+        ActionSystem.DetachPerformer<GameOverGA>();
+
+    }
     //Performers
     private IEnumerator GameClearPerformer(GameClearGA gameClearGA)
     {
@@ -68,6 +68,8 @@ public class GameSystem : Singleton<GameSystem>
 
         Card[] cards = RewardSystem.Instance.GetRewards(3);
         UISystem.Instance.UpdateRewardCards(cards);
+
+        Debug.Log(IsGameClear);
 
         yield return null;
     }
@@ -95,7 +97,10 @@ public class GameSystem : Singleton<GameSystem>
         IsGameClear = false;
 
         if (CurrentLevel > roomDatas.Length)
-            Debug.LogError($"다음 층수 : {CurrentLevel}이고 현재 구현된 층수는 {CurrentLevel - 1}으로 최대 층수에 도달했습니다.");
+        {
+            UISystem.Instance.EndDemoUI();
+            return;
+        }
 
         SceneManager.LoadScene("GameDemoScene");
     }
