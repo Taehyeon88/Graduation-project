@@ -44,7 +44,7 @@ public class EnemyView : CombatantView
         Actions = enemyData.EnemyActions
                  .Select(e => e.Clone())
                  .ToList();
-        SetUpBase(enemyData.Health, enemyData, isObject);
+        SetUpBase(enemyData.Health, enemyData.Health, enemyData, isObject);
     }
 
     private void OnEnable()

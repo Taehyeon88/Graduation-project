@@ -37,9 +37,10 @@ public class CombatantView : Token
     private int maxHealth;
     private int currentHealth;
 
-    public void SetUpBase(int health, TokenData tokenData, IsoObject isoObject)
+    public void SetUpBase(int health, int maxHealth, TokenData tokenData, IsoObject isoObject)
     {
-        MaxHealth = CurrentHealth = health;     //몬스터 & 플레이어 체력 셋업
+        MaxHealth = maxHealth;                //몬스터 & 플레이어 체력 셋업
+        CurrentHealth = health;
         SetUpBaseBase(tokenData, isoObject);
     }
 

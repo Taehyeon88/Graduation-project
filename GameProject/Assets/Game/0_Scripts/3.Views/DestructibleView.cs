@@ -9,6 +9,6 @@ public class DestructibleView : CombatantView
         if (isObject == null)
             isObject = gameObject.AddComponent<IsoObject>();
 
-        SetUpBase(tokenData.Health, tokenData, isObject);
+        SetUpBase(tokenData.Health, tokenData.Health, tokenData, isObject);
     }
 }

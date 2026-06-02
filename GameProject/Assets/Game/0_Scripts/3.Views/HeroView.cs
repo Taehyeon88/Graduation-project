@@ -12,6 +12,6 @@ public class HeroView : CombatantView
         if (isObject == null)
             isObject = gameObject.AddComponent<IsoObject>();
 
-        SetUpBase(heroData.Health, heroData, isObject);
+        SetUpBase(GameSystem.Instance.CurrentHp, GameSystem.Instance.MaxHp, heroData, isObject);
     }
 }

@@ -7,6 +7,9 @@ using UnityEngine.SceneManagement;
 public class GameSystem : Singleton<GameSystem>
 {
     [field : SerializeField] public HeroData HeroData { get; private set; } //영웅 데이터
+    public int MaxHp { get; private set; }                                  //현재 플레이어 최대 체력
+    public int CurrentHp { get; private set; }                              //현재 플레이어 체력
+    public int CurrentGold { get; private set; }                            //현재 플레이어 골드
     public int CurrentLevel { get; private set; } = 1;                      //현재 층 수
     public bool IsGameClear { get; private set; }                           //게임 클리어
     public bool IsGameOver { get; private set; }                            //게임 오버
@@ -46,7 +49,8 @@ public class GameSystem : Singleton<GameSystem>
 
         DontDestroyOnLoad();
 
-        deck = HeroData.Deck.ToList();  //덱 데이터 받기
+        deck = HeroData.Deck.ToList();       //덱 데이터 받기
+        MaxHp = CurrentHp = HeroData.Health; //체력 설정
 
         //첫 인스턴스만 체인처리
         ActionSystem.AttachPerformer<GameClearGA>(GameClearPerformer);
@@ -65,17 +69,18 @@ public class GameSystem : Singleton<GameSystem>
     {
         Debug.Log("게임 클리어");
         IsGameClear = true;
+        CurrentHp = HeroSystem.Instance.HeroView.CurrentHealth;
 
         Card[] cards = RewardSystem.Instance.GetRewards(3);
         UISystem.Instance.UpdateRewardCards(cards);
-
-        Debug.Log(IsGameClear);
 
         yield return null;
     }
     private IEnumerator GameOverPerformer(GameOverGA gameOverGA)
     {
         IsGameOver = true;
+        CurrentHp = HeroSystem.Instance.HeroView.CurrentHealth;
+
         if (UISystem.Instance != null)
         {
             UISystem.Instance.OnGameOverUI();
@@ -110,17 +115,10 @@ public class GameSystem : Singleton<GameSystem>
         CurrentLevel = 1;
         IsGameOver = false;
         IsGameClear = false;
+        MaxHp = CurrentHp = HeroData.Health;
+        CurrentGold = HeroData.Gold;
+
         deck = HeroData.Deck.ToList();
-
-        SceneManager.LoadScene("GameDemoScene");
-    }
-
-    //Tests
-    public void SetCurrentRoomData(RoomData roomData)
-    {
-        CurrentLevel = 1;
-        roomDatas[0] = roomData;
-        IsGameClear = false;
 
         SceneManager.LoadScene("GameDemoScene");
     }

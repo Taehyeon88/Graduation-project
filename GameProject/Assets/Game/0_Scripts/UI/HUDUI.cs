@@ -28,8 +28,12 @@ public class HUDUI : MonoBehaviour
     [SerializeField] private Transform settingUI;
     [SerializeField] private CheckDeckUI checkDeckUI;
 
-    private int heroHP => HeroSystem.Instance.HeroView.CurrentHealth;
-    private int heroMaxHP => HeroSystem.Instance.HeroView.MaxHealth;
+    private int heroHP => HeroSystem.Instance.HeroView == null? 
+        GameSystem.Instance.CurrentHp : 
+        HeroSystem.Instance.HeroView.CurrentHealth;
+    private int heroMaxHP => HeroSystem.Instance.HeroView == null ?
+        GameSystem.Instance.MaxHp :
+        HeroSystem.Instance.HeroView.MaxHealth;
     //골드
     private int turnCount => WaveSystem.Instance.CurrentTurn;
     private int waveCount => WaveSystem.Instance.RemainWaveTurn;
@@ -41,15 +45,10 @@ public class HUDUI : MonoBehaviour
     private bool isSetting = false;
     private bool isCheckDeck = false;
 
-    //타겟 모드 감지 변수
-    private bool isTargetMode = false;
 
     private void Update()
     {
-        if (HeroSystem.Instance.HeroView != null)
-        {
-            heroHpText.SetText("{0}/{1}", heroHP, heroMaxHP);
-        }
+        heroHpText.SetText("{0}/{1}", heroHP, heroMaxHP);
         //골드
         turnCountText.SetText("턴: {0}", turnCount);
         waveCountText.SetText("다음 웨이브: {0}턴", waveCount);
