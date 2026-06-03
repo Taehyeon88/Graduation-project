@@ -20,9 +20,13 @@ public class MatchSetupSystem : MonoBehaviour
         StartCoroutine(StartSetting());
     }
 
+    private const int MainBgmId = 32;
+    private const int BossBgmId = 33;
+
     private IEnumerator StartSetting()
     {
         roomData = GameSystem.Instance.CurrentRoomData;
+        SoundSystem.Instance.PlayBGM(roomData.IsBossRoom ? BossBgmId : MainBgmId);
 
         if (deck == null)
         {

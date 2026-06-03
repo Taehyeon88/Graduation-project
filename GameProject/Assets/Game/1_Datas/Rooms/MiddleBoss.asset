@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: MiddleBoss
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   <Stage>k__BackingField: 1
+  <IsBossRoom>k__BackingField: 1
   <heroSetUpPositions>k__BackingField:
   - {x: 2, y: 0}
   - {x: 3, y: 0}

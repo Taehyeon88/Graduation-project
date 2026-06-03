@@ -9,4 +9,5 @@ public class SoundData : ScriptableObject
     [field: SerializeField] public AudioClip Clip { get; private set; }
 
     [field: SerializeField] public float Volume { get; private set; } = 1f;
+    [field: SerializeField] public bool Loop { get; private set; } = false;
 }

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -10,8 +9,9 @@ public class SoundSystem : Singleton<SoundSystem>
     [SerializeField] private Transform sfxTransform;
     [SerializeField] private AudioMixerGroup bgmMixerGroup;
     [SerializeField] private AudioMixerGroup sfxMixerGroup;
-    
+
     private Dictionary<int, AudioSource> soundDataById = new();
+    private List<int> bgmIds = new();
 
     private void OnEnable()
     {
@@ -26,13 +26,13 @@ public class SoundSystem : Singleton<SoundSystem>
             {
                 AudioType.BGM => bgmTransform?.gameObject.AddComponent<AudioSource>(),
                 AudioType.SFX => sfxTransform?.gameObject.AddComponent<AudioSource>(),
-                _=> null
+                _ => null
             };
 
             audioSource.clip = data.Clip;
             audioSource.volume = data.Volume;
             audioSource.pitch = 1;
-            audioSource.loop = false;
+            audioSource.loop = data.Loop;
 
             audioSource.outputAudioMixerGroup = data.AudioType switch
             {
@@ -41,34 +41,39 @@ public class SoundSystem : Singleton<SoundSystem>
                 _ => null
             };
 
-            //오디오 타입에 따른 오디오 믹서 설정
-
             if (!soundDataById.TryAdd(data.SoundId, audioSource))
                 Debug.LogError($"{data.name}데이터의 효과ID가 {soundDataById[data.SoundId].name}과 {data.SoundId}으로 충돌함");
+
+            if (data.AudioType == AudioType.BGM)
+                bgmIds.Add(data.SoundId);
         }
+    }
+
+    public void PlayBGM(int soundId)
+    {
+        foreach (var id in bgmIds)
+        {
+            if (soundDataById.TryGetValue(id, out var bgm) && bgm != null)
+                bgm.Stop();
+        }
+        PlaySound(soundId);
     }
 
     public void PlaySound(int soundId)
     {
-        if (soundDataById.ContainsKey(soundId))
-        {
-            var sound = soundDataById[soundId];
-            if (sound != null)
-            {
-                sound.Play();
-            }
-        }
+        if (soundDataById.TryGetValue(soundId, out var sound) && sound != null)
+            sound.Play();
+    }
+
+    public void StopSound(int soundId)
+    {
+        if (soundDataById.TryGetValue(soundId, out var sound) && sound != null)
+            sound.Stop();
     }
 
     public void PauseSound(int soundId)
     {
-        if (soundDataById.ContainsKey(soundId))
-        {
-            var sound = soundDataById[soundId];
-            if (sound != null)
-            {
-                sound.Pause();
-            }
-        }
+        if (soundDataById.TryGetValue(soundId, out var sound) && sound != null)
+            sound.Pause();
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class RoomData : ScriptableObject
 {
     [field: SerializeField] public int Stage { get; private set; }
+    [field: SerializeField] public bool IsBossRoom { get; private set; }
     [field: SerializeField] public List<Vector2Int> heroSetUpPositions { get; private set; }
     [field: SerializeField] public EnemyData[] enemyDatas { get; private set; }
     [field: SerializeField] public List<int> enemyCountsPerWave { get; private set; }
