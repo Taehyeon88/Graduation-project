@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -56,13 +56,14 @@ public class GameSystem : Singleton<GameSystem>
         ActionSystem.AttachPerformer<GameClearGA>(GameClearPerformer);
         ActionSystem.AttachPerformer<GameOverGA>(GameOverPerformer);
     }
+
     private void OnDisable()
     {
         if (Instance != this) return;
 
         ActionSystem.DetachPerformer<GameClearGA>();
         ActionSystem.DetachPerformer<GameOverGA>();
-
+        
     }
     //Performers
     private IEnumerator GameClearPerformer(GameClearGA gameClearGA)
