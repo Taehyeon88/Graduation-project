@@ -19,6 +19,7 @@ public class RatSwingGreatsSwordEA : EnemyAction
     [SerializeField] private string description;
     [SerializeField] private Sprite icon;
 
+    public override int? AttackDamage => damage;
 
     public override Sequence PlayEnemyAction(EnemyView enemy)
     {

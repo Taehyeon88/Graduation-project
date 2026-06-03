@@ -11,6 +11,7 @@ public class EnemyView : CombatantView
     [SerializeField] private Transform EnemyInfoUITrans;
     [SerializeField] private StatusEffectsUI statusEffectsUI;
     [SerializeField] private Image nextActUIImage;
+    [SerializeField] private TMP_Text nextActDamageText;
 
     public string EnemyName => TokenData.Name;            //적 이름
     public Sprite EnemySprite => TokenData.Sprite;        //적 이미지
@@ -64,8 +65,14 @@ public class EnemyView : CombatantView
     public void UpdateNextActionUI()
     {
         if (nextActUIImage != null)
-        {
             nextActUIImage.sprite = NextAction.Icon;
+
+        if (nextActDamageText != null)
+        {
+            int? dmg = NextAction.AttackDamage;
+            nextActDamageText.gameObject.SetActive(dmg.HasValue);
+            if (dmg.HasValue)
+                nextActDamageText.text = dmg.Value.ToString();
         }
     }
     public void SetNextAction(EnemyAction action)

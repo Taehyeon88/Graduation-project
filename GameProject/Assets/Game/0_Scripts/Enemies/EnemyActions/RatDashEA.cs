@@ -20,6 +20,8 @@ public class RatDashEA : EnemyAction
     [SerializeField] private string description;
     [SerializeField] private Sprite icon;
 
+    public override int? AttackDamage => damage;
+
     public override Sequence PlayEnemyAction(EnemyView enemy)
     {
         Vector2Int currentPos = TokenSystem.Instance.GetTokenPosition(enemy);

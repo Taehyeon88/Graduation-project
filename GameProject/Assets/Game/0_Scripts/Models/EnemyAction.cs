@@ -15,6 +15,7 @@ public abstract class EnemyAction
     //다음에 할 행동 표시용
     public abstract Sprite Icon { get; protected set; }
     public abstract string Description { get; protected set; }
+    public virtual int? AttackDamage => null;
 
     public abstract Sequence PlayEnemyAction(EnemyView enemy);
     public abstract EnemyAction Clone();  //복사 함수

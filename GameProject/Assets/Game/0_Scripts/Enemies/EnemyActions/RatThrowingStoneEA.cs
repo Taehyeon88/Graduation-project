@@ -20,6 +20,8 @@ public class RatThrowingStoneEA : EnemyAction
     [SerializeField] private string description;
     [SerializeField] private Sprite icon;
 
+    public override int? AttackDamage => damage;
+
     private IsoObject arrow;
 
     public override Sequence PlayEnemyAction(EnemyView enemy)
