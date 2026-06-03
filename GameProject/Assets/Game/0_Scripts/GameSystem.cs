@@ -23,6 +23,7 @@ public class GameSystem : Singleton<GameSystem>
             return deck;
         }
     }
+
     public RoomData CurrentRoomData                                         //게임 셋업 때, 딱 1번 실행
     {
          get 
