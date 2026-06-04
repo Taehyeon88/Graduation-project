@@ -22,7 +22,6 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
     private Vector3 dragStartPosition;
     private Quaternion dragStartRotation;
 
-    private GraphicRaycaster raycaster;
 
     public void SetUp(Card card, bool isHover = false)
     {
@@ -42,8 +41,6 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
             Images = GetComponentsInChildren<Image>(true);
             Images[0] = null;
         }
-
-        raycaster = GetComponentInParent<GraphicRaycaster>();
     }
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -63,10 +60,10 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
 
             Action endSelectGrid = () =>
             {
-                Interactions.Instance.PlayerIsTargeting = false;
                 CardViewHoverSystem.Instance.Hide();
                 if (wrapper != null)
                     wrapper.alpha = 1f;
+                Interactions.Instance.PlayerIsTargeting = false;
             };
 
             PlayCardTargetingGA playCardTargetingGA = new(Card, endSelectGrid);
@@ -88,8 +85,6 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
         //카드 호버 사운드 재생
         SoundSystem.Instance.PlaySound(17);
 
-        Debug.Log($"{Card.Title} : 호버감지");
-
         wrapper.alpha = 0f;
         Vector2 pos = rectTransform.anchoredPosition + Vector2.up * 60f;
         CardViewHoverSystem.Instance.Show(this, pos, 
@@ -105,8 +100,6 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
     public void EndHovering()
     {
         CardViewHoverSystem.Instance.Hide();
-
-        Debug.Log($"{Card.Title} : 호버감지 취소");
         wrapper.alpha = 1f;
     }
 
@@ -157,10 +150,10 @@ public class CardView : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
 
                 Action endSelectGrid = () =>
                 {
-                    Interactions.Instance.PlayerIsTargeting = false;
                     CardViewHoverSystem.Instance.Hide();
                     if (wrapper != null)
                         wrapper.alpha = 1f;
+                    Interactions.Instance.PlayerIsTargeting = false;
                 };
 
                 PlayCardTargetingGA playCardTargetingGA = new(Card, endSelectGrid);

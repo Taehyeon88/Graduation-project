@@ -11,7 +11,7 @@ public class CardViewCreator : Singleton<CardViewCreator>
     public CardView CreatCardView(Card card, RectTransform spawnPos, RectTransform parent)
     {
         CardView cardView = Instantiate(cardViewPrefab, spawnPos.position, Quaternion.identity, parent);
-        cardView.transform.SetSiblingIndex(3);
+        cardView.transform.SetAsFirstSibling();
         cardView.transform.localScale = Vector3.zero;
         cardView.transform.DOScale(Vector3.one, 0.15f);
         cardView.SetUp(card);

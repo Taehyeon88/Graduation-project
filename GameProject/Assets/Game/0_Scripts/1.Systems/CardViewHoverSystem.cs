@@ -16,7 +16,6 @@ public class CardViewHoverSystem : Singleton<CardViewHoverSystem>
     {
         CurrentHoveredCardView = cardView;
         cardViewHover.gameObject.SetActive(true);
-        cardViewHover.transform.SetAsLastSibling();
 
         cardViewHover.SetUp(cardView.Card, true);
         cardViewHover.GetComponent<RectTransform>().anchoredPosition = position;

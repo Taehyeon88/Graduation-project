@@ -163,7 +163,9 @@ public class WaveSystem : Singleton<WaveSystem>
             {
                 if (x == 0 || x == TokenSystem.Instance.gridWidth - 1 || y == 0 || y == TokenSystem.Instance.gridHeight - 1)
                 {
-                    if (TokenSystem.Instance.IsGridEmpty(new(x, y)) && !savedPosition.Contains(new(x, y)))
+                    if (TokenSystem.Instance.IsGridEmpty(new(x, y)) && 
+                        !savedPosition.Contains(new(x, y)) &&
+                        TokenSystem.Instance.GetTokenByPosition(new(x,y), true) == null)
                         list.Add(new Vector2Int(x, y));
                 }
             }
@@ -177,7 +179,9 @@ public class WaveSystem : Singleton<WaveSystem>
         {
             for (int y = 0; y < TokenSystem.Instance.gridHeight; y++)
             {
-                if (TokenSystem.Instance.IsGridEmpty(new(x, y)) && !savedPosition.Contains(new(x, y)))
+                if (TokenSystem.Instance.IsGridEmpty(new(x, y)) &&
+                        !savedPosition.Contains(new(x, y)) &&
+                        TokenSystem.Instance.GetTokenByPosition(new(x, y), true) == null)
                     list.Add(new Vector2Int(x, y));
             }
         }

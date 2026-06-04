@@ -10,7 +10,6 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
 {
     [SerializeField] private TokenGrid grid;
     [field : SerializeField] public IsoWorld IsoWorld { get; private set; }
-
     public HeroView HeroView { get; private set; }
     public List<EnemyView> EnemyViews { get; private set; } = new();
     public List<WallView> WallViews { get; private set; } = new();

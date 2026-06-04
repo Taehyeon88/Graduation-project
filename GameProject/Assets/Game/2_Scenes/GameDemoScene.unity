@@ -13779,10 +13779,10 @@ RectTransform:
   - {fileID: 1734656069}
   - {fileID: 1185000136}
   - {fileID: 1644346195}
+  - {fileID: 2134215621}
   - {fileID: 1381547604}
   - {fileID: 232600907}
   - {fileID: 2099690743}
-  - {fileID: 2134215621}
   - {fileID: 83736984}
   - {fileID: 342195253}
   - {fileID: 181054880}
@@ -23439,38 +23439,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1463536655479911621, guid: 9e2307c70aa00094daf8b9ec47a36965, type: 3}
-      propertyPath: roomDatas.Array.size
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 1463536655479911621, guid: 9e2307c70aa00094daf8b9ec47a36965, type: 3}
-      propertyPath: 'roomDatas.Array.data[0]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 71ec10a25e8e35949811fd451cc122f0, type: 2}
-    - target: {fileID: 1463536655479911621, guid: 9e2307c70aa00094daf8b9ec47a36965, type: 3}
-      propertyPath: 'roomDatas.Array.data[1]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 0e1b7967860ce2945bd896dcbb94d8e3, type: 2}
-    - target: {fileID: 1463536655479911621, guid: 9e2307c70aa00094daf8b9ec47a36965, type: 3}
-      propertyPath: 'roomDatas.Array.data[2]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 933e20e8aee4a3d4ea6b9992b4a5e0a8, type: 2}
-    - target: {fileID: 1463536655479911621, guid: 9e2307c70aa00094daf8b9ec47a36965, type: 3}
-      propertyPath: 'roomDatas.Array.data[3]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 48895f1e74c36144ba45a6945b7dd134, type: 2}
-    - target: {fileID: 1463536655479911621, guid: 9e2307c70aa00094daf8b9ec47a36965, type: 3}
-      propertyPath: 'roomDatas.Array.data[4]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 230952f5b35b4054db0b99f164827a8f, type: 2}
-    - target: {fileID: 1463536655479911621, guid: 9e2307c70aa00094daf8b9ec47a36965, type: 3}
-      propertyPath: 'roomDatas.Array.data[5]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 3235045103874de40affce1aae2a7779, type: 2}
-    - target: {fileID: 1463536655479911621, guid: 9e2307c70aa00094daf8b9ec47a36965, type: 3}
-      propertyPath: 'roomDatas.Array.data[6]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 3235045103874de40affce1aae2a7779, type: 2}
     - target: {fileID: 2369140202396045200, guid: 9e2307c70aa00094daf8b9ec47a36965, type: 3}
       propertyPath: m_LocalPosition.x
       value: 72.9027

@@ -46,6 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameSystem
   <HeroData>k__BackingField: {fileID: 11400000, guid: e93bb81975e21af4ba578505a4b474fe, type: 2}
   roomDatas:
+  - {fileID: 11400000, guid: d9c79ed4593b3454dbc32f56525c00cf, type: 2}
   - {fileID: 11400000, guid: 71ec10a25e8e35949811fd451cc122f0, type: 2}
   - {fileID: 11400000, guid: 0e1b7967860ce2945bd896dcbb94d8e3, type: 2}
   - {fileID: 11400000, guid: 933e20e8aee4a3d4ea6b9992b4a5e0a8, type: 2}
