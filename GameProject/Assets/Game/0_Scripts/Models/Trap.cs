@@ -12,17 +12,14 @@ public abstract class Trap
 
 [System.Serializable]
 public class SpikeTrap : Trap
-{    
+{
     [SerializeField] private int damage = 1;
 
     private Token myToken;
-    private bool targetExist = false;
-    private Token target;
+
     public override void AddChain(Token myToken)
     {
         this.myToken = myToken;
-        targetExist = false;
-
         ActionSystem.SubscribeReaction<MoveGA>(MoveGAPostReaction, ReactionTiming.POST);
     }
 
@@ -39,32 +36,12 @@ public class SpikeTrap : Trap
         };
     }
 
-    //Subscribels
     private void MoveGAPostReaction(MoveGA moveGA)
     {
-        if (target != null)
+        if (moveGA.movePosition == TokenSystem.Instance.GetTokenPosition(myToken))
         {
-            if (!TokenSystem.Instance.IsTokenExist(target))
-                targetExist = false;
-        }
-
-        if (targetExist)
-        {
-            if (target == moveGA.mover)
-            {
-                targetExist = false;
-            }
-        }
-        else
-        {
-            if (moveGA.movePosition == TokenSystem.Instance.GetTokenPosition(myToken))
-            {
-                //가시 공격
-                DealDamageGA dealDamageGA = new(damage, new() { moveGA.mover }, null);
-                ActionSystem.Instance.AddReaction(dealDamageGA);
-                targetExist = true;
-                target = moveGA.mover;
-            }
+            DealDamageGA dealDamageGA = new(damage, new() { moveGA.mover }, null);
+            ActionSystem.Instance.AddReaction(dealDamageGA);
         }
     }
 }

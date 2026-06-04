@@ -150,6 +150,8 @@ public class TokenGrid : MonoBehaviour
 
     public bool CanSetByGridPos(Vector2Int pos)
     {
+        if (grid == null) Initialize();
+        
         int x = pos.x; int y = pos.y;
         if (x < 0 || x >= width || y < 0 || y >= height) return false;
         if (!grid[x, y].IsEmpty()) return false;

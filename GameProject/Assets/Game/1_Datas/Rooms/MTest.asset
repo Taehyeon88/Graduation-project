@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: MTest
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
   <Stage>k__BackingField: 1
+  <IsBossRoom>k__BackingField: 0
   <heroSetUpPositions>k__BackingField:
   - {x: 2, y: 0}
   - {x: 3, y: 0}
   - {x: 4, y: 0}
-  - {x: 5, y: 0}
   <enemyDatas>k__BackingField:
   - {fileID: 11400000, guid: 388d58dfb854fcb4a9b6043d9c42de5b, type: 2}
   - {fileID: 11400000, guid: 41ccd5a0068c9f44cbc4f8ea51eaff2a, type: 2}
@@ -25,20 +25,18 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 41ccd5a0068c9f44cbc4f8ea51eaff2a, type: 2}
   <enemyCountsPerWave>k__BackingField: 0200000002000000
   <obstacleDatas>k__BackingField:
-  - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
-  - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
-  - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
-  - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
-  - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
-  - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
   - {fileID: 11400000, guid: 22071e69a2026664cb16baf2d482dddd, type: 2}
-  - {fileID: 11400000, guid: d594895ab5dc8cc49bc4ab1194c7a0c7, type: 2}
+  - {fileID: 11400000, guid: 22071e69a2026664cb16baf2d482dddd, type: 2}
+  - {fileID: 11400000, guid: 22071e69a2026664cb16baf2d482dddd, type: 2}
+  - {fileID: 11400000, guid: 22071e69a2026664cb16baf2d482dddd, type: 2}
+  - {fileID: 11400000, guid: 22071e69a2026664cb16baf2d482dddd, type: 2}
+  - {fileID: 11400000, guid: 22071e69a2026664cb16baf2d482dddd, type: 2}
+  - {fileID: 11400000, guid: 22071e69a2026664cb16baf2d482dddd, type: 2}
   <obstacleSetUpPositions>k__BackingField:
-  - {x: 2, y: 4}
-  - {x: 5, y: 4}
-  - {x: 1, y: 6}
-  - {x: 2, y: 6}
-  - {x: 5, y: 6}
-  - {x: 6, y: 6}
-  - {x: 1, y: 5}
-  - {x: 4, y: 1}
+  - {x: 2, y: 1}
+  - {x: 5, y: 1}
+  - {x: 1, y: 1}
+  - {x: 2, y: 2}
+  - {x: 5, y: 2}
+  - {x: 6, y: 2}
+  - {x: 1, y: 2}
