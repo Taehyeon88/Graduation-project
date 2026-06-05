@@ -82,7 +82,8 @@ public class HUDUI : MonoBehaviour
     private void OnSettingUI()
     {
         Debug.Log("설정 활성화");
-        isSetting = !isSetting;
+        
+        isSetting = !settingUI.gameObject.activeSelf;
         endGameButton.gameObject.SetActive(isSetting);
         settingUI.gameObject.SetActive(isSetting);
     }

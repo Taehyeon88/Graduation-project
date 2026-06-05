@@ -23552,6 +23552,10 @@ PrefabInstance:
       propertyPath: m_AnchorMin.x
       value: 0.4999975
       objectReference: {fileID: 0}
+    - target: {fileID: 3655039769573046629, guid: 8df5ea90fe5a6b6468230ea6a737ddcf, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4093472834748014206, guid: 8df5ea90fe5a6b6468230ea6a737ddcf, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
