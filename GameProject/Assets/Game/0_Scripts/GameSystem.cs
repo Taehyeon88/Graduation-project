@@ -48,8 +48,6 @@ public class GameSystem : Singleton<GameSystem>
         base.Awake();
         if (Instance != this) return;
 
-        DontDestroyOnLoad();
-
         deck = HeroData.Deck.ToList();       //덱 데이터 받기
         MaxHp = CurrentHp = HeroData.Health; //체력 설정
 
