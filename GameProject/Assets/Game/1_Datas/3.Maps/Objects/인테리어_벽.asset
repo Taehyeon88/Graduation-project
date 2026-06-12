@@ -10,10 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9597ee843a443c149bb6456a369bbcd8, type: 3}
-  m_Name: Wall
+  m_Name: "\uC778\uD14C\uB9AC\uC5B4_\uBCBD"
   m_EditorClassIdentifier: 
   <TokenModel>k__BackingField: {fileID: 8819783411080856192, guid: b353834d5d126ca4f895c7d78eb37283, type: 3}
-  <Name>k__BackingField: "\uC774\uAC83\uC740 \uBCBD\uC774\uB2E4"
+  <Name>k__BackingField: "\uBCBD"
   <Sprite>k__BackingField: {fileID: 0}
+  <IsField>k__BackingField: 0
   useHealth: 0
   Health: 0
+  <ObjectId>k__BackingField: 1

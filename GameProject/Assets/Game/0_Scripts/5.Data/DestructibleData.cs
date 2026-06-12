@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(menuName = "Data/Token/Destructible")]
-public class DestructibleData : TokenData
+[CreateAssetMenu(menuName = "Data/Token/Object/Destructible")]
+public class DestructibleData : ObjectData
 {
 
 }

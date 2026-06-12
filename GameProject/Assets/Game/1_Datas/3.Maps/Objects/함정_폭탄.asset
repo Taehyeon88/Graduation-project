@@ -10,20 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ba7cda3a09fd88845a86b2b840618542, type: 3}
-  m_Name: SkikeTrap
+  m_Name: "\uD568\uC815_\uD3ED\uD0C4"
   m_EditorClassIdentifier: Assembly-CSharp::TrapData
   <TokenModel>k__BackingField: {fileID: 8409466067229185608, guid: 5de08ffd89856694dae4de417ccd7dda, type: 3}
-  <Name>k__BackingField: "\uAC00\uC2DC\uB36B"
-  <Sprite>k__BackingField: {fileID: 21300000, guid: 877241b9fc02adb429a69c151d1d179b, type: 3}
-  <IsField>k__BackingField: 1
+  <Name>k__BackingField: "\uD3ED\uD0C4"
+  <Sprite>k__BackingField: {fileID: 21300000, guid: 5d734455d9288324388771e64d19e351, type: 3}
+  <IsField>k__BackingField: 0
   useHealth: 0
   Health: 0
+  <ObjectId>k__BackingField: 4
   <Trap>k__BackingField:
-    rid: 606822201414385729
+    rid: 606822201414385730
   references:
     version: 2
     RefIds:
-    - rid: 606822201414385729
-      type: {class: SpikeTrap, ns: , asm: Assembly-CSharp}
+    - rid: 606822201414385730
+      type: {class: Bomb, ns: , asm: Assembly-CSharp}
       data:
-        Damage: 1
+        turnCount: 3
+        distance: 2
+        damage: 2

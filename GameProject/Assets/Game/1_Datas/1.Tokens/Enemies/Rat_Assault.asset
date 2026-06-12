@@ -19,7 +19,7 @@ MonoBehaviour:
   useHealth: 1
   Health: 4
   <Enemy>k__BackingField:
-    rid: 606822132331315266
+    rid: 8110315661761183815
   <EnemyActions>k__BackingField:
   - rid: 606822132331315267
   - rid: 606822132331315268
@@ -27,9 +27,6 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 606822132331315266
-      type: {class: Rat_Assault, ns: , asm: Assembly-CSharp}
-      data: 
     - rid: 606822132331315267
       type: {class: RatDashEA, ns: , asm: Assembly-CSharp}
       data:
@@ -42,3 +39,6 @@ MonoBehaviour:
       data:
         description: "\uC774\uAC83\uC740 \uB300\uAE30\uC0C1\uD0DC\uC785\uB2C8\uB2E4."
         icon: {fileID: 21300000, guid: 132298884e902104b96280f0aca19c8f, type: 3}
+    - rid: 8110315661761183815
+      type: {class: Rat_Assault, ns: , asm: Assembly-CSharp}
+      data: 
