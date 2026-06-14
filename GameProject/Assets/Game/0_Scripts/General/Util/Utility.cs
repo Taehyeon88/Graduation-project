@@ -1,44 +1,14 @@
 ﻿using DG.Tweening;
 using IsoTools;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 public static class Utility
 {
-    private static Camera camera = Camera.main;
-    public static Vector3 GetMousePositionInWorldSpace(float zValue = 0f)
-    {
-        Plane dragPlane = new(camera.transform.forward, new Vector3(0,0, zValue));
-        Ray ray = camera.ScreenPointToRay(Input.mousePosition);
-        if (dragPlane.Raycast(ray, out float distance))
-        {
-            return ray.GetPoint(distance);
-        }
-        return Vector3.zero;
-    }
-
-    public static Vector3 GetMousePositionInWorldSpace()
-    {
-        Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (groundPlane.Raycast(ray, out float distance))
-        {
-            return ray.GetPoint(distance);
-        }
-        return Vector3.zero;
-    }
-
-    public static Vector3 GridToWorldPoint(Vector2Int gridPosition, int zValue)
-    {
-        IsoWorld isoWorld = TokenSystem.Instance.IsoWorld;
-        if (isoWorld == null) return default;
-
-        Vector2 screenPoint = isoWorld.IsoToScreen(new(gridPosition.x, gridPosition.y, 1));
-        Vector3 worldPoint = Camera.main.ScreenToWorldPoint(new(screenPoint.x, screenPoint.y, zValue));
-        return worldPoint;
-    }
-
     public static Vector2 GetSignVector2(Vector2 vector)
     {
         return new Vector2
@@ -152,5 +122,53 @@ public static class Utility
         );
         tween.SetEase(ease);
         return tween;
+    }
+
+    public static List<Vector2Int> FindChunkSetPosition(int[,] grid, ChunkData chunkData)
+    {
+        List<Vector2Int> result = new();
+
+        //블럭 정보를 byte로 변환
+        int[] chunkArray = new int[chunkData.Objects.Length];
+        for (int i = 0; i < chunkData.Objects.Length; i++)
+            chunkArray[i] = chunkData.Objects[i] > 0 ? 1 : 0;
+
+        string blockString = string.Join("", chunkArray);
+        byte blockByte = Convert.ToByte(blockString, 2);
+
+        //1. 가로 세로의 맵 규격으로 추리기
+        //2. 특정 위치에서 청크와 겹치는 오브젝트 체크로 추리기
+        for(int x = 0; x < grid.GetLength(0); x++)
+        {
+            for(int y = 0; y < grid.GetLength(1); y++)
+            {
+                int maxX = x + chunkData.Width;
+                int maxY = y + chunkData.Height;
+                if(maxX >= grid.GetLength(0) || maxY >= grid.GetLength(1))
+                        continue;
+
+                //환경 정보를 byte로 변환
+                int cnt = 0;
+                int[] temp = new int[chunkData.Width * chunkData.Height];
+                for (int ty = 0; ty < chunkData.Height; ty++)
+                {
+                    for (int tx = 0; tx < chunkData.Width; tx++)
+                    {
+                        temp[cnt] = grid[x + tx, y + ty];
+                        cnt++;
+                    }
+                }
+                string gridString = string.Join("", temp);
+                byte gridByte = Convert.ToByte(gridString, 2);
+
+                var te = blockByte & gridByte;
+
+                if (te == 0)
+                {
+
+                }
+            }
+        }
+        return null;
     }
 }

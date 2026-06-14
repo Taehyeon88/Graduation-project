@@ -9,7 +9,15 @@ public static class UtilityBFS
             new Vector2Int(1,0), new Vector2Int(-1,0), new Vector2Int(0,1), new Vector2Int(0,-1)
         };
 
-    //인접(거리) 범위 안에서 선택할 수 있는 모든 위치 받는 함수
+    /// <summary>
+    /// 인접(거리) 범위 안에서 선택할 수 있는 모든 위치 받는 함수
+    /// </summary>
+    /// <param name="start"></param>
+    /// <param name="maxDistance"></param>
+    /// <param name="exceptEnemy"></param>
+    /// <param name="exceptHero"></param>
+    /// <param name="exceptDestructable"></param>
+    /// <returns></returns>
     public static List<Vector2Int> FindAllPlaces(Vector2Int start, int maxDistance, bool exceptEnemy, bool exceptHero, bool exceptDestructable = false)
     {
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
@@ -53,7 +61,14 @@ public static class UtilityBFS
         return list;
     }
 
-    //인접(거리)까지의 범위 내에서 시작 위치에서 이어질 수 있는 모든 경로를 반는 함수
+    /// <summary>
+    /// 인접(거리)까지의 범위 내에서 시작 위치에서 이어질 수 있는 모든 경로를 반는 함수
+    /// </summary>
+    /// <param name="start"></param>
+    /// <param name="maxDistance"></param>
+    /// <param name="exceptEnemy"></param>
+    /// <param name="exceptHero"></param>
+    /// <returns></returns>
     public static List<Vector2Int> FindALLRoots(Vector2Int start, int maxDistance, bool exceptEnemy = false, bool exceptHero = false)
     {
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
@@ -88,6 +103,72 @@ public static class UtilityBFS
 
         return list;
     }
+
+    /// <summary>
+    /// 경로 존재 여부 판별
+    /// </summary>
+    /// <param name="map"></param>
+    /// <param name="start"></param>
+    /// <param name="goal"></param>
+    /// <returns></returns>
+    public static bool IsPathExist(int[,] map, Vector2Int start, Vector2Int goal)
+    {
+        int w = map.GetLength(0);
+        int h = map.GetLength(1);
+
+        int[,] gCost = new int[w, h];                       //지금까지 온 최소 비용
+        bool[,] visited = new bool[w, h];                  //확정 여부
+        Vector2Int?[,] parent = new Vector2Int?[w, h];     //경로 복원용
+
+        List<Vector2Int> open = new List<Vector2Int>(map.Length);
+        open.Add(start);
+
+        while (open.Count > 0)
+        {
+            int bestIndex = 0;
+            int bestF = F(open[0], gCost, goal);
+            for (int i = 1; i < open.Count; i++)
+            {
+                int f = F(open[i], gCost, goal);
+                if (f < bestF)
+                {
+                    bestF = f;
+                    bestIndex = i;
+                }
+            }
+            Vector2Int cur = open[bestIndex];
+            open.RemoveAt(bestIndex);
+
+            if (visited[cur.x, cur.y]) continue;
+            visited[cur.x, cur.y] = true;
+
+            if (cur == goal) return true;
+
+            foreach (var d in Dirs)
+            {
+                int nx = cur.x + d.x;
+                int ny = cur.y + d.y;
+
+                if (!InBounds(map, nx, ny)) continue;
+                if (map[nx, ny] == 1) continue;
+                if (visited[nx, ny]) continue;
+
+                parent[nx, ny] = cur;
+
+                if (!open.Contains(new Vector2Int(nx, ny)))
+                    open.Add(new Vector2Int(nx, ny));
+            }
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// 목표 지점까지의 최단 거리 탐색 함수
+    /// </summary>
+    /// <param name="map"></param>
+    /// <param name="start"></param>
+    /// <param name="goal"></param>
+    /// <returns></returns>
     public static List<Vector2Int> FindShortestPath(int[,] map, Vector2Int start, Vector2Int goal)
     {
         map[start.x, start.y] = 0;
@@ -105,7 +186,7 @@ public static class UtilityBFS
 
         gCost[start.x, start.y] = 0;
 
-        List<Vector2Int> open = new List<Vector2Int>();
+        List<Vector2Int> open = new List<Vector2Int>(map.Length);
         open.Add(start);
 
         while (open.Count > 0)
@@ -161,7 +242,7 @@ public static class UtilityBFS
 
     static int H(Vector2Int a, Vector2Int b)
     {
-        return Mathf.Max(Mathf.Abs(a.x - b.x), Mathf.Abs(a.y - b.y));
+        return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
     }
 
     static int TileCost(int tile)

@@ -4362,13 +4362,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 415542277}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 8.1, z: -100}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 12.55, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1963207482}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!114 &415542279
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5563,6 +5563,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Test
   themeData: {fileID: 0}
+  heroStartPoses: []
   prefab: {fileID: 0}
 --- !u!4 &528210283
 Transform:
@@ -6499,7 +6500,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2542869319879178668, guid: 4bd0864533eb5504d8a3ed67b8751bd6, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 7.599995
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2542869319879178668, guid: 4bd0864533eb5504d8a3ed67b8751bd6, type: 3}
       propertyPath: m_LocalRotation.w
@@ -18636,6 +18637,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Test
   themeData: {fileID: 11400000, guid: c72539caa748f0f43872ce00f1f41ab2, type: 2}
+  heroStartPoses:
+  - {x: 3, y: 0}
+  - {x: 2, y: 0}
+  - {x: 4, y: 0}
   prefab: {fileID: 3387194443941764779, guid: b04aef729992c50469f623cf35c1ef03, type: 3}
 --- !u!4 &1646233913
 Transform:

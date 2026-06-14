@@ -1,46 +1,27 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class Test : MonoBehaviour
+public class RandomMapCreator : Singleton<RandomMapCreator>
 {
     [SerializeField] private MapThemeData themeData;     //맵 테마 데이터
     [SerializeField] private Vector2Int[] heroStartPoses;//플레이어 시작 위치
-
-    [Header("시각화용")]
-    [SerializeField] private GameObject prefab;
-    private List<GameObject> prefabs = new();
 
     private int[,] simpleGrid;
     private int[,] mainGrid;
 
     private int current_object_cnt;
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            foreach (GameObject go in prefabs)
-            {
-                Destroy(go);
-            }
-            prefabs.Clear();
-            current_object_cnt = 0;
-
-            GenerateMap();
-        }
-    }
-
     //1.테마 데이터 로드
     //2.청크 설치 가능 개수 받기(Random)
     //3.모든 청크 랜덤 설치 위치 지정(Random)
     //4.남은 오브젝트들 가중치로 what(오브젝트) where(어디)에 설치 할지(Random 지정)
     //5.완료
-    private void GenerateMap()
+    public void CreateMap(MapThemeData themeData, Vector2Int[] heroStartPoses)
     {
+        this.themeData = themeData;
+        this.heroStartPoses = heroStartPoses;
+
         //simpleGrid 초기화
         int width = TokenSystem.Instance.gridWidth;
         int height = TokenSystem.Instance.gridHeight;
@@ -55,6 +36,7 @@ public class Test : MonoBehaviour
                 mainGrid[x, y] = 0;
             }
         }
+        current_object_cnt = 0;
 
         //청크 랜덤 설치
         int chunkCount = UnityEngine.Random.Range(themeData.MinChunkCount, themeData.MaxChunkCount);
@@ -69,27 +51,8 @@ public class Test : MonoBehaviour
         objectCount -= current_object_cnt;
         SetObjectInGrid(objectCount);
 
-
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                GameObject gameObject = Instantiate(prefab, new Vector3(x, 0, y), Quaternion.identity);
-                prefabs.Add(gameObject);
-
-                if (simpleGrid[x, y] == 1)
-                {
-                    Renderer renderer = gameObject.GetComponent<Renderer>();
-                    renderer.material.color = Color.red;
-                }
-
-                if (heroStartPoses.Contains(new(x, y)))
-                {
-                    Renderer renderer = gameObject.GetComponent<Renderer>();
-                    renderer.material.color = Color.blue;
-                }
-            }
-        }
+        //오브젝트 생성
+        TokenSystem.Instance.SetUpObjects(mainGrid);
     }
 
     private void SetChunkInGrid(ChunkData chunkData)

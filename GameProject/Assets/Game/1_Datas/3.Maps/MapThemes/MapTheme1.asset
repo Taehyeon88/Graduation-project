@@ -13,19 +13,19 @@ MonoBehaviour:
   m_Name: MapTheme1
   m_EditorClassIdentifier: Assembly-CSharp::MapThemeData
   <IsBossRoom>k__BackingField: 0
-  <MinChunkCount>k__BackingField: 2
+  <MinChunkCount>k__BackingField: 3
   <MaxChunkCount>k__BackingField: 3
   <MinObjectCount>k__BackingField: 13
   <MaxObjectCount>k__BackingField: 17
   <ChunkPool>k__BackingField: 0100000002000000
   <ObstacleSpawnInfos>k__BackingField:
-  - rid: 8110315661761183810
+  - rid: 8110315842854977605
   references:
     version: 2
     RefIds:
-    - rid: 8110315661761183810
+    - rid: 8110315842854977605
       type: {class: ObstacleSpawnInfo, ns: , asm: Assembly-CSharp}
       data:
         <ObstacleId>k__BackingField: 1
-        <spawnWeight>k__BackingField: 22
-        <maxSpawnLimit>k__BackingField: 1
+        <spawnWeight>k__BackingField: 20
+        <maxSpawnLimit>k__BackingField: 6

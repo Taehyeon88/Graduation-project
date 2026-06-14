@@ -144,6 +144,8 @@ public class TokenGrid : MonoBehaviour
     }
     public bool IsBound(int x, int y)
     {
+        if (grid == null) Initialize();
+
         if (x < 0 || x >= width || y < 0 || y >= height) return false;
         return true;
     }
