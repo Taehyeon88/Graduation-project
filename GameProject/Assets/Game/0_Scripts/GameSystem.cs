@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -27,15 +27,18 @@ public class GameSystem : Singleton<GameSystem>
     public RoomData CurrentRoomData                                         //게임 셋업 때, 딱 1번 실행
     {
          get 
-        { 
+         { 
             if(IsTutorial)
             {
                 IsTutorial = false;
-                StartCoroutine(TutorialSystem.Instance.StartTutorial()); //튜토리얼 시작
-                return tutorialRoomData;
+                TutorialSystem.Instance.StartTutorial(); //튜토리얼 시작
             }
-            return roomDatas[CurrentLevel - 1]; 
-        } 
+
+            if(TutorialSystem.Instance.IsTutorialing)
+                return tutorialRoomData;
+            else
+                return roomDatas[CurrentLevel - 1]; 
+         } 
     }
 
     [SerializeField] private RoomData[] roomDatas;                    //방 데이터

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class RandomMapCreator : Singleton<RandomMapCreator>
 {
-    [SerializeField] private MapThemeData themeData;     //맵 테마 데이터
-    [SerializeField] private Vector2Int[] heroStartPoses;//플레이어 시작 위치
+    private MapThemeData themeData;      //맵 테마 데이터
+    private Vector2Int[] heroStartPoses; //플레이어 시작 위치
 
     private int[,] simpleGrid;
     private int[,] mainGrid;

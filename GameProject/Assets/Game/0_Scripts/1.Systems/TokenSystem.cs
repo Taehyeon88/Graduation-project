@@ -18,7 +18,7 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
     private Dictionary<Token, Vector2Int> gridPosByToken = new();
     private TokenPreview preview;
     private TokenData tokenData;
-    private List<Vector2Int> heroSetupPositions = new();
+    private Vector2Int[] heroSetupPositions;
 
     /// <summary>
     /// 정해진 위치좌표들에 각 벽들을 생성하는 함수
@@ -52,6 +52,39 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
             }
 
             index++;
+        }
+    }
+
+    public void SetUpObjects(int[,] main)
+    {
+        for (int x = 0; x < main.GetLength(0); x++)
+        {
+            for (int y = 0; y < main.GetLength(1); y++)
+            {
+                if (main[x,y] <= 0) continue;
+
+                ObjectData objectData = DataSystem.Instance.GetObjectById(main[x,y]);
+                if (objectData != null)
+                {
+                    Vector2Int pos = new(x,y);
+
+                    TokenType tokenType = TokenType.None;
+                    if (objectData is WallData) tokenType = TokenType.Wall;
+                    else if (objectData is DestructibleData) tokenType = TokenType.Destructible;
+                    else if (objectData is TrapData) tokenType = TokenType.Trap;
+
+                    Token token = TokenCreator.Instance.CreateToken(
+                            objectData,
+                            tokenType,
+                            new(pos.x, pos.y, 1)
+                        );
+
+                    grid.SetToken(token, pos);
+                    if (token is WallView wallview)
+                        WallViews.Add(wallview);
+                    gridPosByToken.Add(token, pos);
+                }
+            }
         }
     }
 
@@ -148,7 +181,7 @@ public class TokenSystem : Singleton<TokenSystem> //몬스터 및 영웅 세팅 
     /// 전투 시작시, 영웅 배치를 위해서 실행되는 함수
     /// </summary>
     /// <param name="tokenData"></param>
-    public void StartSetHero(TokenData tokenData, List<Vector2Int> heroSetupPositions)
+    public void StartSetHero(TokenData tokenData, Vector2Int[] heroSetupPositions)
     {
         this.tokenData = tokenData;
         this.heroSetupPositions = heroSetupPositions;

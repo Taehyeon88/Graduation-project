@@ -10,19 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 793aa16ce5280ce429fcd572fab35001, type: 3}
-  m_Name: Tutorial
+  m_Name: TutorialRoom
   m_EditorClassIdentifier: Assembly-CSharp::RoomData
-  <Stage>k__BackingField: 0
-  <heroSetUpPositions>k__BackingField:
+  <Stage>k__BackingField: 1
+  <IsBossRoom>k__BackingField: 0
+  <HeroSetUpPositions>k__BackingField:
   - {x: 0, y: 3}
-  <enemyDatas>k__BackingField:
-  - {fileID: 11400000, guid: da232fa34fbef4641a30f62c8e55cf49, type: 2}
-  - {fileID: 11400000, guid: da232fa34fbef4641a30f62c8e55cf49, type: 2}
-  - {fileID: 11400000, guid: f986d0193a9b5a24cb809616f2851e4d, type: 2}
-  - {fileID: 11400000, guid: f986d0193a9b5a24cb809616f2851e4d, type: 2}
-  - {fileID: 11400000, guid: da232fa34fbef4641a30f62c8e55cf49, type: 2}
-  <enemyCountsPerWave>k__BackingField: 010000000200000002000000
-  <obstacleDatas>k__BackingField:
+  <WaveData>k__BackingField: {fileID: 11400000, guid: 789102707ae7ce5489e3e4ec97b18994, type: 2}
+  <MapThemeData>k__BackingField: {fileID: 0}
+  <Custom_Set_Obj>k__BackingField: 1
+  <ObstacleDatas>k__BackingField:
   - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
   - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
   - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
@@ -49,20 +46,19 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
   - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
   - {fileID: 11400000, guid: 22071e69a2026664cb16baf2d482dddd, type: 2}
-  - {fileID: 11400000, guid: 22071e69a2026664cb16baf2d482dddd, type: 2}
-  <obstacleSetUpPositions>k__BackingField:
+  <ObstacleSetUpPositions>k__BackingField:
   - {x: 0, y: 0}
   - {x: 0, y: 1}
   - {x: 0, y: 2}
-  - {x: 1, y: 0}
-  - {x: 1, y: 1}
-  - {x: 2, y: 0}
-  - {x: 2, y: 1}
   - {x: 0, y: 4}
   - {x: 0, y: 5}
   - {x: 0, y: 6}
+  - {x: 1, y: 0}
+  - {x: 1, y: 1}
   - {x: 1, y: 5}
   - {x: 1, y: 6}
+  - {x: 2, y: 0}
+  - {x: 2, y: 1}
   - {x: 2, y: 5}
   - {x: 2, y: 6}
   - {x: 5, y: 0}
@@ -76,5 +72,4 @@ MonoBehaviour:
   - {x: 6, y: 4}
   - {x: 6, y: 5}
   - {x: 6, y: 6}
-  - {x: 4, y: 3}
-  - {x: 4, y: 5}
+  - {x: 3, y: 4}

@@ -6,11 +6,16 @@ public class TutorialSystem : Singleton<TutorialSystem>
     [SerializeField] private TutorialData[] tutorialDatas;
     [SerializeField] private TutorialUI tutorialUI;
 
-    public bool IsTutorialing { get; private set; }
+    public bool IsTutorialing { get; private set; } = false;
 
-    public IEnumerator StartTutorial()
+    public void StartTutorial()
     {
         IsTutorialing = true;
+        StartCoroutine(C_StartTutorial());
+    }
+
+    public IEnumerator C_StartTutorial()
+    {
         tutorialUI.SetBackPanelActive(true);
         tutorialUI.SetBlockUIActive(true);
         tutorialUI.SetBlockUI2Active(false);
