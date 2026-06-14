@@ -156,7 +156,7 @@ public class RandomMapCreator : Singleton<RandomMapCreator>
         {
             for (int x = 0; x < simpleGrid.GetLength(0); x++)
             {
-                if (simpleGrid[x, y] == 0)
+                 if (simpleGrid[x, y] == 0 && !heroStartPoses.Contains(new(x, y)))
                     emptyPoses.Add(new(x, y));
             }
         }
