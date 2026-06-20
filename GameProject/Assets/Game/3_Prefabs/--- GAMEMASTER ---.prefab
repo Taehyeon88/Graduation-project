@@ -158,12 +158,32 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 2592cf4d7610e874082b929e9241e629, type: 2}
     - target: {fileID: 1463536655479911621, guid: 9e2307c70aa00094daf8b9ec47a36965, type: 3}
       propertyPath: roomDatas.Array.size
-      value: 1
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1463536655479911621, guid: 9e2307c70aa00094daf8b9ec47a36965, type: 3}
       propertyPath: 'roomDatas.Array.data[0]'
       value: 
-      objectReference: {fileID: 11400000, guid: 76d0a109c6f6e604ea042eca8d8ab158, type: 2}
+      objectReference: {fileID: 11400000, guid: a075fc72cc9f3174998ad29aee6cad36, type: 2}
+    - target: {fileID: 1463536655479911621, guid: 9e2307c70aa00094daf8b9ec47a36965, type: 3}
+      propertyPath: 'roomDatas.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 1cc400e685d734d44b7f1872dd604f59, type: 2}
+    - target: {fileID: 1463536655479911621, guid: 9e2307c70aa00094daf8b9ec47a36965, type: 3}
+      propertyPath: 'roomDatas.Array.data[2]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 2ac84814a6e4727498821391eacdc6ff, type: 2}
+    - target: {fileID: 1463536655479911621, guid: 9e2307c70aa00094daf8b9ec47a36965, type: 3}
+      propertyPath: 'roomDatas.Array.data[3]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 026cdaaf7d35c714ea852c625befcdc6, type: 2}
+    - target: {fileID: 1463536655479911621, guid: 9e2307c70aa00094daf8b9ec47a36965, type: 3}
+      propertyPath: 'roomDatas.Array.data[4]'
+      value: 
+      objectReference: {fileID: 11400000, guid: a08c12720047eef4e96c30c87e9d5e5f, type: 2}
+    - target: {fileID: 1463536655479911621, guid: 9e2307c70aa00094daf8b9ec47a36965, type: 3}
+      propertyPath: 'roomDatas.Array.data[5]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 109dc5195b5c9a0409f7fd4d53c61d24, type: 2}
     - target: {fileID: 2369140202396045200, guid: 9e2307c70aa00094daf8b9ec47a36965, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

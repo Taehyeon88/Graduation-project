@@ -5563,9 +5563,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87c6c7f5f00f33845a96750de25e746d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Test
-  themeData: {fileID: 0}
-  heroStartPoses: []
-  prefab: {fileID: 0}
 --- !u!4 &528210283
 Transform:
   m_ObjectHideFlags: 0

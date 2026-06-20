@@ -20,12 +20,19 @@ MonoBehaviour:
   <ChunkPool>k__BackingField: 0100000002000000
   <ObstacleSpawnInfos>k__BackingField:
   - rid: 8110315842854977605
+  - rid: 8110315842854977606
   references:
     version: 2
     RefIds:
     - rid: 8110315842854977605
       type: {class: ObstacleSpawnInfo, ns: , asm: Assembly-CSharp}
       data:
-        <ObstacleId>k__BackingField: 1
+        <ObstacleId>k__BackingField: 3
         <spawnWeight>k__BackingField: 20
-        <maxSpawnLimit>k__BackingField: 6
+        <maxSpawnLimit>k__BackingField: 3
+    - rid: 8110315842854977606
+      type: {class: ObstacleSpawnInfo, ns: , asm: Assembly-CSharp}
+      data:
+        <ObstacleId>k__BackingField: 4
+        <spawnWeight>k__BackingField: 10
+        <maxSpawnLimit>k__BackingField: 1

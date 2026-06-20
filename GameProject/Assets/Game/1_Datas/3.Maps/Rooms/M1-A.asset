@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 793aa16ce5280ce429fcd572fab35001, type: 3}
+  m_Name: M1-A
+  m_EditorClassIdentifier: Assembly-CSharp::RoomData
+  <Stage>k__BackingField: 1
+  <IsBossRoom>k__BackingField: 0
+  <HeroSetUpPositions>k__BackingField:
+  - {x: 2, y: 0}
+  - {x: 3, y: 0}
+  - {x: 4, y: 0}
+  <WaveData>k__BackingField: {fileID: 11400000, guid: 00591ebe2f61b794ca00269f26927932, type: 2}
+  <MapThemeData>k__BackingField: {fileID: 0}
+  <Custom_Set_Obj>k__BackingField: 1
+  <ObstacleDatas>k__BackingField:
+  - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
+  - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
+  - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
+  - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
+  - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
+  - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
+  - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
+  - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
+  - {fileID: 11400000, guid: 39e76a2b5e7c3784a872b1a12839d2ed, type: 2}
+  - {fileID: 11400000, guid: 22071e69a2026664cb16baf2d482dddd, type: 2}
+  - {fileID: 11400000, guid: 22071e69a2026664cb16baf2d482dddd, type: 2}
+  - {fileID: 11400000, guid: 22071e69a2026664cb16baf2d482dddd, type: 2}
+  - {fileID: 11400000, guid: 22071e69a2026664cb16baf2d482dddd, type: 2}
+  <ObstacleSetUpPositions>k__BackingField:
+  - {x: 0, y: 2}
+  - {x: 0, y: 6}
+  - {x: 2, y: 1}
+  - {x: 3, y: 2}
+  - {x: 4, y: 5}
+  - {x: 5, y: 2}
+  - {x: 5, y: 5}
+  - {x: 5, y: 6}
+  - {x: 6, y: 6}
+  - {x: 1, y: 4}
+  - {x: 2, y: 5}
+  - {x: 3, y: 3}
+  - {x: 5, y: 0}

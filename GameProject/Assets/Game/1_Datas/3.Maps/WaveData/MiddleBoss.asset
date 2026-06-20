@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af606851e4a44e04d8ece96fe7ae87ef, type: 3}
+  m_Name: MiddleBoss
+  m_EditorClassIdentifier: Assembly-CSharp::WaveData
+  <EnemyDatas>k__BackingField:
+  - {fileID: 11400000, guid: 60a57da98d55dc74db0a1b916a334f8f, type: 2}
+  - {fileID: 11400000, guid: 41ccd5a0068c9f44cbc4f8ea51eaff2a, type: 2}
+  - {fileID: 11400000, guid: f986d0193a9b5a24cb809616f2851e4d, type: 2}
+  - {fileID: 11400000, guid: f986d0193a9b5a24cb809616f2851e4d, type: 2}
+  - {fileID: 11400000, guid: 41ccd5a0068c9f44cbc4f8ea51eaff2a, type: 2}
+  <EnemyCountsPerWave>k__BackingField: 010000000200000002000000
