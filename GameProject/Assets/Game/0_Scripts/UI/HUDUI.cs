@@ -25,7 +25,7 @@ public class HUDUI : MonoBehaviour
 
     [Header("기타(실행형)")]
     [SerializeField] private GameObject feedBackPanel;
-    [SerializeField] private Transform settingUI;
+    [SerializeField] private SettingUI settingUI;
     [SerializeField] private CheckDeckUI checkDeckUI;
 
     private int heroHP => HeroSystem.Instance.HeroView == null? 
@@ -83,9 +83,9 @@ public class HUDUI : MonoBehaviour
     {
         Debug.Log("설정 활성화");
         
-        isSetting = !settingUI.gameObject.activeSelf;
+        isSetting = !settingUI.IsActive;
         endGameButton.gameObject.SetActive(isSetting);
-        settingUI.gameObject.SetActive(isSetting);
+        settingUI.SetActiveSettingUI(isSetting);
     }
 
     private void OnCheckDeckUI()

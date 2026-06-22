@@ -10,7 +10,6 @@ public class AudioMixerController : MonoBehaviour
     [SerializeField] private Slider musicSFXSlider;
 
     //슬라이더 MinValue 0.001 사운드 볼륨은 Log10 단위로 되어있기 때문에
-
     private void OnEnable()
     {
         if (!PlayerPrefs.HasKey("Master"))

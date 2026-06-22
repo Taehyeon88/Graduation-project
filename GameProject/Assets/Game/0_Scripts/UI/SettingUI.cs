@@ -4,6 +4,9 @@ using UnityEngine.UI;
 public class SettingUI : MonoBehaviour
 {
     [SerializeField] private Button exitButton;
+    [SerializeField] private Transform panel;
+
+    public bool IsActive => panel.gameObject.activeSelf;
 
     private void OnEnable()
     {
@@ -17,6 +20,11 @@ public class SettingUI : MonoBehaviour
 
     private void ExitSettingUI()
     {
-        gameObject.SetActive(false);
+        panel.gameObject.SetActive(false);
+    }
+
+    public void SetActiveSettingUI(bool active)
+    {
+        panel.gameObject.SetActive(active);
     }
 }
