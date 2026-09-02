@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 026f0ece6f5db9848894c30ac030961a, type: 3}
+  m_Name: "1_\uD53C\uBB3B\uC740 \uB3C4\uB07C"
+  m_EditorClassIdentifier: Assembly-CSharp::PerkData
+  <Id>k__BackingField: 1
+  <Image>k__BackingField: {fileID: 21300000, guid: ec2b1379dcbf9a044bb8f03345cbecf1, type: 3}
+  <Description>k__BackingField: "\uB300\uC0C1\uC744 \uACF5\uACA9\uC2DC, \uB300\uC0C1\uC758
+    \uCCB4\uB825\uC744 \uD761\uC218\uD568"
+  <Perk>k__BackingField:
+    rid: 6342211190556983369
+  references:
+    version: 2
+    RefIds:
+    - rid: 6342211190556983369
+      type: {class: BloodyAxe, ns: , asm: Assembly-CSharp}
+      data:
+        added_Amount: 5
+        heal_Amount: 5

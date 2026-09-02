@@ -1,15 +1,15 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class MatchSetupSystem : MonoBehaviour
 {
-    private HeroData heroData => GameSystem.Instance.HeroData;
-    private IReadOnlyList<CardData> deck => GameSystem.Instance.Deck;
-    private RoomData roomData => GameSystem.Instance.CurrentRoomData;
+    [SerializeField] AllPerksDisPlayUI allPerksDisplayUI;
+    private HeroData[] heroDatas => GameSystem.Instance.HeroDatas;
+    private StageData stageData => GameSystem.Instance.CurrentStageData;
 
-    private readonly int drawCount = 5;
 
     private void Start()
     {
@@ -18,44 +18,28 @@ public class MatchSetupSystem : MonoBehaviour
 
     private IEnumerator StartSetting()
     {
-        int MainBgmId = 32;
-        int BossBgmId = 33;
-        SoundSystem.Instance.PlayBGM(roomData.IsBossRoom ? BossBgmId : MainBgmId);
+        //1.브금 실행
+        SoundSystem.Instance.PlayBGM(stageData.StageBGMId);
 
-        if (deck == null)
-        {
-            Debug.LogError("GameManager에 deckData가 설정되지 않았습니다.");
-            yield break;
-        }
-        if (deck.Count < drawCount)
-        {
-            Debug.LogError($"GameManager에 설정된 deckData개수가 {drawCount}개 보다 적습니다.");
-            yield break;
-        }
+        //2.스테이지 맵 생성
+        TokenSystem.Instance.Setup.SetUpStageMap();
+        //3.스테이지 기물 배치(잠깐 패스)
 
-        //맵 랜덤 생성
-        if (roomData.Custom_Set_Obj)
-        {
-            TokenSystem.Instance.StartSetObstacles(roomData.ObstacleDatas, roomData.ObstacleSetUpPositions.ToList());
-        }
-        else
-        {
-            RandomMapCreator.Instance.CreateMap(roomData.MapThemeData, roomData.HeroSetUpPositions.ToArray());
-        }
+        //4.몬스터 배치
+        TokenSystem.Instance.Setup.SetUPEnemys(stageData.Enemies.ToArray(), stageData.EnemyPoses.ToArray());
 
-        //웨이브 시스템(몬스터 배치)
-        yield return WaveSystem.Instance.SetUp(roomData.WaveData.EnemyDatas, roomData.WaveData.EnemyCountsPerWave.ToList());
+        //4.5 영웅 아이템 정보 UI 설정
+        allPerksDisplayUI.SetUp(heroDatas.ToArray());
 
-        //영웅 배치
-        TokenSystem.Instance.StartSetHero(heroData, roomData.HeroSetUpPositions.ToArray());
-        yield return new WaitUntil(() => TokenSystem.Instance.HeroView != null);
-        InteractionSystem.Instance.EndInteraction();
+        //5.플레이어 유닛 배치
+        TokenSystem.Instance.Setup.StartSetUpHero(heroDatas.ToArray(), stageData.HeroSetupPoses.ToList());
+        yield return new WaitUntil(() => !Interactions.Instance.IsSetUpHero);
+        HeroSystem.Instance.CurrentHero = TokenSystem.Instance.HeroViews[0];
 
-        //기타
-        CardSystem.Instance.SetUp(new(deck));
-        //PerkSystem.Instance.AddPerk(new(perkData));
+        //6.전투 시작(Event)
+        TurnGA turnGA = new(TurnType.StartBattle);
+        ActionSystem.Instance.Perform(turnGA);
 
-        StartBattleGA startBattleGA = new();
-        ActionSystem.Instance.Perform(startBattleGA);
+        yield return null;
     }
 }

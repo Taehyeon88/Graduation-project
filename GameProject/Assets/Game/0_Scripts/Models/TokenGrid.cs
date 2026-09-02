@@ -5,178 +5,137 @@ using UnityEngine;
 
 public class TokenGrid : MonoBehaviour
 {
+    [Header("GridSettings")]
     [SerializeField] private Transform gridTransform;
     [SerializeField] private Transform gridTilePool;
     [field: SerializeField] public int width { get; private set; }
     [field: SerializeField] public int height { get; private set; }
-    public TokenGirdCell[,] grid { get; private set; }
+
+    //외부 접근용
+    public Dictionary<Token, Vector2Int> gridPosByToken = new();
+    public Dictionary<Vector2Int, Token> tokenByGridPos = new();
     public int[,] simpleGrid { get; private set; }   //0 - 토큰 없음 | 1 - 토큰 있음 (토큰 존재여부 확인용)
 
     private List<Vector2Int> remainCells = new();
 
-    private Dictionary<Vector2Int, IsoObject> gridTileByPos = new();
-
-    private bool endInitialize = false;
-    private void Start()
+    /// <summary>
+    /// 스테이지 바닥 그리드 생성 및 초기화 함수
+    /// </summary>
+    public void GenerateStage()
     {
-        Initialize();
-    }
-    private void Initialize()
-    {
-        if (endInitialize) return;
-
-        int index = 0;
-        var temp = gridTransform.GetComponentsInChildren<IsoObject>(true);
+        IsoObject[] temp = gridTransform.GetComponentsInChildren<IsoObject>(true);
         if (temp == null)
             Debug.LogError("gridTransform의 자식들에서 isoObject를 가지는 대상을 찾을 수 없습니다.");
 
-        grid = new TokenGirdCell[width, height];
         simpleGrid = new int[width, height];
-        for (int x = 0; x < grid.GetLength(0); x++)
+        remainCells = new();
+
+        int index = 0;
+        for (int x = 0; x < width; x++)
         {
-            for (int y = 0; y < grid.GetLength(1); y++)
+            for (int y = 0; y < height; y++)
             {
-                //가상 그리드 처리
-                grid[x, y] = new();
                 simpleGrid[x, y] = 0;
                 remainCells.Add(new(x, y));
 
-                //그리드 타일 처리
+                //gridTilePool에서 가져와서 배치
                 IsoObject gridTile = temp[index];
                 gridTile.gameObject.SetActive(true);
                 gridTile.position = new Vector3(x, y, 0);
 
-                Vector2Int gridPos = new(x, y);
-                grid[gridPos.x, gridPos.y].SetField(gridTile);
-
-                if (!gridTileByPos.TryAdd(gridPos, gridTile))
-                    Debug.LogError($"{gridPos}위치에 {gridTileByPos[gridPos]}와 {gridTile}이 같은 위치로 충돌합니다.");
-
                 index++;
             }
         }
-
-        endInitialize = true;
-    }
-
-    public Vector2Int SetTokenRendomly(Token token)
-    {
-        if (grid == null) Initialize();
-
-        int randomValue = UnityEngine.Random.Range(0, remainCells.Count);
-        Vector2Int pos = remainCells[randomValue];
-        grid[pos.x, pos.y].SetToken(token);
-        simpleGrid[pos.x, pos.y] = 1;
-        remainCells.Remove(pos);
-        return pos;
-    }
-    public Vector2Int SetTokenRendomly(Token token, List<Vector2Int> canSetPositions)
-    {
-        if (grid == null) Initialize();
-
-        int randomValue = UnityEngine.Random.Range(0, canSetPositions.Count);
-        Vector2Int pos = canSetPositions[randomValue];
-        grid[pos.x, pos.y].SetToken(token);
-        simpleGrid[pos.x, pos.y] = 1;
-        canSetPositions.Remove(pos);
-        remainCells.Remove(pos);
-        return pos;
     }
 
     public void SetToken(Token token, Vector2Int pos)
     {
-        if (token.TokenData.IsField) return;  //Token_Field로 따로 분류
-
-        if (grid == null) Initialize();
-
-        grid[pos.x, pos.y].SetToken(token);
+        gridPosByToken.Add(token, pos);
+        tokenByGridPos.Add(pos, token);
         simpleGrid[pos.x, pos.y] = 1;
         remainCells.Remove(pos);
     }
-    public void ResetToken(Token token, Vector2Int pos)
+    public void RemoveToken(Token token)
     {
-        if (token.TokenData.IsField) return;  //Token_Field로 따로 분류
+        Vector2Int pos = gridPosByToken[token];
 
-        grid[pos.x, pos.y].ResetToken();
+        gridPosByToken.Remove(token);
+        tokenByGridPos.Remove(pos);
         simpleGrid[pos.x, pos.y] = 0;
         remainCells.Add(pos);
     }
-    public void SetField(IsoObject field, Vector2Int pos)
+    public void ChangeTokenPos(Token token, Vector2Int targetPos)
     {
-        //기존의 필드가 기본 타일일 경우, pool로 이동 및 보관 / 아닐 경우, 파괴
-        bool isDefualt = gridTileByPos[pos] == grid[pos.x, pos.y].field;
-        if (isDefualt)
-            grid[pos.x, pos.y].field.gameObject.transform.SetParent(gridTilePool);
-        else
-            Destroy(grid[pos.x, pos.y].field.gameObject);
+        Vector2Int pos = gridPosByToken[token];
+        remainCells.Add(pos);
+        simpleGrid[pos.x, pos.y] = 0;
+        tokenByGridPos.Remove(pos);
 
-        field.position = new(pos.x, pos.y, 0);
-        field.transform.SetParent(gridTransform);
-        grid[pos.x, pos.y].SetField(field);
+        simpleGrid[targetPos.x, targetPos.y] = 1;
+        remainCells.Remove(targetPos);
 
+        gridPosByToken[token] = targetPos;
+        tokenByGridPos[targetPos] = token;
     }
-    public void ResetField(Vector2Int pos)
+
+    public int[,] GetSimpleGridCopied()
     {
-        //기본 타일로 되돌리기
-        Destroy(grid[pos.x, pos.y].field.gameObject);
-
-        IsoObject field = gridTileByPos[pos];
-        field.transform.SetParent(gridTransform);
-        grid[pos.x, pos.y].SetField(field);
-
+        return (int[,])simpleGrid.Clone();
     }
-    public void SetObject(IsoObject obj, Vector2Int pos)
-    {
-        if(grid[pos.x, pos.y].Object != null)
-            Destroy(grid[pos.x, pos.y].Object.gameObject);
 
-        obj.position = new(pos.x, pos.y, 1);
-        obj.transform.SetParent(gridTransform);
-        grid[pos.x, pos.y].SetObject(obj);
-    }
-    public void ResetObject(Vector2Int pos)
-    {
-        if (grid[pos.x, pos.y].Object != null)
-        {
-            Destroy(grid[pos.x, pos.y].Object.gameObject);
-            grid[pos.x, pos.y].ResetObject();
-        }
-    }
+    //public void SetObject(IsoObject obj, Vector2Int pos)
+    //{
+    //    if(grid[pos.x, pos.y].Object != null)
+    //        Destroy(grid[pos.x, pos.y].Object.gameObject);
+
+    //    obj.position = new(pos.x, pos.y, 1);
+    //    obj.transform.SetParent(gridTransform);
+    //    grid[pos.x, pos.y].SetObject(obj);
+    //}
+    //public void ResetObject(Vector2Int pos)
+    //{
+    //    if (grid[pos.x, pos.y].Object != null)
+    //    {
+    //        Destroy(grid[pos.x, pos.y].Object.gameObject);
+    //        grid[pos.x, pos.y].ResetObject();
+    //    }
+    //}
     public bool IsBound(int x, int y)
     {
-        if (grid == null) Initialize();
-
         if (x < 0 || x >= width || y < 0 || y >= height) return false;
         return true;
     }
 
-    public bool CanSetByGridPos(Vector2Int pos)
+    public bool CanSet(Vector2Int pos)
     {
-        if (grid == null) Initialize();
-        
         int x = pos.x; int y = pos.y;
         if (x < 0 || x >= width || y < 0 || y >= height) return false;
-        if (!grid[x, y].IsEmpty()) return false;
+        if (simpleGrid[x, y] == 1) return false;
         return true;
     }
-    public bool CanSetByGridPosExceptionToken(Vector2Int pos, bool exceptEnemy = false, bool exceptHero = false, bool exceptDestructable = false)
+    /// <summary>
+    /// 특정 토큰을 예외로 하고 설치 가능 여부 판단
+    /// </summary>
+    /// <param name="pos"></param>
+    /// <param name="exceptEnemy"></param>
+    /// <param name="exceptHero"></param>
+    /// <param name="exceptDestructable"></param>
+    /// <returns></returns>
+    public bool CanSetExceptionToken(Vector2Int pos, bool exceptEnemy = false, bool exceptHero = false, bool exceptDestructable = false)
     {
         int x = pos.x; int y = pos.y;
         if (x < 0 || x >= width || y < 0 || y >= height) return false;
-        if (!grid[x, y].IsEmpty())
+        if (simpleGrid[x, y] == 1)
         {
-            if (exceptEnemy && grid[x, y].token is EnemyView) return true;
-            else if (exceptHero && grid[x, y].token is HeroView) return true;
-            else if (exceptDestructable && grid[x, y].token is DestructibleView) return true;
-            else return false;
+            Token token = TokenSystem.Instance.API.GetTokenByPosition(pos);
+            if (!exceptEnemy && token is EnemyView) return false;
+            if (!exceptHero && token is HeroView) return false;
         }
         return true;
     }
 
     public List<Vector2Int> GetCanSetPositions(List<Vector2Int> positions = null)
     {
-        if (grid == null) Initialize();
-
         if (positions != null)
         {
             int[,] temp = new int[width, height];
@@ -197,23 +156,4 @@ public class TokenGrid : MonoBehaviour
         }
         return null;
     }
-}
-public class TokenGirdCell
-{
-    public Token token { get; private set; }
-    public IsoObject field { get; private set; }
-    public IsoObject Object { get; private set; }
-
-    //토큰 관련 함수
-    public void SetToken(Token token) => this.token = token;
-    public void ResetToken() => this.token = null;
-    public bool IsEmpty() => token == null;
-
-    //필드 타일 관련 함수
-    public void SetField(IsoObject field) => this.field = field;
-    public void ResetField() => this.field = null;
-
-    //오브젝트 관련 함수
-    public void SetObject(IsoObject obj) => this.Object = obj;
-    public void ResetObject() => this.Object = null;
 }

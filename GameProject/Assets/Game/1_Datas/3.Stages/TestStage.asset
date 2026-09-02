@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e590785f16a7254fac52abcb776de1d, type: 3}
+  m_Name: TestStage
+  m_EditorClassIdentifier: Assembly-CSharp::StageData
+  <Chapter>k__BackingField: 1
+  <Enemies>k__BackingField:
+  - {fileID: 11400000, guid: f9445edd82ffa5a4e9f90246b225a52d, type: 2}
+  <EnemyPoses>k__BackingField:
+  - {x: 0, y: 2}
+  <HeroSetupPoses>k__BackingField:
+  - {x: 4, y: 0}
+  - {x: 4, y: 1}
+  - {x: 4, y: 2}
+  <R_weight>k__BackingField: 5
+  <IsBoss>k__BackingField: 0
+  <StageBGMId>k__BackingField: 132

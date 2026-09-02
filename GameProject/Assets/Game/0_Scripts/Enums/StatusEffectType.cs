@@ -1,13 +1,14 @@
-public enum StatusEffectType
+ï»¿public enum StatusEffectType
 { 
-    ARMOR,           //¹æ¾î
-    DISARRAY,        //È¥¶õ
-    MARK,            //Ç¥Àû
-    ISOLATION,       //°í¸³
-    CONCENTRATION,   //ÁýÁß
-    POISIONING,      //Áßµ¶
-    BLEEDING,        //ÃâÇ÷
-    DETERIORATE,     //¾ÇÈ­
+    POWER,           //íž˜
+    ARMOR,           //ë°©ì–´
+    DISARRAY,        //í˜¼ëž€
+    MARK,            //í‘œì 
+    ISOLATION,       //ê³ ë¦½
+    CONCENTRATION,   //ì§‘ì¤‘
+    POISIONING,      //ì¤‘ë…
+    BLEEDING,        //ì¶œí˜ˆ
+    DETERIORATE,     //ì•…í™”
     WEAKENING,
     BURN,
     VULNERABLE,

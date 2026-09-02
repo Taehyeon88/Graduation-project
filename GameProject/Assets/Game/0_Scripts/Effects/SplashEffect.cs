@@ -1,37 +1,32 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using SerializeReferenceEditor;
 using UnityEngine;
 
 [System.Serializable]
-public class SplashEffect : Effect, IUseCustomTargetVG
+public class SplashEffect : Effect
 {
     [SerializeField] private float damage;
     [SerializeField] private float splashDamage;
-    [SerializeReference, SR] private GridRangeMode gridRangeMode;
+    [SerializeReference, SR] private RangeMode gridRangeMode;
     [SerializeField] private int distance;
     [SerializeField] private bool isPentration;
 
-    public GridRangeMode GridRangeMode { get { return gridRangeMode; } }
+    public RangeMode GridRangeMode { get { return gridRangeMode; } }
     public int Distance { get { return distance; } }
     public bool IsPentration {  get { return isPentration; } }
 
-    public Action<bool, int, List<Vector2Int>, Card> GetCustomTargetVGEvent()
-    {
-        return (ac, ow, ra, ca) => PlayerCardEffectSystem.Instance.SplashTVG(ac, ow, ra, ca);
-    }
-
-    public override GameAction GetGameAction(EffectInfo effectInfo)
+    public override GameAction GetGameAction(List<Vector2Int> targetpoes, HeroView myView)
     {
         var shplash = new SplashGA(
-                  effectInfo.targetPoses,
+                  targetpoes,
                   gridRangeMode,
                   isPentration,
                   distance,
                   damage,
                   splashDamage,
-                  effectInfo.caster
+                  myView
              );
         return shplash;
     }

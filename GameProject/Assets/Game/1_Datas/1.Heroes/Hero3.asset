@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 686d73462cd22e841a0c7b6099220021, type: 3}
+  m_Name: Hero3
+  m_EditorClassIdentifier: Assembly-CSharp::HeroData
+  <Id>k__BackingField: 3
+  <Name>k__BackingField: "\uD0F1\uCEE4"
+  <Sprite>k__BackingField: {fileID: 21300000, guid: efc33cbce1f6a004586c4b51bb9c4b20, type: 3}
+  <HRange>k__BackingField: 0
+  <HeroHp>k__BackingField: 25
+  <MovePoint>k__BackingField: 1
+  <Skills>k__BackingField: []
+  <Gold>k__BackingField: 10
+  <heroColor>k__BackingField: {r: 1, g: 0.9254902, b: 0.6, a: 1}
+  <simbolIcon>k__BackingField: {fileID: 21300000, guid: 73bd18226e6eb394b91cc0239baa34e1, type: 3}
+  <StartingSkills>k__BackingField:
+  - {fileID: 11400000, guid: 9b5e3b45a851fcc4cbf4a6ec97454c7d, type: 2}
+  <StartingPerks>k__BackingField:
+  - {fileID: 11400000, guid: 8a470f362ce785846b7cfa79d261c35f, type: 2}

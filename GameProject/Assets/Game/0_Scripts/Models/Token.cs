@@ -5,23 +5,19 @@ using UnityEngine;
 
 public class Token : MonoBehaviour
 {
-    [SerializeField] protected Transform wrapper;
-    [SerializeField] protected Transform genTransform;
-
-    public TokenModel TokenModel {  get; protected set; }
+    [field: SerializeField] public SpriteRenderer SpriteRenderer { get; protected set; }
     public TokenData TokenData { get; protected set; }
     public IsoObject TokenTransform { get; protected set; }
 
     protected void SetUpBaseBase(TokenData tokenData, IsoObject isoObject)
     {
-        foreach (Transform child in wrapper)    //몬스터 & 플레이어 모델 셋업
-            Destroy(child.gameObject);
-        this.TokenData = tokenData;
-        TokenModel = Instantiate(tokenData.TokenModel, genTransform ? genTransform.position : wrapper.position, Quaternion.identity, wrapper);
+        TokenData = tokenData;
+        SpriteRenderer.sprite = tokenData.Sprite;    //이미지 셋업
+        TokenTransform = isoObject;                  //isomertric용 transform 셋업
 
-        TokenTransform = isoObject;             //몬스터 & 플레이어 isomertric용 transform 셋업
-
-        if(tokenData.Sprite != null)
-            TokenModel.Sprite = tokenData.Sprite;
+        //높낮이 조절
+        float y = SpriteRenderer.gameObject.transform.position.y;
+        Vector3 pos = SpriteRenderer.gameObject.transform.position;
+        SpriteRenderer.gameObject.transform.position = new Vector3(pos.x, y + tokenData.HRange, pos.z);
     }
 }

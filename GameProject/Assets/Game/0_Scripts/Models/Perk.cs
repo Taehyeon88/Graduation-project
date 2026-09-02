@@ -1,42 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 
-public class Perk
+[System.Serializable]
+public abstract class Perk
 {
-    public Sprite Image => data.Image;
-    private readonly PerkData data;
-    private readonly PerkCondition condition;
-    private readonly AutoTargetEffect effect;
-    public Perk(PerkData perkData)
-    {
-        data = perkData;
-        condition = perkData.PerkCondition;
-        effect = perkData.AutoTargetEffect;
-    }
-    public void OnAdd()
-    {
-        condition.SubscribeCondition(Reaction);
-    }
-    public void OnRemove()
-    {
-        condition.UnsubscribeCondition(Reaction);
-    }
-    public void Reaction(GameAction gameAction)
-    {
-        if (condition.SubConditionIsMat(gameAction))
-        {
-            List<CombatantView> targets = new();
-            if (data.UseActionCasterAsTarget && gameAction is IHaveCaster haveCaster)
-            {
-                targets.Add(haveCaster.Caster);
-            }
-            if (data.UseAutoTarget)
-            {
-                //targets.AddRange(effect.TargetMode.GetTargets());
-            }
-            //GameAction perkEffectAction = effect.Effect.GetGameAction(new(targets, HeroSystem.Instance.HeroView));
-            //ActionSystem.Instance.AddReaction(perkEffectAction);
-        }
-    }
+    public abstract void SubscribeCondition(Action<GameAction> reaction);
+    public abstract void UnsubscribeCondition(Action<GameAction> reaction);
+    public abstract bool SubConditionIsMat(GameAction action, HeroView owner);
+    public abstract void PerformReaction(GameAction action, HeroView owner);
 }

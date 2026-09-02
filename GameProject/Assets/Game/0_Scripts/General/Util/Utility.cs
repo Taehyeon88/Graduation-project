@@ -7,6 +7,8 @@ using UnityEngine;
 
 public static class Utility
 {
+    // <summary>
+    // 방향 정리 함수 EX (-999, 4) -> (-1, 1)
     public static Vector2 GetSignVector2(Vector2 vector)
     {
         return new Vector2
@@ -16,6 +18,8 @@ public static class Utility
         );
     }
 
+    // <summary>
+    // 방향 정리 함수 EX (-999, 4) -> (-1, 1)
     public static Vector2Int GetSignVector2Int(Vector2Int vector)
     {
         return new Vector2Int
@@ -25,8 +29,26 @@ public static class Utility
         );
     }
 
-    public static Tween GetTween(Token token, Vector2 currentPos, Vector2 direction, float distance, float duration, Ease ease = Ease.Unset)
+    // <summary>
+    //백터2Int를 아이소매트릭용 위치값으로 변환
+    public static Vector3 Vector2IntToIsoVector(Vector2Int vector, int hight = 1)
     {
+        return new Vector3(vector.x, vector.y, hight);
+    }
+
+    // <summary>
+    //아이소매트릭용 위치값을 백터2Int로 변환
+    public static Vector2Int IsoVectorToVector2Int(Vector3 vector)
+    {
+        return new Vector2Int((int)vector.x, (int)vector.y);
+    }
+
+    // <summary>
+    // Isometric 위치 이동 Tween 반환 (방향 기반으로 거리 조정 가능)
+    public static Tween GetTween(Token token, Vector2Int currentPos, Vector2Int targetPos, float duration, float distance = 0.8f, Ease ease = Ease.Unset)
+    {
+        Vector2 direction = Utility.GetSignVector2Int(targetPos - currentPos);
+
         Tween tween = DOTween.To(() =>
         token.TokenTransform.positionXY,
         v => token.TokenTransform.positionXY = v,
@@ -37,6 +59,8 @@ public static class Utility
         return tween;
     }
 
+    // <summary>
+    // Isometric 위치 이동 Tween 반환2
     public static Tween GetTween(Token token, Vector2Int targetPos, float duration, Ease ease = Ease.Unset)
     {
         Tween tween = DOTween.To(() =>
@@ -49,9 +73,10 @@ public static class Utility
         return tween;
     }
 
-    public static Tween GetLinearTween(IsoObject isoObject, Vector2Int startPos, Vector2Int targetPos, float duration, Ease ease = Ease.Unset)
+    // <summary>
+    // Isometric 위치 이동 Tween 반환3
+    public static Tween GetTween(IsoObject isoObject, Vector2Int targetPos, float duration, Ease ease = Ease.Unset)
     {
-        isoObject.positionXY = startPos;
         Tween tween = DOTween.To(() =>
         isoObject.positionXY,
         v => isoObject.positionXY = v,
@@ -62,6 +87,22 @@ public static class Utility
         return tween;
     }
 
+    // <summary>
+    // Isometric 위치 이동 BackTween 반환
+    public static Tween GetBackTween(Token token, float duration, Ease ease = Ease.Unset)
+    {
+        Tween tween = DOTween.To(() =>
+        token.TokenTransform.positionXY,
+        v => token.TokenTransform.positionXY = v,
+        TokenSystem.Instance.API.GetTokenPosition(token),
+        duration
+        );
+        tween.SetEase(ease);
+        return tween;
+    }
+
+    // <summary>
+    // Isometric 위치 곡선 이동 Tween 반환
     public static Tween GetBezierTween(IsoObject isoObject, Vector3 start, Vector3 end, float duration, Ease ease = Ease.Unset, float heighRate = 1)
     {
         Vector3 control = (start + end) / 2f + new Vector3(0, 0, 1) * 3f * heighRate;
@@ -86,6 +127,8 @@ public static class Utility
         return tween;
     }
 
+    // <summary>
+    // Isometric 화살 위치 곡선 이동 Tween 반환 (기울기 적용)
     public static Tween GetArrowBezierTween(IsoObject isoObject, Transform arrowTrans, Vector3 start, Vector3 end, float duration, Ease ease = Ease.Unset, float heighRate = 1)
     {
         Vector3 control = (start + end) / 2f + new Vector3(0, 0, 1) * 3f * heighRate;
@@ -122,51 +165,20 @@ public static class Utility
         return tween;
     }
 
-    public static List<Vector2Int> FindChunkSetPosition(int[,] grid, ChunkData chunkData)
+    public static List<CombatantView> PositionsToCombantViews(List<Vector2Int> targetPoses, bool exceptEnemy = false, bool exceptHero = false)
     {
-        List<Vector2Int> result = new();
-
-        //블럭 정보를 byte로 변환
-        int[] chunkArray = new int[chunkData.Objects.Length];
-        for (int i = 0; i < chunkData.Objects.Length; i++)
-            chunkArray[i] = chunkData.Objects[i] > 0 ? 1 : 0;
-
-        string blockString = string.Join("", chunkArray);
-        byte blockByte = Convert.ToByte(blockString, 2);
-
-        //1. 가로 세로의 맵 규격으로 추리기
-        //2. 특정 위치에서 청크와 겹치는 오브젝트 체크로 추리기
-        for(int x = 0; x < grid.GetLength(0); x++)
+        List<CombatantView> combatants = new(10);
+        foreach (var targetPos in targetPoses)
         {
-            for(int y = 0; y < grid.GetLength(1); y++)
+            CombatantView combat = TokenSystem.Instance.API.GetTokenByPosition(targetPos) as CombatantView;
+            if (combat != null)
             {
-                int maxX = x + chunkData.Width;
-                int maxY = y + chunkData.Height;
-                if(maxX >= grid.GetLength(0) || maxY >= grid.GetLength(1))
-                        continue;
+                if (exceptEnemy && combat is EnemyView) continue;
+                if (exceptHero && combat is HeroView) continue;
 
-                //환경 정보를 byte로 변환
-                int cnt = 0;
-                int[] temp = new int[chunkData.Width * chunkData.Height];
-                for (int ty = 0; ty < chunkData.Height; ty++)
-                {
-                    for (int tx = 0; tx < chunkData.Width; tx++)
-                    {
-                        temp[cnt] = grid[x + tx, y + ty];
-                        cnt++;
-                    }
-                }
-                string gridString = string.Join("", temp);
-                byte gridByte = Convert.ToByte(gridString, 2);
-
-                var te = blockByte & gridByte;
-
-                if (te == 0)
-                {
-
-                }
+                combatants.Add(combat);
             }
         }
-        return null;
+        return combatants;
     }
 }

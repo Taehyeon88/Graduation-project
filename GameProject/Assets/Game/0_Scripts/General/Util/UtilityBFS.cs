@@ -21,14 +21,14 @@ public static class UtilityBFS
     public static List<Vector2Int> FindAllPlaces(Vector2Int start, int maxDistance, bool exceptEnemy, bool exceptHero, bool exceptDestructable = false)
     {
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
-        List<Vector2Int> list = new List<Vector2Int>();
+        List<Vector2Int> list = new List<Vector2Int>(30);
         bool[,] visited = new bool[TokenSystem.Instance.gridWidth, TokenSystem.Instance.gridHeight];
 
         queue.Enqueue(start);
         while (queue.Count > 0)
         {
             Vector2Int current = queue.Dequeue();
-            int dis = TokenSystem.Instance.GetDistance(start, current);
+            int dis = TokenSystem.Instance.API.GetDistance(start, current);
             if (dis > maxDistance) break;
 
             if (current != start)
@@ -42,7 +42,7 @@ public static class UtilityBFS
                 int ny = current.y + dir.y;
                 Vector2Int target = new(nx, ny);
 
-                if (!TokenSystem.Instance.IsBound(target)) continue;
+                if (!TokenSystem.Instance.API.IsBound(target)) continue;
                 if (visited[nx, ny]) continue;
 
                 if (!queue.Contains(target))
@@ -52,7 +52,7 @@ public static class UtilityBFS
 
         foreach (var pos in list.ToList())
         {
-            if (!TokenSystem.Instance.IsGridEmpty(pos, exceptEnemy, exceptHero, exceptDestructable))
+            if (!TokenSystem.Instance.API.IsGridEmpty(pos, exceptEnemy, exceptHero, exceptDestructable))
             {
                 list.Remove(pos);
             }
@@ -72,14 +72,14 @@ public static class UtilityBFS
     public static List<Vector2Int> FindALLRoots(Vector2Int start, int maxDistance, bool exceptEnemy = false, bool exceptHero = false)
     {
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
-        List<Vector2Int> list = new List<Vector2Int>();
+        List<Vector2Int> list = new List<Vector2Int>(30);
         bool[,] visited = new bool[TokenSystem.Instance.gridWidth, TokenSystem.Instance.gridHeight];
 
         queue.Enqueue(start);
         while (queue.Count > 0)
         {
             Vector2Int current = queue.Dequeue();
-            int dis = TokenSystem.Instance.GetDistance(start, current);
+            int dis = TokenSystem.Instance.API.GetDistance(start, current);
             if (dis > maxDistance) break;
 
             if (current != start)
@@ -93,7 +93,7 @@ public static class UtilityBFS
                 int ny = current.y + dir.y;
                 Vector2Int target = new(nx, ny);
 
-                if (!TokenSystem.Instance.IsGridEmpty(new(nx,ny), exceptEnemy, exceptHero)) continue;
+                if (!TokenSystem.Instance.API.IsGridEmpty(new(nx,ny), exceptEnemy, exceptHero)) continue;
                 if (visited[nx, ny]) continue;
 
                 if(!queue.Contains(target))
@@ -259,7 +259,7 @@ public static class UtilityBFS
 
     static List<Vector2Int> ReconstructPath(Vector2Int?[,] parent, Vector2Int start, Vector2Int goal)
     {
-        List<Vector2Int> path = new List<Vector2Int>();
+        List<Vector2Int> path = new List<Vector2Int>(30);
         Vector2Int? cur = goal;
 
         while (cur.HasValue)

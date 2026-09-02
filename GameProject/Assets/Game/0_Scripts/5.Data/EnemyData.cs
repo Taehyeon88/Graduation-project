@@ -6,7 +6,8 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Data/Token/Enemy")]
 public class EnemyData : TokenData
 {
+    [field: SerializeField] public int Health { get; private set; }
+    [field: SerializeField] public int MovePoint { get; private set; }
     [field : SerializeReference, SR]public Enemy Enemy { get; private set; }
     [field : SerializeReference, SR]public List<EnemyAction> EnemyActions { get; private set; }
-    [field : SerializeField]public EnemyGenerateType[] EnemyGenerateTypes { get; private set; }
 }

@@ -61,54 +61,5 @@ public class InteractionSystem : Singleton<InteractionSystem>
         CancelUse = m_CancelUse.WasPressedThisFrame();
     }
 
-    //void OnStartCheat() => CheatSystem.Instance?.StartCheat();
 
-    void OnCancel()
-    {
-        if(UISystem.Instance != null)
-        {
-            UISystem.Instance?.OffPileofCardUI();
-        }
-        if (StartSceneSystem.Instance != null)
-        {
-            StartSceneSystem.Instance.OffSettingUI();
-        }
-    }
-    void OnSelectCardWithNumber1()
-    {
-        Debug.Log("카드1 선택");
-    }
-    void OnSelectCardWithNumber2()
-    {
-        Debug.Log("카드2 선택");
-    }
-    void OnSelectCardWithNumber3()
-    {
-        Debug.Log("카드3 선택");
-    }
-    void OnSelectCardWithNumber4()
-    {
-        Debug.Log("카드4 선택");
-    }
-    void OnSelectCardWithNumber5()
-    {
-        Debug.Log("카드5 선택");
-    }
-
-
-    public void SetInteraction(InteractionCase newCase, Action<bool> action)
-    {
-        updatedAction = action;
-        currentInteraction = newCase;
-    }
-
-    public void SetCheatInteraction(Action<bool> action)
-    {
-        cheatUpdatedAction = action;
-    }
-    public void EndInteraction()
-    {
-        updatedAction = null;
-        currentInteraction = InteractionCase.None;
-    }
 }

@@ -45,6 +45,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: UI
+    uniqueID: 3690563667
+    locked: 0
+  - name: Grid
+    uniqueID: 1033827491
+    locked: 0
+  - name: Token
+    uniqueID: 2184357575
+    locked: 0
   - name: Projection
     uniqueID: 898196237
     locked: 0

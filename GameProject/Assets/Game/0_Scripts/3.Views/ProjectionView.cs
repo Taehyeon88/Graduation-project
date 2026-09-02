@@ -34,7 +34,7 @@ public class ProjectionView : MonoBehaviour
     public void StartFly(Sprite sprite, GameObject flyVFX, float scaleRate = 1)
     {
         gameObject.SetActive(true);
-        this.flyVFX = HeroVisualEffectSystem.Instance.PlayVFX(flyVFX, gameObject.transform.position);
+        //this.flyVFX = HeroVisualEffectSystem.Instance.PlayVFX(flyVFX, gameObject.transform.position);
         flyVFX.transform.localScale *= scaleRate;
 
         if (sprite != null)

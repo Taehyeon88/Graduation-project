@@ -1,148 +1,121 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HeroSystem : Singleton<HeroSystem>
 {
-    public HeroView HeroView => TokenSystem.Instance.HeroView;
-    public Vector2Int HeroPosition => TokenSystem.Instance.GetTokenPosition(HeroView);
+    public Image selected_Hero_UI;
+    public IReadOnlyList<HeroView> HeroViews => TokenSystem.Instance.HeroViews;
+    public HeroView CurrentHero
+    {
+        get { return currentHero; }
+        set
+        {
+            if (value == null 
+                || currentHero == value) return;
+
+            currentHero = value;
+
+            if (selected_Hero_UI != null)
+            {
+                if (!selected_Hero_UI.gameObject.activeSelf)
+                    selected_Hero_UI.gameObject.SetActive(true);
+                selected_Hero_UI.sprite = (currentHero.TokenData as HeroData).simbolIcon; //선택된 영웅 이미지 변경
+            }
+            SkillSystem.Instance.UpdateSkillsUI(currentHero);                             //스킬 UI 업데이트 + 재정렬
+        }
+    }
+
+    private HeroView currentHero;
 
     private void OnEnable()
     {
-        //ActionSystem.AttachPerformer<HeroFirstMoveGA>(HeroFirstMoveGAPerformer);
-        ActionSystem.SubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
-        ActionSystem.SubscribeReaction<EnemysTurnGA>(EnemysTurnPostReaction, ReactionTiming.POST);
+        ActionSystem.SubscribeReaction<TurnGA>(HeroTurnPreReaction, ReactionTiming.PRE);
+        ActionSystem.SubscribeReaction<TurnGA>(EnemyTurnPreReaction, ReactionTiming.PRE);
     }
     private void OnDisable()
     {
-        //ActionSystem.DetachPerformer<HeroFirstMoveGA>();
-        ActionSystem.UnsubscribeReaction<EnemysTurnGA>(EnemysTurnPreReaction, ReactionTiming.PRE);
-        ActionSystem.UnsubscribeReaction<EnemysTurnGA>(EnemysTurnPostReaction, ReactionTiming.POST);
+        ActionSystem.UnsubscribeReaction<TurnGA>(HeroTurnPreReaction, ReactionTiming.PRE);
+        ActionSystem.UnsubscribeReaction<TurnGA>(EnemyTurnPreReaction, ReactionTiming.PRE);
     }
 
-    //Performers
-    //private IEnumerator HeroFirstMoveGAPerformer(HeroFirstMoveGA heroFristMoveGA)
-    //{
-    //    bool isFirsMove = true;
-
-    //    //상태 이상 - 고립 처리
-    //    int isolationStack = HeroView.GetStatusEffectStacks(StatusEffectType.ISOLATION);
-    //    if (isolationStack > 0) 
-    //        isFirsMove = false;
-
-    //    //플레이어 카드 드로우
-    //    DrawCardsGA drawCardGA = new(5, isFirsMove);
-    //    ActionSystem.Instance.AddReaction(drawCardGA);
-
-    //    if (!isFirsMove)
-    //    {
-    //        yield break;
-    //    }
-
-    //    //플레이어 이동 가능 여부 판단
-    //    var canMovePlaces = TokenSystem.Instance.GetCanMovePlace(HeroView, heroFristMoveGA.SPD);
-    //    if (canMovePlaces == null || canMovePlaces.Count == 0)
-    //    {
-    //        //false -> 플레이어 피격 및 카드사용 가능
-    //        float amount = HeroView.MaxHealth * 0.05f;
-    //        DealDamageGA dealDamageGA = new(amount, new() { HeroView }, HeroView);
-    //        ActionSystem.Instance.AddReaction(dealDamageGA, FinishedFirstMoveRelated);
-    //    }
-    //    else
-    //    {
-    //        //true -> 플레이어 이동 모드 -> 이동 및 카드사용 가능
-    //        SPDSystem.Instance.AddSPD(heroFristMoveGA.SPD);
-    //        PlayerMoveGA playerMoveGA = new(heroFristMoveGA.SPD, true);
-    //        ActionSystem.Instance.AddReaction(playerMoveGA, FinishedFirstMoveRelated);
-    //    }
-
-    //    yield return null;
-    //}
-
-
     //Reactions
-    private void EnemysTurnPreReaction(EnemysTurnGA enemyTurnGA)
+    private void HeroTurnPreReaction(TurnGA turnGA)
     {
-        Debug.Log("플레이어 턴 종료");
+        if (turnGA.Type != TurnType.Player) return;
 
-        DiscardAllCardsGA discardAllCardsGA = new();
-        ActionSystem.Instance.AddReaction(discardAllCardsGA);
+        Debug.Log("플레이어 턴 시작");
 
-        //플레이어 상태효과 N감소
-        foreach (var statusEffectType in HeroView.GetStatusEffects())
+        foreach (var hero in HeroViews)
         {
-            //기간제 및 조건제만 실행
-            var mcType = StatusEffectSystem.Instance.GetMachanicsType(statusEffectType);
-            if (mcType == SEMachanicsType.FixedTerm || mcType == SEMachanicsType.ConditionTerm)
+            hero.ResetMovePoint();   //각 영웅 이동 포인트 초기화
+
+            //플레이어의 방어막 스택 삭제
+            int armorStack = hero.GetStatusEffectStacks(StatusEffectType.ARMOR);
+            if (armorStack > 0) hero.RemoveStatusEffect(StatusEffectType.ARMOR, armorStack);
+
+            //상태 효과
+            //악화
+            float specialRate = 1;
+            bool deteriaorateExist = hero.CheckStatusEffectExist(StatusEffectType.DETERIORATE);
+            if (deteriaorateExist)
             {
-                HeroView.RemoveStatusEffect(statusEffectType, 1);
+                bool tdSEExist = hero.CheckStatusEffectExist(StatusEffectType.POISIONING)
+                              || hero.CheckStatusEffectExist(StatusEffectType.BLEEDING);
+
+                if (!tdSEExist)
+                    hero.RemoveStatusEffect(StatusEffectType.DETERIORATE, 0);
+            }
+
+            //독물
+            int poisionStatcks = hero.GetStatusEffectStacks(StatusEffectType.POISIONING);
+            if (poisionStatcks > 0)
+            {
+                float percent = hero.GetStatusEffectInfo(StatusEffectType.POISIONING).Poision_Percent;
+                float amount = hero.MaxHealth * (percent / 100f) * specialRate;
+                DealDamageGA dealDamageGA = new(amount, new() { hero }, hero, DamageFormulaType.Special);
+                ActionSystem.Instance.AddReaction(dealDamageGA);
+            }
+
+            //출혈
+            int bleedingStatcks = hero.GetStatusEffectStacks(StatusEffectType.BLEEDING);
+            if (bleedingStatcks > 0)
+            {
+                float percent = hero.GetStatusEffectInfo(StatusEffectType.BLEEDING).Bleeding_Percent;
+                float amount = hero.MaxHealth * (percent / 100f) * specialRate;
+                DealDamageGA dealDamageGA = new(amount, new() { hero }, hero, DamageFormulaType.Special);
+                ActionSystem.Instance.AddReaction(dealDamageGA);
             }
         }
 
-        //상태효과 - 악화 삭제
-        bool tdSEExist = HeroView.CheckStatusEffectExist(StatusEffectType.POISIONING)
-                       || HeroView.CheckStatusEffectExist(StatusEffectType.BLEEDING);
-        if (!tdSEExist)
-            HeroView.RemoveStatusEffect(StatusEffectType.DETERIORATE, 0);
+        //마나 회복
+        RefillManaGA refillManaGA = new();
+        ActionSystem.Instance.AddReaction(refillManaGA);
+
+        //스킬 사용 횟수 초기화
+        RefillSkillLimitGA refillSkillLimitGA = new();
+        ActionSystem.Instance.AddReaction(refillSkillLimitGA);
     }
-    private void EnemysTurnPostReaction(EnemysTurnGA enemyTurnGA)
+
+    private void EnemyTurnPreReaction(TurnGA turnGA)
     {
-        Debug.Log("플레이어 턴 시작");
+        if (turnGA.Type != TurnType.Enemy) return;
 
-        //플레이어의 방어막 스택 삭제
-        int armorStack = HeroView.GetStatusEffectStacks(StatusEffectType.ARMOR);
-        if (armorStack > 0) HeroView.RemoveStatusEffect(StatusEffectType.ARMOR, armorStack);
+        Debug.Log("플레이어 턴 종료");
 
-        //상태 효과
-        //악화
-        float specialRate = 1;
-        bool deteriaorateExist = HeroView.CheckStatusEffectExist(StatusEffectType.DETERIORATE);
-        if (deteriaorateExist)
+        foreach (var hero in HeroViews)
         {
-            bool tdSEExist = HeroView.CheckStatusEffectExist(StatusEffectType.POISIONING)
-                          || HeroView.CheckStatusEffectExist(StatusEffectType.BLEEDING);
-
-            if (!tdSEExist)
-                HeroView.RemoveStatusEffect(StatusEffectType.DETERIORATE, 0);
+            //플레이어 상태효과 N감소
+            foreach (var statusEffectType in hero.GetStatusEffects())
+            {
+                //기간제 및 조건제만 실행
+                var mcType = StatusEffectSystem.Instance.GetMachanicsType(statusEffectType);
+                if (mcType == SEMachanicsType.FixedTerm || mcType == SEMachanicsType.ConditionTerm)
+                {
+                    hero.RemoveStatusEffect(statusEffectType, 1);
+                }
+            }
         }
-
-        //독물
-        int poisionStatcks = HeroView.GetStatusEffectStacks(StatusEffectType.POISIONING);
-        if (poisionStatcks > 0)
-        {
-            float percent = HeroView.GetStatusEffectInfo(StatusEffectType.POISIONING).Poision_Percent;
-            float amount = HeroView.MaxHealth * (percent / 100f) * specialRate;
-            DealDamageGA dealDamageGA = new(amount, new() { HeroView }, HeroView, DamageFormulaType.Special);
-            ActionSystem.Instance.AddReaction(dealDamageGA);
-        }
-
-        //출혈
-        int bleedingStatcks = HeroView.GetStatusEffectStacks(StatusEffectType.BLEEDING);
-        if (bleedingStatcks > 0)
-        {
-            float percent = HeroView.GetStatusEffectInfo(StatusEffectType.BLEEDING).Bleeding_Percent;
-            float amount = HeroView.MaxHealth * (percent / 100f) * specialRate;
-            DealDamageGA dealDamageGA = new(amount, new() { HeroView }, HeroView, DamageFormulaType.Special);
-            ActionSystem.Instance.AddReaction(dealDamageGA);
-        }
-
-
-        //화염 상태효과 
-        int burnStacks = HeroView.GetStatusEffectStacks(StatusEffectType.BURN);
-        if (burnStacks > 0)
-        {
-            ApplyBurnGA applyBurnGA = new(burnStacks, HeroView);
-            ActionSystem.Instance.AddReaction(applyBurnGA);
-        }
-
-        //HeroFirstMoveGA heroFristMove = new(1);
-        //ActionSystem.Instance.AddReaction(heroFristMove);
-
-        //플레이어 카드 드로우
-        int drawCount = TutorialSystem.Instance.IsTutorialing 
-            && WaveSystem.Instance.CurrentTurn == 1 ? 
-            3 : 5;
-        DrawCardsGA drawCardGA = new(drawCount, false);
-        ActionSystem.Instance.AddReaction(drawCardGA);
     }
 }

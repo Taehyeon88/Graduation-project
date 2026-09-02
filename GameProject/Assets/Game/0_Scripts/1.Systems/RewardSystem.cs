@@ -5,18 +5,18 @@ using UnityEngine;
 public class RewardSystem : Singleton<RewardSystem>
 {
     [Header("딜링 카드")]
-    [SerializeField] private CardData[] dealCardDatas;
+    [SerializeField] private SkillData[] dealCardDatas;
 
     [Header("유틸/디버프 카드")]
-    [SerializeField] private CardData[] utilCardDatas;
+    [SerializeField] private SkillData[] utilCardDatas;
 
-    public Card[] GetRewards(int count)
+    public Skill[] GetRewards(int count)
     {
         if (dealCardDatas.Length + utilCardDatas.Length < count)
             Debug.LogError("보상 카드 종류 개수가 보상UI 필요 카드 개수보다 적음");
 
-        Card[] cards = new Card[count];
-        Card card;
+        Skill[] cards = new Skill[count];
+        Skill card;
 
         for (int i = 0; i < count; i++)
         {

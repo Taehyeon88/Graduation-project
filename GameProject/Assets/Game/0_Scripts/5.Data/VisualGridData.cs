@@ -1,4 +1,4 @@
-using SerializeReferenceEditor;
+ï»¿using SerializeReferenceEditor;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,11 +6,17 @@ using UnityEngine;
 public class VisualGridData : ScriptableObject
 {
     [field: SerializeReference, SR] public List<VisualGridType> VisualGridTypes {  get; private set; }
-    [Range(0, 3)]
-    [SerializeField] private float layerDepth;            //°°Àº VG³¢¸®ÀÇ ±íÀÌ ¼³Á¤(¼öÄ¡UP -> ¿ì¼±µµUP)
-    public float LayerDepth { get { return layerDepth; } }
+    [Range(0, 5)]
+    [SerializeField] private int layerDepth;            //ê°™ì€ VGë¼ë¦¬ì˜ ê¹Šì´ ì„¤ì •(ìˆ˜ì¹˜UP -> ìš°ì„ ë„UP)
+    public int LayerDepth { get { return layerDepth; } }
 
-    public float GetVGTransZ(float targetZ) => targetZ - layerDepth * 0.3f;
+    public int GetVGLayerOrder(VisualGridType type)
+    {
+        if (type is FillType) return layerDepth + 10;
+        else if(type is BorderType) return layerDepth + 20;
+        else if(type is SymbolType) return layerDepth + 30;
+        else return layerDepth;
+    }
 }
 
 [System.Serializable]

@@ -1,62 +1,43 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameSystem : Singleton<GameSystem>
 {
-    [field : SerializeField] public HeroData HeroData { get; private set; } //영웅 데이터
-    public int MaxHp { get; private set; }                                  //현재 플레이어 최대 체력
-    public int CurrentHp { get; private set; }                              //현재 플레이어 체력
     public int CurrentGold { get; private set; }                            //현재 플레이어 골드
-    public int CurrentLevel { get; private set; } = 1;                      //현재 층 수
+    public int CurrentStageLevel { get; private set; } = 1;                      //현재 층 수
     public bool IsGameClear { get; private set; }                           //게임 클리어
     public bool IsGameOver { get; private set; }                            //게임 오버
-    public bool IsTutorial { get; set; } = false;                            //튜토리얼
-    public IReadOnlyList<CardData> Deck                                     //플레이어 덱
+    public bool IsTutorial { get; set; } = false;                            //튜토리얼                               //카드 덱
+
+    [field: SerializeField] public HeroData[] HeroDatas { get; private set; } //영웅 데이터s
+    public IReadOnlyList<Hero> Heros => heros;
+    private List<Hero> heros = new List<Hero>(3);       //영웅s
+
+    public StageData CurrentStageData
     {
-        get
-        {
-            if(IsTutorial || TutorialSystem.Instance.IsTutorialing)
-                return tutorilaDeck;
-            return deck;
-        }
+        get { return stageDatas[CurrentStageLevel - 1]; }
     }
+    [SerializeField] private StageData[] stageDatas;           //스테이지 데이터 배열
 
-    public RoomData CurrentRoomData                                         //게임 셋업 때, 딱 1번 실행
-    {
-         get 
-         { 
-            if(IsTutorial)
-            {
-                IsTutorial = false;
-                TutorialSystem.Instance.StartTutorial(); //튜토리얼 시작
-            }
-
-            if(TutorialSystem.Instance.IsTutorialing)
-                return tutorialRoomData;
-            else
-                return roomDatas[CurrentLevel - 1]; 
-         } 
-    }
-
-    [SerializeField] private RoomData[] roomDatas;                    //방 데이터
-    [SerializeField] private RoomData tutorialRoomData;               //튜토리얼 방 데이터
-    [SerializeField] private List<CardData> tutorilaDeck;             //튜토리얼 덱
-    private List<CardData> deck;                                      //카드 덱
 
     protected override void Awake()
     {
         base.Awake();
         if (Instance != this) return;
 
-        deck = HeroData.Deck.ToList();       //덱 데이터 받기
-        MaxHp = CurrentHp = HeroData.Health; //체력 설정
+        IntializeGameData();  //게임 데이터 초기화
+
 
         //첫 인스턴스만 체인처리
         ActionSystem.AttachPerformer<GameClearGA>(GameClearPerformer);
         ActionSystem.AttachPerformer<GameOverGA>(GameOverPerformer);
+
+        //각 영웅 데이터 값 초기화
     }
 
     private void OnDisable()
@@ -72,17 +53,14 @@ public class GameSystem : Singleton<GameSystem>
     {
         Debug.Log("게임 클리어");
         IsGameClear = true;
-        CurrentHp = HeroSystem.Instance.HeroView.CurrentHealth;
 
-        Card[] cards = RewardSystem.Instance.GetRewards(3);
-        UISystem.Instance.UpdateRewardCards(cards);
+        Skill[] cards = RewardSystem.Instance.GetRewards(3);
 
         yield return null;
     }
     private IEnumerator GameOverPerformer(GameOverGA gameOverGA)
     {
         IsGameOver = true;
-        CurrentHp = HeroSystem.Instance.HeroView.CurrentHealth;
 
         if (UISystem.Instance != null)
         {
@@ -91,20 +69,13 @@ public class GameSystem : Singleton<GameSystem>
         yield return null;
     }
 
-    //Publics
-    public void AddDeckCard(CardData cardData)
-    {
-        deck.Add(cardData);
-        UISystem.Instance.RemoveRewardCards();
-    }
-
     public void GoToNextLevel()
     {
-        CurrentLevel++;
-        Debug.Log(CurrentLevel);
+        CurrentStageLevel++;
+        Debug.Log(CurrentStageLevel);
         IsGameClear = false;
 
-        if (CurrentLevel > roomDatas.Length)
+        if (CurrentStageLevel > stageDatas.Length)
         {
             UISystem.Instance.EndDemoUI();
             return;
@@ -115,14 +86,47 @@ public class GameSystem : Singleton<GameSystem>
 
     public void StartFromScratch()
     {
-        CurrentLevel = 1;
+        IntializeGameData();
+        SceneManager.LoadScene("GameDemoScene");
+    }
+
+    //게임 내, 저장된 모든 데이터 초기화
+    public void IntializeGameData()
+    {
+        CurrentStageLevel = 1;
         IsGameOver = false;
         IsGameClear = false;
-        MaxHp = CurrentHp = HeroData.Health;
-        CurrentGold = HeroData.Gold;
+        CurrentGold = 0;
 
-        deck = HeroData.Deck.ToList();
+        IntializeHero();
+    }
 
-        SceneManager.LoadScene("GameDemoScene");
+    //영웅 관련 데이터 초기화
+    public void IntializeHero()
+    {
+        CurrentGold = 0;
+
+        foreach (var data in HeroDatas)
+        {
+            List<Skill> skills = new(10);
+            List<PerkItem> perks = new(10);
+
+            foreach (var skillData in data.StartingSkills)
+                skills.Add(new Skill(skillData));
+            foreach (var perkData in data.StartingPerks)
+                perks.Add(new PerkItem(perkData));
+
+            Hero hero = new Hero(
+                data.Id, 
+                data.HeroHp, 
+                data.MovePoint,
+                skills,
+                perks
+                );
+            heros.Add(hero);
+            data.SetHero(hero);
+
+            CurrentGold += data.Gold;
+        }
     }
 }

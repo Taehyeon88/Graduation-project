@@ -1,4 +1,4 @@
-using System.Collections;
+癤퓎sing System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,20 +6,9 @@ using UnityEngine;
 public class HealEffect : Effect
 {
     [SerializeField] private float amount;
-    public override GameAction GetGameAction(EffectInfo effectInfo)
+    [SerializeField] private bool healMySelf;
+    public override GameAction GetGameAction(List<Vector2Int> targetpoes, HeroView myView)
     {
-        if (effectInfo.targets != null)           //대상 기반
-        {
-            return new HealGA(amount, effectInfo.targets);
-        }
-        else if(effectInfo.targetPoses != null)   //그리드 기반
-        {
-            return new HealGA(amount, effectInfo.targetPoses);
-        }
-        else
-        {
-            Debug.LogError($"HealEffect의 effectInfo에 target도 targetPoses도 존재하지 않습니다.");
-            return null;
-        }
+        return new HealGA(amount, targetpoes);
     }
 }

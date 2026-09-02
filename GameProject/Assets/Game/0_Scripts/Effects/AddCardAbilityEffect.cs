@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,7 +6,7 @@ using UnityEngine;
 public class AddCardAbilityEffect : Effect
 {
     [SerializeField] private CardAbilityType cardAbilityType;
-    public override GameAction GetGameAction(EffectInfo effectInfo)
+    public override GameAction GetGameAction(List<Vector2Int> targetpoes, HeroView myView)
     {
         return new AddCardAbilityGA(cardAbilityType);
     }

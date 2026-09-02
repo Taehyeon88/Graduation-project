@@ -1,5 +1,5 @@
 ﻿
-public enum CardType
+public enum SkillType
 {
     None,
     Attack_Adjacent,       //공격 - 인접

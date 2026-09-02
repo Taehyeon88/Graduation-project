@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,9 +6,11 @@ using UnityEngine;
 public class AttackEnemyEffect : Effect
 {
     [SerializeField] private float amount;
-    public override GameAction GetGameAction(EffectInfo effectInfo)
+    [SerializeField] private int count;
+    [SerializeField] private HeroAnimationType animationType;
+    public override GameAction GetGameAction(List<Vector2Int> targetpoes, HeroView myView)
     {
-        AttackEnemyGA attackEnemyGA = new(effectInfo.targetPoses, amount);
+        AttackEnemyGA attackEnemyGA = new(targetpoes, amount, count, myView, animationType);
         return attackEnemyGA;
     }
 }

@@ -1,23 +1,18 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class ShoulderBashEffect : Effect, IUseCustomRangeVG
+public class ShoulderBashEffect : Effect
 {
     [SerializeField] private int distance;
     [SerializeField] private int attackDistance;
     [SerializeField] private float damage;
 
-    public Action<int, List<Vector2Int>> GetCustomRangeVGEvent()
+    public override GameAction GetGameAction(List<Vector2Int> targetpoes, HeroView myView)
     {
-        return (owner, range) => PlayerCardEffectSystem.Instance.ShoulderBashRVG(owner, range);
-    }
-
-    public override GameAction GetGameAction(EffectInfo effectInfo)
-    {
-        ShoulderBashGA shoulderBashGA = new(distance, attackDistance, damage, effectInfo.targetPoses);
+        ShoulderBashGA shoulderBashGA = new(distance, attackDistance, damage, targetpoes, myView);
         return shoulderBashGA;
     }
 }

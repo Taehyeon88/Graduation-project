@@ -13,7 +13,7 @@ public class E_AllAroundRM : EnemyRangeMode
 {
     public override List<Vector2Int> GetGridRanges(Vector2Int currentPosition, int distance = 1)
     {
-        return TokenSystem.Instance.GetAllAroundPlaces(currentPosition, distance, false, true, true);
+        return TokenSystem.Instance.API.GetAllAroundPlaces(currentPosition, distance, false, true, true);
     }
 }
 
@@ -32,7 +32,7 @@ public class E_CrossRM : EnemyRangeMode
             for (int i = 1; i <= distance; i++)
             {
                 Vector2Int position = currentPosition + dir * i;
-                if (TokenSystem.Instance.IsGridEmpty(position, false, true, true))
+                if (TokenSystem.Instance.API.IsGridEmpty(position, false, true, true))
                 {
                     result.Add(position);
                 }
@@ -56,7 +56,7 @@ public class E_AllEightAroundRM : EnemyRangeMode
         foreach (var dir in dirs)
         {
             Vector2Int targetPos = currentPosition + dir;
-            if (!TokenSystem.Instance.IsGridEmpty(targetPos, false, true, true)) continue;
+            if (!TokenSystem.Instance.API.IsGridEmpty(targetPos, false, true, true)) continue;
 
             result.Add(targetPos);
         }

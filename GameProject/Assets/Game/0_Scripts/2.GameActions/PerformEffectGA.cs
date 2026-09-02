@@ -1,20 +1,16 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PerformEffectGA : GameAction
 {
     public Effect Effect { get; set; }
-    public EffectInfo EffectInfo { get; set; }
-    public bool IsSkiping { get; private set; }
-    public PerformEffectGA(Effect effect, EffectInfo effectInfo)
+    public List<Vector2Int> TargetPoses { get; private set; }
+    public HeroView MyView {  get; private set; }
+    public PerformEffectGA(Effect effect, List<Vector2Int> targetpoes, HeroView myView)
     {
         Effect = effect;
-        EffectInfo = effectInfo;
-        IsSkiping = false;
-    }
-    public PerformEffectGA()
-    {
-        IsSkiping = true;
+        TargetPoses = targetpoes;
+        MyView = myView;
     }
 }

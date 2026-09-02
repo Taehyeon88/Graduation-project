@@ -1,0 +1,99 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+[System.Serializable]
+public abstract class RangeMode
+{
+    public abstract List<Vector2Int> GetGridRanges(Vector2Int currentPosition, int distance, bool penetration);
+}
+
+[System.Serializable]
+public class AllAroundRM : RangeMode
+{
+    public override List<Vector2Int> GetGridRanges(Vector2Int currentPosition, int distance = 1, bool penetration = false)
+    {
+        return TokenSystem.Instance.API.GetAllAroundPlaces(currentPosition, distance, true, false, true);
+    }
+}
+
+[System.Serializable]
+public class AllAround_ExpceptEnemyRM : RangeMode
+{
+    public override List<Vector2Int> GetGridRanges(Vector2Int currentPosition, int distance = 1, bool penetration = false)
+    {
+        return TokenSystem.Instance.API.GetAllAroundPlaces(currentPosition, distance, false, false, true);
+    }
+}
+
+[System.Serializable]
+public class PlusRM : RangeMode
+{
+    public override List<Vector2Int> GetGridRanges(Vector2Int currentPosition, int distance = 1, bool penetration = false)
+    {
+        Vector2Int[] dirs = { new(1, 1), new(-1, -1), new(1, -1), new(-1, 1) };
+        List<Vector2Int> result = new();
+
+        foreach (var dir in dirs)
+        {
+            for (int i = 1; i <= distance; i++)
+            {
+                Vector2Int position = currentPosition + dir * i;
+                if (TokenSystem.Instance.API.IsGridEmpty(position, true))
+                {
+                    result.Add(position);
+                }
+                else if (penetration) break;    //관통하면 다음 타일 무시
+            }
+        }
+        return result;
+    }
+}
+
+[System.Serializable]
+public class CrossRM : RangeMode
+{
+    public override List<Vector2Int> GetGridRanges(Vector2Int currentPosition, int distance, bool penetration = false)
+    {
+        Vector2Int[] dirs = { new(0, 1), new(0, -1), new(1, 0), new(-1, 0) };
+        List<Vector2Int> result = new();
+
+        foreach (var dir in dirs)
+        {
+            for (int i = 1; i <= distance; i++)
+            {
+                Vector2Int position = currentPosition + dir * i;
+                if (TokenSystem.Instance.API.IsGridEmpty(position, true))
+                {
+                    result.Add(position);
+                }
+                else if (penetration) break;
+            }
+        }
+        return result;
+    }
+}
+
+[System.Serializable]
+public class SnowRM : RangeMode
+{
+    public override List<Vector2Int> GetGridRanges(Vector2Int currentPosition, int distance, bool penetration = false)
+    {
+        Vector2Int[] dirs = { new(0, 1), new(0, -1), new(1, 0), new(-1, 0), new(1, 1), new(-1, -1), new(1, -1), new(-1, 1) };
+        List<Vector2Int> result = new();
+
+        foreach (var dir in dirs)
+        {
+            for (int i = 1; i <= distance; i++)
+            {
+                Vector2Int position = currentPosition + dir * i;
+                if (TokenSystem.Instance.API.IsGridEmpty(position, true))
+                {
+                    result.Add(position);
+                }
+                else if (penetration) break;
+            }
+        }
+        return result;
+    }
+}

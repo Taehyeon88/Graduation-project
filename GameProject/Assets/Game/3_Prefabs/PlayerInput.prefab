@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7103438690453880248}
   - component: {fileID: 8016651777184050702}
-  - component: {fileID: 8828401203571213259}
+  - component: {fileID: 780994014519772754}
   m_Layer: 0
   m_Name: PlayerInput
   m_TagString: Untagged
@@ -63,7 +63,7 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &8828401203571213259
+--- !u!114 &780994014519772754
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -72,7 +72,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 8524656943668227665}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd9bd00c4d84060489c5b0eed56e49b6, type: 3}
+  m_Script: {fileID: 11500000, guid: e96fd3f1e9cf8f743ad2447e27923680, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  playerInput: {fileID: 8016651777184050702}
+  m_EditorClassIdentifier: Assembly-CSharp::Interactions
+  IsSetUpHero: 0
+  IsSkillTargetMode: 0
+  IsSkillHovering: 0
+  CancelUse: 0

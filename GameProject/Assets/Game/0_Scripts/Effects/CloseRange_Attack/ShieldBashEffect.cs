@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,9 +6,9 @@ using UnityEngine;
 public class ShieldBashEffect : Effect
 {
     [SerializeField] private float amount;
-    public override GameAction GetGameAction(EffectInfo effectInfo)
+    public override GameAction GetGameAction(List<Vector2Int> targetpoes, HeroView myView)
     {
-        var shieldBashGA = new ShieldBashGA(amount, effectInfo.targetPoses);
+        var shieldBashGA = new ShieldBashGA(amount, targetpoes, myView);
         return shieldBashGA;
     }
 }

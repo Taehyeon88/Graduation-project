@@ -57,7 +57,7 @@ public class VisualGridCreator : Singleton<VisualGridCreator>
         {
             Color color = vgType.GetVGTypeColor();
             Sprite sprite = vgType.GetVGTypeSprite();
-            float vgTransZ = vgSO.GetVGTransZ(vgType.GetVGTypeTransZ());
+            int layerOrder = vgSO.GetVGLayerOrder(vgType);
 
             if (vGByPosition.TryGetValue(isoPosition, out var vg))
             {
@@ -75,8 +75,8 @@ public class VisualGridCreator : Singleton<VisualGridCreator>
                             sr.gameObject.name = vgName;
 
                             Vector3 cur = sr.transform.localPosition;
-                            sr.gameObject.transform.localPosition = new Vector3(cur.x, cur.y, vgTransZ);
- 
+                            sr.gameObject.transform.localPosition = new Vector3(cur.x, cur.y, 0f);
+                            sr.sortingOrder = layerOrder;
 
                             sr.gameObject.tag = "VG_Using";
 

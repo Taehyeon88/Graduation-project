@@ -89,12 +89,3 @@ public class GlobalTM : TargetMode
         else return null;
     }
 }
-
-public enum GridTargetingType
-{
-    Single,     //단일 
-    Line,       //관통
-    Cone,       //횡베기
-    Radius,     //폭발
-    Global      //전방위
-}

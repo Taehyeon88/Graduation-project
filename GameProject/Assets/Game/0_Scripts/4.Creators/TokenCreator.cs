@@ -9,12 +9,9 @@ public enum TokenType
 
 public class TokenCreator : Singleton<TokenCreator>
 {
-    [SerializeField] private TokenPreview previewPrefab;
+    [SerializeField] private HeroPreview heroPreviewPrefab;
     [SerializeField] private Token heroTokenPrefab;
     [SerializeField] private Token enemyTokenPrefab;
-    [SerializeField] private Token wallTokenPrefab;
-    [SerializeField] private Token destructablePrefab;
-    [SerializeField] private Token trapPrefab;
     [SerializeField] private Transform isoWorld;      //토큰들을 생성할 부모 오브젝트
 
     private Token tokenPrefab;
@@ -26,9 +23,6 @@ public class TokenCreator : Singleton<TokenCreator>
             case TokenType.None: tokenPrefab = null; break;
             case TokenType.Hero: tokenPrefab = heroTokenPrefab; break;
             case TokenType.Enemy: tokenPrefab = enemyTokenPrefab; break;
-            case TokenType.Wall: tokenPrefab = wallTokenPrefab; break;
-            case TokenType.Destructible: tokenPrefab = destructablePrefab; break;
-            case TokenType.Trap: tokenPrefab = trapPrefab; break;
             default: tokenPrefab = null; break;
         }
         if (tokenPrefab == null) return null;
@@ -45,18 +39,6 @@ public class TokenCreator : Singleton<TokenCreator>
                 EnemyView enemyView = token as EnemyView;
                 enemyView.SetUp(data as EnemyData);
                 break;
-            case TokenType.Wall:
-                WallView wallView = token as WallView;
-                wallView.SetUp(data as WallData);
-                break;
-            case TokenType.Destructible:
-                DestructibleView destructibleView = token as DestructibleView;
-                destructibleView.SetUp(data as DestructibleData);
-                break;
-            case TokenType.Trap:
-                TrapView trapView = token as TrapView;
-                trapView.SetUp(data as TrapData);
-                break;
                 
         }
 
@@ -65,10 +47,10 @@ public class TokenCreator : Singleton<TokenCreator>
         return token;
     }
 
-    public TokenPreview CreateTokenPreview(TokenData data, Vector3 isoPosition)
+    public HeroPreview CreateTokenPreview(TokenData data)
     {
-        TokenPreview preview = Instantiate(previewPrefab, isoWorld);
-        preview.SetUp(data, isoPosition);
+        HeroPreview preview = Instantiate(heroPreviewPrefab, isoWorld);
+        preview.SetUp(data);
         return preview;
     }
 }

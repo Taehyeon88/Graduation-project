@@ -12,6 +12,8 @@ public class CombatantView : Token
 {
     [SerializeField] private Slider healthSlider;
     [SerializeField] private TMP_Text healthText;
+    [SerializeField] private TMP_Text movePointText;
+    [SerializeField] private StatusEffectsUI statusEffectsUI;
 
     protected Dictionary<StatusEffectType, int> statusEffectUIs = new();
     private StatusEffectStorage effectInfo = new();
@@ -21,7 +23,7 @@ public class CombatantView : Token
         private set
         {
             maxHealth = value;
-            UpdateHealth();
+            UpdateHealthUI();
         }
     }
     public int CurrentHealth
@@ -30,21 +32,35 @@ public class CombatantView : Token
         private set
         {
             currentHealth = value;
-            UpdateHealth();
+            UpdateHealthUI();
+        }
+    }
+
+    public int MovePoint { get; private set; }
+
+    public int CurrentMovePoint
+    {
+        get { return currentMovePoint; }
+        private set
+        {
+            currentMovePoint = value;
+            UpdateMovePointUI();
         }
     }
 
     private int maxHealth;
     private int currentHealth;
+    private int currentMovePoint;
 
-    public void SetUpBase(int health, int maxHealth, TokenData tokenData, IsoObject isoObject)
+    public void SetUpBase(int health, int maxHealth, int movePoint, TokenData tokenData, IsoObject isoObject)
     {
-        MaxHealth = maxHealth;                //몬스터 & 플레이어 체력 셋업
         CurrentHealth = health;
+        MaxHealth = maxHealth;
+        CurrentMovePoint = MovePoint = movePoint;
         SetUpBaseBase(tokenData, isoObject);
     }
 
-    public void UpdateHealth()
+    private void UpdateHealthUI()
     {
         if (healthSlider != null)
         {
@@ -55,6 +71,29 @@ public class CombatantView : Token
         {
             healthText.SetText($"{CurrentHealth}/{MaxHealth}");
         }
+    }
+
+    private void UpdateMovePointUI()
+    {
+        if (movePointText != null)
+        {
+            movePointText.SetText(CurrentMovePoint.ToString());
+        }
+    }
+
+    public void ResetMovePoint()
+    {
+        CurrentMovePoint = MovePoint;
+    }
+
+    public bool HasEnoughMovePoint(int movePoint)
+    {
+        return CurrentMovePoint >= movePoint;
+    }
+
+    public void SpendMovePoint(int movePoint)
+    {
+        CurrentMovePoint -= movePoint;
     }
 
     public virtual void Damage(int amount)
@@ -97,7 +136,7 @@ public class CombatantView : Token
             statusEffectUIs.Add(type, stackCount);
             effectInfo.SetStatusEffectInfo(infoes, type);    //해당 StatusEffectInfo 저장
         }
-        UISystem.Instance.UpdateStatusEffectUI(this, type, GetStatusEffectStacks(type), sprite);
+        statusEffectsUI.UpdateStatusEffect(type, GetStatusEffectStacks(type), sprite);
     }
     public virtual void RemoveStatusEffect(StatusEffectType type, int stackCount)
     {
@@ -108,7 +147,7 @@ public class CombatantView : Token
             {
                 statusEffectUIs.Remove(type);
             }
-            UISystem.Instance.UpdateStatusEffectUI(this, type, GetStatusEffectStacks(type));
+            statusEffectsUI.UpdateStatusEffect(type, GetStatusEffectStacks(type));
         }
     }
     public int GetStatusEffectStacks(StatusEffectType type)
@@ -123,10 +162,5 @@ public class CombatantView : Token
     {
         if (statusEffectUIs.ContainsKey(type)) return effectInfo;
         else return default;
-    }
-
-    public void Cheat_GetHealth(int amount)
-    {
-        CurrentHealth = MaxHealth = amount;
     }
 }
