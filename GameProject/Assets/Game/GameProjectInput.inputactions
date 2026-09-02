@@ -43,7 +43,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "SelectCardWithNumber1",
+                    "name": "PlaySkill1",
                     "type": "Button",
                     "id": "e72cf226-cbeb-4c40-8f8a-599760ef6876",
                     "expectedControlType": "",
@@ -52,7 +52,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "SelectCardWithNumber2",
+                    "name": "PlaySkill2",
                     "type": "Button",
                     "id": "a5bad4ed-02f7-4cbf-a42f-ff4937ebb690",
                     "expectedControlType": "",
@@ -61,7 +61,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "SelectCardWithNumber3",
+                    "name": "PlaySkill3",
                     "type": "Button",
                     "id": "5b9cfe04-2b28-4b7d-b474-ed3641d5006a",
                     "expectedControlType": "",
@@ -70,7 +70,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "SelectCardWithNumber4",
+                    "name": "PlaySkill4",
                     "type": "Button",
                     "id": "b9ceee62-004d-450b-93c6-2393edc9e482",
                     "expectedControlType": "",
@@ -79,7 +79,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "SelectCardWithNumber5",
+                    "name": "PlaySkill5",
                     "type": "Button",
                     "id": "bbc860e2-d91f-4eba-a974-648d5134bfc5",
                     "expectedControlType": "",
@@ -156,7 +156,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "SelectCardWithNumber1",
+                    "action": "PlaySkill1",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -167,7 +167,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "SelectCardWithNumber2",
+                    "action": "PlaySkill2",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -178,7 +178,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "SelectCardWithNumber3",
+                    "action": "PlaySkill3",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -189,7 +189,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "SelectCardWithNumber4",
+                    "action": "PlaySkill4",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -200,7 +200,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "SelectCardWithNumber5",
+                    "action": "PlaySkill5",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -211,6 +211,17 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
+                    "action": "CancelUse",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d2ed881c-313a-4b85-9714-98cad69f5470",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
                     "action": "CancelUse",
                     "isComposite": false,
                     "isPartOfComposite": false
