@@ -32,13 +32,8 @@ public class AttackEA : EnemyAction
         Vector2Int tweenPos = singleTarget? targetPosition : targetRange[targetRange.Count/2];
 
         var curPos = TokenSystem.Instance.API.GetTokenPosition(enemy);
-        Tween attackTween = Utility.GetTween(
-                                    enemy, 
-                                    TokenSystem.Instance.API.GetTokenPosition(enemy),
-                                    tweenPos, 
-                                    0.15f
-                                 );
-        Tween backTween = Utility.GetBackTween(enemy, 0.25f).Pause();
+        Tween attackTween = Utility.GetTween(enemy, tweenPos, 0.8f, 0.15f, Ease.Unset);
+        Tween backTween = Utility.GetBackTween(enemy, 0.25f);
 
         Sequence squ = DOTween.Sequence();
         squ.Append(attackTween);

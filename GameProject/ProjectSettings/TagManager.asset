@@ -57,6 +57,9 @@ TagManager:
   - name: Projection
     uniqueID: 898196237
     locked: 0
+  - name: SFX
+    uniqueID: 3614851309
+    locked: 0
   m_RenderingLayers:
   - Default
   - Light Layer 1

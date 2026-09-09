@@ -19,7 +19,7 @@ public class MatchSetupSystem : MonoBehaviour
     private IEnumerator StartSetting()
     {
         //1.브금 실행
-        SoundSystem.Instance.PlayBGM(stageData.StageBGMId);
+        SoundSystem.Instance.PlaySound(stageData.StageBGMId);
 
         //2.스테이지 맵 생성
         TokenSystem.Instance.Setup.SetUpStageMap();

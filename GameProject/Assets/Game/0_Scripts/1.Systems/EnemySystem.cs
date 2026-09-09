@@ -16,8 +16,6 @@ public class EnemySystem : Singleton<EnemySystem>
         ActionSystem.AttachPerformer<AttackHeroGA>(AttackHeroPerformer);
         ActionSystem.SubscribeReaction<TurnGA>(TurnGAPostReaction, ReactionTiming.POST);
         ActionSystem.SubscribeReaction<TurnGA>(TurnGAPostReaction2, ReactionTiming.POST);
-        ActionSystem.SubscribeReaction<TurnGA>(TurnGAPreReaction, ReactionTiming.PRE);
-
     }
     void OnDisable()
     {
@@ -25,20 +23,22 @@ public class EnemySystem : Singleton<EnemySystem>
         ActionSystem.DetachPerformer<AttackHeroGA>();
         ActionSystem.UnsubscribeReaction<TurnGA>(TurnGAPostReaction, ReactionTiming.POST);
         ActionSystem.UnsubscribeReaction<TurnGA>(TurnGAPostReaction2, ReactionTiming.POST);
-        ActionSystem.UnsubscribeReaction<TurnGA>(TurnGAPreReaction, ReactionTiming.PRE);
     }
 
     //Publics
     public IEnumerator PlayEnemyTurnPerformer()
     {
-        //몬스터 턴 시작
+        yield return new WaitForSeconds(3f);    //몬스터 턴 시작 연출
+        Debug.Log("몬스터s턴 시작");
+
+        EnemysTurnGAPreReaction();        //몬스터 시작 처리
+
+        //몬스터 턴 로직 실행
         foreach (EnemyView enemy in Enemise)
         {
             EnemyTurnGA enemyTurnGA = new(enemy);
             ActionSystem.Instance.AddReaction(enemyTurnGA);
         }
-
-        yield return null;
     }
 
     //Performers
@@ -84,65 +84,18 @@ public class EnemySystem : Singleton<EnemySystem>
             DealDamageGA dealDamageGA = new(attackHeroGA.DamageAmount, targets, attackHeroGA.Caster);
             ActionSystem.Instance.AddReaction(dealDamageGA);
         }
-
-        Debug.Log("공격 처리");
-
-        yield return new WaitForSeconds(0.1f);  //hit stop
+        yield return null;
     }
 
     //Reactions
-
-    //몬스터s 턴 시작 전
-    private void TurnGAPreReaction(TurnGA turnGA)
-    {
-        if (turnGA.Type != TurnType.Enemy) return;
-
-        //적들의 턴 시작시, 방어막 스택 제거
-        foreach (EnemyView enemy in Enemise)
-        {
-            //이동 포인트 초기화
-            enemy.ResetMovePoint();
-
-            int armorStack = enemy.GetStatusEffectStacks(StatusEffectType.ARMOR);
-            if (armorStack > 0) enemy.RemoveStatusEffect(StatusEffectType.ARMOR, armorStack);
-
-            //상태 효과
-            //악화
-            float specialRate = 1;
-            bool deteriaorateExist = enemy.CheckStatusEffectExist(StatusEffectType.DETERIORATE);
-            if (deteriaorateExist)
-            {
-                float rate = enemy.GetStatusEffectInfo(StatusEffectType.DETERIORATE).Deteriorate_Rate;
-                specialRate *= rate;
-            }
-
-            //독물
-            int poisionStatcks = enemy.GetStatusEffectStacks(StatusEffectType.POISIONING);
-            if (poisionStatcks > 0)
-            {
-                float percent = enemy.GetStatusEffectInfo(StatusEffectType.POISIONING).Poision_Percent;
-                float amount = enemy.MaxHealth * (percent / 100f) * specialRate;
-                DealDamageGA dealDamageGA = new(amount, new() { enemy }, enemy, DamageFormulaType.Special);
-                ActionSystem.Instance.AddReaction(dealDamageGA);
-            }
-
-            //출혈
-            int bleedingStatcks = enemy.GetStatusEffectStacks(StatusEffectType.BLEEDING);
-            if (bleedingStatcks > 0)
-            {
-                float percent = enemy.GetStatusEffectInfo(StatusEffectType.BLEEDING).Bleeding_Percent;
-                float amount = enemy.MaxHealth * (percent / 100f) * specialRate;
-                DealDamageGA dealDamageGA = new(amount, new() { enemy }, enemy, DamageFormulaType.Special);
-                ActionSystem.Instance.AddReaction(dealDamageGA);
-            }
-        }
-    }
 
     //몬스터들 턴 종료 전
     //모든 적들 다음으로 할 행동 판단 및 보여주기
     private void TurnGAPostReaction(TurnGA turnGA)
     {
         if (turnGA.Type != TurnType.Enemy) return;
+
+        Debug.Log("몬스터 턴 종료");
 
         foreach (EnemyView enemy in Enemise)
         {
@@ -184,6 +137,24 @@ public class EnemySystem : Singleton<EnemySystem>
             EnemyAction action = enemy.Enemy.JudgeActAction(enemy);
             if (action != null)
                 enemy.SetNextAction(action);
+        }
+    }
+
+    //Privates
+
+    //몬스터s 턴 시작
+    private void EnemysTurnGAPreReaction()
+    {
+        //적들의 턴 시작시, 방어막 스택 제거
+        foreach (EnemyView enemy in Enemise)
+        {
+            //이동 포인트 초기화
+            enemy.ResetMovePoint();
+
+            int armorStack = enemy.GetStatusEffectStacks(StatusEffectType.ARMOR);
+            if (armorStack > 0) enemy.RemoveStatusEffect(StatusEffectType.ARMOR, armorStack);
+
+            //상태 효과
         }
     }
 }

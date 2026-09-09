@@ -244,7 +244,8 @@ namespace CartoonFX
 							{
 								cfxr.ResetState();
 							}
-						}
+                            Debug.Log("작동?");
+                        }
 					}
 				}
 			}
@@ -277,6 +278,8 @@ namespace CartoonFX
 					{
 						currentEffect.SetActive(false);
 						currentEffect.SetActive(true);
+
+						Debug.Log("스킬 사용");
 					}
 				}
 			}

@@ -16,7 +16,7 @@ MonoBehaviour:
   <Enemies>k__BackingField:
   - {fileID: 11400000, guid: f9445edd82ffa5a4e9f90246b225a52d, type: 2}
   <EnemyPoses>k__BackingField:
-  - {x: 0, y: 2}
+  - {x: 2, y: 2}
   <HeroSetupPoses>k__BackingField:
   - {x: 4, y: 0}
   - {x: 4, y: 1}

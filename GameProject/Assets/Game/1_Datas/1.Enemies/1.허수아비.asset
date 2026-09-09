@@ -31,6 +31,6 @@ MonoBehaviour:
     - rid: 6342211190556983373
       type: {class: AttackEA, ns: , asm: Assembly-CSharp}
       data:
-        <Damage>k__BackingField: 3
+        <Damage>k__BackingField: 14
         <Distance>k__BackingField: 1
         icon: {fileID: 21300028, guid: 7ab74e659e1f0a34d9cfec21c478fc12, type: 3}

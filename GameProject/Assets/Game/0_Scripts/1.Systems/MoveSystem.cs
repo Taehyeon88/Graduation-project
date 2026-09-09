@@ -131,6 +131,7 @@ public class MoveSystem : Singleton<MoveSystem>
         if (mover != null)
         {
             yield return TokenSystem.Instance.Main.MoveToken(mover, position);
+            SoundSystem.Instance.PlaySound(2);
         }
     }
 }

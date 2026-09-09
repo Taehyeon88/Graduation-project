@@ -8,7 +8,6 @@ using UnityEngine.UI;
 
 public class EnemyView : CombatantView
 {
-    [SerializeField] private Transform EnemyInfoUITrans;
     [SerializeField] private Image nextActUIImage;
     [SerializeField] private TMP_Text nextActText;
 
@@ -29,7 +28,7 @@ public class EnemyView : CombatantView
     private EnemyAction nextAction;
 
     //상태효과 - NEW개볌 변수
-    private Dictionary<StatusEffectType, (int, Sprite, float[])> newStatusEffectUIs = new();
+    private Dictionary<StatusEffectType, (int, Sprite)> newStatusEffectUIs = new();
 
 
     public void SetUp(EnemyData enemyData)
@@ -79,19 +78,19 @@ public class EnemyView : CombatantView
         if (turnGA.Type != TurnType.Enemy) return;
 
         foreach (var seUI in newStatusEffectUIs)
-            AddStatusEffect(seUI.Key, seUI.Value.Item1, seUI.Value.Item2, seUI.Value.Item3);
+            AddStatusEffect(seUI.Key, seUI.Value.Item1, seUI.Value.Item2);
         newStatusEffectUIs.Clear();
     }
 
     //overrides
-    public override void AddStatusEffect(StatusEffectType type, int stackCount, Sprite sprite, float[] infoes = null)
+    public override void AddStatusEffect(StatusEffectType type, int stackCount, Sprite sprite)
     {
         if (TurnSystem.Instance.CurrentTurn == TurnType.Enemy)
         {
             if (!newStatusEffectUIs.ContainsKey(type) && !statusEffectUIs.ContainsKey(type))
-                newStatusEffectUIs.Add(type, (1, sprite, infoes));
+                newStatusEffectUIs.Add(type, (1, sprite));
         }
-        base.AddStatusEffect(type, stackCount, sprite, infoes);
+        base.AddStatusEffect(type, stackCount, sprite);
     }
 
     public override void RemoveStatusEffect(StatusEffectType type, int stackCount)

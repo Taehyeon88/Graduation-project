@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f32d6cd5008d4c94baaebd8a63827ff7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TokenPreview
-  <SpriteRenderer>k__BackingField: {fileID: 8120124740019740022}
+  <Model>k__BackingField: {fileID: 8120124740019740022}
 --- !u!114 &3767211634117423913
 MonoBehaviour:
   m_ObjectHideFlags: 0

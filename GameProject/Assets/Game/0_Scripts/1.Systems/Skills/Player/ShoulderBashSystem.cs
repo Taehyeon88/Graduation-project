@@ -34,7 +34,7 @@ public class ShoulderBashSystem : MonoBehaviour
 
 
                 //이동 이후, 공격 체인
-                DealDamageGA dealDamageGA = new(shoulderBashGA.Damage, new() { target }, heroView);
+                DealDamageGA dealDamageGA = new(shoulderBashGA.Damage, target, heroView);
                 ActionSystem.Instance.AddReaction(dealDamageGA);
 
                 //연출

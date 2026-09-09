@@ -44,7 +44,7 @@ public class TokenMainAPI : MonoBehaviour
         }
         grid.RemoveToken(token);
 
-        Tween tween = token.transform.DOScale(Vector3.zero, 0.25f);
+        Tween tween = token.Transform.DOScale(Vector3.zero, 0.25f);
         yield return tween.WaitForCompletion();
         Destroy(token.gameObject);
     }

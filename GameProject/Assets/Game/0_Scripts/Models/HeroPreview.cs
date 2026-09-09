@@ -28,8 +28,8 @@ public class HeroPreview : Token
     }
     private void SetPreViewMaterial(TokenPreViewState newState)
     {
-        Color color = SpriteRenderer.color;
+        Color color = Model.color;
         color.a = newState == TokenPreViewState.Positive ? 0.8f : 0.0f;
-        SpriteRenderer.color = color;
+        Model.color = color;
     }
 }

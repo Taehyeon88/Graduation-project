@@ -22,7 +22,7 @@ public class SplashSystem : MonoBehaviour
 
             if (target != null)
             {
-                DealDamageGA dealDamageGA = new(splashGA.Damage, new() { target }, splashGA.Caster);
+                DealDamageGA dealDamageGA = new(splashGA.Damage, target, splashGA.Caster);
                 ActionSystem.Instance.AddReaction(dealDamageGA);
 
                 List<CombatantView> splashTargets = Utility.PositionsToCombantViews(range, false, true);

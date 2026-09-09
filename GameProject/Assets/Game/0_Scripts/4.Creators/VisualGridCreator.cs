@@ -46,6 +46,12 @@ public class VisualGridCreator : Singleton<VisualGridCreator>
         CreateVisualGrid(tokenId, isoPosition, afterName);
     }
 
+    public void ChangeVisualGridPosition(int tokenId, Vector2Int isoPosition, string vgName)
+    {
+        RemoveVisualGrid(tokenId, vgName);
+        CreateVisualGrid(tokenId, isoPosition, vgName);
+    }
+
     public void CreateVisualGrid(int tokenId, Vector2Int isoPosition, string vgName)
     {
         VisualGridData vgSO = Array.Find(visualGridDatas, v => v.name == vgName);

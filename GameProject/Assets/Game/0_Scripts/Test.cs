@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using IsoTools;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,41 +10,27 @@ using UnityEngine.UI;
 
 public class Test : MonoBehaviour
 {
-    private RectTransform rectTransform;
-
-    [SerializeField] private int currnetMana = 0;
-    [SerializeField] private int maxMana = 3;
-
-    [SerializeField] private TMP_Text mana_Text;
-    [SerializeField] private Slider mana_Slider;
-
-    [SerializeField] private float refill_duration = 0.2f;
-    [SerializeField] private Ease refill_ease = Ease.Linear;
-    [SerializeField] private float spend_duration = 0.1f;
-    [SerializeField] private Ease spend_ease = Ease.Linear;
-
-    private Tween RefillManaTween;
-    private Tween SpendManaTween;
+    public Vector2Int position;
 
     private void Start()
     {
-        rectTransform = GetComponent<RectTransform>();
-
-        RefillManaTween = DOTween.To(() =>
-                mana_Slider.value,
-                v => mana_Slider.value = v,
-                currnetMana / (float)maxMana,
-                refill_duration
-            ).SetEase(refill_ease).OnComplete(() => Debug.Log("트윈 종료")).SetAutoKill(false);
-
-        Debug.Log($"목표 : {currnetMana / (float)maxMana}");
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.T))
         {
-            RefillManaTween.Restart();
+
+            Vector3 world = TokenSystem.Instance.IsoWorld.IsoToScreen(
+                            new Vector3(position.x, position.y, 1f));
+            Debug.Log($"{position} 위의 토큰의 world 위치는 {world} 이다");
+
+            //Vector3 pos = TokenSystem.Instance.IsoWorld.IsoToScreen(new Vector3(position.x, position.y, 1));
+            //Debug.Log($"{position} 위의 토큰의 화면상 위치는 {pos} 이다");
+
+            //Vector3 mousePos = Input.mousePosition;
+            //Vector3 pos = TokenSystem.Instance.IsoWorld.ScreenToIso(mousePos);
+            //Debug.Log($"마우스 위치 {mousePos}에 iso 위치는 {pos} 이다");
         }
     }
 }

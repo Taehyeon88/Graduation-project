@@ -6,7 +6,7 @@ using UnityEngine;
 public class AttackEnemyEffect : Effect
 {
     [SerializeField] private float amount;
-    [SerializeField] private int count;
+    [SerializeField] private int count = 1;
     [SerializeField] private HeroAnimationType animationType;
     public override GameAction GetGameAction(List<Vector2Int> targetpoes, HeroView myView)
     {

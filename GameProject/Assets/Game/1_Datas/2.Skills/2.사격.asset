@@ -44,3 +44,5 @@ MonoBehaviour:
       type: {class: AttackEnemyEffect, ns: , asm: Assembly-CSharp}
       data:
         amount: 3
+        count: 1
+        animationType: 1

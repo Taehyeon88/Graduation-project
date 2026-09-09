@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,5 +9,4 @@ public class StatusEffectData : ScriptableObject
     [field: SerializeField] public SEMachanicsType SEMachanicsType { get; private set; }
     [field: SerializeField] public string Discription { get; private set; }
     [field: SerializeField] public Sprite spriteImage { get; private set; }
-    [field: SerializeField] public float[] effectInfos { get; private set; }
 }

@@ -63,15 +63,12 @@ public class SkillView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         {
             OnPointerExit(eventData);  //호버 종료 예외처리
 
-            SoundSystem.Instance.PlaySound(18);    //스킬 선택 사운드
+            SoundSystem.Instance.PlaySound(3004);    //스킬 선택 사운드
             SkillSystem.Instance.PlaySkillTargetMode(this);  //선택 모드 시작 / 스킬 전환 / 종료
         }
         else
         {
-            //코스트 부족 사운드 재생
-            SoundSystem.Instance.PlaySound(21);
-
-            //코스트 부족으로 사용불가 연출
+            SoundSystem.Instance.PlaySound(3006);  //코스트 부족 사운드 재생
         }
     }
 
@@ -81,7 +78,7 @@ public class SkillView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
         Interactions.Instance.IsSkillHovering = true;
 
-        SoundSystem.Instance.PlaySound(17);        //스킬 호버 사운드 재생
+        SoundSystem.Instance.PlaySound(3003);        //스킬 호버 사운드 재생
         TooltipSystem.Instance.Show(skill_Rect, Skill.Description, Skill.Title); //스킬 툴팁 팝업
         SkillSystem.Instance.HighlightUI.Show(skill_Rect.anchoredPosition);    //하이라이트 활성화
     }

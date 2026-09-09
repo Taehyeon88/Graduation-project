@@ -63,7 +63,7 @@ public class KnockBackSystem : MonoBehaviour
         if (chrash)
         {
             Debug.Log("충돌 데미지 획득");
-            DealDamageGA dealDamageGA = new(crachDamage, new() { target }, knockBackGA.Caster);
+            DealDamageGA dealDamageGA = new(crachDamage, target, knockBackGA.Caster);
             ActionSystem.Instance.AddReaction(dealDamageGA);
         }
         yield return null;

@@ -30,11 +30,9 @@ public class StatusEffectSystem : Singleton<StatusEffectSystem>
         foreach (var target in addStatusEffectGA.Targets)
         {
             if (target != null)
-            {
-                var infoes = effectDataByType[addStatusEffectGA.StatusEffectType].effectInfos;
-                var sprite = effectDataByType[addStatusEffectGA.StatusEffectType].spriteImage;
+            {                var sprite = effectDataByType[addStatusEffectGA.StatusEffectType].spriteImage;
 
-                target.AddStatusEffect(addStatusEffectGA.StatusEffectType, addStatusEffectGA.StackCount, sprite, infoes);
+                target.AddStatusEffect(addStatusEffectGA.StatusEffectType, addStatusEffectGA.StackCount, sprite);
                 yield return null; //Add VFX for adding status effects
             }
         }

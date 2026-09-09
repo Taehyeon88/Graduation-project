@@ -45,6 +45,8 @@ public class HeroSystem : Singleton<HeroSystem>
     {
         if (turnGA.Type != TurnType.Player) return;
 
+        //플레이어턴 시작 연출
+
         Debug.Log("플레이어 턴 시작");
 
         foreach (var hero in HeroViews)
@@ -66,26 +68,6 @@ public class HeroSystem : Singleton<HeroSystem>
 
                 if (!tdSEExist)
                     hero.RemoveStatusEffect(StatusEffectType.DETERIORATE, 0);
-            }
-
-            //독물
-            int poisionStatcks = hero.GetStatusEffectStacks(StatusEffectType.POISIONING);
-            if (poisionStatcks > 0)
-            {
-                float percent = hero.GetStatusEffectInfo(StatusEffectType.POISIONING).Poision_Percent;
-                float amount = hero.MaxHealth * (percent / 100f) * specialRate;
-                DealDamageGA dealDamageGA = new(amount, new() { hero }, hero, DamageFormulaType.Special);
-                ActionSystem.Instance.AddReaction(dealDamageGA);
-            }
-
-            //출혈
-            int bleedingStatcks = hero.GetStatusEffectStacks(StatusEffectType.BLEEDING);
-            if (bleedingStatcks > 0)
-            {
-                float percent = hero.GetStatusEffectInfo(StatusEffectType.BLEEDING).Bleeding_Percent;
-                float amount = hero.MaxHealth * (percent / 100f) * specialRate;
-                DealDamageGA dealDamageGA = new(amount, new() { hero }, hero, DamageFormulaType.Special);
-                ActionSystem.Instance.AddReaction(dealDamageGA);
             }
         }
 

@@ -142,6 +142,8 @@ public class SkillSystem : Singleton<SkillSystem>
                     string tpstring = string.Join("", targetPoints);
                     if (currenttpstring != tpstring)
                     {
+                        SoundSystem.Instance.PlaySound(3001);
+
                         //선택 범위 VG 업데이트
                         VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), ability.TargetVG);
 
@@ -279,11 +281,14 @@ public class SkillSystem : Singleton<SkillSystem>
 
     private IEnumerator RefillSkillLimitPerformer(RefillSkillLimitGA refillSkillLimitGA)
     {
-        foreach (var skillView in skillsUI.SkillViews)
+        foreach (var hero in HeroSystem.Instance.HeroViews)
         {
-            if (skillView != null && skillView.Skill != null)
+            if (hero != null)
             {
-                skillView.Skill.ReFillLimit();
+                foreach (var skill in hero.Skills)
+                {
+                    skill?.ReFillLimit();
+                }
             }
         }
         yield return null;

@@ -20,11 +20,15 @@ public class AnimationSystem : Singleton<AnimationSystem>
             Debug.Log("리턴 애니메이션");
             animationGA.Tween.Restart();
             yield return animationGA.Tween.WaitForCompletion();
+
+            animationGA.Tween.OnComplete(()=> animationGA.Tween.Kill());
         }
         else if (animationGA.Sequence != null)
         {
             animationGA.Sequence.Restart();
             yield return animationGA.Sequence.WaitForCompletion();
+
+            animationGA.Tween.OnComplete(() => animationGA.Tween.Kill());
         }
     }
 }
