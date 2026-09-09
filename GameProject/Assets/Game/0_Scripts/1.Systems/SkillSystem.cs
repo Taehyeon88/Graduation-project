@@ -8,6 +8,8 @@ public class SkillSystem : Singleton<SkillSystem>
 {
     [Header("Skill Element")]
     [SerializeField] private SkillsUI skillsUI;
+    [SerializeField] private PopUpAmountUI popUpAmountUI;
+
     [Header("Skill Direct Element")]
     [field : SerializeField] public SkillHighlightUI HighlightUI { get; private set; }
     [SerializeField] private float upSkill_Distance = 10f;
@@ -153,6 +155,13 @@ public class SkillSystem : Singleton<SkillSystem>
                         //공격 대상 VG 업데이트
                         targets = GetTargetPoses(targetPoints, isEnemy ? TargetType.Enemy : TargetType.Friendly);
 
+                        //데미지 수치가 있는 Effect는 무조건 0번째 인덱스 배치!!
+                        if (ability.Effects[0] is IHaveDamage idamage)
+                        {
+                            popUpAmountUI.EndPopUpAmount();
+                            popUpAmountUI.PopUpAmount(idamage.Damage_Amount, HeroSystem.Instance.CurrentHero, targets);
+                        }
+
                         foreach (var target in targets)
                             VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), target, isEnemy ? "Negative" : "Positive");
 
@@ -257,6 +266,7 @@ public class SkillSystem : Singleton<SkillSystem>
                 new Vector2(rectTrans.anchoredPosition.x, rectTrans.anchoredPosition.y - upSkill_Distance);
         }
 
+        popUpAmountUI.EndPopUpAmount();
         start_Switch_Skill = false;
         Interactions.Instance.IsSkillTargetMode = false;
         current_Selected_Skill = null;

@@ -28,7 +28,7 @@ public class EnemySystem : Singleton<EnemySystem>
     //Publics
     public IEnumerator PlayEnemyTurnPerformer()
     {
-        yield return new WaitForSeconds(3f);    //몬스터 턴 시작 연출
+        yield return new WaitForSeconds(1f);
         Debug.Log("몬스터s턴 시작");
 
         EnemysTurnGAPreReaction();        //몬스터 시작 처리
@@ -99,24 +99,7 @@ public class EnemySystem : Singleton<EnemySystem>
 
         foreach (EnemyView enemy in Enemise)
         {
-//---------------------------------------------몬스터 상태효과-----------------------------------------------
-            //몬스터 상태효과 N감소
-            foreach (var statusEffectType in enemy.GetStatusEffects())
-            {
-                //기간제 및 조건제만 실행
-                var mcType = StatusEffectSystem.Instance.GetMachanicsType(statusEffectType);
-                if (mcType == SEMachanicsType.FixedTerm || mcType == SEMachanicsType.ConditionTerm)
-                {
-                    enemy.RemoveStatusEffect(statusEffectType, 1);
-                }
-            }
-
-            //상태효과 - 악화 삭제
-            bool tdSEExist = enemy.CheckStatusEffectExist(StatusEffectType.POISIONING)
-                           || enemy.CheckStatusEffectExist(StatusEffectType.BLEEDING);
-            if (!tdSEExist)
-                enemy.RemoveStatusEffect(StatusEffectType.DETERIORATE, 0);
-            //-------------------------------------------------------------------------------------------------------
+            enemy.ReduceSEWhenMyTurnEnd();   //공용 종료시, SE 제거
 
             //다음 턴에 할 행동 미리 설정
             EnemyAction action = enemy.Enemy.JudgeActAction(enemy);
@@ -148,13 +131,8 @@ public class EnemySystem : Singleton<EnemySystem>
         //적들의 턴 시작시, 방어막 스택 제거
         foreach (EnemyView enemy in Enemise)
         {
-            //이동 포인트 초기화
-            enemy.ResetMovePoint();
-
-            int armorStack = enemy.GetStatusEffectStacks(StatusEffectType.ARMOR);
-            if (armorStack > 0) enemy.RemoveStatusEffect(StatusEffectType.ARMOR, armorStack);
-
-            //상태 효과
+            enemy.ResetMovePoint();            //이동 포인트 초기화
+            enemy.ReduceSEWhenMyTurnStart();   //공용 시작시, SE 제거
         }
     }
 }

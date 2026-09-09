@@ -1,11 +1,16 @@
-﻿using System.Collections;
+﻿using DG.Tweening;
+using System.Collections;
 using UnityEngine;
 
 public class TurnSystem : Singleton<TurnSystem>
 {
+    [Header("Element")]
+    [SerializeField] private TurnPopUpUI turnPopUpUI;
     public TurnType CurrentTurn => currentTurn;
+    public int CurrentTurn_Number => currentTurn_Number;
 
     private TurnType currentTurn = TurnType.GameSetUp;
+    private int currentTurn_Number = 0;
 
     protected void OnEnable()
     {
@@ -32,9 +37,23 @@ public class TurnSystem : Singleton<TurnSystem>
         }
         else if (turnGA.Type == TurnType.Enemy)
         {
+            Tween direct = turnPopUpUI.GetTurnPopUpTween(TurnType.Enemy, currentTurn_Number);   //턴 팝업 연출
+            direct?.Restart();
+            yield return direct?.WaitForCompletion();
+
             yield return EnemySystem.Instance.PlayEnemyTurnPerformer();
         }
-        yield return null;
+        else if (turnGA.Type == TurnType.Player)
+        {
+            yield return new WaitForSeconds(1f);
+
+            currentTurn_Number++;
+            Tween direct = turnPopUpUI.GetTurnPopUpTween(TurnType.Player, currentTurn_Number);  //턴 팝업 연출
+            direct?.Restart();
+            yield return direct?.WaitForCompletion();
+
+            yield return HeroSystem.Instance.PlayHeroTurnPerformer();
+        }
     }
 
     private void TurnGAPostReaction(TurnGA turnGA)

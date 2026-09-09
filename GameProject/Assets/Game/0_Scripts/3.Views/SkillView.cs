@@ -17,7 +17,7 @@ public class SkillView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     [SerializeField] private TMP_Text limit_Text;
 
     private RectTransform skill_Rect;
-    private bool is_Cannot_Use = true;
+    private bool is_can_use = false;
     public void SetUp(Skill skill)
     {
         if (skill == null) return;
@@ -37,18 +37,18 @@ public class SkillView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         //스킬 사용 불가 여부 연출
         if (ManaSystem.Instance.HasEnoughMana() && Skill.HasEnoughLimit())
         {
-            if (is_Cannot_Use)
+            if (!is_can_use)
             {
-                icon.color = Color.HSVToRGB(0.0f, 0.0f, 100.0f);   //스킬 사용 불가 처리 취소
-                is_Cannot_Use = false;
+                icon.color = Color.HSVToRGB(0.0f, 0.0f, 1f);   //스킬 사용 불가 처리 취소
+                is_can_use = true;
             }
         }
         else
         {
-            if (!is_Cannot_Use)
+            if (is_can_use)
             {
-                icon.color = Color.HSVToRGB(0.0f, 0.0f, 50.0f);   //스킬 사용 불가 처리
-                is_Cannot_Use = true;
+                icon.color = Color.HSVToRGB(0.0f, 0.0f, 0.5f);   //스킬 사용 불가 처리
+                is_can_use = false;
             }
         }
 

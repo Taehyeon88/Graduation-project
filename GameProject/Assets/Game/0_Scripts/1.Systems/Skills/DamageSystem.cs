@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class DamageSystem : Singleton<DamageSystem>
 {
@@ -31,8 +32,11 @@ public class DamageSystem : Singleton<DamageSystem>
                 if (target == null) continue;
 
                 //데미지 적용 로직
-                int amountInt = CalculateDamage(dealDamageGA.Caster, target, dealDamageGA.Amount);
-                Debug.Log($"{dealDamageGA.Caster?.name}가 {target.name}에게 구 - {dealDamageGA.Amount}데미지 | 실 - {amountInt}데미지");
+                int amountInt = DamageCaculator.GetDamage(
+                        dealDamageGA.Amount,
+                        dealDamageGA.Caster, 
+                        target
+                    );
 
                 PlayDamageVFX(target.Model.transform.position, target is HeroView);   //피격 이펙트 연출
 
@@ -42,8 +46,11 @@ public class DamageSystem : Singleton<DamageSystem>
         else
         {
             //데미지 적용 로직
-            int amountInt = CalculateDamage(dealDamageGA.Caster, dealDamageGA.Target, dealDamageGA.Amount);
-            Debug.Log($"{dealDamageGA.Caster?.name}가 {dealDamageGA.Target.name}에게 구 - {dealDamageGA.Amount}데미지 | 실 - {amountInt}데미지");
+            int amountInt = DamageCaculator.GetDamage(
+                    dealDamageGA.Amount,
+                    dealDamageGA.Caster,
+                    dealDamageGA.Target
+                 );
 
             //피격 이펙트 연출
             PlayDamageVFX(dealDamageGA.Target.Model.transform.position, dealDamageGA.Target is HeroView);
@@ -89,40 +96,6 @@ public class DamageSystem : Singleton<DamageSystem>
             GameOverGA gameOverGA = new();
             ActionSystem.Instance.AddReaction(gameOverGA);
         }
-    }
-
-    private int CalculateDamage(CombatantView caster, CombatantView target, float damageAmount)
-    {
-        //상태이상 처리 로직
-        float amount = damageAmount;
-        float temp = damageAmount;
-        if (caster != null)
-        {
-            //혼란 : N% 공격력 감소
-            int disarrayStack = caster.GetStatusEffectStacks(StatusEffectType.DISARRAY);
-            if (disarrayStack > 0)
-            {
-                amount -= damageAmount * (30 / 100f);
-            }
-
-            //집중 : N% 공격력 증가
-            int concentrationStatck = caster.GetStatusEffectStacks(StatusEffectType.CONCENTRATION);
-            if (concentrationStatck > 0)
-            {
-                amount += damageAmount * (30 / 100f);
-            }
-        }
-
-        //방어자 계수
-        float defenderAmount = amount;
-        //표적 : N% 받는 피해 증가
-        int markStack = target.GetStatusEffectStacks(StatusEffectType.MARK);
-        if (markStack > 0)
-        {
-            amount += damageAmount * (30 / 100f);
-        }
-
-        return Mathf.CeilToInt(amount);
     }
 
     private void PlayDamageVFX(Vector3 position, bool isShacking = true)

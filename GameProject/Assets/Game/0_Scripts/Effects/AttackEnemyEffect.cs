@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class AttackEnemyEffect : Effect
+public class AttackEnemyEffect : Effect, IHaveDamage
 {
+    public float Damage_Amount => amount;
+
     [SerializeField] private float amount;
     [SerializeField] private int count = 1;
     [SerializeField] private HeroAnimationType animationType;

@@ -57,6 +57,8 @@ public class StatusEffectsUI : MonoBehaviour
         }
         else
         {
+            SoundSystem.Instance.PlaySound(2002);   //상태효과 획득 사운드
+
             if (!statusEffectUIs.ContainsKey(statusEffectType))
             {
                 StatusEffectUI statusEffectUI = Instantiate(statusEffectPrefab, transform);

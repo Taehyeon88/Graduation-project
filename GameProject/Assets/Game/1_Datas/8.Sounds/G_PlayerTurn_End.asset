@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ad5f4cd64fd1ea9498c76a4d8d89ee0f, type: 3}
-  m_Name: SoundData
+  m_Name: G_PlayerTurn_End
   m_EditorClassIdentifier: Assembly-CSharp::SoundData
-  <SoundId>k__BackingField: 4040
+  <SoundId>k__BackingField: 4001
   <AudioType>k__BackingField: 1
-  <Clip>k__BackingField: {fileID: 0}
+  <Clip>k__BackingField: {fileID: 8300000, guid: cd8cf7cd96e3de74b9b1edd591665f27, type: 3}
   <Volume>k__BackingField: 1
   <Loop>k__BackingField: 0
   editorType: 2

@@ -31,44 +31,23 @@ public class HeroSystem : Singleton<HeroSystem>
 
     private void OnEnable()
     {
-        ActionSystem.SubscribeReaction<TurnGA>(HeroTurnPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<TurnGA>(EnemyTurnPreReaction, ReactionTiming.PRE);
     }
     private void OnDisable()
     {
-        ActionSystem.UnsubscribeReaction<TurnGA>(HeroTurnPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<TurnGA>(EnemyTurnPreReaction, ReactionTiming.PRE);
     }
 
-    //Reactions
-    private void HeroTurnPreReaction(TurnGA turnGA)
+    //Publics
+    public IEnumerator PlayHeroTurnPerformer()
     {
-        if (turnGA.Type != TurnType.Player) return;
-
-        //플레이어턴 시작 연출
-
         Debug.Log("플레이어 턴 시작");
 
         foreach (var hero in HeroViews)
         {
-            hero.ResetMovePoint();   //각 영웅 이동 포인트 초기화
+            hero.ResetMovePoint();          //각 영웅 이동 포인트 초기화
 
-            //플레이어의 방어막 스택 삭제
-            int armorStack = hero.GetStatusEffectStacks(StatusEffectType.ARMOR);
-            if (armorStack > 0) hero.RemoveStatusEffect(StatusEffectType.ARMOR, armorStack);
-
-            //상태 효과
-            //악화
-            float specialRate = 1;
-            bool deteriaorateExist = hero.CheckStatusEffectExist(StatusEffectType.DETERIORATE);
-            if (deteriaorateExist)
-            {
-                bool tdSEExist = hero.CheckStatusEffectExist(StatusEffectType.POISIONING)
-                              || hero.CheckStatusEffectExist(StatusEffectType.BLEEDING);
-
-                if (!tdSEExist)
-                    hero.RemoveStatusEffect(StatusEffectType.DETERIORATE, 0);
-            }
+            hero.ReduceSEWhenMyTurnStart(); //공용 시작시, SE 제거
         }
 
         //마나 회복
@@ -78,6 +57,8 @@ public class HeroSystem : Singleton<HeroSystem>
         //스킬 사용 횟수 초기화
         RefillSkillLimitGA refillSkillLimitGA = new();
         ActionSystem.Instance.AddReaction(refillSkillLimitGA);
+
+        yield return null;
     }
 
     private void EnemyTurnPreReaction(TurnGA turnGA)
@@ -88,16 +69,7 @@ public class HeroSystem : Singleton<HeroSystem>
 
         foreach (var hero in HeroViews)
         {
-            //플레이어 상태효과 N감소
-            foreach (var statusEffectType in hero.GetStatusEffects())
-            {
-                //기간제 및 조건제만 실행
-                var mcType = StatusEffectSystem.Instance.GetMachanicsType(statusEffectType);
-                if (mcType == SEMachanicsType.FixedTerm || mcType == SEMachanicsType.ConditionTerm)
-                {
-                    hero.RemoveStatusEffect(statusEffectType, 1);
-                }
-            }
+            hero.ReduceSEWhenMyTurnEnd();  //공용 종료시, SE 제거
         }
     }
 }
