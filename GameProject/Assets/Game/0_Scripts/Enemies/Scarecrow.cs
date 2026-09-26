@@ -16,26 +16,8 @@ public class Scarecrow : Enemy
     }
     public override bool PerformAction(EnemyView enemy, EnemyAction nextAction)
     {
-        //인접 1칸 내, 영웅 찾아서 위치 정보 전달
-        if (nextAction is AttackEA attackEA)
-        {
-            var myPos = TokenSystem.Instance.API.GetTokenPosition(enemy);
-            var poses = TokenSystem.Instance.API.GetAllAroundPlaces(myPos, attackEA.Distance, false, true);
-            if (poses != null && poses.Count > 0)
-            {
-                foreach (Vector2Int p in poses)
-                {
-                    Token token = TokenSystem.Instance.API.GetTokenByPosition(p);
-                    if (token != null && token is HeroView hero)
-                    {
-                        Debug.Log($"토큰 이름{token.TokenData.Name}, 위치{p}, 사거리{attackEA.Distance}");
-                        attackEA.targetPosition = p;
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+        //대상 탐색은 PlayEnemyAction이 스스로 처리 (이동 없는 몬스터라 재검증할 것도 없음)
+        return true;
     }
 
     public override Enemy Clone()

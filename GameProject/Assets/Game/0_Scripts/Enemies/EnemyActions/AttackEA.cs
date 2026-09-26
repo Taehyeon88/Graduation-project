@@ -29,6 +29,12 @@ public class AttackEA : EnemyAction, IHaveDamage, IHaveDistance
 
     public override Sequence PlayEnemyAction(EnemyView enemy)
     {
+        HeroView target = FindRandomHeroInRange(enemy, Distance);
+        if (target == null)
+            return null;   //사거리 내 대상 없음 → 무시
+
+        targetPosition = TokenSystem.Instance.API.GetTokenPosition(target);
+
         bool singleTarget = targetRange == null || targetRange.Count <= 0;
         Vector2Int tweenPos = singleTarget? targetPosition : targetRange[targetRange.Count/2];
 

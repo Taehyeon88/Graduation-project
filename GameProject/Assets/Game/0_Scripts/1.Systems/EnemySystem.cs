@@ -14,6 +14,7 @@ public class EnemySystem : Singleton<EnemySystem>
     {
         ActionSystem.AttachPerformer<EnemyTurnGA>(EnemyTurnGAPerformer);
         ActionSystem.AttachPerformer<AttackHeroGA>(AttackHeroGAPerformer);
+        ActionSystem.AttachPerformer<PlayEnemyEAGA>(PlayEnemyEAGAPerformer);
         ActionSystem.SubscribeReaction<TurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
         ActionSystem.SubscribeReaction<TurnGA>(BattleStartPostReaction, ReactionTiming.POST);
     }
@@ -21,6 +22,7 @@ public class EnemySystem : Singleton<EnemySystem>
     {
         ActionSystem.DetachPerformer<EnemyTurnGA>();
         ActionSystem.DetachPerformer<AttackHeroGA>();
+        ActionSystem.DetachPerformer<PlayEnemyEAGA>();
         ActionSystem.UnsubscribeReaction<TurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
         ActionSystem.UnsubscribeReaction<TurnGA>(BattleStartPostReaction, ReactionTiming.POST);
     }
@@ -48,15 +50,18 @@ public class EnemySystem : Singleton<EnemySystem>
     {
         EnemyView enemy = enemyTurn.EnemyView;
 
-        //미리 예약한 행동 실행
-        if (enemy.NextAction != null)
+        //미리 예약한 행동 실행 (이동이 필요하면 PerformAction 안에서 먼저 큐잉됨)
+        if (enemy.NextAction != null && enemy.Enemy.PerformAction(enemy, enemy.NextAction))
         {
-            if (enemy.Enemy.PerformAction(enemy, enemy.NextAction))
-            {
-                var motion = enemy.NextAction.PlayEnemyAction(enemy);
-                yield return motion?.WaitForCompletion();
-            }
+            ActionSystem.Instance.AddReaction(new PlayEnemyEAGA(enemy, enemy.NextAction));
         }
+        yield break;
+    }
+
+    private IEnumerator PlayEnemyEAGAPerformer(PlayEnemyEAGA playEnemyEAGA)
+    {
+        var motion = playEnemyEAGA.Action.PlayEnemyAction(playEnemyEAGA.Enemy);
+        yield return motion?.WaitForCompletion();
     }
 
     private IEnumerator AttackHeroGAPerformer(AttackHeroGA attackHeroGA)

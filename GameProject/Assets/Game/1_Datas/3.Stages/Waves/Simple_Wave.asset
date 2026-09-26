@@ -14,11 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WaveData
   <Id>k__BackingField: -1
   <EnemyDatas>k__BackingField:
-  - {fileID: 11400000, guid: f9445edd82ffa5a4e9f90246b225a52d, type: 2}
-  - {fileID: 11400000, guid: f9445edd82ffa5a4e9f90246b225a52d, type: 2}
-  - {fileID: 11400000, guid: f9445edd82ffa5a4e9f90246b225a52d, type: 2}
-  - {fileID: 11400000, guid: f9445edd82ffa5a4e9f90246b225a52d, type: 2}
-  - {fileID: 11400000, guid: f9445edd82ffa5a4e9f90246b225a52d, type: 2}
-  - {fileID: 11400000, guid: f9445edd82ffa5a4e9f90246b225a52d, type: 2}
-  <WavePerEnemyCount>k__BackingField: 020000000300000001000000
+  - {fileID: 11400000, guid: 7c1983e88cd4af4498349d521678d295, type: 2}
+  - {fileID: 11400000, guid: ec5ea812691e02842aed134d63a60bc2, type: 2}
+  - {fileID: 11400000, guid: ec5ea812691e02842aed134d63a60bc2, type: 2}
+  - {fileID: 11400000, guid: ec5ea812691e02842aed134d63a60bc2, type: 2}
+  - {fileID: 11400000, guid: ec5ea812691e02842aed134d63a60bc2, type: 2}
+  - {fileID: 11400000, guid: ec5ea812691e02842aed134d63a60bc2, type: 2}
+  - {fileID: 11400000, guid: ec5ea812691e02842aed134d63a60bc2, type: 2}
+  <WavePerEnemyCount>k__BackingField: 02000000030000000100000001000000
   <WaveCoreData>k__BackingField: {fileID: 11400000, guid: a35cb2f90b8a4f8458bcf458f6c465ac, type: 2}
