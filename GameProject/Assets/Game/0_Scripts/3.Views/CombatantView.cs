@@ -8,7 +8,7 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.UI; 
 
-public class CombatantView : Token, IDamage
+public class CombatantView : Token, IDamageable
 {
     [SerializeField] private Slider healthSlider;
     [SerializeField] private TMP_Text healthText;

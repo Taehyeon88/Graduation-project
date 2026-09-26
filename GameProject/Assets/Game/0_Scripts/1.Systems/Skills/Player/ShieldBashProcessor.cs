@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShieldBashSystem : MonoBehaviour
+public class ShieldBashProcessor : MonoBehaviour
 {
     private void OnEnable()
     {
@@ -15,15 +15,15 @@ public class ShieldBashSystem : MonoBehaviour
 
     private IEnumerator ShieldBashGAPerformer(ShieldBashGA shieldBashGA)
     {
-        List<IDamage> combatants = Utility.PositionsToIDamages(shieldBashGA.TargetPoses);
+        List<IDamageable> combatants = Utility.PositionsToIDamageables(shieldBashGA.TargetPoses);
 
         if (combatants.Count > 0)
         {
-            DealDamageGA dealDamageGA = new(shieldBashGA.Amount, combatants, shieldBashGA.myView);
+            DealDamageGA dealDamageGA = new(shieldBashGA.Amount, combatants, shieldBashGA.Caster);
             ActionSystem.Instance.AddReaction(dealDamageGA);
 
             int shieldStack = Mathf.CeilToInt(shieldBashGA.Amount);
-            AddStatusEffectGA addStatusEffectGA = new(StatusEffectType.ARMOR, shieldStack, new() { shieldBashGA.myView });
+            AddStatusEffectGA addStatusEffectGA = new(StatusEffectType.ARMOR, shieldStack, new() { shieldBashGA.Caster }, shieldBashGA.Caster);
             dealDamageGA.PostReactions.Add((addStatusEffectGA, null));
         }
         else

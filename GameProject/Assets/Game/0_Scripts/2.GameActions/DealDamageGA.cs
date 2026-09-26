@@ -5,18 +5,18 @@ using UnityEngine;
 public class DealDamageGA : GameAction, IHaveCaster
 {
     public float Amount { get; set; }
-    public List<IDamage> Targets { get; private set; }
-    public IDamage Target { get; private set; }
+    public List<IDamageable> Targets { get; private set; }
+    public IDamageable Target { get; private set; }
     public Token Caster { get; private set; }
 
-    public DealDamageGA(float amount, List<IDamage> targets, Token caster)
+    public DealDamageGA(float amount, List<IDamageable> targets, Token caster)
     {
         Amount = amount;
         Targets = new(targets);
         Caster = caster;
     }
 
-    public DealDamageGA(float amount, IDamage target, Token caster)
+    public DealDamageGA(float amount, IDamageable target, Token caster)
     {
         Amount = amount;
         Target = target;

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using SerializeReferenceEditor;
 using UnityEngine;
 
-public class SplashGA : GameAction
+public class SplashGA : GameAction, IHaveCaster
 {
     public CombatantView Caster { get; private set; }
+    Token IHaveCaster.Caster => Caster;
     public List<Vector2Int> TargetPoses { get; private set; }
     public RangeMode GridRangeMode { get; private set; }
     public bool IsPentration { get; private set; }

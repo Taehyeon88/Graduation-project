@@ -23,7 +23,7 @@ public class HeroArmor : Perk
     }
     public override void PerformReaction(GameAction action, HeroView owner)
     {
-        AddStatusEffectGA addStatusEffectGA = new(StatusEffectType.ARMOR, armor_Amount, new() { owner });
+        AddStatusEffectGA addStatusEffectGA = new(StatusEffectType.ARMOR, armor_Amount, new() { owner }, owner);
         ActionSystem.Instance.AddReaction(addStatusEffectGA);
     }
 }

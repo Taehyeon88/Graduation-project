@@ -9,26 +9,26 @@ public class MPSystem : Singleton<MPSystem>
 
     private void OnEnable()
     {
-        ActionSystem.AttachPerformer<SpendMPGA>(SpendMPPerformer);
-        ActionSystem.AttachPerformer<RefillMPGA>(RefillMPPerformer);
+        ActionSystem.AttachPerformer<SpendMPGA>(SpendMPGAPerformer);
+        ActionSystem.AttachPerformer<RefillMPGA>(RefillMPGAPerformer);
     }
     private void OnDisable()
     {
         ActionSystem.DetachPerformer<SpendMPGA>();
         ActionSystem.DetachPerformer<RefillMPGA>();
     }
-    public bool HasEnoughAP(int ap = 1)
+    public bool HasEnoughMP(int mp = 1)
     {
-        return CurrentMP >= ap;
+        return CurrentMP >= mp;
     }
-    private IEnumerator SpendMPPerformer(SpendMPGA spendMPGA)
+    private IEnumerator SpendMPGAPerformer(SpendMPGA spendMPGA)
     {
         CurrentMP -= spendMPGA.Amount;
 
         mpUI.SpendMPUI(CurrentMP);
         yield return null;
     }
-    private IEnumerator RefillMPPerformer(RefillMPGA refillMPGA)
+    private IEnumerator RefillMPGAPerformer(RefillMPGA refillMPGA)
     {
         CurrentMP = MaxMP;
 

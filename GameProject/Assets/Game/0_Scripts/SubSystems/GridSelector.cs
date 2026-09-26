@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class GridSelector : MonoBehaviour
 {
-    private Vector2Int selected_hero_Pos = Vector2Int.down;
+    private Vector2Int selectedHeroPos = Vector2Int.down;
     private Vector2Int hoveredGrid = Vector2Int.down;
 
     private void OnEnable()
@@ -23,14 +23,14 @@ public class GridSelector : MonoBehaviour
 
         //현재 선택된 영웅에 위치에 따라서 선택VG 갱신
         Vector2Int s_pos = TokenSystem.Instance.API.GetTokenPosition(HeroSystem.Instance.CurrentHero);
-        if (s_pos != Vector2Int.down && s_pos != selected_hero_Pos)
+        if (s_pos != Vector2Int.down && s_pos != selectedHeroPos)
         {
             VisualGridCreator.Instance.ChangeVisualGridPosition(
                     gameObject.GetInstanceID(), 
                     s_pos, 
                     "Selector_Select"
                 );
-            selected_hero_Pos = s_pos;
+            selectedHeroPos = s_pos;
         }
 
         //현재 마우스 위치에 따라서 호버VG 갱신
@@ -84,7 +84,7 @@ public class GridSelector : MonoBehaviour
                         pos,
                         "Selector_Select"
                     );
-            selected_hero_Pos = pos;
+            selectedHeroPos = pos;
 
             UpdateSelectedToken(token);
         }

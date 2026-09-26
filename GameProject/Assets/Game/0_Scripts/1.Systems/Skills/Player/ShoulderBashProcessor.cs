@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class ShoulderBashSystem : MonoBehaviour
+public class ShoulderBashProcessor : MonoBehaviour
 {
     private void OnEnable()
     {
@@ -15,9 +15,9 @@ public class ShoulderBashSystem : MonoBehaviour
 
     private IEnumerator ShoulderBashGAPerformer(ShoulderBashGA shoulderBashGA)
     {
-        Vector2Int currentPos = TokenSystem.Instance.API.GetTokenPosition(shoulderBashGA.myView);
+        Vector2Int currentPos = TokenSystem.Instance.API.GetTokenPosition(shoulderBashGA.Caster);
         Vector2Int targetPos = shoulderBashGA.TargetPoses[0];
-        CombatantView heroView = shoulderBashGA.myView;
+        CombatantView heroView = shoulderBashGA.Caster;
 
         var path = TokenSystem.Instance.API.GetShortestPath(heroView, targetPos);
         if (path != null)

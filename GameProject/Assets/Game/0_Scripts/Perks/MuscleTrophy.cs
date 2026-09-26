@@ -22,7 +22,7 @@ public class MuscleTrophy : Perk
     }
     public override void PerformReaction(GameAction action, HeroView owner)
     {
-        AddStatusEffectGA addStatusEffectGA = new(StatusEffectType.POWER, power_Amount, new() { owner });
+        AddStatusEffectGA addStatusEffectGA = new(StatusEffectType.POWER, power_Amount, new() { owner }, owner);
         ActionSystem.Instance.AddReaction(addStatusEffectGA);
     }
 }

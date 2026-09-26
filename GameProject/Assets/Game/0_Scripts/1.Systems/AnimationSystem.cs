@@ -6,14 +6,14 @@ public class AnimationSystem : Singleton<AnimationSystem>
 {
     private void OnEnable()
     {
-        ActionSystem.AttachPerformer<DOAnimationGA>(DOAnimationPerformer);
+        ActionSystem.AttachPerformer<DOAnimationGA>(DOAnimationGAPerformer);
     }
     private void OnDisable()
     {
         ActionSystem.DetachPerformer<DOAnimationGA>();
     }
 
-    private IEnumerator DOAnimationPerformer(DOAnimationGA animationGA)
+    private IEnumerator DOAnimationGAPerformer(DOAnimationGA animationGA)
     {
         if (animationGA.Tween != null)
         {

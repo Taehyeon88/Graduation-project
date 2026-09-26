@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 
-public class KnockBackSystem : MonoBehaviour
+public class KnockBackProcessor : MonoBehaviour
 {
     private const int crachDamage = 1;    //충돌 데미지
 
@@ -19,11 +19,7 @@ public class KnockBackSystem : MonoBehaviour
 
     //Performer
 
-    /// <summary>
-    /// 특정 위치의 대상을 특정 방향으로 거리만 넉백시키는 함수
-    /// </summary>
-    /// <param name="knockBackGA"></param>
-    /// <returns></returns>
+    //특정 위치의 대상을 특정 방향으로 거리만큼 넉백시키는 함수
     private IEnumerator KnockBackGAPerformer(KnockBackGA knockBackGA)
     {
         CombatantView caster = knockBackGA.Caster;      //밀친 사람

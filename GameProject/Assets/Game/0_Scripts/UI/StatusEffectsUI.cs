@@ -11,9 +11,9 @@ public class StatusEffectsUI : MonoBehaviour
     [SerializeField] private TMP_Text shieldSEText;
 
     private Dictionary<StatusEffectType, StatusEffectUI> statusEffectUIs = new();
-    private Tween add_Shield_Tween;
-    private Sequence remove_Shield_Squ;
-    private bool shield_StatusEffect = false;  //방어 존재 여부 체크
+    private Tween addShieldTween;
+    private Sequence removeShieldSqu;
+    private bool shieldStatusEffect = false;  //방어 존재 여부 체크
 
     public void UpdateStatusEffect(StatusEffectType statusEffectType, int stackCount, Sprite sprite = null)
     {
@@ -22,9 +22,9 @@ public class StatusEffectsUI : MonoBehaviour
         {
             if (stackCount <= 0)
             {
-                if (shield_StatusEffect)
+                if (shieldStatusEffect)
                 {
-                    shield_StatusEffect = false;
+                    shieldStatusEffect = false;
                     UpdateShieldSE(false);
                 }
             }
@@ -32,10 +32,10 @@ public class StatusEffectsUI : MonoBehaviour
             {
                 shieldSEText.SetText(stackCount.ToString());
 
-                if (!shield_StatusEffect)
+                if (!shieldStatusEffect)
                 {
                     UpdateShieldSE(true);
-                    shield_StatusEffect = true;
+                    shieldStatusEffect = true;
                 }
                 else
                 {
@@ -70,14 +70,14 @@ public class StatusEffectsUI : MonoBehaviour
 
     private void UpdateShieldSE(bool add)
     {
-        if (add_Shield_Tween == null && remove_Shield_Squ == null)
+        if (addShieldTween == null && removeShieldSqu == null)
         {
-            add_Shield_Tween = shieldSEUI.DOScale(Vector3.one, 0.2f)
+            addShieldTween = shieldSEUI.DOScale(Vector3.one, 0.2f)
                                         .SetEase(Ease.InOutSine)
                                         .SetAutoKill(false)
                                         .Pause();
 
-            remove_Shield_Squ = DOTween.Sequence();
+            removeShieldSqu = DOTween.Sequence();
 
             Tween tween1 = shieldSEUI.DOShakePosition(
                     0.2f,
@@ -87,31 +87,31 @@ public class StatusEffectsUI : MonoBehaviour
                 );
             Tween tween2 = shieldSEUI.DOScale(Vector3.zero, 0.1f);
 
-            remove_Shield_Squ
+            removeShieldSqu
                 .Append(tween1)
                 .Append(tween2)
                 .SetAutoKill(false)
                 .Pause();
         }
 
-        if (add_Shield_Tween.IsPlaying() 
-            || remove_Shield_Squ.IsPlaying()) return;
+        if (addShieldTween.IsPlaying()
+            || removeShieldSqu.IsPlaying()) return;
 
         if (add)   //방어 생성
         {
             SoundSystem.Instance.PlaySound(2001);
-            add_Shield_Tween.Restart();
+            addShieldTween.Restart();
         }
         else       //방어 삭제
         {
             //방어 제거 사운드
-            remove_Shield_Squ.Restart();
+            removeShieldSqu.Restart();
         }
     }
 
     private void OnDisable()
     {
-        add_Shield_Tween?.Kill();
-        remove_Shield_Squ?.Kill();
+        addShieldTween?.Kill();
+        removeShieldSqu?.Kill();
     }
 }

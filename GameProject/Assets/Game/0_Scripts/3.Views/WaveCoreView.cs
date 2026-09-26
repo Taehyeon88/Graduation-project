@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class WaveCoreView : Token, IDamage
+public class WaveCoreView : Token, IDamageable
 {
     [SerializeField] private TMP_Text healthText;
 

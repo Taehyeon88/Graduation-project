@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AttackEnemyGA : GameAction
+public class AttackEnemyGA : GameAction, IHaveCaster
 {
     public List<Vector2Int> TargetPoses { get; private set; } //공격 범위
     public float Amount { get; private set; }    //공격력
     public int Count { get; private set; }       //반복 횟수
-    public HeroView MyView { get; private set; } //공격자
+    public HeroView Caster { get; private set; } //공격자
+    Token IHaveCaster.Caster => Caster;
     public HeroAnimationType animationType { get; private set; }  //연출 타입
 
     public AttackEnemyGA(List<Vector2Int> targetPoses, float amount, int count, HeroView myView, HeroAnimationType animationType)
@@ -15,7 +16,7 @@ public class AttackEnemyGA : GameAction
         this.TargetPoses = targetPoses;
         this.Amount = amount;
         this.Count = count;
-        this.MyView = myView;
+        this.Caster = myView;
         this.animationType = animationType;
     }
 }

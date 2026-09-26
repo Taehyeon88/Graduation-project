@@ -15,8 +15,8 @@ public class SkillView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     [Header("Skill Element")]
     [SerializeField] private Image icon;
 
-    private RectTransform skill_Rect;
-    private bool is_can_use = false;
+    private RectTransform skillRect;
+    private bool isCanUse = false;
     public void SetUp(Skill skill)
     {
         if (skill == null) return;
@@ -24,7 +24,7 @@ public class SkillView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         Skill = skill;
         icon.sprite = skill.Image;
 
-        skill_Rect = GetComponent<RectTransform>();
+        skillRect = GetComponent<RectTransform>();
     }
 
     private void Update()
@@ -35,18 +35,18 @@ public class SkillView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         //스킬 사용 불가 여부 연출
         if (APSystem.Instance.HasEnoughAP())
         {
-            if (!is_can_use)
+            if (!isCanUse)
             {
                 icon.color = Color.HSVToRGB(0.0f, 0.0f, 1f);   //스킬 사용 불가 처리 취소
-                is_can_use = true;
+                isCanUse = true;
             }
         }
         else
         {
-            if (is_can_use)
+            if (isCanUse)
             {
                 icon.color = Color.HSVToRGB(0.0f, 0.0f, 0.5f);   //스킬 사용 불가 처리
-                is_can_use = false;
+                isCanUse = false;
             }
         }
     }
@@ -75,8 +75,8 @@ public class SkillView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         Interactions.Instance.IsSkillHovering = true;
 
         SoundSystem.Instance.PlaySound(3003);        //스킬 호버 사운드 재생
-        TooltipSystem.Instance.Show(skill_Rect, Skill.Description, Skill.Title); //스킬 툴팁 팝업
-        SkillSystem.Instance.HighlightUI.Show(skill_Rect.anchoredPosition);    //하이라이트 활성화
+        TooltipSystem.Instance.Show(skillRect, Skill.Description, Skill.Title); //스킬 툴팁 팝업
+        SkillSystem.Instance.HighlightUI.Show(skillRect.anchoredPosition);    //하이라이트 활성화
     }
 
     public void OnPointerExit(PointerEventData eventData)

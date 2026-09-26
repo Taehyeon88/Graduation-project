@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SplashSystem : MonoBehaviour
+public class SplashProcessor : MonoBehaviour
 {
     private void OnEnable()
     {
@@ -17,7 +17,7 @@ public class SplashSystem : MonoBehaviour
     {
         foreach (var targetPos in splashGA.TargetPoses)
         {
-            IDamage target = TokenSystem.Instance.API.GetTokenByPosition(targetPos) as IDamage;
+            IDamageable target = TokenSystem.Instance.API.GetTokenByPosition(targetPos) as IDamageable;
             var range = splashGA.GridRangeMode.GetGridRanges(targetPos, splashGA.Distance, splashGA.IsPentration);
 
             if (target != null)
@@ -25,7 +25,7 @@ public class SplashSystem : MonoBehaviour
                 DealDamageGA dealDamageGA = new(splashGA.Damage, target, splashGA.Caster);
                 ActionSystem.Instance.AddReaction(dealDamageGA);
 
-                List<IDamage> splashTargets = Utility.PositionsToIDamages(range, false, true);
+                List<IDamageable> splashTargets = Utility.PositionsToIDamageables(range, false, true);
                 if (splashTargets.Count > 0)
                 {
                     DealDamageGA dDGA = new(splashGA.SplashDamage, splashTargets, splashGA.Caster);

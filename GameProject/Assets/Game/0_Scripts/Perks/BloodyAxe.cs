@@ -29,7 +29,7 @@ public class BloodyAxe : Perk
         if (dealDamageGA.Amount + added_Amount <= r_value)
         {
             Vector2Int pos = TokenSystem.Instance.API.GetTokenPosition(owner);
-            HealGA healGA = new(heal_Amount, new() { pos });
+            HealGA healGA = new(heal_Amount, new() { pos }, owner);
             ActionSystem.Instance.AddReaction(healGA);
         }
     }

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public interface IDamage
+public interface IDamageable
 {
     public void Damage(int amount, DealDamageGA dealDamageGA);
 }

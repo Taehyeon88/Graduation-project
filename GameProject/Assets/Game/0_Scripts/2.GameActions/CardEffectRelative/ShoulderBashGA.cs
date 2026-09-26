@@ -3,13 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShoulderBashGA : GameAction
+public class ShoulderBashGA : GameAction, IHaveCaster
 {
     public int Distance { get; private set; }
     public int AttackDistance { get; private set; }
     public float Damage { get; private set; }
     public List<Vector2Int> TargetPoses { get; private set; }
-    public HeroView myView { get; private set; }
+    public HeroView Caster { get; private set; }
+    Token IHaveCaster.Caster => Caster;
 
     public ShoulderBashGA(int distance, int attackDistance, float damage, List<Vector2Int> targetPoses, HeroView myView)
     {
@@ -17,6 +18,6 @@ public class ShoulderBashGA : GameAction
         this.AttackDistance = attackDistance;
         this.Damage = damage;
         this.TargetPoses = targetPoses;
-        this.myView = myView;
+        this.Caster = myView;
     }
 }

@@ -16,13 +16,13 @@ public class SkillSystem : Singleton<SkillSystem>
     [SerializeField] private float upSkill_Duration = 0.3f;
     [SerializeField] private float downSkill_Duration = 0.2f;
 
-    private Queue<PlaySkillGA> reserved_Skills = new();
-    private SkillView current_Selected_Skill;
-    private bool start_Switch_Skill = false;
+    private Queue<PlaySkillGA> reservedSkills = new();
+    private SkillView currentSelectedSkill;
+    private bool startSwitchSkill = false;
 
     private void OnEnable()
     {
-        ActionSystem.AttachPerformer<PlaySkillGA>(PlaySkillPerformer);
+        ActionSystem.AttachPerformer<PlaySkillGA>(PlaySkillGAPerformer);
     }
     private void OnDisable()
     {
@@ -32,10 +32,10 @@ public class SkillSystem : Singleton<SkillSystem>
     private void Update()
     {
         //예약된 스킬이 있고 액션이 종료 되면 다음 예약 실행
-        if (reserved_Skills.Count <= 0 || ActionSystem.Instance.IsPerforming)
+        if (reservedSkills.Count <= 0 || ActionSystem.Instance.IsPerforming)
             return;
 
-        var playCardGA = reserved_Skills.Dequeue();
+        var playCardGA = reservedSkills.Dequeue();
         ActionSystem.Instance.Perform(playCardGA);
     }
 
@@ -44,20 +44,20 @@ public class SkillSystem : Singleton<SkillSystem>
     {
         if (!Interactions.Instance.IsSkillTargetMode)
         {
-            current_Selected_Skill = skillView;
-            StartCoroutine(SkillTargetMode(skillView));            
+            currentSelectedSkill = skillView;
+            StartCoroutine(SkillTargetMode(skillView));
         }
         else //타겟 모드 중, 스킬 변경 및 취소 처리
         {
-            if (skillView != current_Selected_Skill)
+            if (skillView != currentSelectedSkill)
             {
-                start_Switch_Skill = true;
-                current_Selected_Skill = skillView;
+                startSwitchSkill = true;
+                currentSelectedSkill = skillView;
             }
             else
             {
                 ResetSelectMode();
-                current_Selected_Skill = null;
+                currentSelectedSkill = null;
             }
         }
     }
@@ -173,7 +173,7 @@ public class SkillSystem : Singleton<SkillSystem>
                         if (targets != null && targets.Count > 0)
                         {
                             PlaySkillGA playCardGA = new(skill, targets, myhero);
-                            reserved_Skills.Enqueue(playCardGA);
+                            reservedSkills.Enqueue(playCardGA);
                             ResetSelectMode();
                             break;
                         }
@@ -189,24 +189,24 @@ public class SkillSystem : Singleton<SkillSystem>
                 if (Interactions.Instance.GridSelected)
                 {
                     PlaySkillGA playCardGA = new(skill, null, myhero);
-                    reserved_Skills.Enqueue(playCardGA);
+                    reservedSkills.Enqueue(playCardGA);
                     ResetSelectMode();
                     break;
                 }
             }
 
             //카드 사용 준비 취소 인터렉션 감지
-            if (Interactions.Instance.CancelUse || current_Selected_Skill == null)
+            if (Interactions.Instance.CancelUse || currentSelectedSkill == null)
             {
                 //Debug.Log("선택 모드 취소");
                 ResetSelectMode();
                 break;
             }
 
-            if (start_Switch_Skill)
+            if (startSwitchSkill)
             {
                 //Debug.Log("선택된 스킬 변경");
-                var selected_Skill = current_Selected_Skill;
+                var selected_Skill = currentSelectedSkill;
                 ResetSelectMode();
                 PlaySkillTargetMode(selected_Skill);
                 break;
@@ -230,7 +230,7 @@ public class SkillSystem : Singleton<SkillSystem>
         {
             foreach (var pos in poses)
             {
-                IDamage token = TokenSystem.Instance.API.GetTokenByPosition(pos) as IDamage;
+                IDamageable token = TokenSystem.Instance.API.GetTokenByPosition(pos) as IDamageable;
                 if (token != null && token is not HeroView)
                     result.Add(pos);
             }
@@ -252,9 +252,9 @@ public class SkillSystem : Singleton<SkillSystem>
     private void ResetSelectMode()
     {
         //선택 모드 연출 종료
-        if (current_Selected_Skill != null)
+        if (currentSelectedSkill != null)
         {
-            RectTransform rectTrans = current_Selected_Skill.GetComponent<RectTransform>();
+            RectTransform rectTrans = currentSelectedSkill.GetComponent<RectTransform>();
 
             TooltipSystem.Instance.HideSkillTooltip();        //팝업 UI 생성 취소
             HighlightUI.HideSeleted();                        //테두리 하이라이트
@@ -263,21 +263,21 @@ public class SkillSystem : Singleton<SkillSystem>
         }
 
         popUpAmountUI.EndPopUpAmount();
-        start_Switch_Skill = false;
+        startSwitchSkill = false;
         Interactions.Instance.IsSkillTargetMode = false;
-        current_Selected_Skill = null;
+        currentSelectedSkill = null;
         VisualGridCreator.Instance.RemoveVisualGridById(gameObject.GetInstanceID());
     }
 
     //Performers
-    private IEnumerator PlaySkillPerformer(PlaySkillGA playSkillGA)
+    private IEnumerator PlaySkillGAPerformer(PlaySkillGA playSkillGA)
     {
         SpendAPGA spendAPGA = new();
         ActionSystem.Instance.AddReaction(spendAPGA);
 
         foreach(var effect in playSkillGA.Skill.SkillAbility.Effects)
         {
-            PerformEffectGA performEffectGA = new PerformEffectGA(effect, playSkillGA.TargetPoses, playSkillGA.MyView);
+            PerformEffectGA performEffectGA = new PerformEffectGA(effect, playSkillGA.TargetPoses, playSkillGA.Caster);
             ActionSystem.Instance.AddReaction(performEffectGA);
         }
         yield return null;

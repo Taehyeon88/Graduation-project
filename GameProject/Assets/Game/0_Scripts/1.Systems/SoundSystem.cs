@@ -22,16 +22,11 @@ public class SoundSystem : Singleton<SoundSystem>     //씬을 넘나들면서 �
 
     private Dictionary<int, SoundData> soundDataById = new();
 
-    private List<AudioSource> bgm_Sources = new(20);
-    private List<AudioSource> sfx_Sources = new(20);
-    private List<AudioSource> interaction_Sources = new(20);
+    private List<AudioSource> bgmSources = new(20);
+    private List<AudioSource> sfxSources = new(20);
+    private List<AudioSource> interactionSources = new(20);
 
     private List<AudioSource> playingSounds;
-
-    private void OnAwake()
-    {
-        Initialize();
-    }
 
     private void Initialize()
     {
@@ -52,7 +47,7 @@ public class SoundSystem : Singleton<SoundSystem>     //씬을 넘나들면서 �
             AudioSource source = obj.AddComponent<AudioSource>();
             source.playOnAwake = false;
 
-            bgm_Sources.Add(source);
+            bgmSources.Add(source);
         }
 
         for (int i = 0; i < sfx_Source_Count; i++)
@@ -62,7 +57,7 @@ public class SoundSystem : Singleton<SoundSystem>     //씬을 넘나들면서 �
             AudioSource source = obj.AddComponent<AudioSource>();
             source.playOnAwake = false;
 
-            sfx_Sources.Add(source);
+            sfxSources.Add(source);
         }
 
         for (int i = 0; i < interaction_Source_Count; i++)
@@ -72,7 +67,7 @@ public class SoundSystem : Singleton<SoundSystem>     //씬을 넘나들면서 �
             AudioSource source = obj.AddComponent<AudioSource>();
             source.playOnAwake = false;
 
-            interaction_Sources.Add(source);
+            interactionSources.Add(source);
         }
     }
 
@@ -101,13 +96,13 @@ public class SoundSystem : Singleton<SoundSystem>     //씬을 넘나들면서 �
             switch (data.AudioType)
             {
                 case AudioType.BGM:
-                    empty_source = bgm_Sources.Find(s => !s.isPlaying);
+                    empty_source = bgmSources.Find(s => !s.isPlaying);
                     break;
                 case AudioType.SFX:
-                    empty_source = sfx_Sources.Find(s => !s.isPlaying);
+                    empty_source = sfxSources.Find(s => !s.isPlaying);
                     break;
                 case AudioType.INTERACTION:
-                    empty_source = interaction_Sources.Find(s => !s.isPlaying);
+                    empty_source = interactionSources.Find(s => !s.isPlaying);
                     break;
             }
             if (empty_source == null)

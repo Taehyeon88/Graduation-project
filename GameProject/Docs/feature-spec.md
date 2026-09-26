@@ -2,23 +2,17 @@
 
 > 시스템별 구체 동작·수치 정의. 게임 기획서의 후속.
 > 챕터별 구현 시 Claude에 **해당 섹션 파일**을 input으로 던진다.
-> (2026-06-06 섹션별 파일로 분할 → `feature-spec/`)
 
 > **코드 규약·인터페이스 계약·제공 인프라는 별도 문서:** [convention.md](convention.md) (코드 작성 전 필독)
 
 | # | 문서 | 내용 |
 |---|------|------|
-| 1 | [01-input.md](feature-spec/01-input.md) | 입력 (Player Input) |
-| 2 | [02-player.md](feature-spec/02-player.md) | 플레이어 (Player) |
-| 3 | [03-camera-world.md](feature-spec/03-camera-world.md) | 카메라 & 월드 (무한 평원 + Cinemachine) |
-| 4 | [04-enemy.md](feature-spec/04-enemy.md) | 적 (Enemy) — 잡몹 3종 + 유령 + 보스(네크로맨서) |
-| 5 | [05-weapon.md](feature-spec/05-weapon.md) | 무기 (Weapon) — 3종 + 강화 |
-| 6 | [06-exp-level.md](feature-spec/06-exp-level.md) | 경험치 & 레벨업 (EXP & Level) |
-| 7 | [07-upgrade.md](feature-spec/07-upgrade.md) | 업그레이드 시스템 (Upgrade) |
-| 8 | [08-wave-spawner.md](feature-spec/08-wave-spawner.md) | 웨이브 시스템 (Wave / Spawner) |
-| 9 | [09-ui.md](feature-spec/09-ui.md) | UI |
-| 10 | [10-game-sound.md](feature-spec/10-game-sound.md) | 게임 사운드 (SFX·BGM) |
-| 11 | [11-intro-screen.md](feature-spec/11-intro-screen.md) | 인트로 화면 (Title) |
-| 12 | [12-game-flow.md](feature-spec/12-game-flow.md) | 게임 흐름 (Game Flow / State) |
-| 13 | [13-folder-naming.md](feature-spec/13-folder-naming.md) | 폴더 구조 & 씬 초기 구성 (네이밍은 convention §1) |
-| 14 | [14-build.md](feature-spec/14-build.md) | 빌드 (PC/Windows 실행 파일) |
+| 00 | [00_action_architecture.md](feature-spec/00_action_architecture.md) | ActionSystem 아키텍처 — Performer/Reaction/AddReaction 이벤트 기반 커맨드 패턴 (다른 챕터보다 먼저 읽기) |
+| 00 | [action_command.md](feature-spec/action/action_command.md) | GameAction 레지스트리 — 실제 Perform/AddReaction 경로가 있는 모든 GA 카탈로그(소유 System, 트리거 관계) |
+| 00 | [00_token_system.md](feature-spec/00_token_system.md) | TokenSystem 아키텍처 — 그리드 좌표·조회·이동·초기배치 파사드 |
+| 00 | [00_token_system_main.md](feature-spec/token/00_token_system_main.md) | TokenSystem API — TokenMainAPI(런타임 상태 변경 메서드 4개) 카탈로그 |
+| 00 | [00_token_system_setup.md](feature-spec/token/00_token_system_setup.md) | TokenSystem API — TokenSetup(초기 배치 메서드 4개) 카탈로그 |
+| 00 | [00_token_system_api.md](feature-spec/token/00_token_system_api.md) | TokenSystem API — TokenServiceAPI(조회 메서드 16개) 카탈로그 |
+| 01 | [01_enemy_system.md](feature-spec/01_enemy_system.md) | EnemySystem 아키텍처 — 몬스터 턴 판단·실행 흐름 |
+| 01 | [01_hero_system.md](feature-spec/01_hero_system.md) | HeroSystem 아키텍처 — 플레이어 턴 시작 훅 + 선택된 영웅 상태 관리 |
+| 02 | [02_skill_system.md](feature-spec/02_skill_system.md) | SkillSystem 아키텍처 — 스킬 카드 클릭→타겟팅→효과 GameAction 위임 흐름 |

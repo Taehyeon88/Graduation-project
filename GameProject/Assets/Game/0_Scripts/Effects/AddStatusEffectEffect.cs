@@ -33,6 +33,6 @@ public class AddStatusEffectEffect : Effect
                 }
                 break;
         }
-        return new AddStatusEffectGA(statusEffectType, stackCount, targets);
+        return new AddStatusEffectGA(statusEffectType, stackCount, targets, myView);
     }
 }

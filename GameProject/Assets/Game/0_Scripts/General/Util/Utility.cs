@@ -235,12 +235,12 @@ public static class Utility
 
     // <summary>
     // 특정 위치 리스트의 모든 CombatantView 찾기 (특정 대상 제외 옵션 포함)
-    public static List<IDamage> PositionsToIDamages(List<Vector2Int> targetPoses, bool exceptEnemy = false, bool exceptHero = false)
+    public static List<IDamageable> PositionsToIDamageables(List<Vector2Int> targetPoses, bool exceptEnemy = false, bool exceptHero = false)
     {
-        List<IDamage> combatants = new(10);
+        List<IDamageable> combatants = new(10);
         foreach (var targetPos in targetPoses)
         {
-            var combat = TokenSystem.Instance.API.GetTokenByPosition(targetPos) as IDamage;
+            var combat = TokenSystem.Instance.API.GetTokenByPosition(targetPos) as IDamageable;
             if (combat != null)
             {
                 if (exceptEnemy && combat is EnemyView) continue;

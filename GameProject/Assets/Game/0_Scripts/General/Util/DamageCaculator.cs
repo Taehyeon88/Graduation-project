@@ -2,7 +2,7 @@
 
 public static class DamageCaculator
 {
-    public static int GetDamage(float baseDamage, CombatantView attacker, IDamage target)
+    public static int GetDamage(float baseDamage, CombatantView attacker, IDamageable target)
     {
         float damage = baseDamage;
 

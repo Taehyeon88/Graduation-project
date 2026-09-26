@@ -11,19 +11,19 @@ public class DamageSystem : Singleton<DamageSystem>
     [Header("Direct Element")]
     [SerializeField] private GameObject[] damageVFXs;
 
-    void OnEnable()
+    private void OnEnable()
     {
-        ActionSystem.AttachPerformer<DealDamageGA>(DealDamagePerformer);
-        ActionSystem.AttachPerformer<KillGA>(KillPerformer);
+        ActionSystem.AttachPerformer<DealDamageGA>(DealDamageGAPerformer);
+        ActionSystem.AttachPerformer<KillGA>(KillGAPerformer);
     }
-    void OnDisable()
+    private void OnDisable()
     {
         ActionSystem.DetachPerformer<DealDamageGA>();
         ActionSystem.DetachPerformer<KillGA>();
     }
 
     //Performers
-    private IEnumerator DealDamagePerformer(DealDamageGA dealDamageGA)
+    private IEnumerator DealDamageGAPerformer(DealDamageGA dealDamageGA)
     {
         if (dealDamageGA.Targets != null)   //동시 단체 피격 처리
         {
@@ -68,7 +68,7 @@ public class DamageSystem : Singleton<DamageSystem>
         yield return null;
     }
 
-    private IEnumerator KillPerformer(KillGA killGA)
+    private IEnumerator KillGAPerformer(KillGA killGA)
     {
         //피격되서 흔들리는 연출
         Tween hit_Tween = killGA.Hit_Tween;

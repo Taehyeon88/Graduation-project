@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class KnockBackGA : GameAction
+public class KnockBackGA : GameAction, IHaveCaster
 {
     public CombatantView Caster { get; private set; } //시전자
+    Token IHaveCaster.Caster => Caster;
     public int Distance { get; private set; }         //넉백 효과(밀려나는) 거리
 
     //Single - Target

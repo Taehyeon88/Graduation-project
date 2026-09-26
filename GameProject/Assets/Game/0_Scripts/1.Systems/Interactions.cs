@@ -21,33 +21,33 @@ public class Interactions : Singleton<Interactions>
 
     private static event Action SelectGridEvent;
     private static event Action<int> PlaySkillEvent;
-    private InputAction m_SelectGrid;
-    private InputAction m_CancelUse;
+    private InputAction selectGrid;
+    private InputAction cancelUse;
 
-    private float select_grid_UI_Min_X;
-    private float select_grid_UI_Max_X;
-    private float select_grid_UI_Min_Y;
-    private float select_grid_UI_Max_Y;
+    private float selectGridUIMinX;
+    private float selectGridUIMaxX;
+    private float selectGridUIMinY;
+    private float selectGridUIMaxY;
 
     private void Start()
     {
-        m_SelectGrid = playerInput.actions["SelectGrid"];
-        m_CancelUse = playerInput.actions["CancelUse"];
+        selectGrid = playerInput.actions["SelectGrid"];
+        cancelUse = playerInput.actions["CancelUse"];
 
         float width = select_Grid_UI_Range.rect.width;
         float height = select_Grid_UI_Range.rect.height;
         Vector2 pos = select_Grid_UI_Range.position;
 
-        select_grid_UI_Min_X = pos.x - width / 2;
-        select_grid_UI_Max_X = pos.x + width / 2;
-        select_grid_UI_Min_Y = pos.y - height / 2;
-        select_grid_UI_Max_Y = pos.y + height / 2;
+        selectGridUIMinX = pos.x - width / 2;
+        selectGridUIMaxX = pos.x + width / 2;
+        selectGridUIMinY = pos.y - height / 2;
+        selectGridUIMaxY = pos.y + height / 2;
     }
     private void Update()
     {
-        GridSelected = m_SelectGrid.WasPressedThisFrame() 
+        GridSelected = selectGrid.WasPressedThisFrame()
                 && IsInRange(Input.mousePosition);
-        CancelUse = m_CancelUse.WasPressedThisFrame();
+        CancelUse = cancelUse.WasPressedThisFrame();
     }
 
     void OnSelectGrid()
@@ -101,9 +101,9 @@ public class Interactions : Singleton<Interactions>
     //Privates
     private bool IsInRange(Vector2 pos)
     {
-        return pos.x >= select_grid_UI_Min_X &&
-               pos.x <= select_grid_UI_Max_X &&
-               pos.y >= select_grid_UI_Min_Y &&
-               pos.y <= select_grid_UI_Max_Y;
+        return pos.x >= selectGridUIMinX &&
+               pos.x <= selectGridUIMaxX &&
+               pos.y >= selectGridUIMinY &&
+               pos.y <= selectGridUIMaxY;
     }
 }

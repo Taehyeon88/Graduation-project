@@ -6,7 +6,7 @@ public class StatusEffectSystem : Singleton<StatusEffectSystem>
 {
     [SerializeField] private StatusEffectData[] effectDatas;
     private Dictionary<StatusEffectType, StatusEffectData> effectDataByType = new();
-    void OnEnable()
+    private void OnEnable()
     {
         //effectData들 타입별로 캐싱
         foreach (var data in effectDatas)
@@ -15,15 +15,15 @@ public class StatusEffectSystem : Singleton<StatusEffectSystem>
                 Debug.LogError($"{data.name}데이터의 effectType이 {effectDataByType[data.EffectType].name}과 {data.EffectType}으로 충돌함");
         }
 
-        ActionSystem.AttachPerformer<AddStatusEffectGA>(AddStatusEffectPerformer);
+        ActionSystem.AttachPerformer<AddStatusEffectGA>(AddStatusEffectGAPerformer);
     }
-    void OnDisable()
+    private void OnDisable()
     {
         ActionSystem.DetachPerformer<AddStatusEffectGA>();
     }
 
     //Performers
-    private IEnumerator AddStatusEffectPerformer(AddStatusEffectGA addStatusEffectGA)
+    private IEnumerator AddStatusEffectGAPerformer(AddStatusEffectGA addStatusEffectGA)
     {
         if(addStatusEffectGA.Targets == null) yield break;
 

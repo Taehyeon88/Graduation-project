@@ -9,15 +9,7 @@ public static class UtilityBFS
             new Vector2Int(1,0), new Vector2Int(-1,0), new Vector2Int(0,1), new Vector2Int(0,-1)
         };
 
-    /// <summary>
-    /// 인접(거리) 범위 안에서 선택할 수 있는 모든 위치 받는 함수
-    /// </summary>
-    /// <param name="start"></param>
-    /// <param name="maxDistance"></param>
-    /// <param name="exceptEnemy"></param>
-    /// <param name="exceptHero"></param>
-    /// <param name="exceptDestructable"></param>
-    /// <returns></returns>
+    //인접(거리) 범위 안에서 선택할 수 있는 모든 위치를 받는 함수
     public static List<Vector2Int> FindAllPlaces(Vector2Int start, int maxDistance, bool exceptEnemy, bool exceptHero, bool exceptDestructable = false)
     {
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
@@ -64,14 +56,7 @@ public static class UtilityBFS
         return list;
     }
 
-    /// <summary>
-    /// 인접(거리)까지의 범위 내에서 시작 위치에서 이어질 수 있는 모든 경로를 반는 함수
-    /// </summary>
-    /// <param name="start"></param>
-    /// <param name="maxDistance"></param>
-    /// <param name="exceptEnemy"></param>
-    /// <param name="exceptHero"></param>
-    /// <returns></returns>
+    //인접(거리)까지의 범위 내에서 시작 위치에서 이어질 수 있는 모든 경로를 받는 함수
     public static List<Vector2Int> FindALLRoots(Vector2Int start, int maxDistance, bool exceptEnemy = false, bool exceptHero = false)
     {
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
@@ -107,13 +92,7 @@ public static class UtilityBFS
         return list;
     }
 
-    /// <summary>
-    /// 경로 존재 여부 판별
-    /// </summary>
-    /// <param name="map"></param>
-    /// <param name="start"></param>
-    /// <param name="goal"></param>
-    /// <returns></returns>
+    //경로 존재 여부 판별
     public static bool IsPathExist(int[,] map, Vector2Int start, Vector2Int goal)
     {
         int w = map.GetLength(0);
@@ -165,13 +144,7 @@ public static class UtilityBFS
         return false;
     }
 
-    /// <summary>
-    /// 목표 지점에 도착까지 최단 거리 탐색 함수 (이동 결로 반환)
-    /// </summary>
-    /// <param name="map"></param>
-    /// <param name="start"></param>
-    /// <param name="goal"></param>
-    /// <returns></returns>
+    //목표 지점 도착까지 최단 거리 탐색 함수 (이동 경로 반환)
     public static List<Vector2Int> FindShortestPath(int[,] map, Vector2Int start, Vector2Int goal)
     {
         map[start.x, start.y] = 0;

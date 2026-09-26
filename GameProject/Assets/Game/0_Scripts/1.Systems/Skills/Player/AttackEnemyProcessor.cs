@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AttackEnemySystem : MonoBehaviour
+public class AttackEnemyProcessor : MonoBehaviour
 {
     [Header("Direct Elements")]
     [SerializeField] private IsoObject arrowTrans;
@@ -21,8 +21,8 @@ public class AttackEnemySystem : MonoBehaviour
     private IEnumerator AttackEnemyGAPerformer(AttackEnemyGA attackEnemyGA)
     {
         Sequence seq = DOTween.Sequence();
-        Vector2Int current_Pos = TokenSystem.Instance.API.GetTokenPosition(attackEnemyGA.MyView);
-        Token myToken = attackEnemyGA.MyView;
+        Vector2Int current_Pos = TokenSystem.Instance.API.GetTokenPosition(attackEnemyGA.Caster);
+        Token myToken = attackEnemyGA.Caster;
         bool endTween = false;  //피격으로 넘어가기
 
         var animationType = attackEnemyGA.animationType;
@@ -79,10 +79,10 @@ public class AttackEnemySystem : MonoBehaviour
         yield return new WaitUntil(() => endTween);
 
         //피격 로직 실행
-        var targets = Utility.PositionsToIDamages(attackEnemyGA.TargetPoses);
+        var targets = Utility.PositionsToIDamageables(attackEnemyGA.TargetPoses);
         if (targets.Count > 0)
         {
-            DealDamageGA dealDamageGA = new(attackEnemyGA.Amount, targets, attackEnemyGA.MyView);
+            DealDamageGA dealDamageGA = new(attackEnemyGA.Amount, targets, attackEnemyGA.Caster);
             ActionSystem.Instance.AddReaction(dealDamageGA);
         }
     }

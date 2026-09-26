@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class MoveSystem : Singleton<MoveSystem>
 {
-    public IReadOnlyList<Vector2Int> Hero_MoveRange => hero_moveRange;
+    public IReadOnlyList<Vector2Int> Hero_MoveRange => heroMoveRange;
 
-    private List<Vector2Int> hero_moveRange;
-    private HeroView hero_mover;
-    private Queue<PerformMoveGA> reserved_hero_moves = new();
+    private List<Vector2Int> heroMoveRange;
+    private HeroView heroMover;
+    private Queue<PerformMoveGA> reservedHeroMoves = new();
     private void OnEnable()
     {
         ActionSystem.AttachPerformer<PerformMoveGA>(PerformMoveGAPerformer);
@@ -23,22 +23,22 @@ public class MoveSystem : Singleton<MoveSystem>
     private void Update()
     {
         //예약된 영웅 이동이 있고 액션이 종료 되면 다음 예약 실행
-        if (reserved_hero_moves.Count <= 0 
+        if (reservedHeroMoves.Count <= 0
             || ActionSystem.Instance.IsPerforming 
             || TurnSystem.Instance.CurrentTurn == TurnType.GameSetUp
             || TurnSystem.Instance.CurrentTurn == TurnType.StartBattle)
             return;
 
-        var performMoveGA = reserved_hero_moves.Dequeue();
+        var performMoveGA = reservedHeroMoves.Dequeue();
         ActionSystem.Instance.Perform(performMoveGA);
     }
 
     //Player
     public void PlayPlayerMoveMode(HeroView heroView)
     {
-        if (hero_mover == null || hero_mover != heroView)
+        if (heroMover == null || heroMover != heroView)
         {
-            hero_mover = heroView;
+            heroMover = heroView;
             if (!Interactions.Instance.IsHeroMoveMode)
             {
                 Interactions.Instance.IsHeroMoveMode = true;    //이동 모드 활성화
@@ -63,22 +63,22 @@ public class MoveSystem : Singleton<MoveSystem>
                 Vector3 isoPos = TokenSystem.Instance.IsoWorld.MouseIsoTilePosition(1);
                 Vector2Int pos = Utility.IsoVectorToVector2Int(isoPos);
 
-                if (hero_moveRange.Contains(pos))
+                if (heroMoveRange.Contains(pos))
                 {
                     var path = TokenSystem.Instance.API.GetShortestPath(currentHero, pos);
                     if (path != null)
                     {
                         PerformMoveGA performMoveGA = new(currentHero, path);
-                        reserved_hero_moves.Enqueue(performMoveGA);
+                        reservedHeroMoves.Enqueue(performMoveGA);
                         break;
                     }
                 }
             }
 
-            if (currentHero != hero_mover)      //변경된 영웅 대상으로 이동VG 업데이트
+            if (currentHero != heroMover)      //변경된 영웅 대상으로 이동VG 업데이트
             {
-                UpdateMoveRange(hero_mover);
-                currentHero = hero_mover;
+                UpdateMoveRange(heroMover);
+                currentHero = heroMover;
             }
 
             if (!Interactions.Instance.IsHeroMoveMode
@@ -90,19 +90,19 @@ public class MoveSystem : Singleton<MoveSystem>
             yield return null;
         }
         //이동 모드 종료 후, 이동 데이터 초기화
-        hero_mover = null;
-        hero_moveRange = null;
+        heroMover = null;
+        heroMoveRange = null;
         Interactions.Instance.IsHeroMoveMode = false;
         VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "Hero_Move");
     }
 
     private void UpdateMoveRange(HeroView heroView)
     {
-        hero_moveRange = TokenSystem.Instance.API.GetCanMovePlace(heroView,
+        heroMoveRange = TokenSystem.Instance.API.GetCanMovePlace(heroView,
                                                     MPSystem.Instance.CurrentMP);
 
         VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "Hero_Move");
-        foreach (var pos in hero_moveRange)
+        foreach (var pos in heroMoveRange)
             VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), pos, "Hero_Move");
     }
 

@@ -12,7 +12,7 @@ public class SkillsUI : MonoBehaviour
     [SerializeField] private RectTransform[] skills;
 
     private SkillView[] skillViews;
-    private int active_Count;
+    private int activeCount;
 
     private const float tween_Time = 0.1f;
     private const float tween_delay_Time = 0.08f;
@@ -28,7 +28,7 @@ public class SkillsUI : MonoBehaviour
     private void Start()
     {
         skillViews = new SkillView[skills.Length];
-        active_Count = 0;
+        activeCount = 0;
 
         for (int i = 0; i < skills.Length; i++)
         {
@@ -56,45 +56,45 @@ public class SkillsUI : MonoBehaviour
         }
 
         //Skill 재정렬 연출
-        if (active_Count < skill_Count)
+        if (activeCount < skill_Count)
         {
             Sequence squ = DOTween.Sequence();
             float timing = 0.0f;
 
-            for (int i = active_Count; i < skill_Count; i++)
+            for (int i = activeCount; i < skill_Count; i++)
             {
                 int index = i;
                 skillViews[index].CancelInteraction = true;  //클릭 방지
                 squ.Insert(timing, skills[index].DOScale(Vector3.one, tween_Time)
                                             .OnComplete(() => skillViews[index].CancelInteraction = false)
                                        );
-                timing += index == active_Count? tween_delay_Time : tween_Time;
+                timing += index == activeCount? tween_delay_Time : tween_Time;
 
-                active_Count++;
+                activeCount++;
             }
 
         }
-        else if (active_Count > heroView.Skills.Count)
+        else if (activeCount > heroView.Skills.Count)
         {
             Sequence squ = DOTween.Sequence();
             float timing = 0.0f;
 
-            for (int i = active_Count - 1; i >= skill_Count; i--)
+            for (int i = activeCount - 1; i >= skill_Count; i--)
             {
                 int index = i;
                 skillViews[index].CancelInteraction = true;
                 squ.Insert(timing, skills[index].DOScale(Vector3.zero, tween_Time)
                                             .OnComplete(() => skillViews[index].CancelInteraction = false)
                                        );
-                timing += index == active_Count ? tween_delay_Time : tween_Time;
-                active_Count--;
+                timing += index == activeCount ? tween_delay_Time : tween_Time;
+                activeCount--;
             }
         }
     }
 
     private void ListenSkillClick(int number)
     {
-        if (active_Count < number) return;
+        if (activeCount < number) return;
 
         skillViews[number - 1].OnPointerClick(new PointerEventData(EventSystem.current));
     }

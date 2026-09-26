@@ -24,9 +24,9 @@ public class InteractionSystem : Singleton<InteractionSystem>
 
     [SerializeField] private PlayerInput playerInput;
 
-    private InputAction m_SelectGrid;
-    private InputAction m_CancelUse;
-    private InputAction m_ChangeCheatMode;
+    private InputAction selectGrid;
+    private InputAction cancelUse;
+    private InputAction changeCheatMode;
     private InteractionCase currentInteraction;
 
     private event Action<bool> updatedAction;
@@ -37,9 +37,9 @@ public class InteractionSystem : Singleton<InteractionSystem>
     }
     private void Initialze()
     {
-        m_SelectGrid = playerInput.actions["SelectGrid"];
-        m_CancelUse = playerInput.actions["CancelUse"];
-        m_ChangeCheatMode = playerInput.actions["ChangeCheatMode"];
+        selectGrid = playerInput.actions["SelectGrid"];
+        cancelUse = playerInput.actions["CancelUse"];
+        changeCheatMode = playerInput.actions["ChangeCheatMode"];
     }
 
     private void Update()
@@ -47,18 +47,18 @@ public class InteractionSystem : Singleton<InteractionSystem>
         switch (currentInteraction)
         {
             case InteractionCase.SetUp:
-                updatedAction?.Invoke(m_SelectGrid.WasPressedThisFrame());
+                updatedAction?.Invoke(selectGrid.WasPressedThisFrame());
                 break;
             case InteractionCase.MainGame:
-                updatedAction?.Invoke(m_SelectGrid.WasPerformedThisFrame());
+                updatedAction?.Invoke(selectGrid.WasPerformedThisFrame());
                 break;
 
         }
 
-        cheatUpdatedAction?.Invoke(m_ChangeCheatMode.WasPerformedThisFrame());
+        cheatUpdatedAction?.Invoke(changeCheatMode.WasPerformedThisFrame());
 
-        GridSelected = m_SelectGrid.WasPressedThisFrame();
-        CancelUse = m_CancelUse.WasPressedThisFrame();
+        GridSelected = selectGrid.WasPressedThisFrame();
+        CancelUse = cancelUse.WasPressedThisFrame();
     }
 
 

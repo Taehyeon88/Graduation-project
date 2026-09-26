@@ -9,6 +9,6 @@ public class HealEffect : Effect
     [SerializeField] private bool healMySelf;
     public override GameAction GetGameAction(List<Vector2Int> targetpoes, HeroView myView)
     {
-        return new HealGA(amount, targetpoes);
+        return new HealGA(amount, targetpoes, myView);
     }
 }

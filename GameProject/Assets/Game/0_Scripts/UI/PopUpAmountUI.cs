@@ -8,15 +8,15 @@ public class PopUpAmountUI : MonoBehaviour
     [Header("Element")]
     [SerializeField] private IsoObject[] popup_UIs;
 
-    private TMP_Text[] popup_Texts;
+    private TMP_Text[] popupTexts;
 
     private void Start()
     {
-        popup_Texts = new TMP_Text[popup_UIs.Length];
+        popupTexts = new TMP_Text[popup_UIs.Length];
 
         for (int i = 0; i < popup_UIs.Length; i++)
         {
-            popup_Texts[i] = popup_UIs[i].GetComponentInChildren<TMP_Text>();
+            popupTexts[i] = popup_UIs[i].GetComponentInChildren<TMP_Text>();
             popup_UIs[i].gameObject.SetActive(false);
         }
     }
@@ -29,12 +29,12 @@ public class PopUpAmountUI : MonoBehaviour
             int damage = DamageCaculator.GetDamage(
                 amount, 
                 caster as CombatantView, 
-                TokenSystem.Instance.API.GetTokenByPosition(targetPos) as IDamage
+                TokenSystem.Instance.API.GetTokenByPosition(targetPos) as IDamageable
                 );
 
             popup_UIs[index].gameObject.SetActive(true);                           //활성화
             popup_UIs[index].position = new Vector3(targetPos.x, targetPos.y, 1);  //위치 설정
-            popup_Texts[index].SetText(damage.ToString());                         //수치 갱신
+            popupTexts[index].SetText(damage.ToString());                         //수치 갱신
 
             index++;
         }

@@ -1,290 +1,291 @@
 # 코딩 컨벤션 & 코드 계약 (convention.md)
 
-> 뱀서 토이프로젝트의 **코드 규약 + 제공 인프라 + 인터페이스 계약**을 한 곳에 모은 문서.
-> - **무엇을** 만드는지 → `game-design.md`
-> - **어떻게**(동작·수치) → `feature-spec.md` (§1~§14)
-> - **코드 규칙**(이 문서) → 코드 작성·수정 전 필독. CLAUDE.md가 이 문서를 참조한다.
->
-> 핵심 원칙: 구현은 AI가 챕터마다 다르게 생성해도 좋지만, **여기 적힌 시그니처·열거형·SO 필드 이름·인프라는 그대로 고정**한다. 이게 고정돼야 매번 다른 코드가 나와도 챕터끼리 서로 붙는다.
+> `Assets/Game/0_Scripts/1.Systems`와 이를 지탱하는 `General/`, `Interfaces/`, `2.GameActions/`의 실제 코드를 전수 조사해서, 지금 코드가 **실제로 따르는** 규약을 역추출한 문서다. 희망 규칙이 아니라 관찰 결과이므로, 코드가 바뀌면 이 문서도 다시 검증해야 한다.
+> 큰 틀(코드 규약 → 폴더 위치 → 제공 인프라 → 인터페이스 계약)은 이전 `convention.md`(뱀서라이크 토이프로젝트 기준 구버전, 이제 이 문서로 대체됨)와 `Docs/agile-turn-grid-doc-structure-plan.md`를 참고했지만, 내용은 전부 이 프로젝트의 실제 코드 기준으로 새로 썼다. 옛 프로젝트 전용 내용(물리 레이어, 투사체 타깃 규칙, `IWeapon`/`IPickup`)은 포함하지 않는다.
 
 ---
 
-## 1. 코드 규약
+## 목차
 
-### 프로젝트 규약 (이 프로젝트 고유)
-- **필드 노출은 `[SerializeField] private`만**. `public` 필드 금지 (읽기 노출이 필요하면 프로퍼티).
-- **매직 넘버 금지** — 게임플레이 수치는 모두 ScriptableObject 데이터로 (§4 SO 형태).
-- `Update()`에서 `GetComponent` / `FindObjectOfType` 호출 금지 — Awake/Start에서 캐시.
-- 적·무기·픽업 추가는 **같은 패턴 반복** — 새 패턴 만들기 전에 기존 패턴부터 따르기.
-- 매니저(GameManager 등)는 제공된 **`Singleton<T>` 상속** (직접 싱글톤 패턴 짜지 말 것 — §3).
-- 풀링은 **`UnityEngine.Pool.ObjectPool<T>`** 사용 (커스텀 풀 금지 — §3).
-
-### 기본 컨벤션 (Unity/C# 일반)
-- **한 파일 한 public 타입**, 파일명 = 타입명.
-- **접근 제한자 명시** (private 생략하지 말기).
-- 미사용 `using` 제거. 한 줄 한 책임.
-- 컴포넌트 캐시는 `TryGetComponent` + null 가드.
-- **이벤트 구독은 `OnEnable`, 해제는 `OnDisable`** (구독 누수 방지).
-- 태그·레이어 **문자열 하드코딩 금지** → `LayerMask`/상수로.
-- 이동·타이머 등 시간 의존 로직은 **`Time.deltaTime`** (프레임 독립).
-- `Debug.Log`는 디버그용 — 마무리 단계에서 정리.
-- 주석은 **'왜'만** (자명한 코드 주석 금지).
-
-### 네이밍
-- MonoBehaviour: 역할 명사 (`PlayerController`, `EnemySpawner`).
-- ScriptableObject: `~Data` 접미사 (`WeaponData`, `EnemyData`).
-- 인터페이스: `I` 접두사 (`IDamageable`, `IWeapon`, `IPickup`).
+| # | 절 |
+|---|---|
+| 1 | [네이밍](#sec-1) |
+| 2 | [필드 · 프로퍼티 규약](#sec-2) |
+| 3 | [메서드 구성](#sec-3) |
+| 4 | [동시성 · 주석 스타일](#sec-4) |
+| 5 | [폴더 위치](#sec-5) |
+| 6 | [제공 인프라 코드](#sec-6) |
+| 7 | [인터페이스 계약](#sec-7) |
+| 8 | [매직넘버](#sec-8) |
+| 9 | [시그니처(열거형)](#sec-9) |
+| 10 | [SO 데이터 형태](#sec-10) |
+| 11 | [현재 위반 사례](#sec-11) |
 
 ---
 
-## 2. 폴더 위치
-- 인터페이스: `Assets/Scripts/Core/Interfaces/` · 열거형: `Assets/Scripts/Core/`
-- 제공 인프라(`Singleton.cs` 등): `Assets/Scripts/Core/`
-- **SO 데이터 카탈로그: `Assets/Resources/{Enemies,Weapons,Upgrades}/`** — 런타임에 `Resources.LoadAll<T>("폴더명")`로 일괄 로드(인스펙터 드래그 X, **Addressables 안 씀** — 토이 범위). `/so-data`도 이 경로에 생성. 프리팹(Enemy·투사체)은 SerializeField로 충분.
-- 전체 폴더 구조는 CLAUDE.md 본문 / `feature-spec/13-folder-naming.md` 참고.
+<a id="sec-1"></a>
+## 1. 네이밍
 
----
+- **MonoBehaviour 오케스트레이터**: `~System` 접미사. 예: `EnemySystem`, `HeroSystem`, `MoveSystem`, `SkillSystem`, `DamageSystem`, `TurnSystem`, `APSystem`, `MPSystem`.
+- **`~Processor`**: `~System` 중에서도 `ActionSystem`에 Performer만 등록해 GA를 처리할 뿐, 외부에서 `.Instance`로 조회할 상태가 없는 클래스는 `~System` 대신 `~Processor` 접미사를 쓴다. 예: `EffectProcessor`, `AttackEnemyProcessor`, `ShieldBashProcessor`, `SplashProcessor`, `ShoulderBashProcessor`, `KnockBackProcessor`.
+- **`GameAction` 서브클래스**: `~GA` 접미사. "GameAction"이라는 단어 자체는 클래스명에 쓰지 않는다. 예: `DealDamageGA`, `TurnGA`, `AttackHeroGA`, `ShieldBashGA`, `KnockBackGA`.
+- **인터페이스**: `I` 접두사 + 단일 책임의 작은 캡슐. 예: `IHaveCaster`, `IDamageable`, `IHaveDamage`.
+- 파일당 public 타입 1개, 파일명 = 타입명.
+- **네임스페이스 미사용** — `1.Systems` 트리 전체에서 `namespace` 선언 0건. 새 코드도 전역 네임스페이스에 추가한다.
 
-## 3. 제공 인프라 코드 (수정 금지 · 상속·사용만)
+<a id="sec-2"></a>
+## 2. 필드 · 프로퍼티 규약
 
-> 게임플레이가 아니라 **인프라**. 매번 똑같이 나와야 하는 보일러플레이트라 AI에 생성시키지 않고 **강사가 제공**(4-0 배포). 학생은 **수정하지 않고 상속·사용만** 한다.
+- 인스펙터 노출 필드: `[SerializeField] private`. 예: `MatchSetupSystem.cs:9`, `TurnSystem.cs:8`.
+- 인스펙터에 노출하면서 외부엔 읽기 전용으로 공개할 때: `[field: SerializeField] public X Prop { get; private set; }`. 예: `SkillSystem.cs:14`, `GameSystem.cs:16`.
+- 읽기 전용 공개 상태의 기본형은 `public X Prop { get; private set; }`. 세터에서 부수효과(다른 System 호출 등)가 필요하면 수동 backing field + 커스텀 세터를 쓴다.
+  ```csharp
+  // HeroSystem.cs:10-28
+  public HeroView CurrentHero
+  {
+      get { return currentHero; }
+      set
+      {
+          if (value == null || currentHero == value) return;
+          currentHero = value;
+          ...
+          SkillSystem.Instance.UpdateSkillsUI(currentHero); // 세터 안에서 다른 System 호출
+      }
+  }
+  ```
+- `[Header("...")]`로 필드를 그룹핑한다. 헤더 텍스트는 한글/영문 혼용. 예: `SoundSystem.cs:10,18`(`"BGM,SFX Setting"`, `"MixerGroup"`), `SkillSystem.cs:9,13`.
+- 필드 케이싱은 camelCase로 통일한다 (`[field: SerializeField] public X Prop { get; private set; }` 패턴만 예외로 PascalCase 유지). `hero_moveRange`/`hero_mover`/`reserved_hero_moves`(`MoveSystem.cs`), `reserved_Skills`/`current_Selected_Skill`/`start_Switch_Skill`(`SkillSystem.cs`) 등 순수 private 필드의 언더스코어 위반은 정리됨.
+  - **(남은 예외)** `[SerializeField]`/`public` 필드 중 일부는 아직 언더스코어가 섞여 있다: `upSkill_Distance`(`SkillSystem.cs`), `bgm_Source_Count`/`sfx_Source_Count`(`SoundSystem.cs`), `selected_Hero_UI`(`HeroSystem.cs`, public) 등. 유니티가 필드명으로 씬/프리팹/에셋에 값을 직렬화하기 때문에, 이름을 바꾸면 기존 인스펙터 참조가 끊길 위험이 있어 `[FormerlySerializedAs]` 적용 여부를 정한 뒤 별도로 정리한다.
+- `GameAction`에서 "누가 시전했는가"를 나타내는 프로퍼티명은 `Caster`로 통일하고 `IHaveCaster`를 구현한다. 캐스터+대상이 모두 있는 전투 계열 GA 9개(`AttackHeroGA`, `DealDamageGA`, `PlaySkillGA`, `PerformEffectGA`, `AttackEnemyGA`, `ShoulderBashGA`, `ShieldBashGA`, `SplashGA`, `KnockBackGA`, `HealGA`, `AddStatusEffectGA`) 전부 적용됐다.
+  - `IHaveCaster`는 `Token Caster { get; }`를 요구하지만, 캐스터가 항상 특정 구체 타입(예: 스킬 계열은 `HeroView`, 콤보 계열은 `CombatantView`)인 GA는 공개 프로퍼티를 그 구체 타입으로 유지하고 `IHaveCaster`는 **명시적 인터페이스 구현**(`Token IHaveCaster.Caster => Caster;`)으로 만족시킨다. 실제로 몬스터/영웅 양쪽에서 캐스터가 올 수 있어 `Token` 다형성이 필요한 `AttackHeroGA`/`DealDamageGA`만 공개 프로퍼티 자체가 `Token`이다.
 
-### Singleton<T> — MonoBehaviour 제너릭 싱글톤
-씬에 1개만 존재하는 매니저(GameManager 등)의 베이스. 단일 씬(`Main.unity`)이라 `DontDestroyOnLoad`는 의도적으로 **안 쓴다**(토이 범위).
+<a id="sec-3"></a>
+## 3. 메서드 구성
+
+- 순서: Unity 라이프사이클(`Awake`/`OnEnable`/`OnDisable`/`Update`) → `//Publics` → `//Privates` → `//Performers`/`//Reactions`. `#region`은 쓰지 않고 일반 주석 배너로 섹션을 나눈다. 예: `EnemySystem.cs:28,44,90,126`, `SkillSystem.cs:42,70,272`.
+  - 단, 짧은 파일(`APSystem.cs`, `MPSystem.cs`, `HealSystem.cs`, `KnockBackProcessor.cs` 등)에는 배너가 생략되는 경우가 많다 — 강제 규칙이라기보다 파일 규모에 따른 관례로 보인다.
+- `OnEnable`에서 `ActionSystem.AttachPerformer<T>`/`SubscribeReaction<T>`로 등록한 것은 반드시 `OnDisable`에서 대칭으로 `DetachPerformer<T>`/`UnsubscribeReaction<T>`로 해제한다. 전 파일에서 예외 없이 지켜지는 유일한 규칙이다.
+  ```csharp
+  void OnEnable()  { ActionSystem.AttachPerformer<XGA>(XPerformer); }
+  void OnDisable() { ActionSystem.DetachPerformer<XGA>(); }
+  ```
+- `OnEnable`/`OnDisable`은 `private`로 통일한다. 프로젝트 전체에서 압도적 다수(약 40개 메서드)가 이미 `private`이었고, 무표기였던 `EnemySystem.cs`/`DamageSystem.cs`/`StatusEffectSystem.cs`/`EffectProcessor.cs`(당시 `EffectSystem.cs`)와 `protected`였던 `TurnSystem.cs`의 `OnEnable`을 여기에 맞춰 정리했다.
+- Performer 메서드명은 `GA클래스명 + Performer` 형태로 "GA" 인필스를 유지하는 쪽으로 통일됐다. 예: `AttackEnemyGAPerformer`, `DealDamageGAPerformer`, `PlaySkillGAPerformer`.
+  - `AttachPerformer`로 등록되지 않은 일반 헬퍼(`HeroSystem.PlayHeroTurnPerformer`, `EnemySystem.PlayEnemyTurnPerformer`)와 인프라 디스패처(`ActionSystem.PerformPerformer`)는 GA 서브클래스를 처리하는 Performer가 아니므로 이 규칙 대상이 아니다.
+- 같은 GA에 여러 리액션을 등록할 땐 숫자 접미사 대신 조건을 드러내는 이름을 쓴다: `"조건" + "타이밍" + Reaction`(`TurnGA`라는 타입명은 반복하지 않음). 예: `HeroSystem.cs:62`의 `EnemyTurnPreReaction`, `EnemySystem.cs`의 `EnemyTurnPostReaction`/`BattleStartPostReaction`(둘 다 `TurnGA`를 구독하지만 `turnGA.Type`이 각각 `Enemy`/`StartBattle`일 때만 동작).
+- **이벤트/델리게이트**: `UnityEvent`/`Button.onClick`은 UI 입력 경계에서만 쓰고, 여기서도 `OnEnable`/`OnDisable` 대칭 등록·해제를 지킨다.
+  ```csharp
+  // StartSceneSystem.cs:32-45
+  private void OnEnable()  { startGameButton.onClick.AddListener(StartGame); ... }
+  private void OnDisable() { startGameButton.onClick.RemoveListener(StartGame); ... }
+  ```
+  그 외 순수 게임 로직 간 통신은 C# `Action`/`Action<T>` 델리게이트가 표준이다(`EnemySystem.cs:11`: `public Action<int> EnemyAddEvent { get; private set; }`). `Interactions.cs:22-23,65-74`처럼 정적 이벤트를 "구독/해제를 bool 파라미터 하나로 토글하는 단일 메서드"로 감싸는 패턴도 쓰인다.
+  ```csharp
+  // Interactions.cs:65-69
+  public static void SetSelectGridEvent(Action action, bool isAdd)
+  {
+      if (isAdd) SelectGridEvent += action;
+      else SelectGridEvent -= action;
+  }
+  ```
+
+<a id="sec-4"></a>
+## 4. 동시성 · 주석 스타일
+
+- `async`/`await`는 `1.Systems` 전체에서 0건이다. 모든 비동기/순차 처리는 `IEnumerator` 코루틴 + `ActionSystem.Flow`로 한다. Performer는 즉시 끝나도 관례적으로 `yield return null`을 붙인다(한 프레임에 GA 하나를 처리하는 `Flow` 흐름과 맞추기 위함으로 보인다).
+- XML 문서 주석(`/// <summary>`)은 쓰지 않는다. `1.Systems`/`General`/`2.GameActions`/`Interfaces` 전체에서 0건으로 통일됨(과거 `KnockBackProcessor.cs`(당시 `KnockBackSystem.cs`)·`General/Util/UtilityBFS.cs`의 정식 사용례와 `EnemySystem.cs`의 깨진 흉내 전부 일반 주석으로 정리). 새로 작성할 때도 XML 문서 주석을 쓰지 않는다.
+- 일반 주석은 한글로 "왜/무엇을 하는지"를 짧게 적는 스타일이다. 예: `//공용 종료시, SE 제거`(`EnemySystem.cs:102`), `//데미지 적용 로직`(`DamageSystem.cs:34`).
+- 주석 처리된 죽은 코드(`Debug.Log` 블록 등)를 지우지 않고 남겨두는 사례가 있다 — `DamageSystem.cs:78-90`. 새 커밋에서 굳이 따라 하지 않아도 되지만, 기존 코드를 건드릴 때 관련 없는 죽은 코드를 임의로 지우지는 않는다.
+- `Debug.Log`/`Debug.LogWarning`/`Debug.LogError`는 실제 로직 경로에 조건부 컴파일 없이 그대로 남겨두는 게 현재 관례다.
+
+<a id="sec-5"></a>
+## 5. 폴더 위치
+
+> 전체 폴더 구조(`0_Scripts` 포함 `Assets/Game/` 전체)는 [Folder.md](Folder.md) 참고.
+
+<a id="sec-6"></a>
+## 6. 제공 인프라 코드 (수정 금지 · 상속·사용만)
+
+### Singleton\<T\>
+
+`Assets/Game/0_Scripts/General/Singleton.cs`
 
 ```csharp
-// Assets/Scripts/Core/Singleton.cs
-using UnityEngine;
-
-/// <summary>
-/// 씬에 하나만 존재하는 MonoBehaviour 매니저용 베이스.
-/// 사용: public class GameManager : Singleton<GameManager> { ... }
-/// </summary>
-public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T>
+public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 {
     public static T Instance { get; private set; }
-
+    protected bool cannotInitialize = false;
     protected virtual void Awake()
     {
-        if (Instance != null && Instance != this)
+        if (Instance != null)
         {
+            cannotInitialize = true;
             Destroy(gameObject);
             return;
         }
-        Instance = (T)this;
+        Instance = this as T;
     }
+    protected virtual void OnDestroy() { ... }
+    protected virtual void OnApplicationQuit() { ... }
+    protected void DontDestroyOnLoad() { ... }
 }
 ```
 
-**사용 규약**
-- 매니저는 이 클래스를 상속: `public class GameManager : Singleton<GameManager>`
-- 파생 클래스가 `Awake`를 쓰면 **반드시 `base.Awake()` 먼저 호출**
-- 접근은 `GameManager.Instance.ElapsedTime` 식 (공개 표면은 §4)
+- 선언: `public class Foo : Singleton<Foo>`, 사용: `Foo.Instance.Bar()`.
+- `Awake()`를 오버라이드할 땐 **`base.Awake()`를 가장 먼저 호출**하고, 그다음 `if (Instance != this) return;`으로 중복 인스턴스의 초기화를 막는다.
+  ```csharp
+  // GameSystem.cs:27-32
+  protected override void Awake()
+  {
+      base.Awake();
+      if (Instance != this) return;
+      InitializeGameData();
+  }
+  ```
+- `~System` 접미사 클래스는 전부 `Singleton<T>`를 상속한다 — 단, `MatchSetupSystem`처럼 시작 시 한 번만 실행되고 끝나는 부트스트랩 스크립트는 예외다. `ActionSystem`에 Performer만 등록해서 GA를 처리할 뿐 외부에서 조회할 상태가 없는 클래스는 `~System`이 아니라 `~Processor` 접미사를 쓴다(`EffectProcessor`, `AttackEnemyProcessor`, `ShieldBashProcessor`, `SplashProcessor`, `ShoulderBashProcessor`, `KnockBackProcessor`).
 
-### 풀링 — UnityEngine.Pool.ObjectPool<T> (직접 구현 X)
-명세서 곳곳(투사체 50 prewarm, 잡몹 스폰/디스폰)에서 풀링 사용. **커스텀 풀 짜지 말고 Unity 내장 풀**(LTS 기본 제공). 직접 구현은 발산·버그 포인트.
+### ActionSystem / GameAction / ReactionTiming
 
-```csharp
-using UnityEngine.Pool;
-// new ObjectPool<Projectile>(createFunc, onGet, onRelease, onDestroy,
-//                            collectionCheck:true, defaultCapacity:50, maxSize:200);
-```
-
-**사용 규약**
-- 투사체·EXP gem·잡몹은 풀에서 꺼내고(`Get`) 화면 밖/수명 종료 시 반환(`Release`)
-- prewarm 수치는 명세서 기준(투사체 씬당 50)
-
-### (선택) 보류 중인 인프라
-- `GameEvents` 정적 이벤트 허브 — 지금은 GameManager `OnStateChanged` + `OnBossSpawned`(예외) 두 이벤트로 충분. 그 외 알림은 프로퍼티 폴링/`ChangeState`. 구독자 늘면 그때. (이벤트 '호출 vs 발행' 자체는 4-6에서 다룸)
-- `EnemyData`/`WeaponData` 추상 베이스 — `/so-data`로 충분히 일관. 보류.
-
-> 원칙: **제공 코드는 최소로.** 인프라(싱글톤·풀)만 깔고, 게임플레이는 학생이 Claude로 만든다.
-
----
-
-## 4. 인터페이스 계약 (시그니처 고정)
-
-> 시그니처를 바꿔야겠다고 판단되면 **조용히 바꾸지 말고 차이를 먼저 짚고** 진행 (CLAUDE.md 톤 규약과 동일).
-
-### IDamageable
-플레이어·잡몹·보스가 모두 구현. UI HP바(§9)는 구체 타입을 모른 채 `MaxHP`/`CurrentHP`에 바인딩.
+`Assets/Game/0_Scripts/General/ActionSystem/`
 
 ```csharp
-public interface IDamageable
+// GameAction.cs
+public abstract class GameAction
 {
-    int  MaxHP      { get; }
-    int  CurrentHP  { get; }      // 0 이하 → 사망
-    bool IsAlive    { get; }      // CurrentHP > 0
-    void TakeDamage(int amount);  // 음수 금지. 0 이하로 떨어지면 사망 처리
+    public List<(GameAction, System.Action)> PreReactions { get; private set; } = new();
+    public List<(GameAction, System.Action)> PerformReactions { get; private set; } = new();
+    public List<(GameAction, System.Action)> PostReactions { get; private set; } = new();
 }
-```
-- HP는 **int** (수치: 플레이어 100, 쥐 10, 박쥐 15, 사이클롭스 40, 유령 20, 보스 500)
-- 사망 처리(드랍·디스폰·게임오버)는 각 구현체 내부 책임
 
-### IWeapon
-자동 발사 무기 3종(단검·도끼·창)이 구현. 플레이어의 무기 관리자가 매 프레임 `Tick`을 돌린다. **창은 강화 없는 보조 무기**(WeaponBuff 카드 없음 → `ApplyUpgrade` 미호출).
-
-```csharp
-public interface IWeapon
-{
-    WeaponData Data         { get; }                   // 기본 수치는 SO에서
-    int        Level        { get; }                   // 1 + 총 강화 횟수 (시작 1 = 무강화. 표시·stageSprites 선택용)
-    int        CurrentDamage { get; }                  // 현재 실제 공격력 (스택 반영) — HUD 폴링용 (§9)
-    void Tick(float deltaTime);                        // 쿨다운 진행 + 조건 충족 시 자동 발사
-    void ApplyUpgrade(WeaponUpgradeType type);         // 해당 타입 스택 +1 (공식은 타입별 스택 기준 — §5 누적 공식)
-}
-```
-- 발사 입력 없음(자동). 타겟팅은 무기별로 다름(가장 가까운 적 / 회전 / 무작위).
-- 투사체는 ObjectPool 사용(§3).
-
-### IPickup
-EXP gem이 구현. 향후 회복·골드 등으로 확장 가능.
-
-```csharp
-public interface IPickup
-{
-    void OnPickup(PlayerController player);  // 픽업 반경(기본 2.3) 진입 시 호출
-}
-```
-- EXP gem은 `OnPickup`에서 EXP 가산 후 자신을 풀로 반환.
-
-### 열거형 (고정)
-```csharp
-// Core/GameState.cs — §12 상태 다이어그램과 1:1
-public enum GameState { Boot, Title, Playing, LevelUpPaused, GameOver, Clear }
-
-// Upgrade/WeaponUpgradeType.cs — §7 무기 강화 카테고리
-public enum WeaponUpgradeType { Damage, Cooldown, ExtraProjectile }
-
-// Weapon/WeaponKind.cs — 무기 식별 (NewWeapon 지급·WeaponBuff 대상)
-public enum WeaponKind { Knife, Axe, Spear }
-
-// Player/StatKind.cs — 스탯 강화 대상
-public enum StatKind { MaxHP, MoveSpeed, PickupRadius }
-
-// Upgrade/UpgradeCategory.cs — §7 카드 카테고리
-public enum UpgradeCategory { NewWeapon, WeaponBuff, StatBuff }
+// ReactionTiming.cs
+public enum ReactionTiming { PRE, POST }
 ```
 
-### GameManager 공개 표면 (고정)
-싱글톤(`Singleton<GameManager>` 상속 — §3). 다른 시스템(UI·스포너·무기)이 의존하는 표면만 고정, 내부 구현은 자유.
+`ActionSystem`은 `Singleton<ActionSystem>`이며, 타입을 키로 하는 정적 딕셔너리로 Performer/Reaction을 등록받아 `Perform(GameAction, Action)`이 시작하는 코루틴(`Flow`)으로 순서를 관리한다: `PreReactions` 처리 → PRE 구독자 호출 → **Performer 실행** → `PerformReactions` 처리 → POST 구독자 호출 → `PostReactions` 처리.
+
+모든 System에서 반복되는 등록/사용 패턴:
 
 ```csharp
-// Core/GameManager.cs
-GameState State        { get; }
-float     ElapsedTime  { get; }   // 경과 시간(초). 타이머·웨이브·보스 등장(120s) 기준
-int       KillCount    { get; }   // 잡몹·보스 처치 시 +1 (각 적 사망 처리에서 GameManager.AddKill() 호출)
-
-event System.Action<GameState> OnStateChanged;  // 상태 전환 시 발행 (§12)
-event System.Action<IDamageable> OnBossSpawned; // 보스 등장 시 보스 전달 (UI 보스HP바가 그 보스 HP 폴링·BGM 구독) — 예외로 고정
-
-void ChangeState(GameState next);   // 전환은 이 메서드로만
-void AddKill();                     // 처치 수 +1 (잡몹·보스 사망 처리에서 호출)
-void NotifyBossSpawned(IDamageable boss);  // BossSpawner가 호출 → 내부에서 OnBossSpawned 발행 (4-8)
+void OnEnable()  { ActionSystem.AttachPerformer<XGA>(XPerformer); }
+void OnDisable() { ActionSystem.DetachPerformer<XGA>(); }
+private IEnumerator XPerformer(XGA gameAction) { ... yield return null; }
 ```
-- 일시정지는 `Time.timeScale` 0/1 (레벨업·ESC)
-- 클리어 우선순위: 보스 사망 → 즉시 Clear / 3분 타임아웃 → Clear(안전망) / HP 0 → GameOver
-- **사망·레벨업은 별도 이벤트 계약 없이 각 처리에서 `ChangeState` 직접 호출** (보스 처치→Clear · 플레이어 HP0→GameOver · 레벨업→LevelUpPaused). HUD 등 표시는 `OnStateChanged` 구독 또는 `CurrentHP`/`ElapsedTime` 프로퍼티 폴링.
 
-### PlayerController 공개 표면 (고정)
-`IDamageable` 구현(HP) + 아래. (HUD·업그레이드·무기 시스템이 의존)
+후속 `GameAction`을 연결하는 방법은 두 가지다:
+
 ```csharp
-PlayerWeapons Weapons { get; }   // 보유 무기. 매 프레임 각 IWeapon.Tick(dt) 호출 + AddWeapon(WeaponKind) (4-4 생성)
-//   AddWeapon(kind): kind → 해당 IWeapon 구현 생성 + Resources의 WeaponData 매핑해 주입
-int CurrentLevel { get; }        // HUD·레벨업
-int CurrentExp   { get; }        // 현재 레벨 내 누적
-int ExpToNext    { get; }        // 다음 레벨까지 필요량 (§6) → EXP바 fill = CurrentExp / ExpToNext
-float MoveSpeed  { get; } float PickupRadius { get; }   // StatBuff 대상 (MaxHP는 IDamageable, MoveSpeed는 ×1.1이라 float)
+// 1) 형제 리액션으로 큐잉 — ShieldBashProcessor.cs:22-23
+DealDamageGA dealDamageGA = new(shieldBashGA.Amount, combatants, shieldBashGA.Caster);
+ActionSystem.Instance.AddReaction(dealDamageGA);
 
-void AddExp(int amount);                    // IPickup(EXP gem)이 호출 — 레벨업 판정·LevelUpPaused 전환은 내부 처리 (§6)
-void ApplyStat(StatKind type, float amount); // UpgradeService StatBuff 분기가 호출 — base 기준 가산 스택 (§7)
+// 2) 다른 GA의 후속 효과로 종속 연결 — ShieldBashProcessor.cs:26-27
+AddStatusEffectGA addStatusEffectGA = new(StatusEffectType.ARMOR, shieldStack, new() { shieldBashGA.Caster }, shieldBashGA.Caster);
+dealDamageGA.PostReactions.Add((addStatusEffectGA, null));
 ```
-- `PlayerWeapons`: `AddWeapon(WeaponKind)` 외 **`bool TryGet(WeaponKind, out IWeapon)`** 제공 (WeaponBuff 대상 무기 조회·중복 지급 방지)
-- 입력은 **레거시 Input Manager**(`Input.GetAxisRaw`) 가정 — Project Settings ▸ Player ▸ **Active Input Handling = Both**(또는 Old). (신규 Input System 단독이면 `GetAxis` 런타임 에러)
-- 모든 시스템(스포너·무기 Tick·타이머)은 `GameManager.State == Playing`일 때만 진행 (Title/LevelUpPaused/Clear/GameOver에선 정지 — §12).
 
-### ScriptableObject 데이터 형태 (코드↔자산 계약)
-필드 **이름**을 고정해야 `/so-data`로 만든 자산이 코드와 맞물린다. (노출은 `[SerializeField] private` + 프로퍼티)
+생성자는 target-typed `new(...)`(C# 9)를 쓴다: `TurnGA turnGA = new(TurnType.StartBattle);`(`MatchSetupSystem.cs:45`).
+
+`GameAction` 서브클래스는 순수 데이터 홀더다 — public 오토 프로퍼티 `{ get; private set; }`만 있고, 생성자에서만 값을 채우며 메서드는 두지 않는다(`AttackHeroGA.cs`, `DealDamageGA.cs`, `PlaySkillGA.cs` 등).
+
+`ActionSystem.Instance.Perform(...)`을 직접 호출하는 곳은 코드베이스 전체에서 부트스트랩 역할의 `MatchSetupSystem.cs:46`(전투 시작)와 큐 소비 루프(`SkillSystem.cs:39`, `MoveSystem.cs:33`)뿐이다. 그 외 모든 곳은 `AddReaction`으로 큐잉한다.
+
+<a id="sec-7"></a>
+## 7. 인터페이스 계약 (시그니처 고정)
+
+`Assets/Game/0_Scripts/Interfaces/`
 
 ```csharp
-// Resources/Enemies — §4  (Resources.LoadAll<EnemyData>("Enemies"))
-EnemyData   : maxHP(int), moveSpeed(float), attackPower(int), dropExp(int),
-              sprites(Sprite[]), animInterval(float), contactDamageInterval(float),
-              hitFlashDuration(float)
+// IHaveCaster.cs
+public interface IHaveCaster { Token Caster { get; } }
 
-// Resources/Weapons — §5
-WeaponData  : displayName(string), damage(int), cooldown(float), range(float),
-              projectileCount(int), projectileSpeed(float), prefab(GameObject),
-              stageSprites(Sprite[]),
-              // 강화 수치 (단검·도끼)
-              projectileLifetime(float), upgradeDamageRate(float), upgradeCooldownRate(float), cooldownFloor(float),
-              // 단검 전용
-              projectileSpreadOffset(float),
-              // 도끼 전용
-              pivotAngularSpeed(float), selfSpinSpeed(float),
-              // 창 전용
-              orbitRadius(float), orbitDuration(float), orbitAngularSpeed(float), homingTurnRate(float)
-//   · 도끼 회전 개수 = projectileCount 초기값(3). ExtraProjectile 강화는 단검 전용(도끼·창 projectileCount 불변).
-//   · projectileSpeed = 투사체 속도(u/s). 창=유도 투사체라 사용.
-//   · stageSprites = IWeapon.Level로 단계 선택(Lv1~2→[0]·3~4→[1]·5+→[2]). 창은 강화 없어 [0] 고정.
-//   · displayName = 강화 카드의 "{무기명}" 표기 소스.
-//   · projectileSpreadOffset = 단검 발사체 2발 이상일 때 진행 방향에 수직인 발사 위치 오프셋(유니트). 방향은 전부 동일(평행 발사), 발사 위치만 균등 분산.
-//   · pivotAngularSpeed = 도끼 피봇 공전 속도(deg/sec). selfSpinSpeed = 도끼 자전 속도(deg/sec).
-//   · orbitRadius = 창 대기 반경(u). orbitDuration = 창 대기 시간(sec). orbitAngularSpeed = 창 대기 공전 속도(deg/sec). homingTurnRate = 창 최대 선회율(deg/sec).
+// IDamageable.cs
+public interface IDamageable { public void Damage(int amount, DealDamageGA dealDamageGA); }
 
-// Resources/Upgrades — §7  (Resources.LoadAll<UpgradeData>("Upgrades"))
-UpgradeData : category(UpgradeCategory: NewWeapon/WeaponBuff/StatBuff),
-              displayName(string), description(string), icon(Sprite),
-              targetWeapon(WeaponKind),         // NewWeapon=지급할 무기 · WeaponBuff=강화 대상 무기
-              weaponUpgradeType(WeaponUpgradeType), // WeaponBuff 전용 (Damage/Cooldown/ExtraProjectile)
-              statType(StatKind),               // StatBuff 전용 (MaxHP/MoveSpeed/PickupRadius)
-              amount(float)                     // 강화량: 0.2=+20%, 20=+20HP 등 (category·타입별 해석)
+// IHaveDamage.cs
+public interface IHaveDamage { float Damage_Amount { get; } }
+```
 
-// Enemy/BossData — 보스 전용 SO. 카탈로그 로드 아님(§2) — BossController에 SerializeField로 직접 연결(보스 1종만 존재)
-BossData    : keepDistance(float), keepDistanceDeadzone(float),
-              boltDamage(int), boltSpeed(float), boltInterval(float), boltLifetime(float), boltSprite(Sprite),
-              summonInterval(float), summonMinCount(int), summonMaxCount(int), summonCap(int), summonRadius(float),
-              ghostData(EnemyData), boltPrefab(GameObject)
-//   · keepDistance/keepDistanceDeadzone = 보스가 플레이어와 유지하려는 거리(u)와 허용 오차. FixedUpdate에서 거리 차만큼 접근/후퇴.
-//   · boltDamage/boltSpeed/boltInterval/boltLifetime/boltSprite = 원거리 마법탄(EnemyProjectile) 발사 주기·수치.
-//   · summonInterval/summonMinCount/summonMaxCount/summonCap/summonRadius = 유령 소환 주기·마리수 범위·동시 생존 상한·소환 반경.
-//   · ghostData = 소환할 유령의 EnemyData. boltPrefab = 마법탄 프리팹(EnemyProjectile 부착, Kinematic RB2D 포함 — §6).
-//   · 보스의 기본 스탯(HP·이동속도·공격력·드랍EXP·스프라이트)은 BossData가 아니라 **별도 EnemyData**(§4, HP 500)를 BossController가 함께 참조 — 잡몹과 같은 IDamageable 계약 재사용.
+- **`IHaveCaster`는 전투 중 캐스터와 대상이 모두 있는 GA에는 무조건 적용한다.** 새 GA를 추가할 때도 이 조건에 해당하면 예외 없이 구현한다(현재 9개: `AttackHeroGA`, `DealDamageGA`, `PlaySkillGA`, `PerformEffectGA`, `AttackEnemyGA`, `ShoulderBashGA`, `ShieldBashGA`, `SplashGA`, `KnockBackGA`, `HealGA`, `AddStatusEffectGA`). `TurnGA`, `MoveGA`, `SpendAPGA` 등 캐스터 개념이 없는 순수 턴/자원/이동 GA는 구현하지 않는다.
+- **`IDamageable`은 피격이 있는 모든 `Token` 클래스가 상속받는다.** 현재 `CombatantView`(→`HeroView`/`EnemyView`가 상속으로 자동 충족)와 `WaveCoreView`가 구현한다. `HeroPreview`처럼 전투에서 피격되지 않는 `Token` 서브클래스는 구현하지 않는다.
+- `IDamageable`/`HeroView`/`Token` 등은 다형성 디스패치보다 **런타임 `as`/`is` 패턴 매칭**으로 다뤄지는 경우가 많다:
+  ```csharp
+  // EnemySystem.cs:70-71
+  var target = TokenSystem.Instance.API.GetTokenByPosition(attackPos) as IDamageable;
+  if (target != null && target is HeroView) targets.Add(target);
+  ```
+  ```csharp
+  // SkillSystem.cs:157
+  if (ability.Effects[0] is IHaveDamage idamage) { ... }
+  ```
 
-> **업그레이드 적용**: `UpgradeData`는 **데이터만**. 작은 `UpgradeService.Apply(UpgradeData u, PlayerController p)`가 `category`로 분기 —
-> `NewWeapon` → `p.Weapons.AddWeapon(u.targetWeapon)` · `WeaponBuff` → 해당 무기 `IWeapon.ApplyUpgrade(u.weaponUpgradeType)` · `StatBuff` → `p`의 `u.statType` 스탯에 `u.amount` 적용.
-> SO에 동작 박지 말 것 → **새 카테고리만 코드, 기존 카테고리 변형은 자산 추가만**.
+<a id="sec-8"></a>
+## 8. 매직넘버
 
----
+> 다른 절과 달리 이 절은 **관찰이 아니라 새로 도입하는 규칙**이다 — 현재 코드엔 일관된 처리 방식이 없고 위반이 더 많다. 새로 작성하는 코드부터 적용하고, 기존 위반은 고치지 않은 채 11절 표에서 체크리스트로만 관리한다.
 
-## 5. 계약이 막는 발산 예시
-- `TakeDamage(int)` vs `Damage(float, Vector2)` 처럼 챕터마다 깨지는 시그니처
-- `WeaponData.cooldown` vs `coolTime` 같은 필드명 불일치로 자산이 안 붙는 문제
-- 상태 이름(`Paused` vs `LevelUpPaused`)이 갈려 이벤트 구독이 어긋나는 문제
+- **게임플레이 밸런싱 수치(데미지·코스트·범위·확률·지속시간 등)는 코드에 리터럴로 두지 않고 SO 필드 또는 `[SerializeField]` 필드로 노출한다.**
+  ```csharp
+  // Effects/AttackEnemyEffect.cs:10-15
+  [SerializeField] private float amount;
+  ...
+  AttackEnemyGA attackEnemyGA = new(targetpoes, amount, count, myView, animationType);
+  ```
+- 현재 위반 사례(이번 작업에서 수정하지 않음, 11절 참고): `APSystem.MaxAP`/`MPSystem.MaxMP`(자동 프로퍼티 초기값 `= 3`), `KnockBackProcessor.crachDamage`(`const int` `= 1`), `SkillSystem`에서 모든 스킬의 AP 코스트가 `SpendAPGA` 기본 파라미터 `1`로 고정(`SkillData`/`SkillAbility`엔 코스트 필드 자체가 없음), `RewardSystem`의 보상 등급 확률(`0.7f`), `WaveSystem`의 웨이브 코어 인접 스폰 반경(`distance <= 2`).
 
----
+<a id="sec-9"></a>
+## 9. 시그니처(열거형)
 
-## 6. 물리 레이어 & 충돌 (고정 — 에디터에서 설정)
+`Assets/Game/0_Scripts/Enums/`(13개) + `General/ActionSystem/ReactionTiming.cs` + 개별 파일 내부 선언(`InteractionSystem`, `TokenCreator`, `HeroPreview`) 포함, 총 18개 열거형이 있다.
 
-> 전투 판정은 전부 **isTrigger 콜라이더**(물리 밀림 없음). 이동 물리는 플레이어 Rigidbody2D(Dynamic)만. 레이어 문자열 하드코딩 금지(§1) → 아래 레이어를 만들고 충돌 매트릭스(Project Settings ▸ Physics2D)로 통제.
->
-> ⚠️ **트리거 이벤트는 쌍 중 한쪽에 Rigidbody2D 필수**(Unity 2D 규칙). 그래서 **모든 투사체 프리팹(PlayerProjectile·EnemyProjectile)에 Kinematic Rigidbody2D(Gravity 0)** 부착 — 안 붙이면 투사체↔적 판정이 아예 안 뜬다. 적·픽업 프리팹은 RB2D 없음(상대인 플레이어/투사체의 RB가 판정 담당).
+- **GameAction 필드나 SO 데이터의 구분자로 쓰이는 열거형은 System 분기를 좌우하는 고정 계약이다.** 멤버 이름을 바꾸면 그 값으로 분기하는 모든 System이 깨지므로, 기존 멤버명은 그대로 두고 확장만 한다.
+  ```csharp
+  // Enums/TurnType.cs — TurnGA.Type의 값, TurnSystem/EnemySystem/HeroSystem의 Pre·PostReaction 분기를 결정
+  public enum TurnType { Enemy, Player, StartBattle, GameSetUp }
+  ```
 
-레이어: `Player` · `Enemy` · `Boss` · `PlayerProjectile` · `EnemyProjectile` · `Pickup`
+| 열거형 | 파일 | 분기 위치 |
+|---|---|---|
+| `TurnType` | `Enums/TurnType.cs` | `TurnGA.Type` → `TurnSystem.cs`/`EnemySystem.cs`/`HeroSystem.cs`의 Pre·PostReaction |
+| `ReactionTiming` | `General/ActionSystem/ReactionTiming.cs` | `ActionSystem.SubscribeReaction<T>`/`UnsubscribeReaction<T>`의 PRE/POST 딕셔너리 선택 |
+| `StatusEffectType` | `Enums/StatusEffectType.cs` | `StatusEffectData.EffectType` → `StatusEffectSystem.cs:8` 캐시 키, `AddStatusEffectEffect.cs:8` |
+| `SETargetMode` | `Enums/SETargetMode.cs` | `AddStatusEffectEffect.cs:15-34` 대상 선택 switch |
+| `TargetType` | `Enums/TargetType.cs` | `SkillSystem.cs` 다수 지점(아군/적군/본인 필터링) |
+| `HeroAnimationType` | `Enums/HeroAnimationType.cs` | `AttackEnemyProcessor.cs:29,47` 근접/원거리 애니메이션 분기 |
+| `ProjectionType` | `Enums/ProjectionType.cs` | `ProjectionCreator.cs:22-27` 프리팹 매핑 |
+| `AudioType` | `Enums/AudioType.cs` | `SoundSystem.cs:96-121` 믹서 그룹 switch |
+| `TokenType` | `4.Creators/TokenCreator.cs:5` | 같은 파일 `CreateToken`의 switch — 프리팹/셋업 분기 |
 
-| 주체 ＼ 대상 | Player | Enemy/Boss | Pickup | PlayerProj | EnemyProj |
-|---|---|---|---|---|---|
-| **Player** | — | 트리거(접촉 데미지) | 트리거(흡수) | 무시 | 트리거(피격) |
-| **Enemy/Boss** | ↑ | 무시(겹침 허용) | 무시 | 트리거(피격) | 무시 |
-| **PlayerProj** | 무시 | 트리거 | 무시 | 무시 | 무시 |
-| **EnemyProj** | 트리거 | 무시 | 무시 | 무시 | 무시 |
-| **Pickup** | ↑ | 무시 | 무시 | 무시 | 무시 |
+- **선언은 있지만 소비하는 코드가 없는 열거형**(정리 후보, 11절 참고): `CardSubType`, `ETargetModeType`, `CardAbilityType`, `DamageFormulaType`, `AudioEditorType`, `SEMachanicsType`(기본값 `None`만 반환).
+- **네이밍 관찰:** 대부분 `~Type`/`~Mode`/`~State` 접미사 + PascalCase 멤버. `ETargetModeType`만 `E` 접두사가 붙고, `StatusEffectType`/`ETargetModeType`/`HeroAnimationType`는 멤버가 ALL_CAPS — 다수 스타일과 다른 예외로 11절에 기록.
 
-- 적끼리·투사체끼리·투사체-픽업은 전부 **무시**(불필요한 판정 제거).
-- 충돌 매트릭스 세팅은 **에디터 작업(본인)** — 4-5 시작 전 잡아둔다.
+<a id="sec-10"></a>
+## 10. SO 데이터 형태
 
-## 7. 투사체 타깃 규칙 (고정)
-- **무기 투사체**(PlayerProjectile): `Enemy`/`Boss`만 맞힘.
-- **적 투사체**(EnemyProjectile = 보스 마법탄): `Player`만 맞힘.
-- `OnTriggerEnter2D`에서 상대 레이어 확인 후 `IDamageable.TakeDamage` 호출. 같은 진영·다른 투사체는 무시.
-- 유도 무기(창)는 발사 후 매 프레임 타겟 방향으로 조향(homing). `PlayerProjectile` — 첫 명중 시 소멸.
+`Assets/Game/0_Scripts/5.Data/`(스크립트 정의, `~Data` 접미사 11개) ↔ `Assets/Game/1_Datas/`(실제 `.asset` 인스턴스, `1.Enemies/`·`1.Heroes/`·`2.Skills/`·`3.Stages/`·`4.StatusEffects/`·`6.VisualGrids/` 등 타입별 하위 폴더)로 스크립트 폴더와 자산 폴더가 분리되어 있다. `Resources.LoadAll`/Addressables는 쓰지 않는다 — `GameSystem`이 배열을 `[SerializeField]`로 직접 들고, 하위 System은 `GameSystem.Instance.HeroDatas`/`CurrentStageData`로 참조한다(`GameSystem.cs:16,20,24`). `TokenCreator`는 공통 베이스 `TokenData`를 받아 `as HeroData`/`as EnemyData`로 다운캐스트한다.
+
+- **필드 패턴:** `[CreateAssetMenu(menuName = "Data/...")]` + `[field: SerializeField] public X Prop { get; private set; }`.
+  ```csharp
+  // 5.Data/EnemyData.cs
+  [CreateAssetMenu(menuName = "Data/Token/Enemy")]
+  public class EnemyData : TokenData
+  {
+      [field: SerializeField] public int Health { get; private set; }
+      [field: SerializeField] public int MovePoint { get; private set; }
+      [field: SerializeReference, SR] public Enemy Enemy { get; private set; }
+  }
+  ```
+- `~Data` 클래스 목록: `TokenData`(공통 베이스), `HeroData`/`EnemyData`/`WaveCoreData`(→ `TokenData` 상속), `SkillData`, `PerkData`, `StageData`, `WaveData`, `StatusEffectData`, `SoundData`, `VisualGridData`(전부 `5.Data/`).
+- **SO는 데이터만 들고, 동작은 넣지 않는다.** 예외: `VisualGridData.cs`는 `GetVGLayerOrder()`와 중첩 `abstract class VisualGridType`(`FillType`/`BorderType`/`SymbolType`)에 실제 로직을 갖고 있다 — 이번 작업에서 리팩터링하지 않고 11절에 위반으로만 기록한다.
+
+<a id="sec-11"></a>
+## 11. 현재 위반 사례 (통일 필요 — 후속 작업 근거)
+
+다수 패턴을 규약으로 삼되, 아래는 그 규약에서 벗어난 실제 사례다. 새 코드를 작성할 땐 위 규약을 따르고, 아래 목록은 기존 코드를 정리할 때의 체크리스트로 쓴다.
+
+| # | 규약 | 위반 파일:라인 |
+|---|---|---|
+| 1 | (8절) 밸런싱 수치는 SO/`[SerializeField]`로 노출, 리터럴 금지 | `APSystem.cs:7`(`MaxAP = 3`), `MPSystem.cs:7`(`MaxMP = 3`), `KnockBackProcessor.cs:8`(`crachDamage = 1`), `SkillSystem.cs:275`(스킬 AP 코스트 미데이터화), `RewardSystem.cs:24`(`0.7f`), `WaveSystem.cs:43`(`distance <= 2`) |
+| 2 | (9절) 열거형은 접두사 없이 `~Type`/`~Mode`/`~State` 접미사 + PascalCase | `ETargetModeType`만 `E` 접두사 (나머지 17개엔 없음) |
+| 3 | (9절) 열거형 멤버는 PascalCase | `StatusEffectType`/`ETargetModeType`/`HeroAnimationType`는 멤버가 ALL_CAPS |
+| 4 | (9절) 열거형은 실제로 분기에 쓰여야 함(정리 후보) | `CardSubType`, `ETargetModeType`, `CardAbilityType`, `DamageFormulaType`, `AudioEditorType`, `SEMachanicsType` — 소비하는 코드 없음 |
+| 5 | (10절) SO는 데이터만, 동작 금지 | `VisualGridData.cs`(`GetVGLayerOrder()`, 중첩 `VisualGridType`/`FillType`/`BorderType`/`SymbolType`의 `GetVGType*()`) |

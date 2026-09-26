@@ -10,19 +10,19 @@ public class EnemySystem : Singleton<EnemySystem>
     public IReadOnlyList<EnemyView> Enemise => TokenSystem.Instance.EnemyViews;
     public Action<int> EnemyAddEvent { get; private set; }
 
-    void OnEnable()
+    private void OnEnable()
     {
-        ActionSystem.AttachPerformer<EnemyTurnGA>(EnemyTurnPerformer);
-        ActionSystem.AttachPerformer<AttackHeroGA>(AttackHeroPerformer);
-        ActionSystem.SubscribeReaction<TurnGA>(TurnGAPostReaction, ReactionTiming.POST);
-        ActionSystem.SubscribeReaction<TurnGA>(TurnGAPostReaction2, ReactionTiming.POST);
+        ActionSystem.AttachPerformer<EnemyTurnGA>(EnemyTurnGAPerformer);
+        ActionSystem.AttachPerformer<AttackHeroGA>(AttackHeroGAPerformer);
+        ActionSystem.SubscribeReaction<TurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
+        ActionSystem.SubscribeReaction<TurnGA>(BattleStartPostReaction, ReactionTiming.POST);
     }
-    void OnDisable()
+    private void OnDisable()
     {
         ActionSystem.DetachPerformer<EnemyTurnGA>();
         ActionSystem.DetachPerformer<AttackHeroGA>();
-        ActionSystem.UnsubscribeReaction<TurnGA>(TurnGAPostReaction, ReactionTiming.POST);
-        ActionSystem.UnsubscribeReaction<TurnGA>(TurnGAPostReaction2, ReactionTiming.POST);
+        ActionSystem.UnsubscribeReaction<TurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
+        ActionSystem.UnsubscribeReaction<TurnGA>(BattleStartPostReaction, ReactionTiming.POST);
     }
 
     //Publics
@@ -44,7 +44,7 @@ public class EnemySystem : Singleton<EnemySystem>
     //Performers
 
     //각 몬스터 턴 실행
-    private IEnumerator EnemyTurnPerformer(EnemyTurnGA enemyTurn)
+    private IEnumerator EnemyTurnGAPerformer(EnemyTurnGA enemyTurn)
     {
         EnemyView enemy = enemyTurn.EnemyView;
 
@@ -59,22 +59,22 @@ public class EnemySystem : Singleton<EnemySystem>
         }
     }
 
-    private IEnumerator AttackHeroPerformer(AttackHeroGA attackHeroGA)
+    private IEnumerator AttackHeroGAPerformer(AttackHeroGA attackHeroGA)
     {
-        var targets = new List<IDamage>(10);
+        var targets = new List<IDamageable>(10);
 
         if (attackHeroGA.AttackArea != null)
         {
             foreach (var attackPos in attackHeroGA.AttackArea)
             {
-                var target = TokenSystem.Instance.API.GetTokenByPosition(attackPos) as IDamage;
+                var target = TokenSystem.Instance.API.GetTokenByPosition(attackPos) as IDamageable;
                 if (target != null && target is HeroView)
                     targets.Add(target);
             }
         }
         else
         {
-            var target = TokenSystem.Instance.API.GetTokenByPosition(attackHeroGA.AttackPosition) as IDamage;
+            var target = TokenSystem.Instance.API.GetTokenByPosition(attackHeroGA.AttackPosition) as IDamageable;
             if (target != null && target is HeroView)
                 targets.Add(target);
         }
@@ -91,7 +91,7 @@ public class EnemySystem : Singleton<EnemySystem>
 
     //몬스터들 턴 종료 전
     //모든 적들 다음으로 할 행동 판단 및 보여주기
-    private void TurnGAPostReaction(TurnGA turnGA)
+    private void EnemyTurnPostReaction(TurnGA turnGA)
     {
         if (turnGA.Type != TurnType.Enemy) return;
 
@@ -108,9 +108,8 @@ public class EnemySystem : Singleton<EnemySystem>
         }
     }
 
-    // <summary>
-    // 게임 시작시, 다음 할 행동 설정
-    private void TurnGAPostReaction2(TurnGA turnGA)
+    //게임 시작시, 다음 할 행동 설정
+    private void BattleStartPostReaction(TurnGA turnGA)
     {
         if (turnGA.Type != TurnType.StartBattle) return;
 

@@ -19,8 +19,8 @@ public class TurnPopUpUI : MonoBehaviour
     [SerializeField] private float fade_out_duration = 3.4f;
     [SerializeField] private float wait_duration = 0.5f;
 
-    private Sequence player_fade_Squ;
-    private Sequence enemy_fade_Squ;
+    private Sequence playerFadeSqu;
+    private Sequence enemyFadeSqu;
 
     private void Start()
     {
@@ -37,7 +37,7 @@ public class TurnPopUpUI : MonoBehaviour
             hero_PopUp_UI.gameObject.SetActive(true);
             hero_Current_Turn_Text.SetText($"{current_Turn_Number}Turn");
 
-            return player_fade_Squ;
+            return playerFadeSqu;
         }
         else if (turnType == TurnType.Enemy)
         {
@@ -45,7 +45,7 @@ public class TurnPopUpUI : MonoBehaviour
             Initialize();
             enemy_PopUp_UI.gameObject.SetActive(true);
 
-            return enemy_fade_Squ;
+            return enemyFadeSqu;
         }
 
         return null;
@@ -61,7 +61,7 @@ public class TurnPopUpUI : MonoBehaviour
     {
         turn_Pop_Image.DOFade(0, 0.01f);
 
-        player_fade_Squ = DOTween.Sequence();
+        playerFadeSqu = DOTween.Sequence();
 
         Tween fade_in = turn_Pop_Image.DOFade(1f, fade_in_duration);
         Tween fade_in_text = hero_Turn_Text.DOFade(1f, fade_in_duration);
@@ -71,7 +71,7 @@ public class TurnPopUpUI : MonoBehaviour
         Tween fade_out_text = hero_Turn_Text.DOFade(0.0f, fade_out_duration);
         Tween fade_out_text2 = hero_Current_Turn_Text.DOFade(0.0f, fade_out_duration);
 
-        player_fade_Squ.Join(fade_in)
+        playerFadeSqu.Join(fade_in)
                        .Join(fade_in_text)
                        .Join(fade_in_text2)
                        .Insert(fade_in_duration + wait_duration, fade_out)
@@ -89,7 +89,7 @@ public class TurnPopUpUI : MonoBehaviour
     {
         turn_Pop_Image.DOFade(0, 0.01f);
 
-        enemy_fade_Squ = DOTween.Sequence();
+        enemyFadeSqu = DOTween.Sequence();
 
         Tween fade_in = turn_Pop_Image.DOFade(1f, fade_in_duration);
         Tween fade_in_text = enemy_Turn_Text.DOFade(1f, fade_in_duration);
@@ -97,7 +97,7 @@ public class TurnPopUpUI : MonoBehaviour
         Tween fade_out = turn_Pop_Image.DOFade(0.0f, fade_out_duration);
         Tween fade_out_text = enemy_Turn_Text.DOFade(0.0f, fade_out_duration);
 
-        enemy_fade_Squ.Join(fade_in)
+        enemyFadeSqu.Join(fade_in)
                        .Join(fade_in_text)
                        .Insert(fade_in_duration + wait_duration, fade_out)
                        .Insert(fade_in_duration + wait_duration, fade_out_text)
@@ -112,7 +112,7 @@ public class TurnPopUpUI : MonoBehaviour
 
     private void OnDestroy()
     {
-        player_fade_Squ.Kill();
-        enemy_fade_Squ.Kill();
+        playerFadeSqu.Kill();
+        enemyFadeSqu.Kill();
     }
 }

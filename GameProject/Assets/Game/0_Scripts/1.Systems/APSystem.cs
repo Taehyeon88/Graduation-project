@@ -9,8 +9,8 @@ public class APSystem : Singleton<APSystem>
 
     private void OnEnable()
     {
-        ActionSystem.AttachPerformer<SpendAPGA>(SpendAPPerformer);
-        ActionSystem.AttachPerformer<RefillAPGA>(RefillAPPerformer);
+        ActionSystem.AttachPerformer<SpendAPGA>(SpendAPGAPerformer);
+        ActionSystem.AttachPerformer<RefillAPGA>(RefillAPGAPerformer);
     }
     private void OnDisable()
     {
@@ -21,14 +21,14 @@ public class APSystem : Singleton<APSystem>
     {
         return CurrentAP >= ap;
     }
-    private IEnumerator SpendAPPerformer(SpendAPGA spendAPGA)
+    private IEnumerator SpendAPGAPerformer(SpendAPGA spendAPGA)
     {
         CurrentAP -= spendAPGA.Amount;
 
         apUI.SpendAPUI(CurrentAP);
         yield return null;
     }
-    private IEnumerator RefillAPPerformer(RefillAPGA refillManaGA)
+    private IEnumerator RefillAPGAPerformer(RefillAPGA refillAPGA)
     {
         CurrentAP = MaxAP;
 

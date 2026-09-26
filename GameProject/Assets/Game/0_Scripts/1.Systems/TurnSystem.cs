@@ -7,12 +7,12 @@ public class TurnSystem : Singleton<TurnSystem>
     [Header("Element")]
     [SerializeField] private TurnPopUpUI turnPopUpUI;
     public TurnType CurrentTurn => currentTurn;
-    public int CurrentTurn_Number => currentTurn_Number;
+    public int CurrentTurn_Number => currentTurnNumber;
 
     private TurnType currentTurn = TurnType.GameSetUp;
-    private int currentTurn_Number = 0;
+    private int currentTurnNumber = 0;
 
-    protected void OnEnable()
+    private void OnEnable()
     {
         ActionSystem.AttachPerformer<TurnGA>(TurnGAPerformer);
         ActionSystem.SubscribeReaction<TurnGA>(TurnGAPreReaction, ReactionTiming.PRE);
@@ -37,7 +37,7 @@ public class TurnSystem : Singleton<TurnSystem>
         }
         else if (turnGA.Type == TurnType.Enemy)
         {
-            Tween direct = turnPopUpUI.GetTurnPopUpTween(TurnType.Enemy, currentTurn_Number);   //턴 팝업 연출
+            Tween direct = turnPopUpUI.GetTurnPopUpTween(TurnType.Enemy, currentTurnNumber);   //턴 팝업 연출
             direct?.Restart();
             yield return direct?.WaitForCompletion();
 
@@ -47,8 +47,8 @@ public class TurnSystem : Singleton<TurnSystem>
         {
             yield return new WaitForSeconds(1f);
 
-            currentTurn_Number++;
-            Tween direct = turnPopUpUI.GetTurnPopUpTween(TurnType.Player, currentTurn_Number);  //턴 팝업 연출
+            currentTurnNumber++;
+            Tween direct = turnPopUpUI.GetTurnPopUpTween(TurnType.Player, currentTurnNumber);  //턴 팝업 연출
             direct?.Restart();
             yield return direct?.WaitForCompletion();
 

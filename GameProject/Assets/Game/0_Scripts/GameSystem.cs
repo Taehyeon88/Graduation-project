@@ -29,12 +29,12 @@ public class GameSystem : Singleton<GameSystem>
         base.Awake();
         if (Instance != this) return;
 
-        IntializeGameData();  //게임 데이터 초기화
+        InitializeGameData();  //게임 데이터 초기화
 
 
         //첫 인스턴스만 체인처리
-        ActionSystem.AttachPerformer<GameClearGA>(GameClearPerformer);
-        ActionSystem.AttachPerformer<GameOverGA>(GameOverPerformer);
+        ActionSystem.AttachPerformer<GameClearGA>(GameClearGAPerformer);
+        ActionSystem.AttachPerformer<GameOverGA>(GameOverGAPerformer);
 
         //각 영웅 데이터 값 초기화
     }
@@ -48,7 +48,7 @@ public class GameSystem : Singleton<GameSystem>
         
     }
     //Performers
-    private IEnumerator GameClearPerformer(GameClearGA gameClearGA)
+    private IEnumerator GameClearGAPerformer(GameClearGA gameClearGA)
     {
         Debug.Log("게임 클리어");
         IsGameClear = true;
@@ -57,7 +57,7 @@ public class GameSystem : Singleton<GameSystem>
 
         yield return null;
     }
-    private IEnumerator GameOverPerformer(GameOverGA gameOverGA)
+    private IEnumerator GameOverGAPerformer(GameOverGA gameOverGA)
     {
         IsGameOver = true;
 
@@ -85,23 +85,23 @@ public class GameSystem : Singleton<GameSystem>
 
     public void StartFromScratch()
     {
-        IntializeGameData();
+        InitializeGameData();
         SceneManager.LoadScene("GameDemoScene");
     }
 
     //게임 내, 저장된 모든 데이터 초기화
-    public void IntializeGameData()
+    public void InitializeGameData()
     {
         CurrentStageLevel = 1;
         IsGameOver = false;
         IsGameClear = false;
         CurrentGold = 0;
 
-        IntializeHero();
+        InitializeHero();
     }
 
     //영웅 관련 데이터 초기화
-    public void IntializeHero()
+    public void InitializeHero()
     {
         CurrentGold = 0;
 
