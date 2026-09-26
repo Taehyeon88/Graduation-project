@@ -1,8 +1,8 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public interface IHaveCaster
 {
-    CombatantView Caster { get; }
+    Token Caster { get; }
 }

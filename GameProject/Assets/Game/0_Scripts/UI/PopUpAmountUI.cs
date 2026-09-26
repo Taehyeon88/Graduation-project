@@ -29,7 +29,7 @@ public class PopUpAmountUI : MonoBehaviour
             int damage = DamageCaculator.GetDamage(
                 amount, 
                 caster as CombatantView, 
-                TokenSystem.Instance.API.GetTokenByPosition(targetPos) as CombatantView
+                TokenSystem.Instance.API.GetTokenByPosition(targetPos) as IDamage
                 );
 
             popup_UIs[index].gameObject.SetActive(true);                           //활성화

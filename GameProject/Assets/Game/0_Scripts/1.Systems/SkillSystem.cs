@@ -22,13 +22,11 @@ public class SkillSystem : Singleton<SkillSystem>
 
     private void OnEnable()
     {
-        ActionSystem.AttachPerformer<PlaySkillGA>(PlayCardPerformer);
-        ActionSystem.AttachPerformer<RefillSkillLimitGA>(RefillSkillLimitPerformer);
+        ActionSystem.AttachPerformer<PlaySkillGA>(PlaySkillPerformer);
     }
     private void OnDisable()
     {
         ActionSystem.DetachPerformer<PlaySkillGA>();
-        ActionSystem.DetachPerformer<RefillSkillLimitGA>();
     }
 
     private void Update()
@@ -227,28 +225,26 @@ public class SkillSystem : Singleton<SkillSystem>
         //각 대상의 위치로 poses를 탐색
 
         List<Vector2Int> result = new(20);
-        IReadOnlyList<Token> tokens;
 
         if (type == TargetType.Enemy)
         {
-            tokens = EnemySystem.Instance.Enemise;
+            foreach (var pos in poses)
+            {
+                IDamage token = TokenSystem.Instance.API.GetTokenByPosition(pos) as IDamage;
+                if (token != null && token is not HeroView)
+                    result.Add(pos);
+            }
         }
         else if (type == TargetType.Friendly)
         {
-            tokens = HeroSystem.Instance.HeroViews;
-        }
-        else return null;
-
-        foreach (var pos in poses)
-        {
-            foreach (var token in tokens)
+            foreach (var pos in poses)
             {
-                if (pos == TokenSystem.Instance.API.GetTokenPosition(token))
-                {
+                Token token = TokenSystem.Instance.API.GetTokenByPosition(pos);
+                if (token != null && token is HeroView)
                     result.Add(pos);
-                }
             }
         }
+        else return null;
 
         return result;
     }
@@ -274,32 +270,15 @@ public class SkillSystem : Singleton<SkillSystem>
     }
 
     //Performers
-    private IEnumerator PlayCardPerformer(PlaySkillGA playSkillGA)
+    private IEnumerator PlaySkillPerformer(PlaySkillGA playSkillGA)
     {
-        SpendManaGA spendManaGA = new();
-        ActionSystem.Instance.AddReaction(spendManaGA);
-
-        playSkillGA.Skill.ReduceLimit();
+        SpendAPGA spendAPGA = new();
+        ActionSystem.Instance.AddReaction(spendAPGA);
 
         foreach(var effect in playSkillGA.Skill.SkillAbility.Effects)
         {
             PerformEffectGA performEffectGA = new PerformEffectGA(effect, playSkillGA.TargetPoses, playSkillGA.MyView);
             ActionSystem.Instance.AddReaction(performEffectGA);
-        }
-        yield return null;
-    }
-
-    private IEnumerator RefillSkillLimitPerformer(RefillSkillLimitGA refillSkillLimitGA)
-    {
-        foreach (var hero in HeroSystem.Instance.HeroViews)
-        {
-            if (hero != null)
-            {
-                foreach (var skill in hero.Skills)
-                {
-                    skill?.ReFillLimit();
-                }
-            }
         }
         yield return null;
     }

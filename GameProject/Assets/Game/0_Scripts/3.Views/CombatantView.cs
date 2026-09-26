@@ -8,11 +8,10 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.UI; 
 
-public class CombatantView : Token
+public class CombatantView : Token, IDamage
 {
     [SerializeField] private Slider healthSlider;
     [SerializeField] private TMP_Text healthText;
-    [SerializeField] private TMP_Text movePointText;
     [SerializeField] private StatusEffectsUI statusEffectsUI;
 
     protected Dictionary<StatusEffectType, int> statusEffectUIs = new();
@@ -35,28 +34,14 @@ public class CombatantView : Token
         }
     }
 
-    public int MovePoint { get; private set; }
-
-    public int CurrentMovePoint
-    {
-        get { return currentMovePoint; }
-        private set
-        {
-            currentMovePoint = value;
-            UpdateMovePointUI();
-        }
-    }
-
     private int maxHealth;
     private int currentHealth;
-    private int currentMovePoint;
 
-    public void SetUpBase(int health, int maxHealth, int movePoint, TokenData tokenData, IsoObject isoObject)
+    public void SetUpBase(int health, int maxHealth, TokenData tokenData)
     {
         CurrentHealth = health;
         MaxHealth = maxHealth;
-        CurrentMovePoint = MovePoint = movePoint;
-        SetUpBaseBase(tokenData, isoObject);
+        SetUpBaseBase(tokenData);
     }
 
     private void UpdateHealthUI()
@@ -81,29 +66,6 @@ public class CombatantView : Token
             }
             healthText.SetText($"{CurrentHealth}/{MaxHealth}");
         }
-    }
-
-    private void UpdateMovePointUI()
-    {
-        if (movePointText != null)
-        {
-            movePointText.SetText(CurrentMovePoint.ToString());
-        }
-    }
-
-    public void ResetMovePoint()
-    {
-        CurrentMovePoint = MovePoint;
-    }
-
-    public bool HasEnoughMovePoint(int movePoint)
-    {
-        return CurrentMovePoint >= movePoint;
-    }
-
-    public void SpendMovePoint(int movePoint)
-    {
-        CurrentMovePoint -= movePoint;
     }
 
     public virtual void Damage(int amount, DealDamageGA dealDamageGA)

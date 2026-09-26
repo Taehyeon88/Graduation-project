@@ -11,12 +11,19 @@ public class Token : MonoBehaviour
     public Transform Transform { get; protected set; }
     public Vector3 Defualt_Direction { get; protected set; }    //Model과 Iso 오브젝트의 거리 차이
     public Vector3 Defualt_Position { get; protected set; }     //Model의 원래 위치
-    protected void SetUpBaseBase(TokenData tokenData, IsoObject isoObject)
+    protected void SetUpBaseBase(TokenData tokenData)
     {
         TokenData = tokenData;
-        Model.sprite = tokenData.Sprite;    //이미지 셋업
-        TokenTransform = isoObject;         //isomertric용 transform 셋업
-        Transform = transform.GetChild(0);  //Parent 오브젝트 transform 값
+        Model.sprite = tokenData.Sprite;                  //이미지 셋업
+        Transform = transform.GetChild(0);                //Parent 오브젝트 transform 값
+
+        //isomertric용 transform 셋업
+        TokenTransform = GetComponent<IsoObject>();
+        if (TokenTransform == null)
+            TokenTransform = gameObject.AddComponent<IsoObject>();
+
+        //Isometric 설정
+        IsoObject isObject = GetComponentInParent<IsoObject>();
 
         //높낮이 조절
         float y = Model.gameObject.transform.position.y;

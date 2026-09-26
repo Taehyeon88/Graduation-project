@@ -234,13 +234,13 @@ public static class Utility
     }
 
     // <summary>
-    // 특정 위치 리스트의 모든 CombatantView 찾기
-    public static List<CombatantView> PositionsToCombantViews(List<Vector2Int> targetPoses, bool exceptEnemy = false, bool exceptHero = false)
+    // 특정 위치 리스트의 모든 CombatantView 찾기 (특정 대상 제외 옵션 포함)
+    public static List<IDamage> PositionsToIDamages(List<Vector2Int> targetPoses, bool exceptEnemy = false, bool exceptHero = false)
     {
-        List<CombatantView> combatants = new(10);
+        List<IDamage> combatants = new(10);
         foreach (var targetPos in targetPoses)
         {
-            CombatantView combat = TokenSystem.Instance.API.GetTokenByPosition(targetPos) as CombatantView;
+            var combat = TokenSystem.Instance.API.GetTokenByPosition(targetPos) as IDamage;
             if (combat != null)
             {
                 if (exceptEnemy && combat is EnemyView) continue;

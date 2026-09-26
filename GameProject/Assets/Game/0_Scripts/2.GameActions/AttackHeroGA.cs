@@ -5,7 +5,7 @@ using DG.Tweening;
 
 public class AttackHeroGA : GameAction, IHaveCaster
 {
-    public CombatantView Caster { get; private set; }
+    public Token Caster { get; private set; }
     public float DamageAmount { get; private set; }
     public List<Vector2Int> AttackArea { get; private set; }
     public Vector2Int AttackPosition { get; private set; }

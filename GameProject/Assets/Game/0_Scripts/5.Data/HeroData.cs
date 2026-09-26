@@ -5,7 +5,6 @@ using UnityEngine;
 public class HeroData : TokenData
 {
     [field: SerializeField] public int HeroHp { get; private set; }
-    [field: SerializeField] public int MovePoint { get; private set; }
     [field : SerializeField] public List<SkillData> Skills { get; private set; }
     [field : SerializeField] public int Gold { get; private set; }
     [field: SerializeField] public Color heroColor { get; private set; }

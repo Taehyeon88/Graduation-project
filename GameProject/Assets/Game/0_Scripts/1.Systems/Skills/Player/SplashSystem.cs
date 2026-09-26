@@ -17,7 +17,7 @@ public class SplashSystem : MonoBehaviour
     {
         foreach (var targetPos in splashGA.TargetPoses)
         {
-            CombatantView target = TokenSystem.Instance.API.GetTokenByPosition(targetPos) as CombatantView;
+            IDamage target = TokenSystem.Instance.API.GetTokenByPosition(targetPos) as IDamage;
             var range = splashGA.GridRangeMode.GetGridRanges(targetPos, splashGA.Distance, splashGA.IsPentration);
 
             if (target != null)
@@ -25,7 +25,7 @@ public class SplashSystem : MonoBehaviour
                 DealDamageGA dealDamageGA = new(splashGA.Damage, target, splashGA.Caster);
                 ActionSystem.Instance.AddReaction(dealDamageGA);
 
-                List<CombatantView> splashTargets = Utility.PositionsToCombantViews(range, false, true);
+                List<IDamage> splashTargets = Utility.PositionsToIDamages(range, false, true);
                 if (splashTargets.Count > 0)
                 {
                     DealDamageGA dDGA = new(splashGA.SplashDamage, splashTargets, splashGA.Caster);

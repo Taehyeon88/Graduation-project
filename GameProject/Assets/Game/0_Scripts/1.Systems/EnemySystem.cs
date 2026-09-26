@@ -61,22 +61,22 @@ public class EnemySystem : Singleton<EnemySystem>
 
     private IEnumerator AttackHeroPerformer(AttackHeroGA attackHeroGA)
     {
-        var targets = new List<CombatantView>(10);
+        var targets = new List<IDamage>(10);
 
         if (attackHeroGA.AttackArea != null)
         {
             foreach (var attackPos in attackHeroGA.AttackArea)
             {
-                CombatantView target = TokenSystem.Instance.API.GetTokenByPosition(attackPos) as CombatantView;
-                if (target != null)
-                    if (target is HeroView)
-                        targets.Add(target);
+                var target = TokenSystem.Instance.API.GetTokenByPosition(attackPos) as IDamage;
+                if (target != null && target is HeroView)
+                    targets.Add(target);
             }
         }
         else
         {
-            CombatantView target = TokenSystem.Instance.API.GetTokenByPosition(attackHeroGA.AttackPosition) as CombatantView;
-            targets.Add(target);
+            var target = TokenSystem.Instance.API.GetTokenByPosition(attackHeroGA.AttackPosition) as IDamage;
+            if (target != null && target is HeroView)
+                targets.Add(target);
         }
 
         if (targets.Count > 0)

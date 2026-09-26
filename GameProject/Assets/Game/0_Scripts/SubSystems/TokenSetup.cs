@@ -1,4 +1,5 @@
 ﻿using IsoTools;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -86,6 +87,22 @@ public class TokenSetup : MonoBehaviour
 
             index++;
         }
+    }
+
+    /// <summary>
+    /// 전투 시작시, 웨이브 코어 생성
+    /// </summary>
+    /// <param name="setupPosition"></param>
+    public void SetUpWaveCore(WaveCoreData coreData)
+    {
+        Token token = TokenCreator.Instance.CreateToken(
+                    coreData,
+                    TokenType.WaveCore,
+                    transform.position
+                );
+
+        token.TokenTransform.position = Utility.Vector2IntToIsoVector(coreData.CorePosition);
+        grid.SetToken(token, coreData.CorePosition);
     }
 
     /// <summary>

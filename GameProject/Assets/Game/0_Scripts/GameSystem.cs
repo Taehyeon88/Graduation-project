@@ -117,8 +117,7 @@ public class GameSystem : Singleton<GameSystem>
 
             Hero hero = new Hero(
                 data.Id, 
-                data.HeroHp, 
-                data.MovePoint,
+                data.HeroHp,
                 skills,
                 perks
                 );

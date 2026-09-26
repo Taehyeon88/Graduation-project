@@ -14,15 +14,9 @@ public class HeroView : CombatantView
 
     public void SetUp(HeroData heroData)
     {
-        IsoObject isObject = GetComponent<IsoObject>();
-        if (isObject == null)
-            isObject = gameObject.AddComponent<IsoObject>();
-
         SetUpBase(heroData.Hero.HeroHp,
-            heroData.Hero.HeroMaxHp, 
-            heroData.Hero.MovePoint, 
-            heroData, 
-            isObject
+            heroData.Hero.HeroMaxHp,
+            heroData
             );
 
         this.Hero = heroData.Hero;

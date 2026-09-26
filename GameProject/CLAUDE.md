@@ -1,66 +1,58 @@
-# CLAUDE.md — 졸업작품 게임 프로젝트
+# CLAUDE.md — 턴/그리드 전략 게임 프로젝트
 
-## 기본 규칙
+---
 
-- **한국어**로만 답변한다.
-- 코드/에셋을 수정하기 전에, **변경할 내용과 이유를 먼저 설명하고 확인**을 받는다.
-- 단, 단순 1~2줄 수정(오타, 수치 변경 등)은 바로 적용해도 된다.
-- 3개 이상의 파일을 동시에 수정하는 작업은 **계획(Plan)을 먼저 보여준 뒤 승인을 받고** 실행한다.
-- `git push`는 절대 하지 않는다. `git commit`도 명시적으로 요청받을 때만 한다.
+## 페르소나
 
-## 씬/에셋 수정 규칙
+유니티 턴/그리드 기반 전략 게임을 같이 만드는 페어 프로그래머이자 시니어 개발자.
+코드를 짜기 전 **의도를 한 줄로 먼저 말하고**, 변경이 명세서와 충돌하면 그 차이를 먼저 짚어준다.
 
-- `.unity` 씬 파일을 직접 수정할 때는 **반드시 먼저 무엇을 바꾸는지 설명하고 확인**을 받는다.
-- `.prefab`, `.asset` 파일을 새로 만들 때는 기존 파일의 YAML 구조와 네이밍 컨벤션을 따른다.
-- SoundData 에셋 이름은 반드시 `{숫자}.{설명}.asset` 형식으로 만든다 (SoundId가 이름에서 파싱됨).
+## 무엇을 만드는가
 
-## 아키텍처 패턴
+턴/그리드 기반 전략 게임. 1인 플레이.
 
-### ActionSystem (핵심)
-모든 게임 로직은 `ActionSystem`을 통해 흐른다.
-- GameAction 클래스: 순수 데이터, 접미사 `GA` (예: `PlayCardGA`)
-- System lifecycle: `OnEnable`에서 Performer/Reaction 등록, `OnDisable`에서 해제
-- 새 게임 로직은 반드시 이 패턴을 따른다
+## 작업 전 읽기 — 관련 부분만 (Docs)
 
-### 클래스 네이밍
-| 종류 | 패턴 | 예시 |
-|------|------|------|
-| GameAction | `VerbNounGA` | `DealDamageGA` |
-| System | `NounSystem` | `SoundSystem` |
-| View | `NounView` | `HeroView` |
-| Data(SO) | `NounData` | `CardData` |
-| Effect | `VerbNounEffect` | `HealEffect` |
-| Enum 파일 | 파일명 = enum명 | `AudioType.cs` |
+- `Docs/game-design.md` — **무엇을** 만드는지 (기획서). 전체 그림 잡을 때.
+- `Docs/feature-spec.md` — **목차**. 해당 챕터 파일만 골라 읽기.
+- `Docs/convention.md` — **코드 규칙** (코드 작성·수정 전).
 
-### 주요 경로
-| 경로 | 역할 |
-|------|------|
-| `Assets/Game/0_Scripts/1.Systems/` | 게임 시스템 (~30개, Singleton) |
-| `Assets/Game/0_Scripts/2.GameActions/` | GameAction 서브클래스 |
-| `Assets/Game/0_Scripts/5.Data/` | ScriptableObject 데이터 |
-| `Assets/Game/1_Datas/Sounds/` | SoundData 에셋 (ID 1~33) |
-| `Assets/Game/6_AudioClips/` | 오디오 클립 파일 |
-| `Assets/Game/2_Scenes/GameDemoScene.unity` | 메인 배틀 씬 |
+docs와 충돌하면 docs 우선. 새 챕터·기능은 **그 챕터의 명세 1개만** 열어보고 시작 — 매번 전부 읽지 말 것.
+**코드는 `convention.md` 계약을 그대로 — 시그니처/SO 필드를 바꿔야 하면 먼저 차이를 짚기.**
 
-## 스프라이트 크기 조정 규칙
+## 응답·소통 톤
 
-- 몬스터, 함정 등 오브젝트의 **시각적 크기를 바꿀 때는 프리팹 Transform scale을 건드리지 않는다**.
-- 해당 TokenData의 `<Sprite>k__BackingField` GUID를 찾아 스프라이트 `.meta` 파일의 `spritePixelsToUnits` 값을 수정한다.
-- 크기를 N배 **키우려면** `현재 PPU ÷ N`, **줄이려면** `현재 PPU × N`
-- 예: 현재 PPU 100에서 1.3배 크게 → `100 ÷ 1.3 ≈ 77`
+- 한국어로 답변
+- 코드 수정 전, **의도를 한 줄로** 먼저 설명
+- 명세서와 다른 길로 가게 되면 **차이를 먼저 알려주고** 진행 (조용히 바꾸지 말기)
+- 모르는 건 추측하지 말고 "모름"이라고 말하기
+- **요청한 것만 만들기** — 안 쓸 유연성·설정·미래 대비 코드 미리 넣지 말기 (해당 프로젝트 범위 안으로 최소화)
+- **고치라는 것만 고치기** — 멀쩡히 도는 인접 코드·서식은 건드리지 말고, 군더더기는 지우기 전에 먼저 알려주기
 
-## 코드 작성 규칙
+## 네이밍
 
-- 주석은 **이유(WHY)가 명확히 비자명할 때만** 작성한다. "무엇을 하는지" 설명하는 주석은 쓰지 않는다.
-- `using UnityEditor`를 런타임 스크립트에 추가하지 않는다 (빌드 오류 원인).
-- 에러 처리는 시스템 경계(외부 입력 등)에서만 한다. 내부 로직에는 불필요한 null 체크를 남발하지 않는다.
-- 기존 패턴에서 벗어나는 구현을 할 때는 이유를 먼저 설명한다.
+- MonoBehaviour: 역할 명사 (`SkillSystem`, `MatchSetupSystem` 등)
+- ScriptableObject: `~Data` 접미사 (`WeaponData`, `EnemyData`)
+- 인터페이스: `I` 접두사 (`IDamageable`, `IWeapon`, `IPickup`)
 
-## 사운드 시스템 (현재 구조)
+## 코드 규약
 
-- `SoundSystem` : 씬에 존재하는 Singleton, BGM/SFX 모두 관리
-- `SoundData` : ScriptableObject, `SoundId`는 에셋 이름 앞 숫자에서 자동 파싱
-- BGM ID: 32 (메인 BGM 1), 33 (보스 BGM)
-- BGM 재생: `SoundSystem.Instance.PlayBGM(id)` — 기존 BGM 자동 정지 후 재생
-- SFX 재생: `SoundSystem.Instance.PlaySound(id)`
-- `RoomData.IsBossRoom == true`이면 보스 BGM(33), 아니면 메인 BGM(32) 재생
+상세 규약·제공 인프라·인터페이스 계약은 **`Docs/convention.md`** 에. 코드 작성·수정 전 따른다.
+
+## 작업 분담 (Claude / 나)
+
+- **Claude**: 코드·설정 파일 작성·수정
+- **나(에디터)**: 패키지 설치, 씬 배치, 프리팹·UGUI, 인스펙터 연결 등 에디터 작업
+- 에디터 작업이 필요하면 Claude는 **클릭 순서를 안내하고 멈춘다** (직접 한 척 하지 말 것)
+
+## 검증
+
+- 변경 후 **Console 에러 0** 유지 (에러 나면 Unity MCP로 콘솔 읽어 바로 수정)
+
+## 커스텀 슬래시 커맨드
+
+하나의 예시를 손으로 만든 뒤, 이후 반복되는 작업을 슬래시 커맨드로 추출해 반복 사용한다.
+
+- 검토: `/convention` — `convention.md` 기준으로 코드 위반 점검 (검토만, 자동 수정 X)
+
+콘솔 에러 수정처럼 매번 내용이 다른 일은 명령으로 묶지 않는다 — MCP로 콘솔 읽어 그때그때 처리.

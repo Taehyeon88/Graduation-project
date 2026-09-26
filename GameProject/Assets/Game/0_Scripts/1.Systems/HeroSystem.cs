@@ -45,18 +45,16 @@ public class HeroSystem : Singleton<HeroSystem>
 
         foreach (var hero in HeroViews)
         {
-            hero.ResetMovePoint();          //각 영웅 이동 포인트 초기화
-
             hero.ReduceSEWhenMyTurnStart(); //공용 시작시, SE 제거
         }
 
-        //마나 회복
-        RefillManaGA refillManaGA = new();
-        ActionSystem.Instance.AddReaction(refillManaGA);
+        //행동 포인트(AP) 회복
+        RefillAPGA refillAPGA = new();
+        ActionSystem.Instance.AddReaction(refillAPGA);
 
-        //스킬 사용 횟수 초기화
-        RefillSkillLimitGA refillSkillLimitGA = new();
-        ActionSystem.Instance.AddReaction(refillSkillLimitGA);
+        //이동 포인트(MP) 회복
+        RefillMPGA refillMPGA = new();
+        ActionSystem.Instance.AddReaction(refillMPGA);
 
         yield return null;
     }

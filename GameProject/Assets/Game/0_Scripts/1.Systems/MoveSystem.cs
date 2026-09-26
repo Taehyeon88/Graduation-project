@@ -23,7 +23,10 @@ public class MoveSystem : Singleton<MoveSystem>
     private void Update()
     {
         //예약된 영웅 이동이 있고 액션이 종료 되면 다음 예약 실행
-        if (reserved_hero_moves.Count <= 0 || ActionSystem.Instance.IsPerforming)
+        if (reserved_hero_moves.Count <= 0 
+            || ActionSystem.Instance.IsPerforming 
+            || TurnSystem.Instance.CurrentTurn == TurnType.GameSetUp
+            || TurnSystem.Instance.CurrentTurn == TurnType.StartBattle)
             return;
 
         var performMoveGA = reserved_hero_moves.Dequeue();
@@ -65,9 +68,6 @@ public class MoveSystem : Singleton<MoveSystem>
                     var path = TokenSystem.Instance.API.GetShortestPath(currentHero, pos);
                     if (path != null)
                     {
-                        int distance = path.Count;
-                        currentHero.SpendMovePoint(distance);
-
                         PerformMoveGA performMoveGA = new(currentHero, path);
                         reserved_hero_moves.Enqueue(performMoveGA);
                         break;
@@ -99,7 +99,7 @@ public class MoveSystem : Singleton<MoveSystem>
     private void UpdateMoveRange(HeroView heroView)
     {
         hero_moveRange = TokenSystem.Instance.API.GetCanMovePlace(heroView,
-                                                    heroView.CurrentMovePoint);
+                                                    MPSystem.Instance.CurrentMP);
 
         VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "Hero_Move");
         foreach (var pos in hero_moveRange)
@@ -114,6 +114,12 @@ public class MoveSystem : Singleton<MoveSystem>
         List<Vector2Int> path = performMoveGA.path;
 
         if (mover == null) yield break;   //파괴된 몬스터 예외처리
+
+        if (mover is HeroView)
+        {
+            SpendMPGA spendMPGA = new(path.Count);
+            ActionSystem.Instance.AddReaction(spendMPGA);
+        }
 
         //대상 이동 처리
         foreach (Vector2Int p in path)

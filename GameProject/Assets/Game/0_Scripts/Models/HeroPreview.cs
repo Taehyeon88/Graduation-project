@@ -13,11 +13,7 @@ public class HeroPreview : Token
     public TokenPreViewState State { get; private set; } = TokenPreViewState.Negative;
     public void SetUp(TokenData data)
     {
-        IsoObject isoObject = GetComponent<IsoObject>();
-        if (isoObject == null)
-            isoObject = gameObject.AddComponent<IsoObject>();
-
-        SetUpBaseBase(data, isoObject);
+        SetUpBaseBase(data);
         SetPreViewMaterial(State);
     }
     public void ChangeState(TokenPreViewState newState)

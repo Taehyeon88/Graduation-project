@@ -34,26 +34,33 @@ public class DamageSystem : Singleton<DamageSystem>
                 //데미지 적용 로직
                 int amountInt = DamageCaculator.GetDamage(
                         dealDamageGA.Amount,
-                        dealDamageGA.Caster, 
+                        dealDamageGA.Caster as CombatantView,
                         target
                     );
 
-                PlayDamageVFX(target.Model.transform.position, target is HeroView);   //피격 이펙트 연출
+                //피격 이펙트 연출
+                PlayDamageVFX(
+                    (target as Token).Model.transform.position, 
+                    target is HeroView
+                    );
 
                 target.Damage(amountInt, dealDamageGA);
             }
         }
-        else
+        else if (dealDamageGA.Target != null)
         {
             //데미지 적용 로직
             int amountInt = DamageCaculator.GetDamage(
                     dealDamageGA.Amount,
-                    dealDamageGA.Caster,
+                    dealDamageGA.Caster as CombatantView,
                     dealDamageGA.Target
                  );
 
             //피격 이펙트 연출
-            PlayDamageVFX(dealDamageGA.Target.Model.transform.position, dealDamageGA.Target is HeroView);
+            PlayDamageVFX(
+                (dealDamageGA.Target as Token).Model.transform.position, 
+                dealDamageGA.Target is HeroView
+                );
 
             dealDamageGA.Target.Damage(amountInt, dealDamageGA);
         }

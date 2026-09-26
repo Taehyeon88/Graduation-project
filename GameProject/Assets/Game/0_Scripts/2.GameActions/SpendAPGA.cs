@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 
-public class SpendManaGA : GameAction
+public class SpendAPGA : GameAction
 {
     public int Amount { get; set; }
-    public SpendManaGA(int amount = 1)
+    public SpendAPGA(int amount = 1)
     {
         Amount = amount;
     }

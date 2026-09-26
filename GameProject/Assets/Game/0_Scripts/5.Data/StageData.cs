@@ -1,11 +1,11 @@
-﻿using UnityEngine;
+﻿using SerializeReferenceEditor;
+using UnityEngine;
 
 [CreateAssetMenu(menuName = "Data/Stage")]
 public class StageData : ScriptableObject
 {
     [field: SerializeField] public int Chapter { get; private set; }
-    [field: SerializeField] public EnemyData[] Enemies { get; private set; }
-    [field: SerializeField] public Vector2Int[] EnemyPoses { get; private set; }
+    [field: SerializeField] public WaveData waveData { get; private set; }
     [field: SerializeField] public Vector2Int[] HeroSetupPoses { get; private set; }
     
     //기물 데이터 배열

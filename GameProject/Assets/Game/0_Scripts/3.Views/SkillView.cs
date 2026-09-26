@@ -14,7 +14,6 @@ public class SkillView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     [Header("Skill Element")]
     [SerializeField] private Image icon;
-    [SerializeField] private TMP_Text limit_Text;
 
     private RectTransform skill_Rect;
     private bool is_can_use = false;
@@ -24,7 +23,6 @@ public class SkillView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
         Skill = skill;
         icon.sprite = skill.Image;
-        limit_Text.SetText(skill.Limit.ToString());
 
         skill_Rect = GetComponent<RectTransform>();
     }
@@ -35,7 +33,7 @@ public class SkillView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
             return;
 
         //스킬 사용 불가 여부 연출
-        if (ManaSystem.Instance.HasEnoughMana() && Skill.HasEnoughLimit())
+        if (APSystem.Instance.HasEnoughAP())
         {
             if (!is_can_use)
             {
@@ -51,15 +49,13 @@ public class SkillView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
                 is_can_use = false;
             }
         }
-
-        limit_Text.SetText(Skill.Limit.ToString());   //사용 횟수 실시간 카운트는 자동
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
         if (CancelInteraction || Skill == null) return;
 
-        if (ManaSystem.Instance.HasEnoughMana() && Skill.HasEnoughLimit())
+        if (APSystem.Instance.HasEnoughAP())
         {
             OnPointerExit(eventData);  //호버 종료 예외처리
 

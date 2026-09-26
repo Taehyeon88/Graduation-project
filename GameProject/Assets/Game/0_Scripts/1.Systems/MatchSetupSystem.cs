@@ -25,8 +25,13 @@ public class MatchSetupSystem : MonoBehaviour
         TokenSystem.Instance.Setup.SetUpStageMap();
         //3.스테이지 기물 배치(잠깐 패스)
 
-        //4.몬스터 배치
-        TokenSystem.Instance.Setup.SetUPEnemys(stageData.Enemies.ToArray(), stageData.EnemyPoses.ToArray());
+        //4.몬스터 및 웨이브 핵 배치
+        WaveSystem.Instance.SetUp(
+            stageData.waveData.EnemyDatas.ToArray(), 
+            stageData.waveData.WavePerEnemyCount.ToArray(),
+            stageData.waveData.WaveCoreData
+            );
+        WaveSystem.Instance.SetUpFirstEnemys();
 
         //4.5 영웅 아이템 정보 UI 설정
         allPerksDisplayUI.SetUp(heroDatas.ToArray());

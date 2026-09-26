@@ -50,11 +50,14 @@ public static class UtilityBFS
             }
         }
 
-        foreach (var pos in list.ToList())
+        if (exceptEnemy || exceptHero || exceptDestructable)
         {
-            if (!TokenSystem.Instance.API.IsGridEmpty(pos, exceptEnemy, exceptHero, exceptDestructable))
+            foreach (var pos in list.ToList())
             {
-                list.Remove(pos);
+                if (!TokenSystem.Instance.API.IsGridEmpty(pos, exceptEnemy, exceptHero, exceptDestructable))
+                {
+                    list.Remove(pos);
+                }
             }
         }
 
@@ -163,7 +166,7 @@ public static class UtilityBFS
     }
 
     /// <summary>
-    /// 목표 지점까지의 최단 거리 탐색 함수
+    /// 목표 지점에 도착까지 최단 거리 탐색 함수 (이동 결로 반환)
     /// </summary>
     /// <param name="map"></param>
     /// <param name="start"></param>

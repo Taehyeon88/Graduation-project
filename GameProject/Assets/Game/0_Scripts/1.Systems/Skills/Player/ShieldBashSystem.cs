@@ -15,15 +15,8 @@ public class ShieldBashSystem : MonoBehaviour
 
     private IEnumerator ShieldBashGAPerformer(ShieldBashGA shieldBashGA)
     {
-        List<CombatantView> combatants = new();
-        foreach (var targetPos in shieldBashGA.TargetPoses)
-        {
-            Token token = TokenSystem.Instance.API.GetTokenByPosition(targetPos);
-            if (token != null)
-            {
-                combatants.Add(token as CombatantView);
-            }
-        }
+        List<IDamage> combatants = Utility.PositionsToIDamages(shieldBashGA.TargetPoses);
+
         if (combatants.Count > 0)
         {
             DealDamageGA dealDamageGA = new(shieldBashGA.Amount, combatants, shieldBashGA.myView);

@@ -13,14 +13,11 @@ MonoBehaviour:
   m_Name: TestStage
   m_EditorClassIdentifier: Assembly-CSharp::StageData
   <Chapter>k__BackingField: 1
-  <Enemies>k__BackingField:
-  - {fileID: 11400000, guid: f9445edd82ffa5a4e9f90246b225a52d, type: 2}
-  <EnemyPoses>k__BackingField:
-  - {x: 2, y: 2}
+  <waveData>k__BackingField: {fileID: 11400000, guid: bf15f18d7a5abbf4a8990cabc320c74c, type: 2}
   <HeroSetupPoses>k__BackingField:
-  - {x: 4, y: 0}
-  - {x: 4, y: 1}
-  - {x: 4, y: 2}
+  - {x: 2, y: 0}
+  - {x: 2, y: 1}
+  - {x: 2, y: 2}
   <R_weight>k__BackingField: 5
   <IsBoss>k__BackingField: 0
   <StageBGMId>k__BackingField: 132

@@ -79,7 +79,7 @@ public class AttackEnemySystem : MonoBehaviour
         yield return new WaitUntil(() => endTween);
 
         //피격 로직 실행
-        var targets = Utility.PositionsToCombantViews(attackEnemyGA.TargetPoses);
+        var targets = Utility.PositionsToIDamages(attackEnemyGA.TargetPoses);
         if (targets.Count > 0)
         {
             DealDamageGA dealDamageGA = new(attackEnemyGA.Amount, targets, attackEnemyGA.MyView);

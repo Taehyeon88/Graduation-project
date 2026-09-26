@@ -81,7 +81,6 @@ MonoBehaviour:
   <Model>k__BackingField: {fileID: 1078529032504495145}
   healthSlider: {fileID: 5363939821305037664}
   healthText: {fileID: 4516055268995866346}
-  movePointText: {fileID: 4363295996389520375}
   statusEffectsUI: {fileID: 8178985203549060754}
 --- !u!114 &7442290513139583080
 MonoBehaviour:
@@ -436,6 +435,7 @@ PrefabInstance:
     - {fileID: 2319376194651589416, guid: 888032aeab9a6884482de47824ac3084, type: 3}
     - {fileID: 8076154864641289818, guid: 888032aeab9a6884482de47824ac3084, type: 3}
     - {fileID: 6408857152463756541, guid: 888032aeab9a6884482de47824ac3084, type: 3}
+    - {fileID: 1913706566191870194, guid: 888032aeab9a6884482de47824ac3084, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 888032aeab9a6884482de47824ac3084, type: 3}
@@ -449,17 +449,6 @@ SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 7043230744748702109, guid: 888032aeab9a6884482de47824ac3084, type: 3}
   m_PrefabInstance: {fileID: 8018977425381356980}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4363295996389520375 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6036138431473845827, guid: 888032aeab9a6884482de47824ac3084, type: 3}
-  m_PrefabInstance: {fileID: 8018977425381356980}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!114 &4516055268995866346 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5901229730144512862, guid: 888032aeab9a6884482de47824ac3084, type: 3}

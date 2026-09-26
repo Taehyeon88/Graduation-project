@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AttackEA : EnemyAction
+public class AttackEA : EnemyAction, IHaveDamage, IHaveDistance
 {
     public override Sprite Icon
     {
@@ -12,17 +12,18 @@ public class AttackEA : EnemyAction
     }
     public override string Description
     {
-        get { return $"인접 {Distance}칸 내, 영웅에게 {Damage} 피해의 공격"; }
+        get { return $"인접 {Distance}칸 내, 영웅에게 {Damage_Amount} 피해의 공격"; }
         protected set {}
     }
     public override string TextInfo
     {
-        get { return Damage.ToString(); }
+        get { return Damage_Amount.ToString(); }
         protected set { }
     }
 
-    [field: SerializeField] public int Damage { get; protected set; } = 6;
+    [field: SerializeField] public float Damage_Amount { get; protected set; } = 6;
     [field: SerializeField] public int Distance { get; protected set; } = 1;
+
 
     [SerializeField] private Sprite icon;
 
@@ -39,7 +40,7 @@ public class AttackEA : EnemyAction
         squ.Append(attackTween);
 
         AttackHeroGA attackHeroGA = singleTarget ?
-                   new(enemy, Damage, targetPosition) : new(enemy, Damage, targetRange);
+                   new(enemy, Damage_Amount, targetPosition) : new(enemy, Damage_Amount, targetRange);
         ActionSystem.Instance.AddReaction(attackHeroGA);
 
         DOAnimationGA animationGA = new(backTween);
@@ -54,7 +55,7 @@ public class AttackEA : EnemyAction
         {
             icon = icon,
             Description = Description,
-            Damage = Damage,
+            Damage_Amount = Damage_Amount,
             Distance = Distance,
             TextInfo = TextInfo,
         };
