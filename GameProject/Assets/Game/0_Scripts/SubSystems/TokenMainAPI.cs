@@ -33,6 +33,19 @@ public class TokenMainAPI : MonoBehaviour
     }
 
     /// <summary>
+    /// 몬스터 여러 마리 추가 함수 (웨이브 추가 생성용)
+    /// </summary>
+    /// <param name="enemyDatas"></param>
+    /// <param name="setupPositions"></param>
+    public void AddEnemys(EnemyData[] enemyDatas, Vector2Int[] setupPositions)
+    {
+        for (int i = 0; i < enemyDatas.Length; i++)
+        {
+            AddToken(enemyDatas[i], TokenType.Enemy, setupPositions[i]);
+        }
+    }
+
+    /// <summary>
     /// 토큰 삭제 함수
     /// </summary>
     /// <param name="token"></param>

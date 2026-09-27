@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3ec644c18c68520458a1670d613160b1, type: 3}
-  m_Name: "1.\uD0C0\uACA9"
+  m_Name: "4.\uBC29\uD328\uCE58\uAE30"
   m_EditorClassIdentifier: Assembly-CSharp::SkillData
   <Id>k__BackingField: 1
   <Description>k__BackingField: "\uC778\uC811 1\uB0B4, \uC9C0\uC815 \uB300\uC0C1
     5 \uD53C\uD574 \uACF5\uACA9"
-  <Image>k__BackingField: {fileID: 21300000, guid: f80ecaef0e11d554ebdc41c9deebdb64, type: 3}
+  <Image>k__BackingField: {fileID: 21300000, guid: 91ec10a0a2c5faa478dfcd5dcbe399c7, type: 3}
   <SkillType>k__BackingField: 0
   <SkillAbility>k__BackingField:
-    <TargetTypes>k__BackingField: 01000000
+    <TargetTypes>k__BackingField: 0100000002000000
     <TargetMode>k__BackingField:
       rid: 6342211190556983374
     <RangeMode>k__BackingField:
@@ -28,11 +28,18 @@ MonoBehaviour:
     <RangeVG>k__BackingField: Hero_Attack
     <Effects>k__BackingField:
     - rid: 6342211190556983376
+    - rid: 2152704740199759939
     <IsSelfPossitive>k__BackingField: 0
     <IsFriendlyPossitive>k__BackingField: 0
   references:
     version: 2
     RefIds:
+    - rid: 2152704740199759939
+      type: {class: AddStatusEffectEffect, ns: , asm: Assembly-CSharp}
+      data:
+        statusEffectType: 1
+        stackCount: 2
+        setargetMode: 0
     - rid: 6342211190556983374
       type: {class: SingleTM, ns: , asm: Assembly-CSharp}
       data: 
@@ -42,6 +49,6 @@ MonoBehaviour:
     - rid: 6342211190556983376
       type: {class: AttackEnemyEffect, ns: , asm: Assembly-CSharp}
       data:
-        amount: 4
+        amount: 2
         count: 1
         animationType: 0

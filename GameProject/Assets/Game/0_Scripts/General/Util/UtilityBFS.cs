@@ -42,14 +42,11 @@ public static class UtilityBFS
             }
         }
 
-        if (exceptEnemy || exceptHero || exceptDestructable)
+        foreach (var pos in list.ToList())
         {
-            foreach (var pos in list.ToList())
+            if (!TokenSystem.Instance.API.IsGridEmpty(pos, exceptEnemy, exceptHero, exceptDestructable))
             {
-                if (!TokenSystem.Instance.API.IsGridEmpty(pos, exceptEnemy, exceptHero, exceptDestructable))
-                {
-                    list.Remove(pos);
-                }
+                list.Remove(pos);
             }
         }
 

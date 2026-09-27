@@ -17,3 +17,4 @@
 | 01 | [enemy_action_howto.md](feature-spec/enemy_action_howto.md) | 새 EnemyAction 추가 실전 가이드 — FireArrowEA 사례 |
 | 01 | [01_hero_system.md](feature-spec/01_hero_system.md) | HeroSystem 아키텍처 — 플레이어 턴 시작 훅 + 선택된 영웅 상태 관리 |
 | 02 | [02_skill_system.md](feature-spec/02_skill_system.md) | SkillSystem 아키텍처 — 스킬 카드 클릭→타겟팅→효과 GameAction 위임 흐름 |
+| 03 | [03_wave_system.md](feature-spec/03_wave_system.md) | WaveSystem 아키텍처 — 몬스터 턴마다 카운트다운, n턴마다 웨이브 추가 생성 + 신규 몬스터 행동 자동 연산 |

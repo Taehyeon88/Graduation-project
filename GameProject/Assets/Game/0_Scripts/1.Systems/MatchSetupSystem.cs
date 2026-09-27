@@ -27,8 +27,9 @@ public class MatchSetupSystem : MonoBehaviour
 
         //4.몬스터 및 웨이브 핵 배치
         WaveSystem.Instance.SetUp(
-            stageData.waveData.EnemyDatas.ToArray(), 
+            stageData.waveData.EnemyDatas.ToArray(),
             stageData.waveData.WavePerEnemyCount.ToArray(),
+            stageData.waveData.WaveTurnIntervals.ToArray(),
             stageData.waveData.WaveCoreData
             );
         WaveSystem.Instance.SetUpFirstEnemys();

@@ -35,6 +35,7 @@
 | [`DOAnimationGA`](#doanimationga) | 연출 | `AnimationSystem` | DOTween Sequence/Tween 재생 대기 |
 | [`GameClearGA`](#gameclearga) | 종료 | `GameSystem` | 게임 클리어 |
 | [`GameOverGA`](#gameoverga) | 종료 | `GameSystem` | 게임 오버 |
+| [`SpawnWaveGA`](#spawnwavega) | 웨이브 | `WaveSystem` | 몬스터 턴마다 카운트다운, n턴 지나면 다음 웨이브 몬스터 추가 생성 |
 
 ## 2. 카테고리별 상세
 
@@ -48,6 +49,7 @@
   - `TurnSystem.TurnGAPreReaction` — `currentTurn` 값 선반영
   - `HeroSystem.EnemyTurnPreReaction` (조건: `Type == Enemy`) — 영웅들 "내 턴 종료" SE 감소
   - `HeroArmor` 퍽 (`PerkItem.Reaction` 경유, 조건: `Type == Enemy`) — 보유 영웅에게 `AddStatusEffectGA(ARMOR)` 예약
+  - `WaveSystem.TurnGAPreReaction` (조건: `Type == Player`) — 웨이브 카운트다운(`turnsUntilNextWave`) 감소, 0 이하이면 `AddReaction(SpawnWaveGA)`
 - **POST 구독자**:
   - `TurnSystem.TurnGAPostReaction` (조건: `Type == Enemy`) — `TurnGA(Player)` 체이닝 (턴 순환의 핵심)
   - `EnemySystem.TurnGAPostReaction` (조건: `Type == Enemy`) — 몬스터 "턴 종료" SE 감소 + 다음 행동 판단(`JudgeActAction`)
@@ -137,7 +139,7 @@
 #### `KillGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/KillGA.cs`
 - **필드**: `Token Token`, `Tween Hit_Tween`
-- **Performer**: `DamageSystem.KillPerformer` — 피격 흔들림 연출(`Hit_Tween`) 완료 대기 → 비주얼 그리드 정리 → 토큰 제거 → 적 전멸이면 `GameClearGA`, 영웅 전멸이면 `GameOverGA` 체이닝
+- **Performer**: `DamageSystem.KillGAPerformer` — 피격 흔들림 연출(`Hit_Tween`) 완료 대기 → 비주얼 그리드 정리 → 토큰 제거 → 적 전멸이면 `GameClearGA`, 영웅 전멸이면 `GameOverGA` 체이닝
 - **트리거 지점**: 전역 `Perform`/`AddReaction`이 아니라, `DealDamageGA` 처리 중 `CombatantView.Damage()`가 체력 ≤ 0일 때 그 `DealDamageGA` 인스턴스의 `PostReactions`에 직접 추가되어서만 실행됨
 - **관련 체인**: §3-2
 
@@ -216,13 +218,23 @@
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/GameClearGA.cs`
 - **필드**: 없음
 - **Performer**: `GameSystem.GameClearPerformer` — `IsGameClear = true`, 보상 스킬 3장 산출(`RewardSystem`)
-- **트리거 지점**: `DamageSystem.KillPerformer`(적 전멸 판정 시)
+- **트리거 지점**: `DamageSystem.KillGAPerformer`(적 전멸 판정 시) — **현재 워킹트리 기준 주석 처리되어 비활성 상태**(`DamageSystem.cs:97-98`). Performer/등록은 살아있지만 이 경로에서 더 이상 호출되지 않음.
 
 #### `GameOverGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/GameOverGA.cs`
 - **필드**: 없음
 - **Performer**: `GameSystem.GameOverPerformer` — `IsGameOver = true`, 게임오버 UI 표시
-- **트리거 지점**: `DamageSystem.KillPerformer`(영웅 전멸 판정 시)
+- **트리거 지점**: `DamageSystem.KillGAPerformer`(영웅 전멸 판정 시)
+
+### 2-10. 웨이브
+
+#### `SpawnWaveGA`
+- **파일**: `Assets/Game/0_Scripts/2.GameActions/SpawnWaveGA.cs`
+- **필드**: 없음 — 트리거 전용 마커
+- **Performer**: `WaveSystem.SpawnWaveGAPerformer` — 다음 웨이브 인덱스(`nextWaveIndex`)만큼 `enemyDatas`에서 몬스터를 골라 `TokenMainAPI.AddEnemys`로 생성, `Remain_wave_count`/`nextWaveIndex`/`turnsUntilNextWave` 갱신
+- **PRE/POST 구독자**: `EnemySystem.SpawnWavePostReaction`(POST) — 새로 생성된 몬스터(`NextAction == null`인 것만) 골라 `JudgeActAction`으로 다음 행동 설정
+- **파생 액션**: 없음
+- **트리거 지점**: `WaveSystem.TurnGAPreReaction`(`TurnGA` PRE 구독, 조건: `Type == Player`)에서 웨이브 카운트다운이 0 이하일 때 `AddReaction(new SpawnWaveGA())`
 
 ## 3. 대표 체인 다이어그램
 
@@ -264,7 +276,7 @@ TurnGA(Enemy)                                                ← 플레이어가
                     ├─ (POST 구독) BloodyAxe 퍽: 조건 충족 시 AddReaction(HealGA)
                     └─ target.Damage() 내부에서 체력<=0이면
                          dealDamageGA.PostReactions.Add(KillGA)   ← 인스턴스 직접 종속
-                              └─ DamageSystem.KillPerformer
+                              └─ DamageSystem.KillGAPerformer
                                    └─ AddReaction(GameClearGA | GameOverGA)
 ```
 

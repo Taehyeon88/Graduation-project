@@ -4,7 +4,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class DamageSystem : Singleton<DamageSystem>
 {
@@ -95,8 +94,8 @@ public class DamageSystem : Singleton<DamageSystem>
         //게임 클리어 or 오버 판단
         if (EnemySystem.Instance.Enemise.Count <= 0)
         {
-            GameClearGA gameClearGA = new();
-            ActionSystem.Instance.AddReaction(gameClearGA);
+            // GameClearGA gameClearGA = new();
+            // ActionSystem.Instance.AddReaction(gameClearGA);
         }
         else if (HeroSystem.Instance.HeroViews.Count <= 0)
         {

@@ -28,7 +28,6 @@ public class TurnSystem : Singleton<TurnSystem>
 
     private IEnumerator TurnGAPerformer(TurnGA turnGA)
     {
-        Debug.Log("전투 시작");
         //게임 시작 턴 시작 이후, 플레이어 턴 시작
         if (turnGA.Type == TurnType.StartBattle)
         {

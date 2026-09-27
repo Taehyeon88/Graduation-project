@@ -17,6 +17,7 @@ public class EnemySystem : Singleton<EnemySystem>
         ActionSystem.AttachPerformer<PlayEnemyEAGA>(PlayEnemyEAGAPerformer);
         ActionSystem.SubscribeReaction<TurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
         ActionSystem.SubscribeReaction<TurnGA>(BattleStartPostReaction, ReactionTiming.POST);
+        ActionSystem.SubscribeReaction<SpawnWaveGA>(SpawnWavePostReaction, ReactionTiming.POST);
     }
     private void OnDisable()
     {
@@ -25,6 +26,7 @@ public class EnemySystem : Singleton<EnemySystem>
         ActionSystem.DetachPerformer<PlayEnemyEAGA>();
         ActionSystem.UnsubscribeReaction<TurnGA>(EnemyTurnPostReaction, ReactionTiming.POST);
         ActionSystem.UnsubscribeReaction<TurnGA>(BattleStartPostReaction, ReactionTiming.POST);
+        ActionSystem.UnsubscribeReaction<SpawnWaveGA>(SpawnWavePostReaction, ReactionTiming.POST);
     }
 
     //Publics
@@ -121,6 +123,19 @@ public class EnemySystem : Singleton<EnemySystem>
         foreach (EnemyView enemy in Enemise)
         {
             //다음 턴에 할 행동 미리 설정
+            EnemyAction action = enemy.Enemy.JudgeActAction(enemy);
+            if (action != null)
+                enemy.SetNextAction(action);
+        }
+    }
+
+    //새로 생성된 몬스터들만 다음 행동 설정 (기존 몬스터는 NextAction이 이미 있으므로 건너뜀)
+    private void SpawnWavePostReaction(SpawnWaveGA spawnWaveGA)
+    {
+        foreach (EnemyView enemy in Enemise)
+        {
+            if (enemy.NextAction != null) continue;
+
             EnemyAction action = enemy.Enemy.JudgeActAction(enemy);
             if (action != null)
                 enemy.SetNextAction(action);
