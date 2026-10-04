@@ -52,10 +52,6 @@ public class HeroSystem : Singleton<HeroSystem>
         RefillAPGA refillAPGA = new();
         ActionSystem.Instance.AddReaction(refillAPGA);
 
-        //이동 포인트(MP) 회복
-        RefillMPGA refillMPGA = new();
-        ActionSystem.Instance.AddReaction(refillMPGA);
-
         yield return null;
     }
 

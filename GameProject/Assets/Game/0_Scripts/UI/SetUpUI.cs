@@ -22,11 +22,11 @@ public class SetUpUI : MonoBehaviour
 
         for (int i = 0; i < cellTrans.Count; i++)
         {
+            int index = i;
             //버튼 할당
-            buttons[i] = cellTrans[i].GetComponent<Button>();
+            buttons[index] = cellTrans[index].GetComponent<Button>();
 
             //버튼 바인딩
-            int index = i;
             buttons[index].onClick.AddListener(() =>
             {
                 if (isAnimating) return;  //연출 중, 버튼 클릭 불가

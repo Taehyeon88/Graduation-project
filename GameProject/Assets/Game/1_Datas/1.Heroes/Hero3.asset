@@ -23,4 +23,5 @@ MonoBehaviour:
   <simbolIcon>k__BackingField: {fileID: 21300000, guid: 73bd18226e6eb394b91cc0239baa34e1, type: 3}
   <StartingSkills>k__BackingField:
   - {fileID: 11400000, guid: eb37c913180185c41a9b64c1ef59a75e, type: 2}
-  <StartingPerks>k__BackingField: []
+  <StartingPerks>k__BackingField:
+  - {fileID: 11400000, guid: 8a470f362ce785846b7cfa79d261c35f, type: 2}

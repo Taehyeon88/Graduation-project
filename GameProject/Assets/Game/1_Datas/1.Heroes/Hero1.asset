@@ -17,11 +17,11 @@ MonoBehaviour:
   <Sprite>k__BackingField: {fileID: 21300000, guid: 1ce97719f51ca564c9ca059c7c200670, type: 3}
   <HRange>k__BackingField: 0
   <HeroHp>k__BackingField: 20
-  <MovePoint>k__BackingField: 1
   <Skills>k__BackingField: []
   <Gold>k__BackingField: 10
   <heroColor>k__BackingField: {r: 1, g: 0.7882353, b: 0.7882353, a: 1}
   <simbolIcon>k__BackingField: {fileID: 21300000, guid: 7251b9cab2ef9d543bbbf55d571b0938, type: 3}
   <StartingSkills>k__BackingField:
   - {fileID: 11400000, guid: eba9e131195e267469657f3b30241726, type: 2}
-  <StartingPerks>k__BackingField: []
+  <StartingPerks>k__BackingField:
+  - {fileID: 11400000, guid: 3810d8084a7deec498afc4969e5c7bc8, type: 2}

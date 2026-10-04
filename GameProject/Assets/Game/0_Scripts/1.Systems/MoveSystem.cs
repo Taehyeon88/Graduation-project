@@ -98,8 +98,7 @@ public class MoveSystem : Singleton<MoveSystem>
 
     private void UpdateMoveRange(HeroView heroView)
     {
-        heroMoveRange = TokenSystem.Instance.API.GetCanMovePlace(heroView,
-                                                    MPSystem.Instance.CurrentMP);
+        heroMoveRange = TokenSystem.Instance.API.GetCanMovePlace(heroView, 1);
 
         VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "Hero_Move");
         foreach (var pos in heroMoveRange)
@@ -117,8 +116,8 @@ public class MoveSystem : Singleton<MoveSystem>
 
         if (mover is HeroView)
         {
-            SpendMPGA spendMPGA = new(path.Count);
-            ActionSystem.Instance.AddReaction(spendMPGA);
+            SpendAPGA spendAPGA = new();
+            ActionSystem.Instance.AddReaction(spendAPGA);
         }
 
         //대상 이동 처리
