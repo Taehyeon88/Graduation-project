@@ -42,6 +42,8 @@ public class SkillSystem : Singleton<SkillSystem>
     //Publics
     public void PlaySkillTargetMode(SkillView skillView)
     {
+        if (Interactions.Instance.IsCardTargetMode) return;   //카드 타겟 모드 중, 스킬 사용 불가
+
         if (!Interactions.Instance.IsSkillTargetMode)
         {
             currentSelectedSkill = skillView;

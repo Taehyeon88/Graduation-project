@@ -37,10 +37,8 @@ public class MatchSetupSystem : MonoBehaviour
         //4.5 영웅 아이템 정보 UI 설정
         allPerksDisplayUI.SetUp(heroDatas.ToArray());
 
-        //5.플레이어 유닛 배치
-        TokenSystem.Instance.Setup.StartSetUpHero(heroDatas.ToArray(), stageData.HeroSetupPoses.ToList());
-        yield return new WaitUntil(() => !Interactions.Instance.IsSetUpHero);
-        HeroSystem.Instance.CurrentHero = TokenSystem.Instance.HeroViews[0];
+        //5.플레이어 유닛 카드 덱 구성 (유닛 배치는 전투 중 카드로 진행)
+        CardSystem.Instance.SetUp();
 
         //6.전투 시작(Event)
         TurnGA turnGA = new(TurnType.StartBattle);

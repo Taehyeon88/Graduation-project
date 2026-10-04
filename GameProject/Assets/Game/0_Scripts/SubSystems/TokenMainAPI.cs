@@ -30,6 +30,10 @@ public class TokenMainAPI : MonoBehaviour
         {
             EnemyViews.Add(enemyView);
         }
+        else if (token is HeroView heroView)
+        {
+            TokenSystem.Instance.HeroViews.Add(heroView);
+        }
     }
 
     /// <summary>

@@ -14,6 +14,7 @@ public class Interactions : Singleton<Interactions>
     public bool IsSkillTargetMode = false;
     public bool IsSkillHovering = false;
     public bool IsHeroMoveMode = false;
+    public bool IsCardTargetMode = false;
 
     //InputSystem 변수s
     public bool GridSelected { get; private set; } = false;

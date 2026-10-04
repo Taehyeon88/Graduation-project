@@ -36,6 +36,8 @@ public class MoveSystem : Singleton<MoveSystem>
     //Player
     public void PlayPlayerMoveMode(HeroView heroView)
     {
+        if (Interactions.Instance.IsCardTargetMode) return;   //카드 타겟 모드 중, 이동 모드 진입 불가
+
         if (heroMover == null || heroMover != heroView)
         {
             heroMover = heroView;
