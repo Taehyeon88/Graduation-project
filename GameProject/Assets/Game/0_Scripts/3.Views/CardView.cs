@@ -40,7 +40,6 @@ public class CardView : MonoBehaviour, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
         if (ActionSystem.Instance.IsPerforming
-            || Interactions.Instance.IsSkillTargetMode
             || Interactions.Instance.IsHeroMoveMode)
             return;
 

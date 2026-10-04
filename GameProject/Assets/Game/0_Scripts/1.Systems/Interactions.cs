@@ -11,8 +11,6 @@ public class Interactions : Singleton<Interactions>
 
     //제약 변수s
     public bool IsSetUpHero = false;
-    public bool IsSkillTargetMode = false;
-    public bool IsSkillHovering = false;
     public bool IsHeroMoveMode = false;
     public bool IsCardTargetMode = false;
 
@@ -21,7 +19,6 @@ public class Interactions : Singleton<Interactions>
     public bool CancelUse { get; private set; } = false;
 
     private static event Action SelectGridEvent;
-    private static event Action<int> PlaySkillEvent;
     private InputAction selectGrid;
     private InputAction cancelUse;
 
@@ -57,46 +54,10 @@ public class Interactions : Singleton<Interactions>
             SelectGridEvent?.Invoke();
     }
 
-    void OnPlaySkill1() => PlaySkillEvent?.Invoke(1);
-    void OnPlaySkill2() => PlaySkillEvent?.Invoke(2);
-    void OnPlaySkill3() => PlaySkillEvent?.Invoke(3);
-    void OnPlaySkill4() => PlaySkillEvent?.Invoke(4);
-    void OnPlaySkill5() => PlaySkillEvent?.Invoke(5);
-
     public static void SetSelectGridEvent(Action action, bool isAdd)
     {
         if(isAdd) SelectGridEvent += action;
         else SelectGridEvent -= action;
-    }
-    public static void SetPlaySkillEvent(Action<int> action, bool isAdd)
-    {
-        if (isAdd) PlaySkillEvent += action;
-        else PlaySkillEvent -= action;
-    }
-
-
-    //제약 변수 사용 가능 체크s
-    public bool CanPlaySkillTargetMode()
-    {
-        if(IsSkillTargetMode)
-            return false;
-
-        return true;
-    }
-
-    public bool CanSkillHovering()
-    {
-        if (IsSkillTargetMode || IsSkillHovering)
-            return false;
-
-        return true;
-    }
-    public bool CanCancelSkilHovering()
-    {
-        if (IsSkillTargetMode)
-            return false;
-
-        return true;
     }
 
     //Privates

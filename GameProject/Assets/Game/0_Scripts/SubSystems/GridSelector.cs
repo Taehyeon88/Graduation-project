@@ -16,7 +16,7 @@ public class GridSelector : MonoBehaviour
     }
     void Update()
     {
-        if (Interactions.Instance.IsSkillTargetMode)    //선택 모드시, 모든 처리 반환
+        if (Interactions.Instance.IsCardTargetMode)    //선택 모드시, 모든 처리 반환
         {
             VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "Selector_Hover");
         }
@@ -41,7 +41,7 @@ public class GridSelector : MonoBehaviour
 
         if (hoveredGrid != pos)
         {
-            if (!Interactions.Instance.IsSkillTargetMode)
+            if (!Interactions.Instance.IsCardTargetMode)
             {
                 SoundSystem.Instance.PlaySound(3001);
                 VisualGridCreator.Instance.ChangeVisualGridPosition(
@@ -61,7 +61,7 @@ public class GridSelector : MonoBehaviour
     private void SelectToken()
     {
         if (TurnSystem.Instance.CurrentTurn == TurnType.GameSetUp
-                    || Interactions.Instance.IsSkillTargetMode) return;    //모든 처리 반환
+                    || Interactions.Instance.IsCardTargetMode) return;    //모든 처리 반환
 
         Vector3 isoPos = TokenSystem.Instance.IsoWorld.MouseIsoTilePosition(1);
         Vector2Int pos = Utility.IsoVectorToVector2Int(isoPos);

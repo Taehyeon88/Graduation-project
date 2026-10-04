@@ -37,7 +37,7 @@
 | `CardData.Mana` | AP 비용 (`CardData`의 `int` 필드, SO로 노출) | 자원은 `APSystem` / `SpendAPGA` 재사용. 현재 `SpendAPGA`는 amount 인자(기본 1)를 지원 |
 | `CardData`의 `SelfEffects`/`GridTargetMode`/`CardType`/`CardSubType` | `HeroData`(영웅 SO) 참조 1개 | 카드가 "용병 1명"을 가리킨다. 효과/타겟 모드 필드는 쓰지 않음 |
 | `PlayCardGA` 효과(`PerformEffectGA`로 카드 효과 실행) | "선택한 타일에 해당 용병 토큰 배치" | 배치 창구 후보: `TokenMainAPI`의 토큰 추가 계열(웨이브 몬스터 런타임 생성에 쓰이는 경로, 구현 시 확인). 초기 일괄 배치용 `TokenSetup.StartSetUpHero`는 전투 시작용이라 그대로 재사용 불가 |
-| `PlayCardTargetingGA`의 타일 선택(공격 범위 VG) | `CardSystem` 코루틴(`CardTargetMode`)이 "배치 가능한 빈 타일" 선택 — **GA 없음** | `SkillSystem`과 같은 방식: 확정 시 `PlayCardGA`를 `reservedCards` 큐에 넣고 `Update`에서 `IsPerforming == false`일 때 `Perform`. 이전엔 `CardView`가 `ActionSystem.Perform`을 직접 호출했으나 `convention.md` 6절 위배라 바꿈. 배치 가능 타일 = `StageData.HeroSetupPoses` 중 `TokenServiceAPI.IsGridEmpty`인 곳(임시, 구역 제한은 (원작 확인 필요)) |
+| `PlayCardTargetingGA`의 타일 선택(공격 범위 VG) | `CardSystem` 코루틴(`CardTargetMode`)이 "배치 가능한 빈 타일" 선택 — **GA 없음** | (삭제된) `SkillSystem`과 같은 방식: 확정 시 `PlayCardGA`를 `reservedCards` 큐에 넣고 `Update`에서 `IsPerforming == false`일 때 `Perform`. 이전엔 `CardView`가 `ActionSystem.Perform`을 직접 호출했으나 `convention.md` 6절 위배라 바꿈. 배치 가능 타일 = `StageData.HeroSetupPoses` 중 `TokenServiceAPI.IsGridEmpty`인 곳(임시, 구역 제한은 (원작 확인 필요)) |
 | `InteractionSystem.*` 입력 플래그 | 현재 코드의 `Interactions`(`GridSelected`, `CancelUse` 등) | 이전과 이름이 다름 — 구현 시 현재 클래스로 맞춘다 |
 
 `IsPart1`(카드 1회 사용을 두 단계 `PlayCardGA`로 나누는 이전 플래그)은 용병 배치에는 필요 없으므로 이식하지 않는다.
@@ -46,7 +46,7 @@
 
 ```
 [손패의 카드 클릭]  (CardView.OnPointerClick)
- └ ActionSystem 수행 중 / 스킬 타겟·이동 모드 중이면 무시
+ └ ActionSystem 수행 중 / 이동 모드 중이면 무시
  └ APSystem.HasEnoughAP(card.APCost) 체크 — 부족하면 사운드만 재생하고 종료
  └ CardSystem.PlayCardTargetMode → CardTargetMode 코루틴
      ├ Interactions.IsCardTargetMode = true, 배치 가능 타일에 VG(Hero_SetUp_True) 표시
@@ -79,7 +79,7 @@
 
 - **영웅이 "전투 시작 시 고정 배치"에서 "런타임 배치"로 바뀐다.** 현재 `HeroSystem.HeroViews`와 `MatchSetupSystem`/`TokenSetup.StartSetUpHero` 흐름은 영웅이 처음부터 존재한다는 전제다. 런타임에 영웅이 늘어나므로 `HeroViews`를 쓰는 곳(턴 시작 `ReduceSEWhenMyTurnStart` 등)과 `HeroSystem.CurrentHero` 선택 흐름을 점검해야 한다.
 - 이전 카드 시스템은 **영웅 1명(`HeroSystem.Instance.HeroView`)** 을 전제로 작성되었다. 다영웅 구조에 맞게 시전자/기준 위치 참조를 쓰지 않는다(배치 카드는 시전자가 필요 없다).
-- `SkillSystem`과 입력 플래그(`Interactions.IsSkillTargetMode` 등)를 공유하므로, 카드 배치 동작을 확인한 뒤 `SkillSystem`을 제거한다(제거 순서: 카드 → 특성 → Skill 제거).
+- `SkillSystem`은 제거되었다(카드 → 특성 → Skill 제거 순서로 완료). `Interactions.IsCardTargetMode`가 카드 타겟팅 중 `GridSelector`의 호버/영웅 선택과 `MoveSystem` 이동 모드 진입을 막는다.
 - `CardViewCreator`/`CardViewHoverSystem`/`HandView`는 UGUI 프리팹과 씬 배치가 필요하다 — 에디터 작업은 사용자 몫이며 구현 단계에서 클릭 순서를 안내한다.
 
 ## 6. 원작 확인 필요 항목

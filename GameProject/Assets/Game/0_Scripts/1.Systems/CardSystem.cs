@@ -63,7 +63,7 @@ public class CardSystem : Singleton<CardSystem>
 
     public void PlayCardTargetMode(CardView cardView)
     {
-        if (Interactions.Instance.IsSkillTargetMode || Interactions.Instance.IsHeroMoveMode)
+        if (Interactions.Instance.IsHeroMoveMode)
             return;
 
         if (!Interactions.Instance.IsCardTargetMode)

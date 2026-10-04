@@ -23,7 +23,6 @@ public class HeroSystem : Singleton<HeroSystem>
                     selected_Hero_UI.gameObject.SetActive(true);
                 selected_Hero_UI.sprite = (currentHero.TokenData as HeroData).simbolIcon; //선택된 영웅 이미지 변경
             }
-            SkillSystem.Instance.UpdateSkillsUI(currentHero);                             //스킬 UI 업데이트 + 재정렬
         }
     }
 

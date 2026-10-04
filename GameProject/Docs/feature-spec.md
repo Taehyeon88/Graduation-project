@@ -16,7 +16,7 @@
 | 01 | [01_enemy_system.md](feature-spec/01_enemy_system.md) | EnemySystem 아키텍처 — 몬스터 턴 판단·실행 흐름 |
 | 01 | [enemy_action_howto.md](feature-spec/enemy_action_howto.md) | 새 EnemyAction 추가 실전 가이드 — FireArrowEA 사례 |
 | 01 | [01_hero_system.md](feature-spec/01_hero_system.md) | HeroSystem 아키텍처 — 플레이어 턴 시작 훅 + 선택된 영웅 상태 관리 |
-| 02 | [02_skill_system.md](feature-spec/02_skill_system.md) | **(폐기 예정)** SkillSystem 아키텍처 — 스킬 카드 클릭→타겟팅→효과 GameAction 위임 흐름. 카드 배치 구현 후 제거 |
+| 02 | [02_skill_system.md](feature-spec/02_skill_system.md) | **(제거됨, 역사 기록)** SkillSystem 아키텍처 — 스킬 카드 클릭→타겟팅→효과 GameAction 위임 흐름. `Effect` 체인 설명은 참고용으로 유효 |
 | 03 | [03_wave_system.md](feature-spec/03_wave_system.md) | WaveSystem 아키텍처 — 몬스터 턴마다 카운트다운, n턴마다 웨이브 추가 생성 + 신규 몬스터 행동 자동 연산 |
 | 04 | [04_card_system.md](feature-spec/04_card_system.md) | CardSystem 아키텍처 (**최소 범위 구현됨**) — 용병 카드 드로우/손패/버림 사이클 + AP로 타일에 배치 |
 | 05 | [05_trait_system.md](feature-spec/05_trait_system.md) | 특성(Trait) 시스템 — 기존 `Perk` 구조 관찰 + 용병당 최대 2개 제약 등 목표 변경 |

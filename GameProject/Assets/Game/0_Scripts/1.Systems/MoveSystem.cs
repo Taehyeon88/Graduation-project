@@ -83,8 +83,7 @@ public class MoveSystem : Singleton<MoveSystem>
                 currentHero = heroMover;
             }
 
-            if (!Interactions.Instance.IsHeroMoveMode
-                 ||Interactions.Instance.IsSkillTargetMode)   //이동 모드 종료
+            if (!Interactions.Instance.IsHeroMoveMode)   //이동 모드 종료
             {
                 break;
             }

@@ -89,7 +89,8 @@
 
 - **포함**: 용병 모집·덱빌딩, 용병 카드 시스템(드로우/손패/버림 + AP 배치), 그리드 배치(AP), 속도순 자동 전투, 특성 시스템(용병당 최대 2개), 다중 라운드·로그라이크 진행
 - **제외**: 원작 아트·연출 모방 (아트는 모작 대상이 아님)
-- **제거 예정**: 수동 스킬 시스템(`SkillSystem` — 스킬 버튼 클릭→타겟팅 UI, [feature-spec/02_skill_system.md](feature-spec/02_skill_system.md)), 플레이어 수동 이동 모드. 카드 배치가 동작한 뒤 제거한다. `Effect` → `PerformEffectGA` → 구체 GA 체인과 `TargetMode`/`RangeMode`는 유닛 행동 실행부로 남긴다.
+- **제거됨**: 수동 스킬 시스템(`SkillSystem` — 스킬 버튼 클릭→타겟팅 UI, [feature-spec/02_skill_system.md](feature-spec/02_skill_system.md), 역사 기록). `Effect` → `PerformEffectGA` → 구체 GA 체인, `TargetMode`/`RangeMode`, `Skill`/`SkillData` 데이터 모델은 유닛 행동 실행부로 남겼다(현재 호출 경로 없음).
+- **제거 예정**: 플레이어 수동 이동 모드(`MoveSystem`) — 속도순 자동 행동 도입 시 함께 정리.
 - **재확인 필요**: 세이브/로드, 인게임 옵션 메뉴, 다국어, 터치 입력 (이전 기획에서는 비스코프였음, 원작 대응 여부 미정)
 
 ## 8. 원작 vs 현재 코드

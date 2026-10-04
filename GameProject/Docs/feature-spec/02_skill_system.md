@@ -1,6 +1,6 @@
 # SkillSystem 아키텍처
 
-> **⚠ 폐기 예정**: 모작 방향 개정으로 수동 스킬 시스템은 제거된다. 용병 카드 배치([04_card_system.md](./04_card_system.md))가 동작한 뒤 제거하며, 그때까지 이 문서는 현재 코드 기준으로 유지한다. `Effect` → `PerformEffectGA` 체인과 `TargetMode`/`RangeMode`는 유닛 행동 실행부로 남는다.
+> **⚠ 제거됨 (역사 기록)**: 모작 방향 개정으로 수동 스킬 계층(`SkillSystem`, `SkillView`, `SkillsUI`, `SkillHighlightUI`, `PlaySkillGA`, `Interactions`의 스킬 모드/입력)은 코드와 씬에서 삭제되었다. 아래 본문은 **삭제 직전 코드 기준의 기록**이며 현재 코드와 다르다. 남아 있는 것: `Effect` → `PerformEffectGA` → `EffectProcessor` → 구체 GA 체인(현재 이를 만드는 곳이 없어 휴면), `TargetMode`/`RangeMode`, `Skill`/`SkillData`/`SkillAbility`와 `Hero.Skills`/`HeroData.StartingSkills` 데이터 모델. 용병 배치는 [04_card_system.md](./04_card_system.md)를 본다.
 
 > 이 문서는 스킬(카드) 한 장이 클릭되고 나서 타겟팅 UI를 거쳐 실제 효과 `GameAction`으로 위임되기까지의 흐름을 정리한 참고 문서다. `ActionSystem` 자체의 동작 원리는 [00_action_architecture.md](./00_action_architecture.md), AP 자원 자체는 [01_hero_system.md](./01_hero_system.md)를 먼저 본다. **개별 효과가 실제로 어떻게 처리되는지**(`AttackEnemySystem`/`ShieldBashSystem`/`DamageSystem`/`StatusEffectSystem` 등 `1.Systems/Skills/` 하위 시스템들의 내부 로직)는 이 문서 범위 밖이다 — 여기서는 "SkillSystem이 어디로, 어떤 순서로 위임하는가"만 다룬다.
 
