@@ -1,5 +1,7 @@
 # WaveSystem 아키텍처
 
+> **⚠ 일부 낡음**: `EnemySystem`이 제거되어, 이 문서에서 `EnemySystem`을 언급하는 부분(핵심 파일 표의 `SpawnWavePostReaction` 행, §5 "새로 생성된 몬스터의 행동 자동 연산", 흐름도의 `EnemySystem.*` 항목)은 더 이상 존재하지 않는다. 웨이브 카운트다운과 `SpawnWaveGA`로 몬스터를 생성하는 `WaveSystem` 자체는 그대로이며, 생성된 몬스터는 행동 없이 가만히 서 있는 토큰이다. [01_enemy_system.md](./01_enemy_system.md) 상단을 본다.
+
 > 이 문서는 전투 중 몬스터 웨이브가 "언제, 무엇을, 어떻게" 추가로 생성되는지, 그리고 그 결과가 `EnemySystem`의 턴 판단 흐름과 어떻게 맞물리는지를 정리한 참고 문서다. `ActionSystem` 자체의 동작 원리는 [00_action_architecture.md](./00_action_architecture.md), 몬스터 개별 턴 AI(`JudgeActAction`/`EnemyAction`)는 [01_enemy_system.md](./01_enemy_system.md), 토큰 생성/그리드 등록 계약은 [00_token_system.md](./00_token_system.md)를 먼저 본다. 웨이브 밸런싱 수치(웨이브 수, 마리 수, 턴 간격의 실제 값)와 `WaveCoreData`의 체력/피격 로직은 이 문서 범위 밖이다.
 
 ## 핵심 파일

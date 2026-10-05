@@ -1,5 +1,7 @@
 # EnemySystem 아키텍처
 
+> **⚠ 제거됨 (역사 기록)**: 모작 방향 개정으로 몬스터 자율 행동 계층 — `EnemySystem`, `PlayEnemyEAGA`, `AttackHeroGA`, `Enemy`/`EnemyAction` 모델과 그 구현체(`Larva`/`Scarecrow`/`ArchorSkeleton`/`AttackEA`/`FireArrowEA`), `EnemyRangeMode`/`EnemyTargetMode`, `EnemyActionInfo`, `EnemyView`의 다음 행동·이동력 API — 는 코드와 씬에서 삭제되었다. 아래 본문은 **삭제 직전 코드 기준의 기록**이며 현재 코드와 다르다. 남은 것: `EnemyView`/`EnemyData`는 체력·스프라이트만 가진 수동적 토큰, `EnemyTurnGA`는 정의만 남은 미사용 GA, 적 턴(`TurnType.Enemy`)은 팝업 연출만 있는 빈 턴이다. 이후 AI(적의 유닛 배치·이동)는 새로 설계하며, 이 문서와 git 이력의 원본 코드를 참고한다.
+
 > 이 문서는 몬스터 턴이 어떻게 판단되고 실행되는지, 그리고 `EnemySystem`이 협력하는 하위 요소(`EnemyTurnGA`/`PlayEnemyEAGA`/`AttackHeroGA`/`Enemy`/`EnemyAction`/`EnemyView`)가 각각 무엇을 책임지는지를 정리한 참고 문서다. `ActionSystem`(Performer/Reaction/AddReaction) 자체의 동작 원리는 다루지 않는다 — 그건 [00_action_architecture.md](./00_action_architecture.md)를 먼저 본다. 개별 몬스터의 스탯·수치 밸런싱도 이 문서 범위 밖이다.
 
 ## 핵심 파일

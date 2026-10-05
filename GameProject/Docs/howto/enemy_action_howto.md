@@ -1,5 +1,7 @@
 # EnemyAction 추가 가이드 — FireArrowEA 사례로 보는 실전 레시피
 
+> **⚠ 제거됨 (역사 기록)**: `EnemyAction`과 `FireArrowEA`는 코드에서 삭제되었다. 이 문서는 삭제 직전 구조의 기록이며 따라 할 수 없다. 자세한 경위는 [01_enemy_system.md](../feature-spec/01_enemy_system.md) 상단을 본다.
+
 > `01_enemy_system.md`가 이 시스템의 아키텍처 **관찰 스냅샷**이라면, 이 문서는 "그래서 새 EnemyAction을 실제로 어떻게 추가하나"를 FireArrowEA(원거리 화살 공격) 작업 과정 그대로 보여주는 **how-to**다. 새 몬스터 행동(공격 패턴)을 추가할 때 이 파일 하나만 열어보고 시작하면 된다.
 >
 > **주의**: `01_enemy_system.md`의 §5(Larva+AttackEA 한 사이클 예시)·§6(사거리 판정 미구현 경고)은 FireArrowEA 작업과 같이 진행된 리팩터링으로 이제 실제 코드와 어긋난 스테일 상태다. 이 문서가 현재 코드 기준 최신 내용이다.

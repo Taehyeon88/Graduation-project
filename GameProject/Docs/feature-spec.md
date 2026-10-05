@@ -13,7 +13,7 @@
 | 00 | [00_token_system_main.md](feature-spec/token/00_token_system_main.md) | TokenSystem API — TokenMainAPI(런타임 상태 변경 메서드 4개) 카탈로그 |
 | 00 | [00_token_system_setup.md](feature-spec/token/00_token_system_setup.md) | TokenSystem API — TokenSetup(초기 배치 메서드 4개) 카탈로그 |
 | 00 | [00_token_system_api.md](feature-spec/token/00_token_system_api.md) | TokenSystem API — TokenServiceAPI(조회 메서드 16개) 카탈로그 |
-| 01 | [01_enemy_system.md](feature-spec/01_enemy_system.md) | EnemySystem 아키텍처 — 몬스터 턴 판단·실행 흐름 |
+| 01 | [01_enemy_system.md](feature-spec/01_enemy_system.md) | **(제거됨, 역사 기록)** EnemySystem 아키텍처 — 몬스터 턴 판단·실행 흐름 |
 | 01 | [enemy_action_howto.md](feature-spec/enemy_action_howto.md) | 새 EnemyAction 추가 실전 가이드 — FireArrowEA 사례 |
 | 01 | [01_hero_system.md](feature-spec/01_hero_system.md) | HeroSystem 아키텍처 — 플레이어 턴 시작 훅 + 선택된 영웅 상태 관리 |
 | 02 | [02_skill_system.md](feature-spec/02_skill_system.md) | **(제거됨, 역사 기록)** SkillSystem 아키텍처 — 스킬 카드 클릭→타겟팅→효과 GameAction 위임 흐름. `Effect` 체인 설명은 참고용으로 유효 |

@@ -10,7 +10,7 @@
 | `--- SETUP ---` | 4 | 씬 기본 설정(조명·카메라·이벤트 시스템) |
 | `--- UI ---` | 6 | Canvas 전체 |
 | `--- VIEWS ---` | 2 | 토큰 월드 뷰 · VFX |
-| `--- SYSTEMS ---` | 10 | 전투/스킬 처리 Singleton System |
+| `--- SYSTEMS ---` | 9 | 전투/스킬 처리 Singleton System |
 | `--- PROCESSORS ---` | 3 | 상태 없이 GA만 처리하는 `~Processor` |
 | `--- CREATORS ---` | 3 | 생성 담당(`4.Creators/`와 1:1 대응) |
 | `--- MANAGERS ---` | 10 | 그 외 전역 매니저 |
@@ -46,11 +46,10 @@
 | IsoGridWorldView | 5 | IsoWorld |
 | VFX | 1 | (Transform만) |
 
-### `--- SYSTEMS ---` (10개)
+### `--- SYSTEMS ---` (9개)
 | GameObject | 컴포넌트 | 비고 |
 |---|---|---|
 | DamageSystem | DamageSystem | |
-| EnemySystem | EnemySystem | |
 | HeroSystem | HeroSystem | |
 | SkillSystem | SkillSystem | |
 | StatusEffectSystem | StatusEffectSystem | |

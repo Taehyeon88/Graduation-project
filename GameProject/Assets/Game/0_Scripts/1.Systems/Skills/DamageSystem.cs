@@ -92,7 +92,7 @@ public class DamageSystem : Singleton<DamageSystem>
         yield return TokenSystem.Instance.Main.RemoveToken(killGA.Token);
 
         //게임 클리어 or 오버 판단
-        if (EnemySystem.Instance.Enemise.Count <= 0)
+        if (TokenSystem.Instance.EnemyViews.Count <= 0)
         {
             // GameClearGA gameClearGA = new();
             // ActionSystem.Instance.AddReaction(gameClearGA);

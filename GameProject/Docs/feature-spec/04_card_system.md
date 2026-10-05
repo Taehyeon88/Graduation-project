@@ -69,7 +69,7 @@
 
 ## 4-1. 구현 범위 (2단계)
 
-- **구현됨**: `drawPile`/`discardPile`/`hand` 3더미 + 덱 소진 시 버린 더미 셔플 보충, `DrawCardsGA`/`PlayCardGA`, 클릭 선택 → 타일 선택 → 배치, AP 비용 체크·차감, 시작 영웅 일괄 배치(`SetUpUI`/`TokenSetup.StartSetUpHero`)를 대체(`MatchSetupSystem`이 `CardSystem.SetUp()` 호출).
+- **구현됨**: `drawPile`/`discardPile`/`hand` 3더미 (덱이 모자라면 있는 만큼만 드로우 — 버린 더미 → 뽑을 더미 보충은 제거됨), `DrawCardsGA`/`PlayCardGA`, 클릭 선택 → 타일 선택 → 배치, AP 비용 체크·차감, 시작 영웅 일괄 배치(`SetUpUI`/`TokenSetup.StartSetUpHero`)를 대체(`MatchSetupSystem`이 `CardSystem.SetUp()` 호출).
 - **이식하지 않음**: 호버 확대(`CardViewHoverSystem`), 드래그 사용, 더미/덱 확인 UI(`PileofCardUI`/`CheckDeckUI`/`CardViewInPile`), `DiscardCardGA`, `DrawCardFromDiscardPileGA`, 첫 드로우 잠금(`IsFirstDraw`), `LockDiscarding`.
 - **임시 값**: 덱(`CardSystem.startingDeck`), 드로우 수(`drawAmount`), 카드 AP 비용(`CardData.APCost`)은 인스펙터/SO 값이며 원작 수치가 아니다.
 - `CardData.Unit`은 `GameSystem.HeroDatas`에 등록된 `HeroData`여야 한다(`HeroView.SetUp`이 `heroData.Hero`를 쓰는데 `Hero`는 `GameSystem.InitializeHero`가 그 배열에 대해서만 만든다).

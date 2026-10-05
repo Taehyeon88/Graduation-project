@@ -39,8 +39,6 @@ public class TurnSystem : Singleton<TurnSystem>
             Tween direct = turnPopUpUI.GetTurnPopUpTween(TurnType.Enemy, currentTurnNumber);   //턴 팝업 연출
             direct?.Restart();
             yield return direct?.WaitForCompletion();
-
-            yield return EnemySystem.Instance.PlayEnemyTurnPerformer();
         }
         else if (turnGA.Type == TurnType.Player)
         {

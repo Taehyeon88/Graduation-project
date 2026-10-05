@@ -164,27 +164,13 @@ public class CardSystem : Singleton<CardSystem>
         Destroy(cardView.gameObject);
     }
 
-    private void RefillDeck()
-    {
-        drawPile.AddRange(discardPile.Shuffle());
-        discardPile.Clear();
-    }
-
     //Performers
     private IEnumerator DrawCardsGAPerformer(DrawCardsGA drawCardsGA)
     {
         int actualAmount = Mathf.Min(drawCardsGA.Amount, drawPile.Count);
-        int notDrawnAmount = Mathf.Min(drawCardsGA.Amount - actualAmount, discardPile.Count);
 
         for (int i = 0; i < actualAmount; i++)
             yield return DrawCard();
-
-        if (notDrawnAmount > 0)
-        {
-            RefillDeck();
-            for (int i = 0; i < notDrawnAmount; i++)
-                yield return DrawCard();
-        }
     }
 
     private IEnumerator PlayCardGAPerformer(PlayCardGA playCardGA)

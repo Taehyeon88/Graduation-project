@@ -203,7 +203,6 @@ private IEnumerator TurnGAPerformer(TurnGA turnGA)
     else if (turnGA.Type == TurnType.Enemy)
     {
         ...연출 재생...
-        yield return EnemySystem.Instance.PlayEnemyTurnPerformer();
     }
     else if (turnGA.Type == TurnType.Player)
     {
@@ -227,10 +226,10 @@ private void TurnGAPostReaction(TurnGA turnGA)
 세 API의 역할이 정확히 나뉜다:
 
 - **PreReaction** — Performer가 실행되기 전에 `currentTurn` 값을 먼저 갱신한다. 이렇게 해야 같은 Flow 안에서 이후에 실행되는 로직들이 항상 최신 턴을 본다.
-- **Performer** — `TurnGA`가 소유한 실제 로직: 턴 타입에 따라 분기하고, 연출을 재생하고, `EnemySystem`/`HeroSystem`에 실제 턴 처리를 위임한다. `StartBattle` 처리 중에는 다음 `Player` 턴을 즉시 체이닝한다.
+- **Performer** — `TurnGA`가 소유한 실제 로직: 턴 타입에 따라 분기하고, 연출을 재생하고, `Player` 턴이면 `HeroSystem`에 실제 턴 처리를 위임한다(`Enemy` 턴은 연출만 재생). `StartBattle` 처리 중에는 다음 `Player` 턴을 즉시 체이닝한다.
 - **PostReaction** — Performer와 그 하위 반응까지 전부 끝난 뒤 실행되어, `Enemy` 턴이 끝나면 자동으로 `Player` 턴을 체이닝한다(순환 구조).
 
-**주의**: `HeroSystem.PlayHeroTurnPerformer`와 `EnemySystem.PlayEnemyTurnPerformer`는 이름에 "Performer"가 들어가지만 `ActionSystem.AttachPerformer`로 등록된 것이 **아니다**. `TurnGAPerformer` 내부에서 `yield return`으로 직접 위임 호출되는 일반 코루틴 헬퍼일 뿐이며, 등록된 딕셔너리 어디에도 존재하지 않는다.
+**주의**: `HeroSystem.PlayHeroTurnPerformer`는 이름에 "Performer"가 들어가지만 `ActionSystem.AttachPerformer`로 등록된 것이 **아니다**. `TurnGAPerformer` 내부에서 `yield return`으로 직접 위임 호출되는 일반 코루틴 헬퍼일 뿐이며, 등록된 딕셔너리 어디에도 존재하지 않는다.
 
 ## 5. Performer vs Reaction 선택 기준
 

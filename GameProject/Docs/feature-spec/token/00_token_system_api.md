@@ -37,7 +37,7 @@ public Vector2Int GetTokenPosition(Token token)
 - **파라미터**: `Token token`
 - **반환값**: 토큰의 그리드 좌표. `token`이 `null`이거나 그리드에 등록되지 않았으면 `Vector2Int.down`
 - **동작**: `gridPosByToken` 딕셔너리 조회
-- **사용 예시**: `Enemies/EnemyActions/AttackEA.cs:35` — `var curPos = TokenSystem.Instance.API.GetTokenPosition(enemy);`
+- **사용 예시**: `1.Systems/Skills/Player/ShoulderBashProcessor.cs:18` — `Vector2Int currentPos = TokenSystem.Instance.API.GetTokenPosition(shoulderBashGA.Caster);`
 - **비고**: `Vector2Int.down`은 "없음"을 나타내는 전용 sentinel이 아니라 실제 좌표값(0,-1)이다 — 호출부가 별도 null/범위 체크 없이 그대로 좌표로 쓰면 (0,-1) 위치와 혼동될 수 있다.
 
 #### `GetTokenByPosition`
@@ -47,7 +47,7 @@ public Token GetTokenByPosition(Vector2Int position)
 - **파라미터**: `Vector2Int position`
 - **반환값**: 해당 좌표의 `Token`, 없으면 `null`
 - **동작**: `tokenByGridPos` 딕셔너리 조회
-- **사용 예시**: `1.Systems/EnemySystem.cs:70` — `var target = TokenSystem.Instance.API.GetTokenByPosition(attackPos) as IDamageable;`
+- **사용 예시**: `1.Systems/Skills/Player/SplashProcessor.cs:20` — `IDamageable target = TokenSystem.Instance.API.GetTokenByPosition(targetPos) as IDamageable;`
 
 #### `GetAllTokens`
 ```csharp

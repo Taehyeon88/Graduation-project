@@ -17,4 +17,4 @@ MonoBehaviour:
   <Sprite>k__BackingField: {fileID: 21300000, guid: cc062177e210fa54cbf0e5485fae21f4, type: 3}
   <HRange>k__BackingField: 0
   <CoreHp>k__BackingField: 5
-  <CorePosition>k__BackingField: {x: 4, y: 2}
+  <CorePosition>k__BackingField: {x: 3, y: 2}

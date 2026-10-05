@@ -1,5 +1,7 @@
 # 새 Enemy 만들기 — 실전 가이드
 
+> **⚠ 제거됨 (역사 기록)**: 이 가이드가 다루는 `Enemy`/`EnemyAction` 계층은 코드에서 삭제되었다. 지금은 `EnemyData`(체력·이동력·스프라이트)만 있어 따라 할 수 없다. 자세한 경위는 [01_enemy_system.md](../feature-spec/01_enemy_system.md) 상단을 본다.
+
 > 이 문서는 "왜 이렇게 동작하는가"가 아니라 **"지금 새 몬스터 하나를 어떻게 만드는가"**를 순서대로 정리한 실전 체크리스트다. 아키텍처 자체(판단/실행 시차, ActionSystem 큐잉으로 이동→공격 순서를 보장하는 방식 등)는 [feature-spec/01_enemy_system.md](../feature-spec/01_enemy_system.md)를 먼저 본다. 이 문서는 `Larva`(근접 이동형)와 `ArchorSkeleton`(원거리 이동형)을 실제로 만들면서 밟은 절차를 그대로 옮긴 것이다.
 >
 > **범위 밖**: 완성된 `EnemyData`를 웨이브(`WaveData`)에 등록해서 실제 스테이지에 스폰시키는 절차는 이 문서에서 다루지 않는다.

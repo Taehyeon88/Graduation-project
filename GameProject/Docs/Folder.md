@@ -35,8 +35,6 @@ Assets/Game/
 ├─ 5.Data/                 # ScriptableObject 데이터 클래스 정의(~Data 접미사, 11개) — 실 자산은 1_Datas/(2절)
 ├─ Effects/                # Effect(Models/Effect.cs) 서브클래스 — SkillAbility.Effects에 담기는 데이터+로직 홀더
 │  └─ CloseRange_Attack/   #   분류용(ShieldBashEffect 등)
-├─ Enemies/                # Enemy(Models/Enemy.cs) 서브클래스(Larva, Scarecrow 등)
-│  └─ EnemyActions/        #   적 행동 로직(AttackEA 등)
 ├─ Enums/                  # 열거형 13개
 ├─ Extensions/             # 확장 메서드(ArrayExtenstion, ListExtension)
 ├─ General/
@@ -46,10 +44,9 @@ Assets/Game/
 │  ├─ Util/                # 정적 헬퍼(Utility, UtilityBFS, DamageCaculator, GridLayoutImageResizer)
 │  └─ DontDestroyedObject.cs
 ├─ Interfaces/             # I 접두사 인터페이스 7개: IHaveCaster, IDamageable, IHaveDamage, IHaveDistance, IUseCondition, IUseCustomRangeVG, IUseCustomTargetVG
-├─ Models/                 # 도메인 모델(SO 아닌 순수 C# 클래스): Token/TokenGrid, Hero/HeroPreview/Enemy, Skill/SkillAbility/Effect(추상 베이스), Perk/PerkItem, EnemyAction
-│  └─ Modes/               #   범위·타겟 선정 전략(RangeMode/TargetMode: 플레이어용, EnemyRangeMode/EnemyTargetMode: 적용)
+├─ Models/                 # 도메인 모델(SO 아닌 순수 C# 클래스): Token/TokenGrid, Hero/HeroPreview, Skill/SkillAbility/Effect(추상 베이스), Perk/PerkItem, Card
+│  └─ Modes/               #   범위·타겟 선정 전략(RangeMode/TargetMode)
 ├─ Perks/                  # Perk(Models/Perk.cs) 서브클래스: BloodyAxe, HeroArmor, MuscleTrophy
-├─ Struct/                 # 값 타입 구조체(EnemyActionInfo)
 ├─ SubSystems/             # Singleton 파사드가 위임하는 실행 컴포넌트(TokenMainAPI/TokenServiceAPI/TokenSetup, GridSelector, TooltipTrigger)
 ├─ UI/                     # 화면별 UI 컴포넌트(~UI 접미사, SkillsUI/StatusEffectsUI/TurnPopUpUI 등) + AudioMixerController
 └─ GameSystem.cs           # 메타 상태(골드/스테이지/영웅 로스터) 전담 Singleton(상세는 convention.md 6절)
@@ -61,7 +58,7 @@ Assets/Game/
 
 | 폴더 | 자산 수 | 대응 스크립트 클래스 | 비고 |
 |---|---|---|---|
-| `1.Enemies/` | 1 | `EnemyData` | 허수아비 |
+| `1.Enemies/` | 3 | `EnemyData` | 허수아비 / Larva / ArchorSkeleton |
 | `1.Heroes/` | 3 | `HeroData` | Hero1~3 |
 | `2.Skills/` | 3 | `SkillData` | 타격/사격/방어 |
 | `3.Stages/` | 1 | `StageData` | TestStage |

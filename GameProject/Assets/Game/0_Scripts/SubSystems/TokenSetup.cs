@@ -19,7 +19,6 @@ public class TokenSetup : MonoBehaviour
     private List<Vector2Int> heroSetupPositions;
 
     private HeroPreview preview;
-    private int heroCount = 3;
 
     private void Update()
     {
@@ -153,13 +152,6 @@ public class TokenSetup : MonoBehaviour
 
             //SetUpUI에 Slot 삭제
             setupUI.RemoveSlot();
-
-            heroCount--;
-
-            if (heroCount <= 0)
-            {
-                EndSetUpHero();
-            }
         }
         else
         {

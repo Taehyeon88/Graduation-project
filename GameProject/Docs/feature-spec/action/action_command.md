@@ -4,7 +4,7 @@
 >
 > - `ActionSystem`이 **왜/어떻게** 동작하는지(Flow 순서, Performer vs Reaction 선택 기준, 신규 GA 추가 절차, 함정)는 다루지 않는다 → [`feature-spec/00_action_architecture.md`](./feature-spec/00_action_architecture.md) 참고.
 > - 네이밍/필드/폴더 등 일반 코드 컨벤션은 다루지 않는다 → [`convention.md`](../../convention.md) 참고.
-> - **범위**: `StartBattleGA`, `EnemysTurnGA`, `PlayerMoveGA`, `PlayHeroVisualEffectGA`, `AddCardAbilityGA`는 정의만 있고 `Perform`/`AddReaction` 호출 경로가 코드 전체에서 확인되지 않는 죽은 코드라 이 카탈로그에서 제외했다 (`AddCardAbilityGA`는 `AddCardAbilityEffect.cs`가 생성은 하지만 Performer가 없어 사실상 no-op).
+> - **범위**: `StartBattleGA`, `EnemysTurnGA`, `PlayerMoveGA`, `PlayHeroVisualEffectGA`, `AddCardAbilityGA`, `EnemyTurnGA`는 정의만 있고 `Perform`/`AddReaction` 호출 경로가 코드 전체에서 확인되지 않는 죽은 코드라 이 카탈로그에서 제외했다 (`AddCardAbilityGA`는 `AddCardAbilityEffect.cs`가 생성은 하지만 Performer가 없어 사실상 no-op, `EnemyTurnGA`는 `EnemySystem` 제거로 Performer·호출 경로가 사라져 `EnemyTurnGA.cs`만 남음).
 > - **작성 기준**: 현재 워킹트리 기준. AP/MP 자원 분리 리팩터링(`ManaSystem` → `APSystem`+`MPSystem`)이 아직 커밋되지 않은 상태를 그대로 반영했다.
 > - 이 문서는 스냅샷이다. GameAction이 추가/변경/삭제되면 즉시 갱신한다 (자세한 규칙은 4절).
 
@@ -13,7 +13,6 @@
 | GA | 카테고리 | Performer (소유 시스템) | 한 줄 설명 |
 |---|---|---|---|
 | [`TurnGA`](#turnga) | 턴/루프 | `TurnSystem` | 턴 전환의 축 — StartBattle → Player ↔ Enemy 순환 |
-| [`EnemyTurnGA`](#enemyturnga) | 턴/루프 | `EnemySystem` | 몬스터 1마리의 턴(예약된 행동) 실행 |
 | [`SpendAPGA`](#spendapga) | 자원 | `APSystem` | AP(행동력) 소모 |
 | [`RefillAPGA`](#refillapga) | 자원 | `APSystem` | AP 최대치로 리필 |
 | [`SpendMPGA`](#spendmpga) | 자원 | `MPSystem` | MP(이동력) 소모 |
@@ -21,7 +20,6 @@
 | [`MoveGA`](#movega) | 이동 | `MoveSystem` | 한 칸 이동(또는 넉백에 의한 이동) 실행 |
 | [`PerformMoveGA`](#performmovega) | 이동 | `MoveSystem` | 경로 전체 이동 예약(칸마다 `MoveGA` 체이닝) |
 | [`KnockBackGA`](#knockbackga) | 이동 | `KnockBackProcessor` | 특정 방향/거리로 넉백, 충돌 시 데미지 |
-| [`AttackHeroGA`](#attackheroga) | 전투 | `EnemySystem` | 몬스터 → 영웅 공격 |
 | [`DealDamageGA`](#dealdamagega) | 전투 | `DamageSystem` | 데미지 적용의 공통 최종 경로 |
 | [`KillGA`](#killga) | 전투 | `DamageSystem` | 사망 처리(연출 대기 → 토큰 제거 → 승패 판정) |
 | [`AttackEnemyGA`](#attackenemyga) | 전투 | `AttackEnemyProcessor` | 영웅 근접/원거리 공격(모션 + 데미지) |
@@ -44,7 +42,7 @@
 #### `TurnGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/TurnGA.cs`
 - **필드**: `TurnType Type`
-- **Performer**: `TurnSystem.TurnGAPerformer` — `StartBattle`이면 `Player` 턴 즉시 체이닝, `Enemy`면 턴 팝업 연출 후 `EnemySystem.PlayEnemyTurnPerformer`에 위임, `Player`면 턴 팝업 연출 후 `HeroSystem.PlayHeroTurnPerformer`에 위임
+- **Performer**: `TurnSystem.TurnGAPerformer` — `StartBattle`이면 `Player` 턴 즉시 체이닝, `Enemy`면 턴 팝업 연출만 재생(몬스터 행동 처리 없음), `Player`면 턴 팝업 연출 후 `HeroSystem.PlayHeroTurnPerformer`에 위임
 - **PRE 구독자**:
   - `TurnSystem.TurnGAPreReaction` — `currentTurn` 값 선반영
   - `HeroSystem.EnemyTurnPreReaction` (조건: `Type == Enemy`) — 영웅들 "내 턴 종료" SE 감소
@@ -52,20 +50,9 @@
   - `WaveSystem.TurnGAPreReaction` (조건: `Type == Player`) — 웨이브 카운트다운(`turnsUntilNextWave`) 감소, 0 이하이면 `AddReaction(SpawnWaveGA)`
 - **POST 구독자**:
   - `TurnSystem.TurnGAPostReaction` (조건: `Type == Enemy`) — `TurnGA(Player)` 체이닝 (턴 순환의 핵심)
-  - `EnemySystem.TurnGAPostReaction` (조건: `Type == Enemy`) — 몬스터 "턴 종료" SE 감소 + 다음 행동 판단(`JudgeActAction`)
-  - `EnemySystem.TurnGAPostReaction2` (조건: `Type == StartBattle`) — 전투 시작 직후 몬스터 첫 행동 설정
   - `MuscleTrophy` 퍽 (조건: `Type == StartBattle`) — 보유 영웅에게 `AddStatusEffectGA(POWER)` 예약
 - **파생 액션 (AddReaction)**: `StartBattle` 처리 중 Performer 내부에서 `TurnGA(Player)` 즉시 체이닝
 - **트리거 지점**: `MatchSetupSystem.StartSetting()`에서 최초 `Perform(TurnGA(StartBattle))` 호출. 이후 `Enemy` 종료 POST에서 자동으로 다음 `TurnGA(Player)`가 체이닝되며 순환
-- **관련 체인**: §3-1
-
-#### `EnemyTurnGA`
-- **파일**: `Assets/Game/0_Scripts/2.GameActions/EnemyTurnGA.cs`
-- **필드**: `EnemyView EnemyView`
-- **Performer**: `EnemySystem.EnemyTurnPerformer` — 미리 예약된 `NextAction`이 있으면 실행하고 그 연출(`Sequence`) 완료까지 대기
-- **PRE/POST 구독자**: 없음
-- **파생 액션**: 없음 (해당 몬스터의 `EnemyAction`, 예: `AttackEA.PlayEnemyAction()` 내부에서 `AttackHeroGA`/`DOAnimationGA`를 직접 `AddReaction`)
-- **트리거 지점**: `EnemySystem.PlayEnemyTurnPerformer`(`TurnGA(Enemy)` Performer가 위임 호출)에서 몬스터 수만큼 `AddReaction`
 - **관련 체인**: §3-1
 
 ### 2-2. 자원 (AP / MP)
@@ -121,25 +108,19 @@
 
 ### 2-4. 전투 — 데미지 / 사망
 
-#### `AttackHeroGA`
-- **파일**: `Assets/Game/0_Scripts/2.GameActions/AttackHeroGA.cs` (`IHaveCaster` 구현)
-- **필드**: `Token Caster`, `float DamageAmount`, `List<Vector2Int> AttackArea`, `Vector2Int AttackPosition` (범위형/단일형 생성자 2개)
-- **Performer**: `EnemySystem.AttackHeroPerformer` — 공격 범위/위치로 대상(`HeroView`) 탐색 후 `DealDamageGA` 체이닝
-- **트리거 지점**: 몬스터 `EnemyAction`(예: `AttackEA.PlayEnemyAction()`)에서 `AddReaction` — `EnemyTurnGA` 처리 흐름 내부에서 발생
-
 #### `DealDamageGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/DealDamageGA.cs` (`IHaveCaster` 구현)
 - **필드**: `float Amount`, `List<IDamageable> Targets` / `IDamageable Target`(다중·단일 생성자), `Token Caster`
 - **Performer**: `DamageSystem.DealDamagePerformer` — `DamageCaculator.GetDamage()`로 최종 수치 계산 + 피격 VFX + `target.Damage()` 호출(방어막 소모 처리, 체력 0 이하 시 `KillGA`를 이 액션의 `PostReactions`에 직접 추가)
 - **POST 구독자**: `BloodyAxe` 퍽 (조건: `Caster == owner`) — 확률 조건 충족 시 `HealGA` 예약(자힐)
 - **파생 액션**: `CombatantView.Damage()` 내부에서 체력 ≤ 0이면 `dealDamageGA.PostReactions.Add((KillGA, null))` — 전역 체이닝이 아니라 **이 인스턴스에 직접 종속**
-- **트리거 지점**: 전투 계열 다수의 공통 최종 경로 — `AttackHeroPerformer`, `AttackEnemyGAPerformer`, `ShieldBashGAPerformer`, `ShoulderBashGAPerformer`, `SplashGAPerformer`, `KnockBackGAPerformer`(충돌 시) 등
+- **트리거 지점**: 전투 계열 다수의 공통 최종 경로 — `AttackEnemyGAPerformer`, `ShieldBashGAPerformer`, `ShoulderBashGAPerformer`, `SplashGAPerformer`, `KnockBackGAPerformer`(충돌 시) 등
 - **관련 체인**: §3-2, §3-3
 
 #### `KillGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/KillGA.cs`
 - **필드**: `Token Token`, `Tween Hit_Tween`
-- **Performer**: `DamageSystem.KillGAPerformer` — 피격 흔들림 연출(`Hit_Tween`) 완료 대기 → 비주얼 그리드 정리 → 토큰 제거 → 적 전멸이면 `GameClearGA`, 영웅 전멸이면 `GameOverGA` 체이닝
+- **Performer**: `DamageSystem.KillGAPerformer` — 피격 흔들림 연출(`Hit_Tween`) 완료 대기 → 비주얼 그리드 정리 → 토큰 제거 → 적 전멸(`TokenSystem.EnemyViews.Count <= 0`)이면 `GameClearGA`, 영웅 전멸이면 `GameOverGA` 체이닝
 - **트리거 지점**: 전역 `Perform`/`AddReaction`이 아니라, `DealDamageGA` 처리 중 `CombatantView.Damage()`가 체력 ≤ 0일 때 그 `DealDamageGA` 인스턴스의 `PostReactions`에 직접 추가되어서만 실행됨
 - **관련 체인**: §3-2
 
@@ -210,7 +191,7 @@
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/DOAnimationGA.cs`
 - **필드**: `Sequence Sequence`, `Tween Tween` (생성자 2개, 둘 중 하나만 채워짐)
 - **Performer**: `AnimationSystem.DOAnimationPerformer` — 전달된 `Tween`/`Sequence`를 재생하고 완료까지 대기
-- **트리거 지점**: 몬스터 `EnemyAction`(예: `AttackEA.PlayEnemyAction()`)에서 공격 후 복귀 연출을 대기시키기 위해 `AddReaction`
+- **트리거 지점**: 현재 코드에서 `DOAnimationGA`를 생성하는 호출처가 없음 (몬스터 `EnemyAction` 제거로 유일한 호출처가 사라짐 — Performer만 등록된 상태)
 
 ### 2-9. 게임 종료
 
@@ -232,7 +213,7 @@
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/SpawnWaveGA.cs`
 - **필드**: 없음 — 트리거 전용 마커
 - **Performer**: `WaveSystem.SpawnWaveGAPerformer` — 다음 웨이브 인덱스(`nextWaveIndex`)만큼 `enemyDatas`에서 몬스터를 골라 `TokenMainAPI.AddEnemys`로 생성, `Remain_wave_count`/`nextWaveIndex`/`turnsUntilNextWave` 갱신
-- **PRE/POST 구독자**: `EnemySystem.SpawnWavePostReaction`(POST) — 새로 생성된 몬스터(`NextAction == null`인 것만) 골라 `JudgeActAction`으로 다음 행동 설정
+- **PRE/POST 구독자**: 없음
 - **파생 액션**: 없음
 - **트리거 지점**: `WaveSystem.TurnGAPreReaction`(`TurnGA` PRE 구독, 조건: `Type == Player`)에서 웨이브 카운트다운이 0 이하일 때 `AddReaction(new SpawnWaveGA())`
 
@@ -245,7 +226,6 @@
  └ TurnSystem.TurnGAPerformer
      ├─ (PRE) TurnSystem: currentTurn = StartBattle
      ├─ AddReaction(TurnGA(Player))                         ← Performer 내부 즉시 체이닝
-     ├─ (POST) EnemySystem.BattleStartPostReaction: 몬스터 첫 행동 설정
      └─ (POST) MuscleTrophy 퍽: AddReaction(AddStatusEffectGA(POWER))
 
 TurnGA(Player)
@@ -257,9 +237,7 @@ TurnGA(Enemy)                                                ← 플레이어가
  └ TurnSystem.TurnGAPerformer
      ├─ (PRE) HeroSystem.EnemyTurnPreReaction: 영웅 SE 감소
      ├─ (PRE) HeroArmor 퍽: AddReaction(AddStatusEffectGA(ARMOR))
-     ├─ → EnemySystem.PlayEnemyTurnPerformer
-     │     └─ 몬스터마다 AddReaction(EnemyTurnGA)
-     ├─ (POST) EnemySystem.EnemyTurnPostReaction: 몬스터 SE 감소 + 다음 행동 판단
+     ├─ 턴 팝업 연출만 재생 (몬스터 행동 처리 없음)
      └─ (POST) TurnSystem.TurnGAPostReaction: AddReaction(TurnGA(Player))   ← 순환
 ```
 

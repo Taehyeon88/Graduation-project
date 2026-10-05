@@ -19,7 +19,7 @@
 
 ## 1. 한 줄 개요
 
-`HeroSystem`은 [01_enemy_system.md](./01_enemy_system.md)의 `EnemySystem`과 대칭적인 위치에 있지만 소유 범위는 훨씬 작다 — **자기 이름의 `GameAction` Performer가 하나도 없고**, "플레이어 턴 시작 훅"(`TurnSystem`이 직접 호출하는 public 코루틴)과 "현재 선택된 영웅"이라는 서로 무관한 두 가지 상태만 책임진다. 실제 자원 증감(AP/MP)은 `APSystem`/`MPSystem`이, 스킬 실행은 `SkillSystem`이, 이동은 `MoveSystem`이 각자 소유하며, `HeroSystem`은 턴 시작 시점에 "리필하라"는 트리거만 걸어준다.
+`HeroSystem`은 소유 범위가 작다 — **자기 이름의 `GameAction` Performer가 하나도 없고**, "플레이어 턴 시작 훅"(`TurnSystem`이 직접 호출하는 public 코루틴)과 "현재 선택된 영웅"이라는 서로 무관한 두 가지 상태만 책임진다. 실제 자원 증감(AP/MP)은 `APSystem`/`MPSystem`이, 스킬 실행은 `SkillSystem`이, 이동은 `MoveSystem`이 각자 소유하며, `HeroSystem`은 턴 시작 시점에 "리필하라"는 트리거만 걸어준다.
 
 ## 2. HeroSystem의 두 책임
 
@@ -31,15 +31,15 @@ private void OnEnable()
 }
 ```
 
-`OnEnable`에 `AttachPerformer` 호출이 전혀 없다는 점이 `EnemySystem`/`APSystem`/`MPSystem`과의 핵심 차이다 — `HeroSystem`은 어떤 `GameAction` 타입의 "실제 상태를 바꾸는 유일한 소유자"도 아니다.
+`OnEnable`에 `AttachPerformer` 호출이 전혀 없다는 점이 `APSystem`/`MPSystem`과의 핵심 차이다 — `HeroSystem`은 어떤 `GameAction` 타입의 "실제 상태를 바꾸는 유일한 소유자"도 아니다.
 
 ### 2-1. 턴 훅 — PlayHeroTurnPerformer & EnemyTurnPreReaction
 
-- `PlayHeroTurnPerformer`는 `EnemySystem.PlayEnemyTurnPerformer`와 같은 성격이다: `ActionSystem`에 Performer로 등록된 게 아니라, `TurnSystem.TurnGAPerformer`가 `TurnType.Player` 분기에서 직접 `yield return`으로 호출하는 public 코루틴이다(`HeroSystem.cs:42`, 호출부는 `TurnSystem.cs:55`).
-- 내부 순서: 모든 `HeroView`에 `ReduceSEWhenMyTurnStart()`(방어막 스택 제거 — `EnemySystem`과 동일한 `CombatantView` 공용 메서드) → `RefillAPGA`/`RefillMPGA`를 `AddReaction`으로 체이닝. 이 메서드 자체가 [00_action_architecture.md](./00_action_architecture.md) §2-4의 "AddReaction으로 체이닝" 대표 예시로 이미 인용되어 있다.
+- `PlayHeroTurnPerformer`는 `ActionSystem`에 Performer로 등록된 게 아니라, `TurnSystem.TurnGAPerformer`가 `TurnType.Player` 분기에서 직접 `yield return`으로 호출하는 public 코루틴이다(`HeroSystem.cs:42`, 호출부는 `TurnSystem.cs:52`).
+- 내부 순서: 모든 `HeroView`에 `ReduceSEWhenMyTurnStart()`(방어막 스택 제거 — `CombatantView` 공용 메서드) → `RefillAPGA`/`RefillMPGA`를 `AddReaction`으로 체이닝. 이 메서드 자체가 [00_action_architecture.md](./00_action_architecture.md) §2-4의 "AddReaction으로 체이닝" 대표 예시로 이미 인용되어 있다.
 - `RefillAPGA`/`RefillMPGA`는 필드 없는 트리거 전용 마커 액션이고, `APSystem.RefillAPGAPerformer`/`MPSystem.RefillMPGAPerformer`가 각각 `CurrentAP = MaxAP`, `CurrentMP = MaxMP`로 되돌리고 UI를 갱신한다 — `HeroSystem`은 이 수치 자체를 들고 있지 않다.
 - `EnemyTurnPreReaction`은 `TurnGA`의 PRE에 구독되어 있고, `Type`이 `Enemy`일 때만 동작한다(그 외엔 `return`) — 즉 **"몬스터 턴이 시작되기 직전 = 플레이어 턴이 끝나는 시점"**에 모든 `HeroView`의 `ReduceSEWhenMyTurnEnd()`(취약/약화 감소)를 실행한다. 이 메서드는 [00_action_architecture.md](./00_action_architecture.md) §2-3 "PRE 예 2"의 대표 예시이기도 하다.
-- 두 훅 다 `HeroView`를 단순 순회할 뿐, `EnemySystem`의 `EnemyTurnGA`처럼 "영웅 1명당 GA 하나씩" 체이닝하지 않는다 — 플레이어 턴에는 그런 "영웅 턴" 그릇이 없다. 각 영웅의 실제 행동(이동/스킬)은 턴 동안 자유 입력으로 처리되고, 그 자체가 개별 GA(`SpendMPGA`/`PlaySkillGA` 등)로만 표현된다.
+- 두 훅 다 `HeroView`를 단순 순회할 뿐, "영웅 1명당 GA 하나씩" 체이닝하지 않는다 — 플레이어 턴에는 그런 "영웅 턴" 그릇이 없다. 각 영웅의 실제 행동(이동/스킬)은 턴 동안 자유 입력으로 처리되고, 그 자체가 개별 GA(`SpendMPGA`/`PlaySkillGA` 등)로만 표현된다.
 
 ### 2-2. 선택 상태 — CurrentHero
 
@@ -92,7 +92,7 @@ public HeroView CurrentHero
 
 - **`selected_Hero_UI`가 `public Image` 필드다**(`HeroSystem.cs:8`). `convention.md` §1(`- 필드 노출은 [SerializeField] private만. public 필드 금지.`)과 어긋난다 — 인스펙터 연결이 이미 되어 있다면 `[SerializeField] private`로 바꿔도 참조는 유지되지만, 되돌리기 전에 먼저 알려드리는 것으로 갈음한다(CLAUDE.md 지침).
 - **`CurrentHero` 전환에 턴 타입 가드가 없다.** 세터 자체도, `GridSelector.SelectToken`의 가드도 "GameSetUp이거나 스킬 타겟 모드"만 막는다 — 몬스터 턴(`TurnType.Enemy`) 중에도 영웅을 다시 선택해 스킬 UI를 재정렬하는 것 자체는 코드상 막혀있지 않다. 실제 행동(이동/스킬 발동)이 몬스터 턴 중 막히는지는 `MoveSystem`/`SkillSystem` 쪽 가드에 달려 있고 이 문서 범위 밖이다.
-- **`HeroSystem`에는 "영웅 1명당 턴 GA" 개념이 없다** — `EnemySystem.EnemyTurnGA`와 비교하면 비대칭. 개별 영웅의 행동 순서 강제나 재시도 로직이 필요해지는 시점이 오면 새로 들여올지 검토가 필요하다(현재는 자유 입력이라 불필요).
+- **`HeroSystem`에는 "영웅 1명당 턴 GA" 개념이 없다** — 개별 영웅의 행동 순서 강제나 재시도 로직이 필요해지는 시점이 오면 새로 들여올지 검토가 필요하다(현재는 자유 입력이라 불필요).
 - **`TurnEndUI.TurnEnd()`는 `IsPerforming` 가드 없이 `ActionSystem.Instance.Perform(...)`을 직접 호출한다**(`TurnEndUI.cs:25-30`) — [00_action_architecture.md](./00_action_architecture.md) §2-5가 명시한 "호출자가 직접 `IsPerforming`을 체크해야 한다"는 관례(`MoveSystem`/`SkillSystem`은 이 체크를 함)와 다르다. `Perform` 자체가 단일 슬롯 락이라 버튼 연타 시 두 번째 호출은 조용히 무시되지만, 별도 피드백은 없다.
 
 ## 5. 새로운 영웅 자원/훅 추가 시 체크리스트

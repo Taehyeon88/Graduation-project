@@ -26,9 +26,9 @@
 <a id="sec-1"></a>
 ## 1. 네이밍
 
-- **MonoBehaviour 오케스트레이터**: `~System` 접미사. 예: `EnemySystem`, `HeroSystem`, `MoveSystem`, `SkillSystem`, `DamageSystem`, `TurnSystem`, `APSystem`, `MPSystem`.
+- **MonoBehaviour 오케스트레이터**: `~System` 접미사. 예: `HeroSystem`, `MoveSystem`, `SkillSystem`, `DamageSystem`, `TurnSystem`, `APSystem`, `MPSystem`.
 - **`~Processor`**: `~System` 중에서도 `ActionSystem`에 Performer만 등록해 GA를 처리할 뿐, 외부에서 `.Instance`로 조회할 상태가 없는 클래스는 `~System` 대신 `~Processor` 접미사를 쓴다. 예: `EffectProcessor`, `AttackEnemyProcessor`, `ShieldBashProcessor`, `SplashProcessor`, `ShoulderBashProcessor`, `KnockBackProcessor`.
-- **`GameAction` 서브클래스**: `~GA` 접미사. "GameAction"이라는 단어 자체는 클래스명에 쓰지 않는다. 예: `DealDamageGA`, `TurnGA`, `AttackHeroGA`, `ShieldBashGA`, `KnockBackGA`.
+- **`GameAction` 서브클래스**: `~GA` 접미사. "GameAction"이라는 단어 자체는 클래스명에 쓰지 않는다. 예: `DealDamageGA`, `TurnGA`, `ShieldBashGA`, `KnockBackGA`.
 - **인터페이스**: `I` 접두사 + 단일 책임의 작은 캡슐. 예: `IHaveCaster`, `IDamageable`, `IHaveDamage`.
 - 파일당 public 타입 1개, 파일명 = 타입명.
 - **네임스페이스 미사용** — `1.Systems` 트리 전체에서 `namespace` 선언 0건. 새 코드도 전역 네임스페이스에 추가한다.
@@ -56,30 +56,30 @@
 - `[Header("...")]`로 필드를 그룹핑한다. 헤더 텍스트는 한글/영문 혼용. 예: `SoundSystem.cs:10,18`(`"BGM,SFX Setting"`, `"MixerGroup"`), `SkillSystem.cs:9,13`.
 - 필드 케이싱은 camelCase로 통일한다 (`[field: SerializeField] public X Prop { get; private set; }` 패턴만 예외로 PascalCase 유지). `hero_moveRange`/`hero_mover`/`reserved_hero_moves`(`MoveSystem.cs`), `reserved_Skills`/`current_Selected_Skill`/`start_Switch_Skill`(`SkillSystem.cs`) 등 순수 private 필드의 언더스코어 위반은 정리됨.
   - **(남은 예외)** `[SerializeField]`/`public` 필드 중 일부는 아직 언더스코어가 섞여 있다: `upSkill_Distance`(`SkillSystem.cs`), `bgm_Source_Count`/`sfx_Source_Count`(`SoundSystem.cs`), `selected_Hero_UI`(`HeroSystem.cs`, public) 등. 유니티가 필드명으로 씬/프리팹/에셋에 값을 직렬화하기 때문에, 이름을 바꾸면 기존 인스펙터 참조가 끊길 위험이 있어 `[FormerlySerializedAs]` 적용 여부를 정한 뒤 별도로 정리한다.
-- `GameAction`에서 "누가 시전했는가"를 나타내는 프로퍼티명은 `Caster`로 통일하고 `IHaveCaster`를 구현한다. 캐스터+대상이 모두 있는 전투 계열 GA 9개(`AttackHeroGA`, `DealDamageGA`, `PlaySkillGA`, `PerformEffectGA`, `AttackEnemyGA`, `ShoulderBashGA`, `ShieldBashGA`, `SplashGA`, `KnockBackGA`, `HealGA`, `AddStatusEffectGA`) 전부 적용됐다.
-  - `IHaveCaster`는 `Token Caster { get; }`를 요구하지만, 캐스터가 항상 특정 구체 타입(예: 스킬 계열은 `HeroView`, 콤보 계열은 `CombatantView`)인 GA는 공개 프로퍼티를 그 구체 타입으로 유지하고 `IHaveCaster`는 **명시적 인터페이스 구현**(`Token IHaveCaster.Caster => Caster;`)으로 만족시킨다. 실제로 몬스터/영웅 양쪽에서 캐스터가 올 수 있어 `Token` 다형성이 필요한 `AttackHeroGA`/`DealDamageGA`만 공개 프로퍼티 자체가 `Token`이다.
+- `GameAction`에서 "누가 시전했는가"를 나타내는 프로퍼티명은 `Caster`로 통일하고 `IHaveCaster`를 구현한다. 캐스터+대상이 모두 있는 전투 계열 GA 10개(`DealDamageGA`, `PlaySkillGA`, `PerformEffectGA`, `AttackEnemyGA`, `ShoulderBashGA`, `ShieldBashGA`, `SplashGA`, `KnockBackGA`, `HealGA`, `AddStatusEffectGA`) 전부 적용됐다.
+  - `IHaveCaster`는 `Token Caster { get; }`를 요구하지만, 캐스터가 항상 특정 구체 타입(예: 스킬 계열은 `HeroView`, 콤보 계열은 `CombatantView`)인 GA는 공개 프로퍼티를 그 구체 타입으로 유지하고 `IHaveCaster`는 **명시적 인터페이스 구현**(`Token IHaveCaster.Caster => Caster;`)으로 만족시킨다. 실제로 몬스터/영웅 양쪽에서 캐스터가 올 수 있어 `Token` 다형성이 필요한 `DealDamageGA`만 공개 프로퍼티 자체가 `Token`이다.
 
 <a id="sec-3"></a>
 ## 3. 메서드 구성
 
-- 순서: Unity 라이프사이클(`Awake`/`OnEnable`/`OnDisable`/`Update`) → `//Publics` → `//Privates` → `//Performers`/`//Reactions`. `#region`은 쓰지 않고 일반 주석 배너로 섹션을 나눈다. 예: `EnemySystem.cs:28,44,90,126`, `SkillSystem.cs:42,70,272`.
+- 순서: Unity 라이프사이클(`Awake`/`OnEnable`/`OnDisable`/`Update`) → `//Publics` → `//Privates` → `//Performers`/`//Reactions`. `#region`은 쓰지 않고 일반 주석 배너로 섹션을 나눈다. 예: `CardSystem.cs:50,86,167,193`, `SkillSystem.cs:42,70,272`.
   - 단, 짧은 파일(`APSystem.cs`, `MPSystem.cs`, `HealSystem.cs`, `KnockBackProcessor.cs` 등)에는 배너가 생략되는 경우가 많다 — 강제 규칙이라기보다 파일 규모에 따른 관례로 보인다.
 - `OnEnable`에서 `ActionSystem.AttachPerformer<T>`/`SubscribeReaction<T>`로 등록한 것은 반드시 `OnDisable`에서 대칭으로 `DetachPerformer<T>`/`UnsubscribeReaction<T>`로 해제한다. 전 파일에서 예외 없이 지켜지는 유일한 규칙이다.
   ```csharp
   void OnEnable()  { ActionSystem.AttachPerformer<XGA>(XPerformer); }
   void OnDisable() { ActionSystem.DetachPerformer<XGA>(); }
   ```
-- `OnEnable`/`OnDisable`은 `private`로 통일한다. 프로젝트 전체에서 압도적 다수(약 40개 메서드)가 이미 `private`이었고, 무표기였던 `EnemySystem.cs`/`DamageSystem.cs`/`StatusEffectSystem.cs`/`EffectProcessor.cs`(당시 `EffectSystem.cs`)와 `protected`였던 `TurnSystem.cs`의 `OnEnable`을 여기에 맞춰 정리했다.
+- `OnEnable`/`OnDisable`은 `private`로 통일한다. 프로젝트 전체에서 압도적 다수(약 40개 메서드)가 이미 `private`이었고, 무표기였던 `DamageSystem.cs`/`StatusEffectSystem.cs`/`EffectProcessor.cs`(당시 `EffectSystem.cs`)와 `protected`였던 `TurnSystem.cs`의 `OnEnable`을 여기에 맞춰 정리했다.
 - Performer 메서드명은 `GA클래스명 + Performer` 형태로 "GA" 인필스를 유지하는 쪽으로 통일됐다. 예: `AttackEnemyGAPerformer`, `DealDamageGAPerformer`, `PlaySkillGAPerformer`.
-  - `AttachPerformer`로 등록되지 않은 일반 헬퍼(`HeroSystem.PlayHeroTurnPerformer`, `EnemySystem.PlayEnemyTurnPerformer`)와 인프라 디스패처(`ActionSystem.PerformPerformer`)는 GA 서브클래스를 처리하는 Performer가 아니므로 이 규칙 대상이 아니다.
-- 같은 GA에 여러 리액션을 등록할 땐 숫자 접미사 대신 조건을 드러내는 이름을 쓴다: `"조건" + "타이밍" + Reaction`(`TurnGA`라는 타입명은 반복하지 않음). 예: `HeroSystem.cs:62`의 `EnemyTurnPreReaction`, `EnemySystem.cs`의 `EnemyTurnPostReaction`/`BattleStartPostReaction`(둘 다 `TurnGA`를 구독하지만 `turnGA.Type`이 각각 `Enemy`/`StartBattle`일 때만 동작).
+  - `AttachPerformer`로 등록되지 않은 일반 헬퍼(`HeroSystem.PlayHeroTurnPerformer`)와 인프라 디스패처(`ActionSystem.PerformPerformer`)는 GA 서브클래스를 처리하는 Performer가 아니므로 이 규칙 대상이 아니다.
+- 같은 GA에 여러 리액션을 등록할 땐 숫자 접미사 대신 조건을 드러내는 이름을 쓴다: `"조건" + "타이밍" + Reaction`(`TurnGA`라는 타입명은 반복하지 않음). 예: `HeroSystem.cs:57`의 `EnemyTurnPreReaction`, `CardSystem.cs:194`의 `PlayerTurnPostReaction`(둘 다 `TurnGA`를 구독하지만 `turnGA.Type`이 각각 `Enemy`/`Player`일 때만 동작).
 - **이벤트/델리게이트**: `UnityEvent`/`Button.onClick`은 UI 입력 경계에서만 쓰고, 여기서도 `OnEnable`/`OnDisable` 대칭 등록·해제를 지킨다.
   ```csharp
   // StartSceneSystem.cs:32-45
   private void OnEnable()  { startGameButton.onClick.AddListener(StartGame); ... }
   private void OnDisable() { startGameButton.onClick.RemoveListener(StartGame); ... }
   ```
-  그 외 순수 게임 로직 간 통신은 C# `Action`/`Action<T>` 델리게이트가 표준이다(`EnemySystem.cs:11`: `public Action<int> EnemyAddEvent { get; private set; }`). `Interactions.cs:22-23,65-74`처럼 정적 이벤트를 "구독/해제를 bool 파라미터 하나로 토글하는 단일 메서드"로 감싸는 패턴도 쓰인다.
+  그 외 순수 게임 로직 간 통신은 C# `Action`/`Action<T>` 델리게이트가 표준이다(`InteractionSystem.cs:32`: `private event Action<bool> updatedAction;`). `Interactions.cs:22-23,65-74`처럼 정적 이벤트를 "구독/해제를 bool 파라미터 하나로 토글하는 단일 메서드"로 감싸는 패턴도 쓰인다.
   ```csharp
   // Interactions.cs:65-69
   public static void SetSelectGridEvent(Action action, bool isAdd)
@@ -93,8 +93,8 @@
 ## 4. 동시성 · 주석 스타일
 
 - `async`/`await`는 `1.Systems` 전체에서 0건이다. 모든 비동기/순차 처리는 `IEnumerator` 코루틴 + `ActionSystem.Flow`로 한다. Performer는 즉시 끝나도 관례적으로 `yield return null`을 붙인다(한 프레임에 GA 하나를 처리하는 `Flow` 흐름과 맞추기 위함으로 보인다).
-- XML 문서 주석(`/// <summary>`)은 쓰지 않는다. `1.Systems`/`General`/`2.GameActions`/`Interfaces` 전체에서 0건으로 통일됨(과거 `KnockBackProcessor.cs`(당시 `KnockBackSystem.cs`)·`General/Util/UtilityBFS.cs`의 정식 사용례와 `EnemySystem.cs`의 깨진 흉내 전부 일반 주석으로 정리). 새로 작성할 때도 XML 문서 주석을 쓰지 않는다.
-- 일반 주석은 한글로 "왜/무엇을 하는지"를 짧게 적는 스타일이다. 예: `//공용 종료시, SE 제거`(`EnemySystem.cs:102`), `//데미지 적용 로직`(`DamageSystem.cs:34`).
+- XML 문서 주석(`/// <summary>`)은 쓰지 않는다. `1.Systems`/`General`/`2.GameActions`/`Interfaces` 전체에서 0건으로 통일됨(과거 `KnockBackProcessor.cs`(당시 `KnockBackSystem.cs`)·`General/Util/UtilityBFS.cs`의 정식 사용례 전부 일반 주석으로 정리). 새로 작성할 때도 XML 문서 주석을 쓰지 않는다.
+- 일반 주석은 한글로 "왜/무엇을 하는지"를 짧게 적는 스타일이다. 예: `//공용 종료시, SE 제거`(`HeroSystem.cs:65`), `//데미지 적용 로직`(`DamageSystem.cs:34`).
 - 주석 처리된 죽은 코드(`Debug.Log` 블록 등)를 지우지 않고 남겨두는 사례가 있다 — `DamageSystem.cs:78-90`. 새 커밋에서 굳이 따라 하지 않아도 되지만, 기존 코드를 건드릴 때 관련 없는 죽은 코드를 임의로 지우지는 않는다.
 - `Debug.Log`/`Debug.LogWarning`/`Debug.LogError`는 실제 로직 경로에 조건부 컴파일 없이 그대로 남겨두는 게 현재 관례다.
 
@@ -185,7 +185,7 @@ dealDamageGA.PostReactions.Add((addStatusEffectGA, null));
 
 생성자는 target-typed `new(...)`(C# 9)를 쓴다: `TurnGA turnGA = new(TurnType.StartBattle);`(`MatchSetupSystem.cs:45`).
 
-`GameAction` 서브클래스는 순수 데이터 홀더다 — public 오토 프로퍼티 `{ get; private set; }`만 있고, 생성자에서만 값을 채우며 메서드는 두지 않는다(`AttackHeroGA.cs`, `DealDamageGA.cs`, `PlaySkillGA.cs` 등).
+`GameAction` 서브클래스는 순수 데이터 홀더다 — public 오토 프로퍼티 `{ get; private set; }`만 있고, 생성자에서만 값을 채우며 메서드는 두지 않는다(`DealDamageGA.cs`, `PlaySkillGA.cs` 등).
 
 `ActionSystem.Instance.Perform(...)`을 직접 호출하는 곳은 코드베이스 전체에서 부트스트랩 역할의 `MatchSetupSystem.cs:46`(전투 시작)와 큐 소비 루프(`SkillSystem.cs:39`, `MoveSystem.cs:33`)뿐이다. 그 외 모든 곳은 `AddReaction`으로 큐잉한다.
 
@@ -205,13 +205,17 @@ public interface IDamageable { public void Damage(int amount, DealDamageGA dealD
 public interface IHaveDamage { float Damage_Amount { get; } }
 ```
 
-- **`IHaveCaster`는 전투 중 캐스터와 대상이 모두 있는 GA에는 무조건 적용한다.** 새 GA를 추가할 때도 이 조건에 해당하면 예외 없이 구현한다(현재 9개: `AttackHeroGA`, `DealDamageGA`, `PlaySkillGA`, `PerformEffectGA`, `AttackEnemyGA`, `ShoulderBashGA`, `ShieldBashGA`, `SplashGA`, `KnockBackGA`, `HealGA`, `AddStatusEffectGA`). `TurnGA`, `MoveGA`, `SpendAPGA` 등 캐스터 개념이 없는 순수 턴/자원/이동 GA는 구현하지 않는다.
+- **`IHaveCaster`는 전투 중 캐스터와 대상이 모두 있는 GA에는 무조건 적용한다.** 새 GA를 추가할 때도 이 조건에 해당하면 예외 없이 구현한다(현재 10개: `DealDamageGA`, `PlaySkillGA`, `PerformEffectGA`, `AttackEnemyGA`, `ShoulderBashGA`, `ShieldBashGA`, `SplashGA`, `KnockBackGA`, `HealGA`, `AddStatusEffectGA`). `TurnGA`, `MoveGA`, `SpendAPGA` 등 캐스터 개념이 없는 순수 턴/자원/이동 GA는 구현하지 않는다.
 - **`IDamageable`은 피격이 있는 모든 `Token` 클래스가 상속받는다.** 현재 `CombatantView`(→`HeroView`/`EnemyView`가 상속으로 자동 충족)와 `WaveCoreView`가 구현한다. `HeroPreview`처럼 전투에서 피격되지 않는 `Token` 서브클래스는 구현하지 않는다.
 - `IDamageable`/`HeroView`/`Token` 등은 다형성 디스패치보다 **런타임 `as`/`is` 패턴 매칭**으로 다뤄지는 경우가 많다:
   ```csharp
-  // EnemySystem.cs:70-71
-  var target = TokenSystem.Instance.API.GetTokenByPosition(attackPos) as IDamageable;
-  if (target != null && target is HeroView) targets.Add(target);
+  // Utility.cs:243-247
+  var combat = TokenSystem.Instance.API.GetTokenByPosition(targetPos) as IDamageable;
+  if (combat != null)
+  {
+      if (exceptEnemy && combat is EnemyView) continue;
+      ...
+  }
   ```
   ```csharp
   // SkillSystem.cs:157
@@ -239,13 +243,13 @@ public interface IHaveDamage { float Damage_Amount { get; } }
 
 - **GameAction 필드나 SO 데이터의 구분자로 쓰이는 열거형은 System 분기를 좌우하는 고정 계약이다.** 멤버 이름을 바꾸면 그 값으로 분기하는 모든 System이 깨지므로, 기존 멤버명은 그대로 두고 확장만 한다.
   ```csharp
-  // Enums/TurnType.cs — TurnGA.Type의 값, TurnSystem/EnemySystem/HeroSystem의 Pre·PostReaction 분기를 결정
+  // Enums/TurnType.cs — TurnGA.Type의 값, TurnSystem/HeroSystem의 Pre·PostReaction 분기를 결정
   public enum TurnType { Enemy, Player, StartBattle, GameSetUp }
   ```
 
 | 열거형 | 파일 | 분기 위치 |
 |---|---|---|
-| `TurnType` | `Enums/TurnType.cs` | `TurnGA.Type` → `TurnSystem.cs`/`EnemySystem.cs`/`HeroSystem.cs`의 Pre·PostReaction |
+| `TurnType` | `Enums/TurnType.cs` | `TurnGA.Type` → `TurnSystem.cs`/`HeroSystem.cs`의 Pre·PostReaction |
 | `ReactionTiming` | `General/ActionSystem/ReactionTiming.cs` | `ActionSystem.SubscribeReaction<T>`/`UnsubscribeReaction<T>`의 PRE/POST 딕셔너리 선택 |
 | `StatusEffectType` | `Enums/StatusEffectType.cs` | `StatusEffectData.EffectType` → `StatusEffectSystem.cs:8` 캐시 키, `AddStatusEffectEffect.cs:8` |
 | `SETargetMode` | `Enums/SETargetMode.cs` | `AddStatusEffectEffect.cs:15-34` 대상 선택 switch |
@@ -271,7 +275,6 @@ public interface IHaveDamage { float Damage_Amount { get; } }
   {
       [field: SerializeField] public int Health { get; private set; }
       [field: SerializeField] public int MovePoint { get; private set; }
-      [field: SerializeReference, SR] public Enemy Enemy { get; private set; }
   }
   ```
 - `~Data` 클래스 목록: `TokenData`(공통 베이스), `HeroData`/`EnemyData`/`WaveCoreData`(→ `TokenData` 상속), `SkillData`, `PerkData`, `StageData`, `WaveData`, `StatusEffectData`, `SoundData`, `VisualGridData`(전부 `5.Data/`).
