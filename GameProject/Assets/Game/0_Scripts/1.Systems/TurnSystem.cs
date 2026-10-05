@@ -1,4 +1,4 @@
-﻿using DG.Tweening;
+using DG.Tweening;
 using System.Collections;
 using UnityEngine;
 
@@ -15,6 +15,9 @@ public class TurnSystem : Singleton<TurnSystem>
     private void OnEnable()
     {
         ActionSystem.AttachPerformer<TurnGA>(TurnGAPerformer);
+        ActionSystem.AttachPerformer<AutoBattleTurnGA>(AutoBattleTurnGAPerformer);
+        ActionSystem.SubscribeReaction<AutoBattleTurnGA>(AutoBattleTurnGAPreReaction, ReactionTiming.PRE);
+        ActionSystem.SubscribeReaction<AutoBattleTurnGA>(AutoBattleTurnGAPostReaction, ReactionTiming.POST);
         ActionSystem.SubscribeReaction<TurnGA>(TurnGAPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<TurnGA>(TurnGAPostReaction, ReactionTiming.POST);
     }
@@ -22,6 +25,9 @@ public class TurnSystem : Singleton<TurnSystem>
     private void OnDisable()
     {
         ActionSystem.DetachPerformer<TurnGA>();
+        ActionSystem.DetachPerformer<AutoBattleTurnGA>();
+        ActionSystem.UnsubscribeReaction<AutoBattleTurnGA>(AutoBattleTurnGAPreReaction, ReactionTiming.PRE);
+        ActionSystem.UnsubscribeReaction<AutoBattleTurnGA>(AutoBattleTurnGAPostReaction, ReactionTiming.POST);
         ActionSystem.UnsubscribeReaction<TurnGA>(TurnGAPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<TurnGA>(TurnGAPostReaction, ReactionTiming.POST);
     }
@@ -53,10 +59,32 @@ public class TurnSystem : Singleton<TurnSystem>
         }
     }
 
+    private IEnumerator AutoBattleTurnGAPerformer(AutoBattleTurnGA autoBattleTurnGA)
+    {
+        Tween direct = turnPopUpUI.GetTurnPopUpTween(TurnType.AutoBattle, currentTurnNumber);   //턴 팝업 연출
+        direct?.Restart();
+        yield return direct?.WaitForCompletion();
+
+        AutoBattleSystem.Instance.CacheCombatants();   //속도순 큐 캐싱 후 자동 전투 시작
+        ActionSystem.Instance.AddReaction(new AutoBattleGA());
+    }
+
+    private void AutoBattleTurnGAPreReaction(AutoBattleTurnGA autoBattleTurnGA)
+    {
+        currentTurn = TurnType.AutoBattle;
+    }
+
+    //자동 전투 턴 종료 후, 몬스터 턴 시작
+    private void AutoBattleTurnGAPostReaction(AutoBattleTurnGA autoBattleTurnGA)
+    {
+        TurnGA enemyTurnGA = new(TurnType.Enemy);
+        ActionSystem.Instance.AddReaction(enemyTurnGA);
+    }
+
     private void TurnGAPostReaction(TurnGA turnGA)
     {
         //몬스터 턴 종료 후, 플레이어 턴 시작
-        if(turnGA.Type == TurnType.Enemy)
+        if (turnGA.Type == TurnType.Enemy)
         {
             TurnGA playerTurnGA = new(TurnType.Player);
             ActionSystem.Instance.AddReaction(playerTurnGA);

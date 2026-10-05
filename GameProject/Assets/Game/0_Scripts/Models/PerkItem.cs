@@ -10,7 +10,7 @@ public class PerkItem
 
     private readonly PerkData data;
     private readonly Perk perk;
-    protected HeroView owner;   //전투용 데이터
+    protected CombatantView owner;   //전투용 데이터
 
     public PerkItem(PerkData perkData)
     {
@@ -21,7 +21,7 @@ public class PerkItem
         int index = name.IndexOf("_");
         Title = index >= 0 ? name.Substring(index + 1) : name;
     }
-    public void SetOwner(HeroView owner)
+    public void SetOwner(CombatantView owner)
     {
         this.owner = owner; 
     }

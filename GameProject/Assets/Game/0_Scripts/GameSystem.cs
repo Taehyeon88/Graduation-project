@@ -7,15 +7,12 @@ using UnityEngine.SceneManagement;
 
 public class GameSystem : Singleton<GameSystem>
 {
-    public int CurrentGold { get; private set; }                            //현재 플레이어 골드
     public int CurrentStageLevel { get; private set; } = 1;                      //현재 층 수
     public bool IsGameClear { get; private set; }                           //게임 클리어
     public bool IsGameOver { get; private set; }                            //게임 오버
     public bool IsTutorial { get; set; } = false;                            //튜토리얼                               //카드 덱
 
     [field: SerializeField] public HeroData[] HeroDatas { get; private set; } //영웅 데이터s
-    public IReadOnlyList<Hero> Heros => heros;
-    private List<Hero> heros = new List<Hero>(3);       //영웅s
 
     public StageData CurrentStageData
     {
@@ -95,36 +92,5 @@ public class GameSystem : Singleton<GameSystem>
         CurrentStageLevel = 1;
         IsGameOver = false;
         IsGameClear = false;
-        CurrentGold = 0;
-
-        InitializeHero();
-    }
-
-    //영웅 관련 데이터 초기화
-    public void InitializeHero()
-    {
-        CurrentGold = 0;
-
-        foreach (var data in HeroDatas)
-        {
-            List<Skill> skills = new(10);
-            List<PerkItem> perks = new(10);
-
-            foreach (var skillData in data.StartingSkills)
-                skills.Add(new Skill(skillData));
-            foreach (var perkData in data.StartingPerks)
-                perks.Add(new PerkItem(perkData));
-
-            Hero hero = new Hero(
-                data.Id, 
-                data.HeroHp,
-                skills,
-                perks
-                );
-            heros.Add(hero);
-            data.SetHero(hero);
-
-            CurrentGold += data.Gold;
-        }
     }
 }

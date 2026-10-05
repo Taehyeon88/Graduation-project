@@ -17,10 +17,13 @@ public class AllPerksDisPlayUI : MonoBehaviour
             colorLabels[i].color = data.heroColor;
             icons[i].sprite = data.simbolIcon;
 
-            foreach (var perk in data.Hero.Perks)
+            //표시 전용 PerkItem (구독하지 않음), 유닛 최대 특성 개수까지만 표시
+            for (int p = 0; p < Mathf.Min(data.Perks.Count, CombatantView.MaxPerkCount); p++)
             {
+                if (data.Perks[p] == null) continue;
+
                 DisPlayUI disPlayUI = Instantiate(disPlayUIPrf, parents[i]);
-                disPlayUI.SetUp(perk);
+                disPlayUI.SetUp(new PerkItem(data.Perks[p]));
             }
         }
         this.heroDatas = datas;

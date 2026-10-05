@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using IsoTools;
@@ -34,14 +34,78 @@ public class CombatantView : Token, IDamageable
         }
     }
 
+    public const int MaxPerkCount = 2;   //유닛당 특성 최대 개수
+
+    public int BaseDamage { get; private set; }   //공격력 (IDamageable.Damage 메서드와 이름이 겹쳐 BaseDamage로 노출)
+    public int Speed { get; private set; }
+    public IReadOnlyList<PerkItem> Perks => perks;
+
     private int maxHealth;
     private int currentHealth;
+    private readonly List<PerkItem> perks = new();
 
-    public void SetUpBase(int health, int maxHealth, TokenData tokenData)
+    private void OnDisable()
     {
-        CurrentHealth = health;
-        MaxHealth = maxHealth;
-        SetUpBaseBase(tokenData);
+        foreach (var perk in perks)
+        {
+            perk.OnRemove();
+        }
+    }
+
+    public void SetUpBase(CombatantData data)
+    {
+        CurrentHealth = data.Health;
+        MaxHealth = data.Health;
+        BaseDamage = data.Damage;
+        Speed = data.Speed;
+        SetUpBaseBase(data);
+        SetUpPerks(data);
+    }
+
+    //특성 구독 시작 (최대 개수 초과 시 앞의 MaxPerkCount개만 사용)
+    private void SetUpPerks(CombatantData data)
+    {
+        perks.Clear();
+        if (data.Perks == null) return;
+
+        if (data.Perks.Count > MaxPerkCount)
+            Debug.LogError($"{data.name}: 특성은 최대 {MaxPerkCount}개까지 가능합니다. (현재 {data.Perks.Count}개) 앞의 {MaxPerkCount}개만 사용합니다.");
+
+        for (int i = 0; i < Mathf.Min(data.Perks.Count, MaxPerkCount); i++)
+        {
+            if (data.Perks[i] == null) continue;
+
+            PerkItem perk = new(data.Perks[i]);
+            perk.SetOwner(this);
+            perk.OnAdd();
+            perks.Add(perk);
+        }
+    }
+
+    protected virtual Vector2Int Forward => Vector2Int.zero;   //정면 방향 (진영별 오버라이드)
+    protected virtual bool IsTarget(Token token) => false;     //공격 대상 여부 (진영별 오버라이드)
+
+    //자동 전투 공용 패턴: 정면이 비어 있으면 1칸 이동 예약 → 공격 예약 (대상은 공격 실행 시점의 정면에서 결정)
+    public virtual IEnumerator Battle()
+    {
+        if (Forward == Vector2Int.zero) yield break;
+
+        TokenServiceAPI api = TokenSystem.Instance.API;
+        Vector2Int front = api.GetTokenPosition(this) + Forward;
+        if (api.IsBound(front) && api.IsGridEmpty(front))
+            ActionSystem.Instance.AddReaction(new MoveGA(this, front));
+
+        ActionSystem.Instance.AddReaction(new DealDamageGA(BaseDamage, this));
+    }
+
+    //현재 위치 기준 정면의 공격 대상 (없으면 null)
+    public IDamageable GetFrontTarget()
+    {
+        TokenServiceAPI api = TokenSystem.Instance.API;
+        Token frontToken = api.GetTokenByPosition(api.GetTokenPosition(this) + Forward);
+        if (frontToken != null && IsTarget(frontToken) && frontToken is IDamageable target)
+            return target;
+        return null;
     }
 
     private void UpdateHealthUI()

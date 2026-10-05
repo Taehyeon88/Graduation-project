@@ -13,6 +13,8 @@ public class TurnPopUpUI : MonoBehaviour
     [SerializeField] private TMP_Text hero_Current_Turn_Text;
     [SerializeField] private Transform enemy_PopUp_UI;
     [SerializeField] private TMP_Text enemy_Turn_Text;
+    [SerializeField] private Transform autoBattle_PopUp_UI;
+    [SerializeField] private TMP_Text autoBattle_Turn_Text;
 
     [Header("Direct Element")]
     [SerializeField] private float fade_in_duration = 3.4f;
@@ -21,6 +23,7 @@ public class TurnPopUpUI : MonoBehaviour
 
     private Sequence playerFadeSqu;
     private Sequence enemyFadeSqu;
+    private Sequence autoBattleFadeSqu;
 
     private void Start()
     {
@@ -28,6 +31,7 @@ public class TurnPopUpUI : MonoBehaviour
         Initialize();
         InitPlayerSquence();
         InitEnemySquence();
+        InitAutoBattleSquence();
     }
     public Sequence GetTurnPopUpTween(TurnType turnType, int current_Turn_Number)
     {
@@ -47,6 +51,13 @@ public class TurnPopUpUI : MonoBehaviour
 
             return enemyFadeSqu;
         }
+        else if (turnType == TurnType.AutoBattle)
+        {
+            Initialize();
+            autoBattle_PopUp_UI.gameObject.SetActive(true);
+
+            return autoBattleFadeSqu;
+        }
 
         return null;
     }
@@ -55,6 +66,7 @@ public class TurnPopUpUI : MonoBehaviour
     {
         hero_PopUp_UI.gameObject.SetActive(false);
         enemy_PopUp_UI.gameObject.SetActive(false);
+        autoBattle_PopUp_UI.gameObject.SetActive(false);
     }
 
     private void InitPlayerSquence()
@@ -110,9 +122,34 @@ public class TurnPopUpUI : MonoBehaviour
 
     }
 
+    private void InitAutoBattleSquence()
+    {
+        turn_Pop_Image.DOFade(0, 0.01f);
+
+        autoBattleFadeSqu = DOTween.Sequence();
+
+        Tween fade_in = turn_Pop_Image.DOFade(1f, fade_in_duration);
+        Tween fade_in_text = autoBattle_Turn_Text.DOFade(1f, fade_in_duration);
+
+        Tween fade_out = turn_Pop_Image.DOFade(0.0f, fade_out_duration);
+        Tween fade_out_text = autoBattle_Turn_Text.DOFade(0.0f, fade_out_duration);
+
+        autoBattleFadeSqu.Join(fade_in)
+                       .Join(fade_in_text)
+                       .Insert(fade_in_duration + wait_duration, fade_out)
+                       .Insert(fade_in_duration + wait_duration, fade_out_text)
+                       .AppendCallback(() =>
+                       {
+                           Initialize();
+                       })
+                       .SetAutoKill(false)
+                       .Pause();
+    }
+
     private void OnDestroy()
     {
         playerFadeSqu.Kill();
         enemyFadeSqu.Kill();
+        autoBattleFadeSqu.Kill();
     }
 }

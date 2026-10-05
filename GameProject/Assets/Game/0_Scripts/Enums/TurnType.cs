@@ -5,5 +5,6 @@ public enum TurnType
     Enemy,
     Player,
     StartBattle,
-    GameSetUp
+    GameSetUp,
+    AutoBattle
 }

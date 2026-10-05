@@ -1,4 +1,4 @@
-﻿using DG.Tweening;
+using DG.Tweening;
 using IsoTools;
 using System;
 using System.Collections;
@@ -264,6 +264,15 @@ public static class Utility
     {
         Vector3 endPos = token.Defualt_Position;
         return token.Model.transform.DOLocalMove(endPos, duration).SetEase(ease);
+    }
+    //기본 공격 모션 1: 모델이 방향으로 전진 → onHit(타격 시점) → 복귀
+    public static Sequence GetBasicAttackTween(Token attacker, Vector2Int attackerPos, Vector2 direction, TweenCallback onHit)
+    {
+        Sequence seq = DOTween.Sequence();
+        seq.Append(GetModelTween(attacker, attackerPos, direction, 0.4f, 0.12f, Ease.InQuad))
+           .AppendCallback(onHit)
+           .Append(GetModelBackTween(attacker, 0.1f, Ease.OutQuad));
+        return seq;
     }
     public static Tween GetModelShakeTween(Token token, float duration, float strangth, int vibrato, Ease ease)
     {

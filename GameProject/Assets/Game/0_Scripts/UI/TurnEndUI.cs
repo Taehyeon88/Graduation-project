@@ -24,8 +24,8 @@ public class TurnEndUI : MonoBehaviour
 
     private void TurnEnd()
     {
-        //플레이어 턴 종료 및 몬스터턴 시작
-        TurnGA turnGA = new(TurnType.Enemy);
+        //플레이어 턴 종료 및 자동 전투 턴 시작
+        AutoBattleTurnGA turnGA = new();
         ActionSystem.Instance.Perform(turnGA);
     }
 }

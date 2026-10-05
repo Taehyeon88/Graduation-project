@@ -78,6 +78,9 @@
 - **카드 = 용병 1명**: 카드 1장을 사용하면 선택한 타일에 해당 용병이 배치되고, 카드의 AP 비용이 차감된다. 카드 사이클(드로우/버림/손패)의 구조는 이전 프로젝트의 카드 시스템을 따른다 — 상세는 [feature-spec/04_card_system.md](feature-spec/04_card_system.md). 원작에 이 사이클이 그대로 있는지는 (원작 확인 필요).
 - **특성**: 용병당 최대 2개. 전투 중 조건(`GameAction`)에 반응해 발동한다 — 상세는 [feature-spec/05_trait_system.md](feature-spec/05_trait_system.md).
 - 현재 코드의 AP(`MaxAP = 3`, 턴 시작 시 리필)는 프로토타입 임시 수치이며 원작 수치가 아니다.
+- **턴 구조(현재 코드)**: `Player → AutoBattle → Enemy → Player …` 반복. 턴 단위는 `AutoBattleTurnGA`(팝업 → `AutoBattleSystem.CacheCombatants()`로 `Speed` 내림차순 큐 캐싱 → `AutoBattleGA` 시작). `AutoBattleGA` 1회 = 유닛 1명: 큐 맨 앞 속도의 동속 그룹에서 서로 다른 1~6 주사위로 1명을 고르고 `CombatantView.Battle()`로 행동을 예약한 뒤, 마지막에 다음 `AutoBattleGA`를 `AddReaction`해 큐가 빌 때까지(또는 한쪽 전멸) 반복한다. `Battle()` 공용 패턴: **정면 한 줄만** 사용 — 정면 칸이 비어 있으면 1칸 이동을 예약하고(이동은 `Speed`와 무관), 이어서 공격(`DealDamageGA`)을 예약한다. 공격 대상은 예약 시점이 아니라 **`DealDamageGA` 실행 시점의 공격자 정면**(영웅은 깃발 포함 적, 몬스터는 영웅)에서 정하고 없으면 공격하지 않는다. 정면은 영웅 +x, 몬스터 -x. 자동 전투 이동은 `MoveGA` 직접 예약(AP 소모 없음). `Speed` 0 유닛(허수아비)은 행동하지 않는다. 속도순·동속 주사위·1회 행동량·사거리(현재 정면 1칸)·깃발 규칙·전투 종료 조건·몬스터 행동은 (원작 확인 필요). 몬스터 턴은 AI 도입 전까지 빈 턴이다.
+- 플레이어 턴 종료(= `AutoBattle` 시작) 시점에 영웅 상태이상 감소(`HeroSystem`)와 방어막 특성(`HeroArmor`)이 걸린다. `MuscleTrophy`(전투 시작 시)는 그대로이며 발동 시점은 (원작 확인 필요).
+- **유닛 공용 데이터(영웅·몬스터)**: `CombatantData`(`Health` 체력, `Damage` 공격력, `Speed` 행동 순서(속도), `Perks` 특성 리스트 최대 2개). `Damage`/`Speed`는 자동 전투(`CombatantView.Battle`, `AutoBattleSystem`)가 소비한다 — 피해는 `DealDamageGA` → `DamageCaculator.GetDamage`로 `POWER`/약화/취약과 합성. `Speed`가 순서 키 외에 이동 거리를 겸하는지(현재는 순서 키 전용, 이동은 항상 1칸), `Damage`가 모든 행동의 기준인지는 (원작 확인 필요). 에셋의 `Damage`/`Speed` 값(영웅 4/3/2·1, 몬스터 0/3/3·0/1/1)은 기존 스킬·AI 수치에서 유추한 **임시값**이다. 영웅 런타임 복사본(`Hero`)과 수동 스킬 보유(`StartingSkills`), 골드는 제거했다.
 
 ## 6. 승리·패배
 
@@ -98,7 +101,7 @@
 
 | 항목 | Master of Piece(원작) | 현재 코드 (이전 기획 기반) |
 |---|---|---|
-| 전투 진행 | 배치 후 속도순 **자동** | 몬스터 턴 ↔ 플레이어 턴 **수동 턴제** |
+| 전투 진행 | 배치 후 속도순 **자동** | 플레이어 턴 → 자동 전투 턴(속도순 1명씩, 정면 이동·공격) → 몬스터 턴(빈 턴) 반복 |
 | 플레이어 개입 | 배치 단계 | 매 턴 직접 행동 |
 | 말 / 유닛 | 용병 말 + 특성(최대 2개) | `Hero1~3` 등 영웅 SO + `Perk`(용병당 최대 2개 제약 구현됨) |
 | 용병 획득·배치 | 카드(용병)를 AP로 배치 | 전투 시작 시 영웅이 `TokenSetup`으로 고정 배치, 카드 시스템 없음 |

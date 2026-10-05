@@ -30,11 +30,11 @@ public class HeroSystem : Singleton<HeroSystem>
 
     private void OnEnable()
     {
-        ActionSystem.SubscribeReaction<TurnGA>(EnemyTurnPreReaction, ReactionTiming.PRE);
+        ActionSystem.SubscribeReaction<AutoBattleTurnGA>(AutoBattleTurnPreReaction, ReactionTiming.PRE);
     }
     private void OnDisable()
     {
-        ActionSystem.UnsubscribeReaction<TurnGA>(EnemyTurnPreReaction, ReactionTiming.PRE);
+        ActionSystem.UnsubscribeReaction<AutoBattleTurnGA>(AutoBattleTurnPreReaction, ReactionTiming.PRE);
     }
 
     //Publics
@@ -54,9 +54,8 @@ public class HeroSystem : Singleton<HeroSystem>
         yield return null;
     }
 
-    private void EnemyTurnPreReaction(TurnGA turnGA)
+    private void AutoBattleTurnPreReaction(AutoBattleTurnGA turnGA)
     {
-        if (turnGA.Type != TurnType.Enemy) return;
 
         Debug.Log("플레이어 턴 종료");
 

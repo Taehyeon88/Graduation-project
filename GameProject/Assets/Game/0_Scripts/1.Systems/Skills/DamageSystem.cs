@@ -1,4 +1,4 @@
-﻿using CartoonFX;
+using CartoonFX;
 using DG.Tweening;
 using System;
 using System.Collections;
@@ -24,6 +24,24 @@ public class DamageSystem : Singleton<DamageSystem>
     //Performers
     private IEnumerator DealDamageGAPerformer(DealDamageGA dealDamageGA)
     {
+        Sequence attackSeq = null;
+
+        //대상 미지정 공격: 실행 시점의 공격자 정면에서 대상 결정 (없으면 공격 없음)
+        if (dealDamageGA.Targets == null && dealDamageGA.Target == null && dealDamageGA.Caster is CombatantView attacker)
+        {
+            dealDamageGA.Target = attacker.GetFrontTarget();
+            if (dealDamageGA.Target == null) yield break;
+
+            //기본 공격 모션 1 재생, 타격 시점에 피해 적용
+            Vector2Int attackerPos = TokenSystem.Instance.API.GetTokenPosition(attacker);
+            Vector2Int targetPos = TokenSystem.Instance.API.GetTokenPosition(dealDamageGA.Target as Token);
+            Vector2 direction = Utility.GetSignVector2Int(targetPos - attackerPos);
+
+            bool hit = false;
+            attackSeq = Utility.GetBasicAttackTween(attacker, attackerPos, direction, () => hit = true);
+            yield return new WaitUntil(() => hit);
+        }
+
         if (dealDamageGA.Targets != null)   //동시 단체 피격 처리
         {
             foreach (var target in dealDamageGA.Targets)
@@ -64,7 +82,10 @@ public class DamageSystem : Singleton<DamageSystem>
             dealDamageGA.Target.Damage(amountInt, dealDamageGA);
         }
 
-        yield return null;
+        if (attackSeq != null && attackSeq.IsActive())
+            yield return attackSeq.WaitForCompletion();   //복귀까지 대기
+        else
+            yield return null;
     }
 
     private IEnumerator KillGAPerformer(KillGA killGA)

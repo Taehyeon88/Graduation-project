@@ -12,6 +12,8 @@
 
 | GA | 카테고리 | Performer (소유 시스템) | 한 줄 설명 |
 |---|---|---|---|
+| `AutoBattleTurnGA` | 턴/루프 | `TurnSystem` | 자동 전투 턴 — 팝업 → 큐 캐싱 → `AutoBattleGA` 시작, POST에서 `TurnGA(Enemy)` |
+| `AutoBattleGA` | 턴/루프 | `AutoBattleSystem` | 유닛 1명 행동 예약(`Battle()`) 후 다음 `AutoBattleGA`를 리액션으로 반복 |
 | [`TurnGA`](#turnga) | 턴/루프 | `TurnSystem` | 턴 전환의 축 — StartBattle → Player ↔ Enemy 순환 |
 | [`SpendAPGA`](#spendapga) | 자원 | `APSystem` | AP(행동력) 소모 |
 | [`RefillAPGA`](#refillapga) | 자원 | `APSystem` | AP 최대치로 리필 |
@@ -39,20 +41,25 @@
 
 ### 2-1. 턴 / 게임 루프
 
+#### `AutoBattleTurnGA` / `AutoBattleGA`
+- **파일**: `2.GameActions/AutoBattleTurnGA.cs`, `AutoBattleGA.cs` (필드 없음)
+- **Performer**: `TurnSystem.AutoBattleTurnGAPerformer`(팝업 → `AutoBattleSystem.CacheCombatants` → `AddReaction(AutoBattleGA)`), `AutoBattleSystem.AutoBattleGAPerformer`(큐 정리 → 동속 주사위 → `unit.Battle()` → 큐가 남으면 `AddReaction(AutoBattleGA)`)
+- **리액션**: `AutoBattleTurnGA` PRE — `TurnSystem`(`currentTurn` 선반영), `HeroSystem.AutoBattleTurnPreReaction`(영웅 "내 턴 종료" SE 감소), `HeroArmor` 퍽(방어막, `AddStatusEffectGA(ARMOR)` 예약). POST — `TurnSystem`이 `TurnGA(Enemy)` 체이닝
+- **파생 액션**: `Battle()`이 `MoveGA`(정면 1칸, AP 소모 없음) → `DealDamageGA(Amount, attacker)`(대상 미지정, 실행 시점에 `DamageSystem`이 `attacker.GetFrontTarget()`으로 결정, 없으면 no-op) 순으로 예약. 정면 공격 시 `DamageSystem`이 기본 공격 모션 1(`Utility.GetBasicAttackTween`: 전진 → 타격 시점에 피해 → 복귀)을 재생
+- **트리거 지점**: `TurnEndUI.TurnEnd`에서 `Perform(AutoBattleTurnGA)`
+
 #### `TurnGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/TurnGA.cs`
 - **필드**: `TurnType Type`
 - **Performer**: `TurnSystem.TurnGAPerformer` — `StartBattle`이면 `Player` 턴 즉시 체이닝, `Enemy`면 턴 팝업 연출만 재생(몬스터 행동 처리 없음), `Player`면 턴 팝업 연출 후 `HeroSystem.PlayHeroTurnPerformer`에 위임
 - **PRE 구독자**:
   - `TurnSystem.TurnGAPreReaction` — `currentTurn` 값 선반영
-  - `HeroSystem.EnemyTurnPreReaction` (조건: `Type == Enemy`) — 영웅들 "내 턴 종료" SE 감소
-  - `HeroArmor` 퍽 (`PerkItem.Reaction` 경유, 조건: `Type == Enemy`) — 보유 영웅에게 `AddStatusEffectGA(ARMOR)` 예약
   - `WaveSystem.TurnGAPreReaction` (조건: `Type == Player`) — 웨이브 카운트다운(`turnsUntilNextWave`) 감소, 0 이하이면 `AddReaction(SpawnWaveGA)`
 - **POST 구독자**:
   - `TurnSystem.TurnGAPostReaction` (조건: `Type == Enemy`) — `TurnGA(Player)` 체이닝 (턴 순환의 핵심)
   - `MuscleTrophy` 퍽 (조건: `Type == StartBattle`) — 보유 영웅에게 `AddStatusEffectGA(POWER)` 예약
 - **파생 액션 (AddReaction)**: `StartBattle` 처리 중 Performer 내부에서 `TurnGA(Player)` 즉시 체이닝
-- **트리거 지점**: `MatchSetupSystem.StartSetting()`에서 최초 `Perform(TurnGA(StartBattle))` 호출. 이후 `Enemy` 종료 POST에서 자동으로 다음 `TurnGA(Player)`가 체이닝되며 순환
+- **트리거 지점**: `MatchSetupSystem.StartSetting()`에서 최초 `Perform(TurnGA(StartBattle))` 호출. `TurnGA(Enemy)`는 `AutoBattleTurnGA`의 POST(`TurnSystem.AutoBattleTurnGAPostReaction`)에서 체이닝되고, 이후 `Enemy` 종료 POST에서 다음 `TurnGA(Player)`가 체이닝되며 순환
 - **관련 체인**: §3-1
 
 ### 2-2. 자원 (AP / MP)
@@ -110,11 +117,11 @@
 
 #### `DealDamageGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/DealDamageGA.cs` (`IHaveCaster` 구현)
-- **필드**: `float Amount`, `List<IDamageable> Targets` / `IDamageable Target`(다중·단일 생성자), `Token Caster`
-- **Performer**: `DamageSystem.DealDamagePerformer` — `DamageCaculator.GetDamage()`로 최종 수치 계산 + 피격 VFX + `target.Damage()` 호출(방어막 소모 처리, 체력 0 이하 시 `KillGA`를 이 액션의 `PostReactions`에 직접 추가)
-- **POST 구독자**: `BloodyAxe` 퍽 (조건: `Caster == owner`) — 확률 조건 충족 시 `HealGA` 예약(자힐)
+- **필드**: `float Amount`, `List<IDamageable> Targets` / `IDamageable Target`(`{ get; set; }` — 대상 미지정 공격은 Performer가 실행 시점에 기록), `Token Caster` (생성자 3개: 다중·단일·대상 미지정 `(float amount, CombatantView attacker)`)
+- **Performer**: `DamageSystem.DealDamagePerformer` — 대상 미지정(`Targets`/`Target` 모두 null)이면 `attacker.GetFrontTarget()`으로 대상 결정(없으면 no-op) 후 기본 공격 모션 재생·타격 시점에 피해, 복귀까지 대기. 이후 `DamageCaculator.GetDamage()`로 최종 수치 계산 + 피격 VFX + `target.Damage()` 호출(방어막 소모 처리, 체력 0 이하 시 `KillGA`를 이 액션의 `PostReactions`에 직접 추가)
+- **POST 구독자**: `BloodyAxe` 퍽 (조건: `Caster == owner`이고 대상이 있는 공격 — 헛스윙 제외) — 확률 조건 충족 시 `HealGA` 예약(자힐)
 - **파생 액션**: `CombatantView.Damage()` 내부에서 체력 ≤ 0이면 `dealDamageGA.PostReactions.Add((KillGA, null))` — 전역 체이닝이 아니라 **이 인스턴스에 직접 종속**
-- **트리거 지점**: 전투 계열 다수의 공통 최종 경로 — `AttackEnemyGAPerformer`, `ShieldBashGAPerformer`, `ShoulderBashGAPerformer`, `SplashGAPerformer`, `KnockBackGAPerformer`(충돌 시) 등
+- **트리거 지점**: 전투 계열 다수의 공통 최종 경로 — `CombatantView.Battle`(자동 전투, 대상 미지정 생성자), `AttackEnemyGAPerformer`, `ShieldBashGAPerformer`, `ShoulderBashGAPerformer`, `SplashGAPerformer`, `KnockBackGAPerformer`(충돌 시) 등
 - **관련 체인**: §3-2, §3-3
 
 #### `KillGA`
@@ -135,16 +142,16 @@
 
 #### `HealGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/HealGA.cs` (`IHaveCaster` 명시적 구현)
-- **필드**: `float Amount`, `List<Vector2Int> TargetPoses`, `List<CombatantView> Targets`(런타임에 위치→대상으로 채워짐), `HeroView Caster`
+- **필드**: `float Amount`, `List<Vector2Int> TargetPoses`, `List<CombatantView> Targets`(런타임에 위치→대상으로 채워짐), `CombatantView Caster`
 - **Performer**: `HealSystem.HealGAPerformer` — 위치를 대상으로 변환 후 순차 회복(연출 딜레이 포함)
 - **트리거 지점**: `BloodyAxe` 퍽의 POST 리액션(자힐), 회복 스킬의 `Effect.GetGameAction()`
 
 #### `AddStatusEffectGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/CardEffectRelative/AddStatusEffectGA.cs` (`IHaveCaster` 명시적 구현)
-- **필드**: `StatusEffectType StatusEffectType`, `int StackCount`(set 가능), `List<CombatantView> Targets`, `HeroView Caster`
+- **필드**: `StatusEffectType StatusEffectType`, `int StackCount`(set 가능), `List<CombatantView> Targets`, `CombatantView Caster`
 - **트리거 지점**: 아래 목록에 `AddStatusEffectEffect.cs`(버프/디버프 스킬의 Effect) 추가 — `SETargetMode`에 따라 자신/대상/전체에 상태이상 부여
 - **Performer**: `StatusEffectSystem.AddStatusEffectPerformer` — 대상별로 상태이상 스택 부여
-- **트리거 지점**: `ShieldBashProcessor.ShieldBashGAPerformer`(해당 `DealDamageGA`의 `PostReactions`에 직접 종속), `HeroArmor` 퍽(PRE, ARMOR), `MuscleTrophy` 퍽(POST, POWER)
+- **트리거 지점**: `ShieldBashProcessor.ShieldBashGAPerformer`(해당 `DealDamageGA`의 `PostReactions`에 직접 종속), `HeroArmor` 퍽(`AutoBattleTurnGA` PRE, ARMOR), `MuscleTrophy` 퍽(`TurnGA` POST, POWER)
 
 ### 2-6. 스킬 실행 파이프라인
 
@@ -233,11 +240,15 @@ TurnGA(Player)
      └─ AddReaction(RefillAPGA), AddReaction(RefillMPGA)
      (이후 플레이어 입력으로 PlaySkillGA/PerformMoveGA가 별도로 Perform됨)
 
-TurnGA(Enemy)                                                ← 플레이어가 턴 종료
- └ TurnSystem.TurnGAPerformer
-     ├─ (PRE) HeroSystem.EnemyTurnPreReaction: 영웅 SE 감소
+AutoBattleTurnGA                                             ← 플레이어가 턴 종료 (TurnEndUI)
+ └ TurnSystem.AutoBattleTurnGAPerformer: 팝업 → AutoBattleSystem.CacheCombatants → AddReaction(AutoBattleGA)
+     ├─ (PRE) TurnSystem: currentTurn = AutoBattle
+     ├─ (PRE) HeroSystem.AutoBattleTurnPreReaction: 영웅 SE 감소
      ├─ (PRE) HeroArmor 퍽: AddReaction(AddStatusEffectGA(ARMOR))
-     ├─ 턴 팝업 연출만 재생 (몬스터 행동 처리 없음)
+     └─ (POST) TurnSystem.AutoBattleTurnGAPostReaction: AddReaction(TurnGA(Enemy))
+
+TurnGA(Enemy)
+ └ TurnSystem.TurnGAPerformer: 턴 팝업 연출만 재생 (몬스터 행동 처리 없음)
      └─ (POST) TurnSystem.TurnGAPostReaction: AddReaction(TurnGA(Player))   ← 순환
 ```
 
