@@ -24,6 +24,13 @@ public class CardSystem : Singleton<CardSystem>
     private readonly Queue<PlayCardGA> reservedCards = new();
     private CardView currentSelectedCard;
 
+    public static event System.Action PilesReset;     //SetUp으로 더미가 재구성될 때 (더미 UI 갱신용)
+
+    public int DrawPileCount => drawPile.Count;
+    public int DiscardPileCount => discardPile.Count;
+    public List<Card> DrawPileCards => new(drawPile);
+    public List<Card> DiscardPileCards => new(discardPile);
+
     private void OnEnable()
     {
         ActionSystem.AttachPerformer<DrawCardsGA>(DrawCardsGAPerformer);
@@ -54,11 +61,14 @@ public class CardSystem : Singleton<CardSystem>
         discardPile.Clear();
         hand.Clear();
 
-        if (startingDeck == null || startingDeck.Count == 0) return;
+        if (startingDeck != null && startingDeck.Count > 0)
+        {
+            //Shuffle은 입력 리스트를 비우므로 복사본 사용
+            foreach (var cardData in new List<CardData>(startingDeck).Shuffle())
+                drawPile.Add(new Card(cardData));
+        }
 
-        //Shuffle은 입력 리스트를 비우므로 복사본 사용
-        foreach (var cardData in new List<CardData>(startingDeck).Shuffle())
-            drawPile.Add(new Card(cardData));
+        PilesReset?.Invoke();
     }
 
     public void PlayCardTargetMode(CardView cardView)

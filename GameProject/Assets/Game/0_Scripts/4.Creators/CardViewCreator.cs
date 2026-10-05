@@ -4,6 +4,7 @@ using UnityEngine;
 public class CardViewCreator : Singleton<CardViewCreator>
 {
     [SerializeField] private CardView cardViewPrefab;
+    [SerializeField] private CardViewInPile cardViewInPilePrefab;
     [SerializeField] private float spawnTweenDuration = 0.15f;
 
     public CardView CreateCardView(Card card, RectTransform spawnPos, RectTransform parent)
@@ -14,5 +15,12 @@ public class CardViewCreator : Singleton<CardViewCreator>
         cardView.transform.DOScale(Vector3.one, spawnTweenDuration);
         cardView.SetUp(card);
         return cardView;
+    }
+
+    public CardViewInPile CreateCardViewInPile(Card card, RectTransform parent)
+    {
+        CardViewInPile cardViewInPile = Instantiate(cardViewInPilePrefab, parent);
+        cardViewInPile.SetUp(card);
+        return cardViewInPile;
     }
 }

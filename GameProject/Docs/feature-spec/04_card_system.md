@@ -1,6 +1,6 @@
 # CardSystem 아키텍처 (용병 카드 — 목표 설계)
 
-> **상태: 최소 범위 구현됨 (2단계, 씬/프리팹 연결은 에디터 작업 대기).** "용병 카드를 AP로 그리드에 배치"하는 카드 시스템이다. 이전 프로젝트의 카드 시스템(git `3ba83bb^`)의 draw/discard/hand 3더미 구조를 이식하되, 카드가 "스킬"이 아니라 "용병 1명"을 뜻하도록 의미를 바꿨다. 구현된 범위와 이식하지 않은 범위는 §4-1을 본다. 구현 코드는 `1.Systems/CardSystem.cs` 외 `2.GameActions/{DrawCardsGA,PlayCardGA}.cs`, `3.Views/{CardView,HandView}.cs`, `4.Creators/CardViewCreator.cs`, `5.Data/CardData.cs`, `Models/Card.cs`.
+> **상태: 최소 범위 구현됨 (2단계, 씬/프리팹 연결은 에디터 작업 대기).** "용병 카드를 AP로 그리드에 배치"하는 카드 시스템이다. 이전 프로젝트의 카드 시스템(git `3ba83bb^`)의 draw/discard/hand 3더미 구조를 이식하되, 카드가 "스킬"이 아니라 "용병 1명"을 뜻하도록 의미를 바꿨다. 구현된 범위와 이식하지 않은 범위는 §4-1을 본다. 구현 코드는 `1.Systems/CardSystem.cs` 외 `2.GameActions/{DrawCardsGA,PlayCardGA}.cs`, `3.Views/{CardView,CardViewInPile,HandView}.cs`, `4.Creators/CardViewCreator.cs`, `UI/PileofCardUI.cs`, `5.Data/CardData.cs`, `Models/Card.cs`.
 > `ActionSystem` 동작 원리는 [00_action_architecture.md](./00_action_architecture.md), AP 자원은 [01_hero_system.md](./01_hero_system.md), 토큰 배치 API는 [00_token_system.md](./00_token_system.md)를 먼저 본다. 원작(Master of Piece)에서 확인하지 못한 규칙은 `(원작 확인 필요)`로 표기하며, 확인되면 [game-design.md](../game-design.md)를 먼저 갱신한다.
 
 ## 1. 한 줄 개요
@@ -70,7 +70,8 @@
 ## 4-1. 구현 범위 (2단계)
 
 - **구현됨**: `drawPile`/`discardPile`/`hand` 3더미 (덱이 모자라면 있는 만큼만 드로우 — 버린 더미 → 뽑을 더미 보충은 제거됨), `DrawCardsGA`/`PlayCardGA`, 클릭 선택 → 타일 선택 → 배치, AP 비용 체크·차감, 시작 영웅 일괄 배치(`SetUpUI`/`TokenSetup.StartSetUpHero`)를 대체(`MatchSetupSystem`이 `CardSystem.SetUp()` 호출).
-- **이식하지 않음**: 호버 확대(`CardViewHoverSystem`), 드래그 사용, 더미/덱 확인 UI(`PileofCardUI`/`CheckDeckUI`/`CardViewInPile`), `DiscardCardGA`, `DrawCardFromDiscardPileGA`, 첫 드로우 잠금(`IsFirstDraw`), `LockDiscarding`.
+- **더미 보기 UI 구현됨**: `PileofCardUI`(뽑을/버린 더미 버튼에 장수 표시 + 클릭 시 `CardViewInPile` 목록 패널, 뷰 풀 재사용). `DrawCardsGA`/`PlayCardGA` POST 리액션과 `CardSystem.PilesReset`(static 이벤트, `SetUp` 완료 시) 으로 장수 갱신. **일시정지는 쓰지 않으므로** 패널이 열린 동안 `Interactions.IsPileViewOpen`으로 그리드 입력을 막는다(카드 클릭은 패널 배경 raycast로 차단 — 에디터 설정). 목록은 열 때 1회 채우므로 열린 채 더미가 바뀌면 낡는다(닫았다 열면 갱신).
+- **이식하지 않음**: 호버 확대(`CardViewHoverSystem`), 드래그 사용, 덱 전체 확인 UI(`CheckDeckUI`), `DiscardCardGA`, `DrawCardFromDiscardPileGA`, 첫 드로우 잠금(`IsFirstDraw`), `LockDiscarding`.
 - **임시 값**: 덱(`CardSystem.startingDeck`), 드로우 수(`drawAmount`), 카드 AP 비용(`CardData.APCost`)은 인스펙터/SO 값이며 원작 수치가 아니다.
 - `CardData.Unit`은 `GameSystem.HeroDatas`에 등록된 `HeroData`여야 한다(`HeroView.SetUp`이 `heroData.Hero`를 쓰는데 `Hero`는 `GameSystem.InitializeHero`가 그 배열에 대해서만 만든다).
 - 같은 `HeroData` 카드를 두 장 이상 배치하면 특성 `owner` 덮어쓰기 문제가 있다(05_trait_system.md §3).

@@ -13,6 +13,7 @@ public class Interactions : Singleton<Interactions>
     public bool IsSetUpHero = false;
     public bool IsHeroMoveMode = false;
     public bool IsCardTargetMode = false;
+    public bool IsPileViewOpen = false;
 
     //InputSystem 변수s
     public bool GridSelected { get; private set; } = false;
@@ -44,13 +45,14 @@ public class Interactions : Singleton<Interactions>
     private void Update()
     {
         GridSelected = selectGrid.WasPressedThisFrame()
+                && !IsPileViewOpen
                 && IsInRange(Input.mousePosition);
         CancelUse = cancelUse.WasPressedThisFrame();
     }
 
     void OnSelectGrid()
     {
-        if(IsInRange(Input.mousePosition))
+        if(!IsPileViewOpen && IsInRange(Input.mousePosition))
             SelectGridEvent?.Invoke();
     }
 
