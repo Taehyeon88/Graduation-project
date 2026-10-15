@@ -62,6 +62,24 @@ public class TokenSetup : MonoBehaviour
         grid.GenerateStage();
     }
 
+    //라인마다 기본 배치 칸(baseX)에서 장애물이 없는 첫 칸까지 step 방향으로 이동한 배치 위치 목록 (그리드 밖이면 해당 라인 제외)
+    public List<Vector2Int> CalcSetupPoses(Vector2Int[] obstacles, int baseX, int step)
+    {
+        obstacles ??= Array.Empty<Vector2Int>();
+        List<Vector2Int> poses = new(grid.height);
+
+        for (int y = 0; y < grid.height; y++)
+        {
+            Vector2Int pos = new(baseX, y);
+            while (Array.IndexOf(obstacles, pos) >= 0)
+                pos.x += step;
+
+            if (pos.x < 0 || pos.x >= grid.width) continue;
+            poses.Add(pos);
+        }
+        return poses;
+    }
+
     /// <summary>
     /// 전투 시작시, 모든 몬스터들 비어있는 그리드에 랜덤 배치 함수
     /// </summary>

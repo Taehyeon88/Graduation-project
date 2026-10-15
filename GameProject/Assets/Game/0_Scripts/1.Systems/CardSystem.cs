@@ -137,7 +137,7 @@ public class CardSystem : Singleton<CardSystem>
     private List<Vector2Int> GetPlaceablePoses()
     {
         List<Vector2Int> result = new(10);
-        foreach (var pos in GameSystem.Instance.CurrentStageData.HeroSetupPoses)
+        foreach (var pos in HeroSystem.Instance.SetupPoses)
         {
             if (TokenSystem.Instance.API.IsGridEmpty(pos))
                 result.Add(pos);

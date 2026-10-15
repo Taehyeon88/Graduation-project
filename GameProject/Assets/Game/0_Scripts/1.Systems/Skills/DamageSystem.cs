@@ -26,12 +26,9 @@ public class DamageSystem : Singleton<DamageSystem>
     {
         Sequence attackSeq = null;
 
-        //대상 미지정 공격: 실행 시점의 공격자 정면에서 대상 결정 (없으면 공격 없음)
-        if (dealDamageGA.Targets == null && dealDamageGA.Target == null && dealDamageGA.Caster is CombatantView attacker)
+        //자동 전투 기본 공격: 대상은 Battle()이 예약 시점에 확정, 여기서는 모션만 재생
+        if (dealDamageGA.IsBasicAttack && dealDamageGA.Target != null && dealDamageGA.Caster is CombatantView attacker)
         {
-            dealDamageGA.Target = attacker.GetFrontTarget();
-            if (dealDamageGA.Target == null) yield break;
-
             //기본 공격 모션 1 재생, 타격 시점에 피해 적용
             Vector2Int attackerPos = TokenSystem.Instance.API.GetTokenPosition(attacker);
             Vector2Int targetPos = TokenSystem.Instance.API.GetTokenPosition(dealDamageGA.Target as Token);
@@ -111,18 +108,6 @@ public class DamageSystem : Singleton<DamageSystem>
 
         VisualGridCreator.Instance.RemoveVisualGridById(killGA.Token.gameObject.GetInstanceID());
         yield return TokenSystem.Instance.Main.RemoveToken(killGA.Token);
-
-        //게임 클리어 or 오버 판단
-        if (TokenSystem.Instance.EnemyViews.Count <= 0)
-        {
-            // GameClearGA gameClearGA = new();
-            // ActionSystem.Instance.AddReaction(gameClearGA);
-        }
-        else if (HeroSystem.Instance.HeroViews.Count <= 0)
-        {
-            GameOverGA gameOverGA = new();
-            ActionSystem.Instance.AddReaction(gameOverGA);
-        }
     }
 
     private void PlayDamageVFX(Vector3 position, bool isShacking = true)

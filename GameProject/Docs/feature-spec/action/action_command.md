@@ -23,7 +23,8 @@
 | [`PerformMoveGA`](#performmovega) | 이동 | `MoveSystem` | 경로 전체 이동 예약(칸마다 `MoveGA` 체이닝) |
 | [`KnockBackGA`](#knockbackga) | 이동 | `KnockBackProcessor` | 특정 방향/거리로 넉백, 충돌 시 데미지 |
 | [`DealDamageGA`](#dealdamagega) | 전투 | `DamageSystem` | 데미지 적용의 공통 최종 경로 |
-| [`KillGA`](#killga) | 전투 | `DamageSystem` | 사망 처리(연출 대기 → 토큰 제거 → 승패 판정) |
+| [`KillGA`](#killga) | 전투 | `DamageSystem` | 사망 처리(연출 대기 → 토큰 제거) |
+| [`AttackCoreGA`](#attackcorega) | 전투 | `CoreSystem` | 이동 한계에서 정면이 비면 상대 코어 공격 — 연출 후 코어 HP 차감, 0이면 승패 GA |
 | [`AttackEnemyGA`](#attackenemyga) | 전투 | `AttackEnemyProcessor` | 영웅 근접/원거리 공격(모션 + 데미지) |
 | [`HealGA`](#healga) | 회복/상태 | `HealSystem` | 대상 회복 |
 | [`AddStatusEffectGA`](#addstatuseffectga) | 회복/상태 | `StatusEffectSystem` | 상태이상(ARMOR/POWER 등) 스택 부여 |
@@ -45,7 +46,7 @@
 - **파일**: `2.GameActions/AutoBattleTurnGA.cs`, `AutoBattleGA.cs` (필드 없음)
 - **Performer**: `TurnSystem.AutoBattleTurnGAPerformer`(팝업 → `AutoBattleSystem.CacheCombatants` → `AddReaction(AutoBattleGA)`), `AutoBattleSystem.AutoBattleGAPerformer`(큐 정리 → 동속 주사위 → `unit.Battle()` → 큐가 남으면 `AddReaction(AutoBattleGA)`)
 - **리액션**: `AutoBattleTurnGA` PRE — `TurnSystem`(`currentTurn` 선반영), `HeroSystem.AutoBattleTurnPreReaction`(영웅 "내 턴 종료" SE 감소), `HeroArmor` 퍽(방어막, `AddStatusEffectGA(ARMOR)` 예약). POST — `TurnSystem`이 `TurnGA(Enemy)` 체이닝
-- **파생 액션**: `Battle()`이 `MoveGA`(정면 1칸, AP 소모 없음) → `DealDamageGA(Amount, attacker)`(대상 미지정, 실행 시점에 `DamageSystem`이 `attacker.GetFrontTarget()`으로 결정, 없으면 no-op) 순으로 예약. 정면 공격 시 `DamageSystem`이 기본 공격 모션 1(`Utility.GetBasicAttackTween`: 전진 → 타격 시점에 피해 → 복귀)을 재생
+- **파생 액션**: `Battle()`이 판단은 모두 예약 시점에 끝내고 GA만 예약 — ① 이동 한계 전이고 정면이 비면 `MoveGA`(1칸, AP 소모 없음) ② 이동했다고 가정한 위치의 정면에 적이 있으면 `DealDamageGA(Amount, target, attacker, true)`(대상 확정), 이동 한계인데 정면이 비어 있으면 `AttackCoreGA`. 기본 공격 `DealDamageGA`는 `DamageSystem`이 기본 공격 모션 1(`Utility.GetBasicAttackTween`: 전진 → 타격 시점에 피해 → 복귀)을 재생. `AutoBattleSystem`은 `IsGameClear`/`IsGameOver`가 되면 큐를 비워 종료
 - **트리거 지점**: `TurnEndUI.TurnEnd`에서 `Perform(AutoBattleTurnGA)`
 
 #### `TurnGA`
@@ -117,19 +118,26 @@
 
 #### `DealDamageGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/DealDamageGA.cs` (`IHaveCaster` 구현)
-- **필드**: `float Amount`, `List<IDamageable> Targets` / `IDamageable Target`(`{ get; set; }` — 대상 미지정 공격은 Performer가 실행 시점에 기록), `Token Caster` (생성자 3개: 다중·단일·대상 미지정 `(float amount, CombatantView attacker)`)
-- **Performer**: `DamageSystem.DealDamagePerformer` — 대상 미지정(`Targets`/`Target` 모두 null)이면 `attacker.GetFrontTarget()`으로 대상 결정(없으면 no-op) 후 기본 공격 모션 재생·타격 시점에 피해, 복귀까지 대기. 이후 `DamageCaculator.GetDamage()`로 최종 수치 계산 + 피격 VFX + `target.Damage()` 호출(방어막 소모 처리, 체력 0 이하 시 `KillGA`를 이 액션의 `PostReactions`에 직접 추가)
+- **필드**: `float Amount`, `List<IDamageable> Targets` / `IDamageable Target`(`{ get; set; }`), `Token Caster`, `bool IsBasicAttack`(자동 전투 기본 공격 — 공격 모션 재생) (생성자 3개: 다중·단일·`(float amount, IDamageable target, Token caster, bool isBasicAttack)`)
+- **Performer**: `DamageSystem.DealDamagePerformer` — `IsBasicAttack && Target != null`이면(대상은 `Battle()`이 예약 시점에 확정) 기본 공격 모션 재생·타격 시점에 피해, 복귀까지 대기. 이후 `DamageCaculator.GetDamage()`로 최종 수치 계산 + 피격 VFX + `target.Damage()` 호출(방어막 소모 처리, 체력 0 이하 시 `KillGA`를 이 액션의 `PostReactions`에 직접 추가)
 - **POST 구독자**: `BloodyAxe` 퍽 (조건: `Caster == owner`이고 대상이 있는 공격 — 헛스윙 제외) — 확률 조건 충족 시 `HealGA` 예약(자힐)
 - **파생 액션**: `CombatantView.Damage()` 내부에서 체력 ≤ 0이면 `dealDamageGA.PostReactions.Add((KillGA, null))` — 전역 체이닝이 아니라 **이 인스턴스에 직접 종속**
-- **트리거 지점**: 전투 계열 다수의 공통 최종 경로 — `CombatantView.Battle`(자동 전투, 대상 미지정 생성자), `AttackEnemyGAPerformer`, `ShieldBashGAPerformer`, `ShoulderBashGAPerformer`, `SplashGAPerformer`, `KnockBackGAPerformer`(충돌 시) 등
+- **트리거 지점**: 전투 계열 다수의 공통 최종 경로 — `CombatantView.Battle`(자동 전투, `isBasicAttack: true`), `AttackEnemyGAPerformer`, `ShieldBashGAPerformer`, `ShoulderBashGAPerformer`, `SplashGAPerformer`, `KnockBackGAPerformer`(충돌 시) 등
 - **관련 체인**: §3-2, §3-3
 
 #### `KillGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/KillGA.cs`
 - **필드**: `Token Token`, `Tween Hit_Tween`
-- **Performer**: `DamageSystem.KillGAPerformer` — 피격 흔들림 연출(`Hit_Tween`) 완료 대기 → 비주얼 그리드 정리 → 토큰 제거 → 적 전멸(`TokenSystem.EnemyViews.Count <= 0`)이면 `GameClearGA`, 영웅 전멸이면 `GameOverGA` 체이닝
+- **Performer**: `DamageSystem.KillGAPerformer` — 피격 흔들림 연출(`Hit_Tween`) 완료 대기 → 비주얼 그리드 정리 → 토큰 제거 (승패 판정은 하지 않음 — 코어 HP 기준으로 `AttackCoreGA`가 담당)
 - **트리거 지점**: 전역 `Perform`/`AddReaction`이 아니라, `DealDamageGA` 처리 중 `CombatantView.Damage()`가 체력 ≤ 0일 때 그 `DealDamageGA` 인스턴스의 `PostReactions`에 직접 추가되어서만 실행됨
 - **관련 체인**: §3-2
+
+#### `AttackCoreGA`
+- **파일**: `Assets/Game/0_Scripts/2.GameActions/AttackCoreGA.cs` (`IHaveCaster` 구현)
+- **필드**: `Token Caster` (Performer에서 `as CombatantView`로 변환)
+- **Performer**: `CoreSystem.AttackCoreGAPerformer` — 기본 공격 모션(`Utility.GetBasicAttackTween`) 재생 → 타격 시점에 `Caster.BaseDamage`만큼 상대 코어 HP 차감(영웅이면 적 코어, 적이면 플레이어 코어) → HP 0이면 `GameClearGA`(영웅 공격)/`GameOverGA`(적 공격) 체이닝 → 모션 복귀까지 대기
+- **트리거 지점**: `CombatantView.Battle()`(자동 전투 — 이동 한계에서 정면이 비어 있을 때 `AddReaction`)
+- **관련 체인**: §3-4
 
 #### `AttackEnemyGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/CardEffectRelative/AttackEnemyGA.cs` (`IHaveCaster` 명시적 구현)
@@ -206,20 +214,20 @@
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/GameClearGA.cs`
 - **필드**: 없음
 - **Performer**: `GameSystem.GameClearPerformer` — `IsGameClear = true`, 보상 스킬 3장 산출(`RewardSystem`)
-- **트리거 지점**: `DamageSystem.KillGAPerformer`(적 전멸 판정 시) — **현재 워킹트리 기준 주석 처리되어 비활성 상태**(`DamageSystem.cs:97-98`). Performer/등록은 살아있지만 이 경로에서 더 이상 호출되지 않음.
+- **트리거 지점**: `CoreSystem.AttackCoreGAPerformer`(적 코어 HP가 0이 될 때 `AddReaction`)
 
 #### `GameOverGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/GameOverGA.cs`
 - **필드**: 없음
 - **Performer**: `GameSystem.GameOverPerformer` — `IsGameOver = true`, 게임오버 UI 표시
-- **트리거 지점**: `DamageSystem.KillGAPerformer`(영웅 전멸 판정 시)
+- **트리거 지점**: `CoreSystem.AttackCoreGAPerformer`(플레이어 코어 HP가 0이 될 때 `AddReaction`)
 
 ### 2-10. 웨이브
 
 #### `SpawnWaveGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/SpawnWaveGA.cs`
 - **필드**: 없음 — 트리거 전용 마커
-- **Performer**: `WaveSystem.SpawnWaveGAPerformer` — 다음 웨이브 인덱스(`nextWaveIndex`)만큼 `enemyDatas`에서 몬스터를 골라 `TokenMainAPI.AddEnemys`로 생성, `Remain_wave_count`/`nextWaveIndex`/`turnsUntilNextWave` 갱신
+- **Performer**: `WaveSystem.SpawnWaveGAPerformer` — 다음 웨이브 몬스터를 `enemyDatas`에서 골라 `BuildSpawn`으로 생성 위치 결정(`SpawnLines`의 라인 + `EnemySystem.TryGetSetupX`의 적 배치 x, 배치 위치가 없거나 점유/중복이면 생성 생략) 후 `TokenMainAPI.AddEnemys`로 생성, `Remain_wave_count`/`nextWaveIndex`/`turnsUntilNextWave` 갱신
 - **PRE/POST 구독자**: 없음
 - **파생 액션**: 없음
 - **트리거 지점**: `WaveSystem.TurnGAPreReaction`(`TurnGA` PRE 구독, 조건: `Type == Player`)에서 웨이브 카운트다운이 0 이하일 때 `AddReaction(new SpawnWaveGA())`
@@ -265,8 +273,7 @@ TurnGA(Enemy)
                     ├─ (POST 구독) BloodyAxe 퍽: 조건 충족 시 AddReaction(HealGA)
                     └─ target.Damage() 내부에서 체력<=0이면
                          dealDamageGA.PostReactions.Add(KillGA)   ← 인스턴스 직접 종속
-                              └─ DamageSystem.KillGAPerformer
-                                   └─ AddReaction(GameClearGA | GameOverGA)
+                              └─ DamageSystem.KillGAPerformer (토큰 제거)
 ```
 
 ### 3-3. 카드 콤보 체인 — 두 가지 후속 연결 패턴
@@ -288,6 +295,18 @@ ShieldBashProcessor.ShieldBashGAPerformer
 SplashProcessor.SplashGAPerformer도 동일 패턴:
  ├─ AddReaction(DealDamageGA) → dealDamageGA(직격)
  └─ dealDamageGA.PostReactions.Add(DealDamageGA(스플래시))
+```
+
+### 3-4. 자동 전투 / 코어 공격 체인
+
+```
+AutoBattleGA → AutoBattleSystem.AutoBattleGAPerformer → unit.Battle()  (판단은 여기서, 예약만 GA로)
+ ├─ AddReaction(MoveGA)                              [이동 한계 전 + 정면 빔]
+ ├─ AddReaction(DealDamageGA(isBasicAttack: true))   [정면에 적]
+ │    └─ (3-2와 동일: Damage() → KillGA 종속)
+ └─ AddReaction(AttackCoreGA)                        [이동 한계 + 정면 빔]
+      └─ CoreSystem.AttackCoreGAPerformer: 모션 → 코어 HP 차감
+           └─ HP 0이면 AddReaction(GameClearGA | GameOverGA)
 ```
 
 ## 4. 문서 유지보수 규칙

@@ -12,12 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e590785f16a7254fac52abcb776de1d, type: 3}
   m_Name: TestStage
   m_EditorClassIdentifier: Assembly-CSharp::StageData
-  <Chapter>k__BackingField: 1
   <waveData>k__BackingField: {fileID: 11400000, guid: bf15f18d7a5abbf4a8990cabc320c74c, type: 2}
-  <HeroSetupPoses>k__BackingField:
+  <ObstaclePositions>k__BackingField:
   - {x: 0, y: 1}
-  - {x: 0, y: 2}
-  - {x: 0, y: 3}
-  <R_weight>k__BackingField: 5
-  <IsBoss>k__BackingField: 0
+  <PlayerCoreHealth>k__BackingField: 10
+  <EnemyCoreHealth>k__BackingField: 10
   <StageBGMId>k__BackingField: 132

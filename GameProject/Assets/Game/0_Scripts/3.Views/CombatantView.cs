@@ -85,27 +85,32 @@ public class CombatantView : Token, IDamageable
     protected virtual Vector2Int Forward => Vector2Int.zero;   //정면 방향 (진영별 오버라이드)
     protected virtual bool IsTarget(Token token) => false;     //공격 대상 여부 (진영별 오버라이드)
 
-    //자동 전투 공용 패턴: 정면이 비어 있으면 1칸 이동 예약 → 공격 예약 (대상은 공격 실행 시점의 정면에서 결정)
+    protected virtual int GetMoveLimitX(int line) => 0;        //해당 라인에서 이동 가능한 마지막 열 (상대 배치 위치 직전, 진영별 오버라이드)
+
+    private bool IsAtMoveLimit(Vector2Int pos) => (GetMoveLimitX(pos.y) - pos.x) * Forward.x <= 0;
+
+    //자동 전투 공용 패턴 (판단은 모두 여기서, 예약만 GA로)
+    //1) 이동 한계 전이고 정면이 비어 있으면 1칸 이동 예약 2) 이동했다고 가정한 위치의 정면에 적이 있으면 공격, 이동 한계인데 정면이 비어 있으면 상대 코어 공격
     public virtual IEnumerator Battle()
     {
         if (Forward == Vector2Int.zero) yield break;
 
         TokenServiceAPI api = TokenSystem.Instance.API;
-        Vector2Int front = api.GetTokenPosition(this) + Forward;
-        if (api.IsBound(front) && api.IsGridEmpty(front))
+        Vector2Int pos = api.GetTokenPosition(this);
+        Vector2Int front = pos + Forward;
+
+        if (!IsAtMoveLimit(pos) && api.IsBound(front) && api.IsGridEmpty(front))
+        {
             ActionSystem.Instance.AddReaction(new MoveGA(this, front));
+            pos = front;
+            front = pos + Forward;
+        }
 
-        ActionSystem.Instance.AddReaction(new DealDamageGA(BaseDamage, this));
-    }
-
-    //현재 위치 기준 정면의 공격 대상 (없으면 null)
-    public IDamageable GetFrontTarget()
-    {
-        TokenServiceAPI api = TokenSystem.Instance.API;
-        Token frontToken = api.GetTokenByPosition(api.GetTokenPosition(this) + Forward);
+        Token frontToken = api.GetTokenByPosition(front);
         if (frontToken != null && IsTarget(frontToken) && frontToken is IDamageable target)
-            return target;
-        return null;
+            ActionSystem.Instance.AddReaction(new DealDamageGA(BaseDamage, target, this, true));
+        else if (IsAtMoveLimit(pos) && api.IsBound(front) && api.IsGridEmpty(front))
+            ActionSystem.Instance.AddReaction(new AttackCoreGA(this));
     }
 
     private void UpdateHealthUI()

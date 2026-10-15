@@ -32,7 +32,7 @@ Assets/Game/
 │  └─ CardEffectRelative/  #   분류용
 ├─ 3.Views/                # CombatantView/HeroView/EnemyView 등 토큰의 뷰 레이어
 ├─ 4.Creators/             # TokenCreator/ProjectionCreator 등 생성 담당
-├─ 5.Data/                 # ScriptableObject 데이터 클래스 정의(~Data 접미사, 11개) — 실 자산은 1_Datas/(2절)
+├─ 5.Data/                 # ScriptableObject 데이터 클래스 정의(~Data 접미사, 12개) — 실 자산은 1_Datas/(2절)
 ├─ Effects/                # Effect(Models/Effect.cs) 서브클래스 — SkillAbility.Effects에 담기는 데이터+로직 홀더
 │  └─ CloseRange_Attack/   #   분류용(ShieldBashEffect 등)
 ├─ Enums/                  # 열거형 13개
@@ -48,7 +48,7 @@ Assets/Game/
 │  └─ Modes/               #   범위·타겟 선정 전략(RangeMode/TargetMode)
 ├─ Perks/                  # Perk(Models/Perk.cs) 서브클래스: BloodyAxe, HeroArmor, MuscleTrophy
 ├─ SubSystems/             # Singleton 파사드가 위임하는 실행 컴포넌트(TokenMainAPI/TokenServiceAPI/TokenSetup, GridSelector, TooltipTrigger)
-├─ UI/                     # 화면별 UI 컴포넌트(~UI 접미사, SkillsUI/StatusEffectsUI/TurnPopUpUI 등) + AudioMixerController
+├─ UI/                     # 화면별 UI 컴포넌트(~UI 접미사, SkillsUI/StatusEffectsUI/TurnPopUpUI/CoreUI 등) + AudioMixerController
 └─ GameSystem.cs           # 메타 상태(골드/스테이지/영웅 로스터) 전담 Singleton(상세는 convention.md 6절)
 ```
 
@@ -63,7 +63,6 @@ Assets/Game/
 | `2.Skills/` | 3 | `SkillData` | 타격/사격/방어 |
 | `3.Stages/` | 1 | `StageData` | TestStage |
 | `3.Stages/Waves/` | 1 | `WaveData` | Simple_Wave |
-| `3.Stages/Waves/WaveCores/` | 1 | `WaveCoreData` | SimpleCore |
 | `4.StatusEffects/` | 2 | `StatusEffectData` | Armor, Power |
 | `6.VisualGrids/` | 19 | `VisualGridData` | 그리드 하이라이트 전부 |
 | `7.Perks/` | 3 | `PerkData` | 피묻은 도끼 / 근육 트로피 / 용사의 갑옷 |
@@ -76,16 +75,16 @@ Assets/Game/
 - **실제 씬**(루트): `GameDemoScene.unity`, `StartScene.unity`
 - **개발·테스트용**(`DevelopScene/`, 4개): `MapTestScene.unity`, `New Scene.unity`, `SpriteTestScene.unity`, `UIScene.unity`
 
-## 4. `3_Prefabs/` — 프리팹 (35개)
+## 4. `3_Prefabs/` — 프리팹 (33개)
 
 | 폴더 | 개수 | 파일 |
 |---|---|---|
 | (루트) | 7 | `DataSystem`, `GameSystem`, `PlayerInput`, `SplinePrefab`, `TESTPREFAB`, `VisualGird`, `--- GAMEMASTER ---`(프로젝트 창 구분용 더미로 보임) |
-| `Isometrics/` | 8 | `AoE_BurningEmbers`, `AoE_EmblemOfSanctuary`, `AoE_PoisonousSwamp`, `AoE_PoolOfLight`, `AoE_SpiderwebTrap`, `Grid_Tile`, `TestWorld_1`, `TileVisual` |
+| `Isometrics/` | 4 | `Grid_Tile`, `Side_Tile`, `TestWorld_1`, `TileVisual` |
 | `Models/` | 3 | `EnemyModel`, `HeroModel`, `WallModel` |
 | `Projections/` | 2 | `RatGeneral_Stone`, `Skeleton_BoneArrow` |
 | `UI/` | 6 | `DisPlayUI`, `EnemyUI`, `PerkUI`, `SettingUI`, `StatusEffectUI`, `StatusEffectUIAtWorld` |
-| `Views/` | 9 | `ArrowView`, `CombatantViewBase`, `EnemyView`, `HeroPreView`, `HeroView`, `PopUp_Text_View`, `ProjectionView`, `SkillView`, `WaveCoreView` |
+| `Views/` | 11 | `ArrowView`, `CardView`, `CardViewInPile`, `CombatantViewBase`, `CoreView`, `EnemyView`, `HeroPreView`, `HeroView`, `PopUp_Text_View`, `ProjectionView`, `SkillView` |
 
 ## 5. `4_Medias/` — 스프라이트/이미지 (98개 png)
 

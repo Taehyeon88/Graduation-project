@@ -25,14 +25,22 @@ public class MatchSetupSystem : MonoBehaviour
         TokenSystem.Instance.Setup.SetUpStageMap();
         //3.스테이지 기물 배치(잠깐 패스)
 
+        //3.5 진영별 라인 배치 위치 설정 (장애물이 기본 배치 칸에 있으면 한 칸 앞으로)
+        TokenSetup tokenSetup = TokenSystem.Instance.Setup;
+        HeroSystem.Instance.SetUp(tokenSetup.CalcSetupPoses(stageData.ObstaclePositions, 0, 1));
+        EnemySystem.Instance.SetUp(tokenSetup.CalcSetupPoses(stageData.ObstaclePositions, TokenSystem.Instance.gridWidth - 1, -1));
+
         //4.몬스터 및 웨이브 핵 배치
         WaveSystem.Instance.SetUp(
             stageData.waveData.EnemyDatas.ToArray(),
             stageData.waveData.WavePerEnemyCount.ToArray(),
             stageData.waveData.WaveTurnIntervals.ToArray(),
-            stageData.waveData.SpawnPositions
+            stageData.waveData.SpawnLines
             );
         WaveSystem.Instance.SetUpFirstEnemys();
+
+        //4.4 플레이어/적 코어 체력 설정
+        CoreSystem.Instance.SetUp(stageData);
 
         //4.5 영웅 아이템 정보 UI 설정
         allPerksDisplayUI.SetUp(heroDatas.ToArray());

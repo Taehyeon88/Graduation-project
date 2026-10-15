@@ -26,7 +26,10 @@ public class HeroSystem : Singleton<HeroSystem>
         }
     }
 
+    public IReadOnlyList<Vector2Int> SetupPoses => setupPoses;   //영웅 배치 가능 위치 (라인당 1개, 전투 중 불변)
+
     private HeroView currentHero;
+    private List<Vector2Int> setupPoses = new();
 
     private void OnEnable()
     {
@@ -38,6 +41,24 @@ public class HeroSystem : Singleton<HeroSystem>
     }
 
     //Publics
+    public void SetUp(List<Vector2Int> poses)
+    {
+        setupPoses = poses;
+    }
+
+    //해당 라인의 배치 위치 x (없으면 false)
+    public bool TryGetSetupX(int line, out int x)
+    {
+        foreach (var pos in setupPoses)
+        {
+            if (pos.y != line) continue;
+            x = pos.x;
+            return true;
+        }
+        x = 0;
+        return false;
+    }
+
     public IEnumerator PlayHeroTurnPerformer()
     {
         Debug.Log("플레이어 턴 시작");

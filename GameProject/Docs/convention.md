@@ -56,7 +56,7 @@
 - `[Header("...")]`로 필드를 그룹핑한다. 헤더 텍스트는 한글/영문 혼용. 예: `SoundSystem.cs:10,18`(`"BGM,SFX Setting"`, `"MixerGroup"`), `SkillSystem.cs:9,13`.
 - 필드 케이싱은 camelCase로 통일한다 (`[field: SerializeField] public X Prop { get; private set; }` 패턴만 예외로 PascalCase 유지). `hero_moveRange`/`hero_mover`/`reserved_hero_moves`(`MoveSystem.cs`), `reserved_Skills`/`current_Selected_Skill`/`start_Switch_Skill`(`SkillSystem.cs`) 등 순수 private 필드의 언더스코어 위반은 정리됨.
   - **(남은 예외)** `[SerializeField]`/`public` 필드 중 일부는 아직 언더스코어가 섞여 있다: `upSkill_Distance`(`SkillSystem.cs`), `bgm_Source_Count`/`sfx_Source_Count`(`SoundSystem.cs`), `selected_Hero_UI`(`HeroSystem.cs`, public) 등. 유니티가 필드명으로 씬/프리팹/에셋에 값을 직렬화하기 때문에, 이름을 바꾸면 기존 인스펙터 참조가 끊길 위험이 있어 `[FormerlySerializedAs]` 적용 여부를 정한 뒤 별도로 정리한다.
-- `GameAction`에서 "누가 시전했는가"를 나타내는 프로퍼티명은 `Caster`로 통일하고 `IHaveCaster`를 구현한다. 캐스터+대상이 모두 있는 전투 계열 GA 10개(`DealDamageGA`, `PlaySkillGA`, `PerformEffectGA`, `AttackEnemyGA`, `ShoulderBashGA`, `ShieldBashGA`, `SplashGA`, `KnockBackGA`, `HealGA`, `AddStatusEffectGA`) 전부 적용됐다.
+- `GameAction`에서 "누가 시전했는가"를 나타내는 프로퍼티명은 `Caster`로 통일하고 `IHaveCaster`를 구현한다. 캐스터+대상이 모두 있는 전투 계열 GA 11개(`DealDamageGA`, `PlaySkillGA`, `PerformEffectGA`, `AttackEnemyGA`, `AttackCoreGA`, `ShoulderBashGA`, `ShieldBashGA`, `SplashGA`, `KnockBackGA`, `HealGA`, `AddStatusEffectGA`) 전부 적용됐다.
   - `IHaveCaster`는 `Token Caster { get; }`를 요구하지만, 캐스터가 항상 특정 구체 타입(예: 스킬 계열은 `HeroView`, 콤보 계열은 `CombatantView`)인 GA는 공개 프로퍼티를 그 구체 타입으로 유지하고 `IHaveCaster`는 **명시적 인터페이스 구현**(`Token IHaveCaster.Caster => Caster;`)으로 만족시킨다. 실제로 몬스터/영웅 양쪽에서 캐스터가 올 수 있어 `Token` 다형성이 필요한 `DealDamageGA`만 공개 프로퍼티 자체가 `Token`이다.
 
 <a id="sec-3"></a>
@@ -205,8 +205,8 @@ public interface IDamageable { public void Damage(int amount, DealDamageGA dealD
 public interface IHaveDamage { float Damage_Amount { get; } }
 ```
 
-- **`IHaveCaster`는 전투 중 캐스터와 대상이 모두 있는 GA에는 무조건 적용한다.** 새 GA를 추가할 때도 이 조건에 해당하면 예외 없이 구현한다(현재 10개: `DealDamageGA`, `PlaySkillGA`, `PerformEffectGA`, `AttackEnemyGA`, `ShoulderBashGA`, `ShieldBashGA`, `SplashGA`, `KnockBackGA`, `HealGA`, `AddStatusEffectGA`). `TurnGA`, `MoveGA`, `SpendAPGA` 등 캐스터 개념이 없는 순수 턴/자원/이동 GA는 구현하지 않는다.
-- **`IDamageable`은 피격이 있는 모든 `Token` 클래스가 상속받는다.** 현재 `CombatantView`(→`HeroView`/`EnemyView`가 상속으로 자동 충족)와 `WaveCoreView`가 구현한다. `HeroPreview`처럼 전투에서 피격되지 않는 `Token` 서브클래스는 구현하지 않는다.
+- **`IHaveCaster`는 전투 중 캐스터와 대상이 모두 있는 GA에는 무조건 적용한다.** 새 GA를 추가할 때도 이 조건에 해당하면 예외 없이 구현한다(현재 11개: `DealDamageGA`, `PlaySkillGA`, `PerformEffectGA`, `AttackEnemyGA`, `AttackCoreGA`, `ShoulderBashGA`, `ShieldBashGA`, `SplashGA`, `KnockBackGA`, `HealGA`, `AddStatusEffectGA`). `TurnGA`, `MoveGA`, `SpendAPGA` 등 캐스터 개념이 없는 순수 턴/자원/이동 GA는 구현하지 않는다.
+- **`IDamageable`은 피격이 있는 모든 `Token` 클래스가 상속받는다.** 현재 `CombatantView`(→`HeroView`/`EnemyView`가 상속으로 자동 충족)가 구현한다. `HeroPreview`처럼 전투에서 피격되지 않는 `Token` 서브클래스는 구현하지 않는다.
 - `IDamageable`/`HeroView`/`Token` 등은 다형성 디스패치보다 **런타임 `as`/`is` 패턴 매칭**으로 다뤄지는 경우가 많다:
   ```csharp
   // Utility.cs:243-247
@@ -234,7 +234,7 @@ public interface IHaveDamage { float Damage_Amount { get; } }
   ...
   AttackEnemyGA attackEnemyGA = new(targetpoes, amount, count, myView, animationType);
   ```
-- 현재 위반 사례(이번 작업에서 수정하지 않음, 11절 참고): `APSystem.MaxAP`/`MPSystem.MaxMP`(자동 프로퍼티 초기값 `= 3`), `KnockBackProcessor.crachDamage`(`const int` `= 1`), `SkillSystem`에서 모든 스킬의 AP 코스트가 `SpendAPGA` 기본 파라미터 `1`로 고정(`SkillData`/`SkillAbility`엔 코스트 필드 자체가 없음), `RewardSystem`의 보상 등급 확률(`0.7f`), `WaveSystem`의 웨이브 코어 인접 스폰 반경(`distance <= 2`).
+- 현재 위반 사례(이번 작업에서 수정하지 않음, 11절 참고): `APSystem.MaxAP`/`MPSystem.MaxMP`(자동 프로퍼티 초기값 `= 3`), `KnockBackProcessor.crachDamage`(`const int` `= 1`), `SkillSystem`에서 모든 스킬의 AP 코스트가 `SpendAPGA` 기본 파라미터 `1`로 고정(`SkillData`/`SkillAbility`엔 코스트 필드 자체가 없음), `RewardSystem`의 보상 등급 확률(`0.7f`).
 
 <a id="sec-9"></a>
 ## 9. 시그니처(열거형)
@@ -265,7 +265,7 @@ public interface IHaveDamage { float Damage_Amount { get; } }
 <a id="sec-10"></a>
 ## 10. SO 데이터 형태
 
-`Assets/Game/0_Scripts/5.Data/`(스크립트 정의, `~Data` 접미사 11개) ↔ `Assets/Game/1_Datas/`(실제 `.asset` 인스턴스, `1.Enemies/`·`1.Heroes/`·`2.Skills/`·`3.Stages/`·`4.StatusEffects/`·`6.VisualGrids/` 등 타입별 하위 폴더)로 스크립트 폴더와 자산 폴더가 분리되어 있다. `Resources.LoadAll`/Addressables는 쓰지 않는다 — `GameSystem`이 배열을 `[SerializeField]`로 직접 들고, 하위 System은 `GameSystem.Instance.HeroDatas`/`CurrentStageData`로 참조한다(`GameSystem.cs:16,20,24`). `TokenCreator`는 공통 베이스 `TokenData`를 받아 `as HeroData`/`as EnemyData`로 다운캐스트한다.
+`Assets/Game/0_Scripts/5.Data/`(스크립트 정의, `~Data` 접미사 12개) ↔ `Assets/Game/1_Datas/`(실제 `.asset` 인스턴스, `1.Enemies/`·`1.Heroes/`·`2.Skills/`·`3.Stages/`·`4.StatusEffects/`·`6.VisualGrids/` 등 타입별 하위 폴더)로 스크립트 폴더와 자산 폴더가 분리되어 있다. `Resources.LoadAll`/Addressables는 쓰지 않는다 — `GameSystem`이 배열을 `[SerializeField]`로 직접 들고, 하위 System은 `GameSystem.Instance.HeroDatas`/`CurrentStageData`로 참조한다(`GameSystem.cs:16,20,24`). `TokenCreator`는 공통 베이스 `TokenData`를 받아 `as HeroData`/`as EnemyData`로 다운캐스트한다.
 
 - **필드 패턴:** `[CreateAssetMenu(menuName = "Data/...")]` + `[field: SerializeField] public X Prop { get; private set; }`.
   ```csharp
@@ -277,7 +277,7 @@ public interface IHaveDamage { float Damage_Amount { get; } }
       [field: SerializeField] public int MovePoint { get; private set; }
   }
   ```
-- `~Data` 클래스 목록: `TokenData`(공통 베이스), `HeroData`/`EnemyData`/`WaveCoreData`(→ `TokenData` 상속), `SkillData`, `PerkData`, `StageData`, `WaveData`, `StatusEffectData`, `SoundData`, `VisualGridData`(전부 `5.Data/`).
+- `~Data` 클래스 목록: `TokenData`(공통 베이스), `CombatantData`(→ `TokenData` 상속, 추상) → `HeroData`/`EnemyData`, `CardData`, `SkillData`, `PerkData`, `StageData`, `WaveData`, `StatusEffectData`, `SoundData`, `VisualGridData`(전부 `5.Data/`).
 - **SO는 데이터만 들고, 동작은 넣지 않는다.** 예외: `VisualGridData.cs`는 `GetVGLayerOrder()`와 중첩 `abstract class VisualGridType`(`FillType`/`BorderType`/`SymbolType`)에 실제 로직을 갖고 있다 — 이번 작업에서 리팩터링하지 않고 11절에 위반으로만 기록한다.
 
 <a id="sec-11"></a>
@@ -287,7 +287,7 @@ public interface IHaveDamage { float Damage_Amount { get; } }
 
 | # | 규약 | 위반 파일:라인 |
 |---|---|---|
-| 1 | (8절) 밸런싱 수치는 SO/`[SerializeField]`로 노출, 리터럴 금지 | `APSystem.cs:7`(`MaxAP = 3`), `MPSystem.cs:7`(`MaxMP = 3`), `KnockBackProcessor.cs:8`(`crachDamage = 1`), `SkillSystem.cs:275`(스킬 AP 코스트 미데이터화), `RewardSystem.cs:24`(`0.7f`), `WaveSystem.cs:43`(`distance <= 2`) |
+| 1 | (8절) 밸런싱 수치는 SO/`[SerializeField]`로 노출, 리터럴 금지 | `APSystem.cs:7`(`MaxAP = 3`), `MPSystem.cs:7`(`MaxMP = 3`), `KnockBackProcessor.cs:8`(`crachDamage = 1`), `SkillSystem.cs:275`(스킬 AP 코스트 미데이터화), `RewardSystem.cs:24`(`0.7f`) |
 | 2 | (9절) 열거형은 접두사 없이 `~Type`/`~Mode`/`~State` 접미사 + PascalCase | `ETargetModeType`만 `E` 접두사 (나머지 17개엔 없음) |
 | 3 | (9절) 열거형 멤버는 PascalCase | `StatusEffectType`/`ETargetModeType`/`HeroAnimationType`는 멤버가 ALL_CAPS |
 | 4 | (9절) 열거형은 실제로 분기에 쓰여야 함(정리 후보) | `CardSubType`, `ETargetModeType`, `CardAbilityType`, `DamageFormulaType`, `AudioEditorType`, `SEMachanicsType` — 소비하는 코드 없음 |

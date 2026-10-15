@@ -34,8 +34,8 @@ public class AutoBattleSystem : Singleton<AutoBattleSystem>
     {
         battleQueue.RemoveAll(c => c == null || !TokenSystem.Instance.API.IsTokenExist(c));   //제거된 유닛 정리
 
-        //한쪽이 전멸하면 자동 전투 종료
-        if (TokenSystem.Instance.HeroViews.Count <= 0 || TokenSystem.Instance.EnemyViews.Count <= 0)
+        //코어가 파괴되어 승패가 정해지면 자동 전투 종료
+        if (GameSystem.Instance.IsGameClear || GameSystem.Instance.IsGameOver)
             battleQueue.Clear();
         if (battleQueue.Count <= 0) yield break;
 
