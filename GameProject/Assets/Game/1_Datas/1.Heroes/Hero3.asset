@@ -19,7 +19,7 @@ MonoBehaviour:
   <Health>k__BackingField: 25
   <Damage>k__BackingField: 2
   <Speed>k__BackingField: 1
-  <Perks>k__BackingField:
+  <Traits>k__BackingField:
   - {fileID: 11400000, guid: 8a470f362ce785846b7cfa79d261c35f, type: 2}
   <heroColor>k__BackingField: {r: 1, g: 0.9254902, b: 0.6, a: 1}
   <simbolIcon>k__BackingField: {fileID: 21300000, guid: 73bd18226e6eb394b91cc0239baa34e1, type: 3}

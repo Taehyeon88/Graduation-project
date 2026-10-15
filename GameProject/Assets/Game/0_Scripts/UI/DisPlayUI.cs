@@ -9,30 +9,30 @@ public class DisPlayUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     [SerializeField] private Sprite[] iconSlots;
 
     private Image slotImage;
-    private PerkItem perk;
+    private Trait trait;
     private RectTransform rectTransform;
 
-    public void SetUp(PerkItem perkItem)
+    public void SetUp(Trait trait)
     {
         slotImage = GetComponent<Image>();
         int r_int = UnityEngine.Random.Range(0, iconSlots.Length);
         slotImage.sprite = iconSlots[r_int];
 
-        iconImage.sprite = perkItem.Image;
-        this.perk = perkItem;
+        iconImage.sprite = trait.Image;
+        this.trait = trait;
         rectTransform = GetComponent<RectTransform>();
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if(perk == null) return;
+        if(trait == null) return;
 
-        TooltipSystem.Instance.Show(rectTransform, perk.Description, perk.Title, true);
+        TooltipSystem.Instance.Show(rectTransform, trait.Description, trait.Title, true);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (perk == null) return;
+        if (trait == null) return;
 
         TooltipSystem.Instance.Hide();
     }

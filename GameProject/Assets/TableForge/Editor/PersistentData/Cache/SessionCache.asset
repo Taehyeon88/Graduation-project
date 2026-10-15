@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: TableForge.Editor::TableForge.Editor.UI.SessionCacheData
   openTabs:
     values:
-    - {fileID: 11400000, guid: 577ed11305213684fb172a31ec9d0290, type: 2}
+    - {fileID: 11400000, guid: 806fb1af56cc6024f93c9de7d82c75a0, type: 2}
+    - {fileID: 11400000, guid: 54c7c30e313fe204aa985dc0a4a46149, type: 2}

@@ -34,21 +34,21 @@ public class CombatantView : Token, IDamageable
         }
     }
 
-    public const int MaxPerkCount = 2;   //유닛당 특성 최대 개수
+    public const int MaxTraitCount = 2;   //유닛당 특성 최대 개수
 
     public int BaseDamage { get; private set; }   //공격력 (IDamageable.Damage 메서드와 이름이 겹쳐 BaseDamage로 노출)
     public int Speed { get; private set; }
-    public IReadOnlyList<PerkItem> Perks => perks;
+    public IReadOnlyList<Trait> Traits => traits;
 
     private int maxHealth;
     private int currentHealth;
-    private readonly List<PerkItem> perks = new();
+    private readonly List<Trait> traits = new();
 
     private void OnDisable()
     {
-        foreach (var perk in perks)
+        foreach (var trait in traits)
         {
-            perk.OnRemove();
+            trait.OnRemove();
         }
     }
 
@@ -59,26 +59,26 @@ public class CombatantView : Token, IDamageable
         BaseDamage = data.Damage;
         Speed = data.Speed;
         SetUpBaseBase(data);
-        SetUpPerks(data);
+        SetUpTraits(data);
     }
 
-    //특성 구독 시작 (최대 개수 초과 시 앞의 MaxPerkCount개만 사용)
-    private void SetUpPerks(CombatantData data)
+    //특성 구독 시작 (최대 개수 초과 시 앞의 MaxTraitCount개만 사용)
+    private void SetUpTraits(CombatantData data)
     {
-        perks.Clear();
-        if (data.Perks == null) return;
+        traits.Clear();
+        if (data.Traits == null) return;
 
-        if (data.Perks.Count > MaxPerkCount)
-            Debug.LogError($"{data.name}: 특성은 최대 {MaxPerkCount}개까지 가능합니다. (현재 {data.Perks.Count}개) 앞의 {MaxPerkCount}개만 사용합니다.");
+        if (data.Traits.Count > MaxTraitCount)
+            Debug.LogError($"{data.name}: 특성은 최대 {MaxTraitCount}개까지 가능합니다. (현재 {data.Traits.Count}개) 앞의 {MaxTraitCount}개만 사용합니다.");
 
-        for (int i = 0; i < Mathf.Min(data.Perks.Count, MaxPerkCount); i++)
+        for (int i = 0; i < Mathf.Min(data.Traits.Count, MaxTraitCount); i++)
         {
-            if (data.Perks[i] == null) continue;
+            if (data.Traits[i] == null) continue;
 
-            PerkItem perk = new(data.Perks[i]);
-            perk.SetOwner(this);
-            perk.OnAdd();
-            perks.Add(perk);
+            Trait trait = new(data.Traits[i]);
+            trait.SetOwner(this);
+            trait.OnAdd();
+            traits.Add(trait);
         }
     }
 
