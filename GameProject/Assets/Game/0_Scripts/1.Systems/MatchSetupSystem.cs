@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +30,7 @@ public class MatchSetupSystem : MonoBehaviour
             stageData.waveData.EnemyDatas.ToArray(),
             stageData.waveData.WavePerEnemyCount.ToArray(),
             stageData.waveData.WaveTurnIntervals.ToArray(),
-            stageData.waveData.WaveCoreData
+            stageData.waveData.SpawnPositions
             );
         WaveSystem.Instance.SetUpFirstEnemys();
 

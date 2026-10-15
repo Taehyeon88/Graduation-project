@@ -1,15 +1,10 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public static class DamageCaculator
 {
     public static int GetDamage(float baseDamage, CombatantView attacker, IDamageable target)
     {
         float damage = baseDamage;
-
-        if (target != null && target is WaveCoreView)
-        {
-            return 1;   //웨이브 코어는 무조건 1 피해
-        }
 
         if (attacker != null)
         {

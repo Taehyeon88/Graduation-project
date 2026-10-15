@@ -80,7 +80,7 @@ private List<Vector2Int> remainCells = new();     //비어있는 셀 목록
 
 - **순환 참조 2곳**: `TokenGrid.CanSetExceptionToken()` → `TokenSystem.Instance.API.GetTokenByPosition()` 역참조. `TokenServiceAPI`가 위임하는 `UtilityBFS`(static)도 `TokenSystem.Instance.API`/`gridWidth`/`gridHeight`를 다시 호출한다 — 계층이 완전히 한 방향으로만 흐르지 않는다.
 - **`TokenSystem.SelectedToken`은 죽은 프로퍼티다.** `private set`인데 프로젝트 전체에서 이 값을 설정하는 코드가 없다. 실제 "선택된 영웅" 상태는 `HeroSystem.CurrentHero`(설정: `GridSelector`의 그리드 클릭 처리)가 전담한다.
-- **`WaveCoreView`는 `CombatantView`를 상속하지 않고 `IDamageable`을 독립적으로 구현한다.** HP 차감/피격 연출 로직이 `CombatantView.Damage()`와 사실상 중복되어 있고, 코어 체력이 0 이하가 되어도 `Debug.Log("게임 승리")`만 호출할 뿐 실제 게임 종료 처리(`GameClearGA` 등)로 이어지지 않는 미완성 상태다.
+- **(제거됨 — 웨이브 코어 삭제) `WaveCoreView`는 `CombatantView`를 상속하지 않고 `IDamageable`을 독립적으로 구현한다.** HP 차감/피격 연출 로직이 `CombatantView.Damage()`와 사실상 중복되어 있고, 코어 체력이 0 이하가 되어도 `Debug.Log("게임 승리")`만 호출할 뿐 실제 게임 종료 처리(`GameClearGA` 등)로 이어지지 않는 미완성 상태다.
 - **`TokenMainAPI.MoveToken`의 `useMovedPath` 파라미터는 시그니처에만 있고 메서드 본문에서 전혀 쓰이지 않는다.**
 - **`TokenMainAPI.AddToken`은 현재 외부 호출자가 없다** — "게임 진행 중 토큰 추가" 용도로 예비되어 있으나 아직 어떤 시스템도 사용하지 않는다.
 - **`RemoveToken`(코루틴, 연출 O) vs `RemoveToken2`(즉시, 연출 X)** 구분에 주의한다 — 후자는 주석상 "CombatantView가 아닌 것들의 제거" 용도로 만들어졌다.
