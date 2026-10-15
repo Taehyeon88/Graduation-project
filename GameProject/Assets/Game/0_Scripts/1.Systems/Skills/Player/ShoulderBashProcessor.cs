@@ -44,10 +44,6 @@ public class ShoulderBashProcessor : MonoBehaviour
                 KnockBackGA knockBackGA = new(heroView, shoulderBashGA.Distance, attackPos, (path[0] - currentPos));
                 ActionSystem.Instance.AddReaction(knockBackGA);
             }
-            else
-            {
-                Debug.Log("대상이 존재하지 않음");
-            }
         }
         yield return null;
     }

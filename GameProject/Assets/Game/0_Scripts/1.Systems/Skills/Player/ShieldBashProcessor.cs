@@ -26,10 +26,6 @@ public class ShieldBashProcessor : MonoBehaviour
             AddStatusEffectGA addStatusEffectGA = new(StatusEffectType.ARMOR, shieldStack, new() { shieldBashGA.Caster }, shieldBashGA.Caster);
             dealDamageGA.PostReactions.Add((addStatusEffectGA, null));
         }
-        else
-        {
-            Debug.Log("해당 범위 안에 대상이 없음");
-        }
 
         yield return null;
     }

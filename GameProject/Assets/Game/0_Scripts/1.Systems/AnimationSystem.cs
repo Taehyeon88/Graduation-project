@@ -17,7 +17,6 @@ public class AnimationSystem : Singleton<AnimationSystem>
     {
         if (animationGA.Tween != null)
         {
-            Debug.Log("리턴 애니메이션");
             animationGA.Tween.Restart();
             yield return animationGA.Tween.WaitForCompletion();
 

@@ -92,19 +92,8 @@ public class DamageSystem : Singleton<DamageSystem>
         if (hit_Tween != null)
         {
             hit_Tween.Restart();
-            //hit_Tween.OnUpdate(() =>
-            //{
-            //    Debug.Log("피격 애니 중..");
-            //    Debug.Log($"실시간 - 활성화 여부 : {hit_Tween.IsActive()}");
-            //});
             yield return hit_Tween.WaitForCompletion();
-            //Debug.Log($"완료 여부 : {hit_Tween.IsComplete()}");
-            //Debug.Log($"활성화 여부 : {hit_Tween.IsActive()}");
         }
-        //else
-        //{
-        //    Debug.Log("hit_Tween이 존재하지 X");
-        //}
 
         VisualGridCreator.Instance.RemoveVisualGridById(killGA.Token.gameObject.GetInstanceID());
         yield return TokenSystem.Instance.Main.RemoveToken(killGA.Token);

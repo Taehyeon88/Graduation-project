@@ -32,10 +32,6 @@ public class SplashProcessor : MonoBehaviour
                     dealDamageGA.PostReactions.Add((dDGA, null));
                 }
             }
-            else
-            {
-                Debug.Log("해당 범위 안에 대상이 없음");
-            }
         }
 
         yield return null;

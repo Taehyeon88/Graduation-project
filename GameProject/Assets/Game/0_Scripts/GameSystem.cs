@@ -47,7 +47,6 @@ public class GameSystem : Singleton<GameSystem>
     //Performers
     private IEnumerator GameClearGAPerformer(GameClearGA gameClearGA)
     {
-        Debug.Log("게임 클리어");
         IsGameClear = true;
 
         Skill[] cards = RewardSystem.Instance.GetRewards(3);
@@ -68,7 +67,6 @@ public class GameSystem : Singleton<GameSystem>
     public void GoToNextLevel()
     {
         CurrentStageLevel++;
-        Debug.Log(CurrentStageLevel);
         IsGameClear = false;
 
         if (CurrentStageLevel > stageDatas.Length)

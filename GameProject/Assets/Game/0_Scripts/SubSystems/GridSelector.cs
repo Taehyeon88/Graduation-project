@@ -94,7 +94,6 @@ public class GridSelector : MonoBehaviour
     {
         if (token != null)
         {
-            //Debug.Log("영웅 선택");
             //영웅일 경우, 선택된 영웅 업데이트 및 스킬 페이지
             HeroSystem.Instance.CurrentHero = token as HeroView;
         }
@@ -104,7 +103,6 @@ public class GridSelector : MonoBehaviour
     {
         if (token != null)
         {
-            //Debug.Log("토큰 정보UI");
             //기물 설명 페이지
             //Combat일 경우, 상태효과 페이지
         }

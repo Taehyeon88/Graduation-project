@@ -16,7 +16,7 @@
 | `AutoBattleGA` | 턴/루프 | `AutoBattleSystem` | 유닛 1명 행동 예약(`Battle()`) 후 다음 `AutoBattleGA`를 리액션으로 반복 |
 | [`TurnGA`](#turnga) | 턴/루프 | `TurnSystem` | 턴 전환의 축 — StartBattle → Player ↔ Enemy 순환 |
 | [`SpendAPGA`](#spendapga) | 자원 | `APSystem` | AP(행동력) 소모 |
-| [`RefillAPGA`](#refillapga) | 자원 | `APSystem` | AP 최대치로 리필 |
+| [`RefillAPGA`](#refillapga) | 자원 | `APSystem` | AP 획득(`Amount`, 최대 AP 초과분 제외) — `TurnGA` PRE에서 예약 |
 | [`SpendMPGA`](#spendmpga) | 자원 | `MPSystem` | MP(이동력) 소모 |
 | [`RefillMPGA`](#refillmpga) | 자원 | `MPSystem` | MP 최대치로 리필 |
 | [`MoveGA`](#movega) | 이동 | `MoveSystem` | 한 칸 이동(또는 넉백에 의한 이동) 실행 |
@@ -36,6 +36,7 @@
 | [`DOAnimationGA`](#doanimationga) | 연출 | `AnimationSystem` | DOTween Sequence/Tween 재생 대기 |
 | [`GameClearGA`](#gameclearga) | 종료 | `GameSystem` | 게임 클리어 |
 | [`GameOverGA`](#gameoverga) | 종료 | `GameSystem` | 게임 오버 |
+| [`DrawCardsGA`](#drawcardsga) | 카드 | `CardSystem` | 뽑을 카드 더미에서 `Amount`장 드로우 — 전투 시작 시 1회 + 카드 뽑기 버튼 |
 | [`SpawnWaveGA`](#spawnwavega) | 웨이브 | `WaveSystem` | 몬스터 턴마다 카운트다운, n턴 지나면 다음 웨이브 몬스터 추가 생성 |
 
 ## 2. 카테고리별 상세
@@ -56,6 +57,8 @@
 - **PRE 구독자**:
   - `TurnSystem.TurnGAPreReaction` — `currentTurn` 값 선반영
   - `WaveSystem.TurnGAPreReaction` (조건: `Type == Player`) — 웨이브 카운트다운(`turnsUntilNextWave`) 감소, 0 이하이면 `AddReaction(SpawnWaveGA)`
+  - `APSystem.TurnGAPreReaction` (조건: `Type == StartBattle` / `Player`) — `AddReaction(RefillAPGA(5))` / `AddReaction(RefillAPGA(3))`
+  - `CardSystem.StartBattlePreReaction` (조건: `Type == StartBattle`) — `AddReaction(DrawCardsGA(startDrawAmount))` (턴 시작 드로우는 없음)
 - **POST 구독자**:
   - `TurnSystem.TurnGAPostReaction` (조건: `Type == Enemy`) — `TurnGA(Player)` 체이닝 (턴 순환의 핵심)
   - `MuscleTrophy` 퍽 (조건: `Type == StartBattle`) — 보유 영웅에게 `AddStatusEffectGA(POWER)` 예약
@@ -76,9 +79,10 @@
 
 #### `RefillAPGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/RefillAPGA.cs`
-- **필드**: 없음 — 트리거 전용 마커
-- **Performer**: `APSystem.RefillAPPerformer` — `CurrentAP = MaxAP`
-- **트리거 지점**: `HeroSystem.PlayHeroTurnPerformer`(플레이어 턴 시작 시 `AddReaction`)
+- **필드**: `int Amount` (획득할 AP, 최대 AP를 넘는 양은 획득되지 않음)
+- **Performer**: `APSystem.RefillAPGAPerformer` — `CurrentAP = Min(CurrentAP + Amount, MaxAP)`, `APUI` 갱신
+- **트리거 지점**: `APSystem.TurnGAPreReaction`(`TurnGA` PRE 구독 — 전투 시작 5, 플레이어 턴 시작 3). `HeroSystem.PlayHeroTurnPerformer`의 직접 예약은 제거됨
+- **관련 체인**: §3-1
 
 #### `SpendMPGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/SpendMPGA.cs`
@@ -232,6 +236,16 @@
 - **파생 액션**: 없음
 - **트리거 지점**: `WaveSystem.TurnGAPreReaction`(`TurnGA` PRE 구독, 조건: `Type == Player`)에서 웨이브 카운트다운이 0 이하일 때 `AddReaction(new SpawnWaveGA())`
 
+### 2-11. 카드
+
+#### `DrawCardsGA`
+- **파일**: `Assets/Game/0_Scripts/2.GameActions/DrawCardsGA.cs`
+- **필드**: `int Amount`
+- **Performer**: `CardSystem.DrawCardsGAPerformer` — `min(Amount, 뽑을 더미 장수)`장을 순차적으로 손으로 이동(더미가 모자라면 남은 만큼만, 재활용 없음)
+- **PRE/POST 구독자**: 없음 (버튼 경로에서는 `PreReactions`에 `SpendAPGA`가 직접 종속)
+- **트리거 지점**: ① `CardSystem.StartBattlePreReaction`(`TurnGA(StartBattle)` PRE, `startDrawAmount`장, `AddReaction`) ② `DrawCardUI.DrawCard`(카드 뽑기 버튼 — 플레이어 턴·AP 충분·뽑을 카드 있음일 때 `DrawCardsGA(1)`을 만들어 `PreReactions`에 `SpendAPGA(1)`을 붙이고 `Perform`)
+- **관련 체인**: §3-1
+
 ## 3. 대표 체인 다이어그램
 
 ### 3-1. 턴 순환 체인
@@ -240,12 +254,15 @@
 [MatchSetupSystem.StartSetting] Perform(TurnGA(StartBattle))
  └ TurnSystem.TurnGAPerformer
      ├─ (PRE) TurnSystem: currentTurn = StartBattle
+     ├─ (PRE) APSystem: AddReaction(RefillAPGA(5))
+     ├─ (PRE) CardSystem.StartBattlePreReaction: AddReaction(DrawCardsGA)
      ├─ AddReaction(TurnGA(Player))                         ← Performer 내부 즉시 체이닝
      └─ (POST) MuscleTrophy 퍽: AddReaction(AddStatusEffectGA(POWER))
 
 TurnGA(Player)
+ ├─ (PRE) APSystem.TurnGAPreReaction: AddReaction(RefillAPGA(3))
  └ TurnSystem.TurnGAPerformer → HeroSystem.PlayHeroTurnPerformer
-     └─ AddReaction(RefillAPGA), AddReaction(RefillMPGA)
+     └─ AddReaction(RefillMPGA)
      (이후 플레이어 입력으로 PlaySkillGA/PerformMoveGA가 별도로 Perform됨)
 
 AutoBattleTurnGA                                             ← 플레이어가 턴 종료 (TurnEndUI)

@@ -47,7 +47,6 @@ public class AudioMixerController : MonoBehaviour
     public void SetMasterVolume(float volume)
     {
         audioMixer.SetFloat("Master", Mathf.Log10(volume) * 20);
-        Debug.Log($"볼륨: {volume}, 진짜 볼륨: {Mathf.Log10(volume) * 20}");
     }
     public void SetBGMVolume(float volume)
     {

@@ -164,7 +164,6 @@ public class ActionSystem : Singleton<ActionSystem>
         {
             if (wrapperMap.TryGetValue(reaction, out var wrapped))
             {
-                //Debug.Log($"구독 해제 - 타입명: {reaction.GetType()}");
                 subs[typeof(T)].Remove(wrapped);
                 wrapperMap.Remove(reaction);
             }

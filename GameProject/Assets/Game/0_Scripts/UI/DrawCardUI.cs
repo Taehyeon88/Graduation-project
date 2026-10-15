@@ -3,8 +3,8 @@ using UnityEngine.UI;
 
 public class DrawCardUI : MonoBehaviour
 {
-    private const int DrawAmount = 1;   //버튼 1회당 드로우 장수
-    private const int DrawAPCost = 1;   //버튼 1회당 AP 소모
+    [SerializeField] private int drawAmount = 1;   //버튼 1회당 드로우 장수
+    [SerializeField] private int drawAPCost = 1;   //버튼 1회당 AP 소모
 
     private Button button;
 
@@ -29,11 +29,11 @@ public class DrawCardUI : MonoBehaviour
     {
         //플레이어 턴에 AP가 있고 뽑을 카드가 남아 있을 때만 (카드를 못 뽑으면 AP도 쓰지 않음)
         if (TurnSystem.Instance.CurrentTurn != TurnType.Player) return;
-        if (!APSystem.Instance.HasEnoughAP(DrawAPCost)) return;
+        if (!APSystem.Instance.HasEnoughAP(drawAPCost)) return;
         if (CardSystem.Instance.DrawPileCount <= 0) return;
 
-        DrawCardsGA drawCardsGA = new(DrawAmount);
-        drawCardsGA.PreReactions.Add((new SpendAPGA(DrawAPCost), null));
+        DrawCardsGA drawCardsGA = new(drawAmount);
+        drawCardsGA.PreReactions.Add((new SpendAPGA(drawAPCost), null));
         ActionSystem.Instance.Perform(drawCardsGA);
     }
 }

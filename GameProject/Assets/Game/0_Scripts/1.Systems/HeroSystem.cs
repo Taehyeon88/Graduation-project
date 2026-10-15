@@ -61,8 +61,6 @@ public class HeroSystem : Singleton<HeroSystem>
 
     public IEnumerator PlayHeroTurnPerformer()
     {
-        Debug.Log("플레이어 턴 시작");
-
         foreach (var hero in HeroViews)
         {
             hero.ReduceSEWhenMyTurnStart(); //공용 시작시, SE 제거
@@ -73,9 +71,6 @@ public class HeroSystem : Singleton<HeroSystem>
 
     private void AutoBattleTurnPreReaction(AutoBattleTurnGA turnGA)
     {
-
-        Debug.Log("플레이어 턴 종료");
-
         foreach (var hero in HeroViews)
         {
             hero.ReduceSEWhenMyTurnEnd();  //공용 종료시, SE 제거

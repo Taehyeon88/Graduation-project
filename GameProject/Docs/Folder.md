@@ -32,7 +32,7 @@ Assets/Game/
 │  └─ CardEffectRelative/  #   분류용
 ├─ 3.Views/                # CombatantView/HeroView/EnemyView 등 토큰의 뷰 레이어
 ├─ 4.Creators/             # TokenCreator/ProjectionCreator 등 생성 담당
-├─ 5.Data/                 # ScriptableObject 데이터 클래스 정의(~Data 접미사, 12개) — 실 자산은 1_Datas/(2절)
+├─ 5.Data/                 # ScriptableObject 데이터 클래스 정의(~Data 접미사, 11개) — 실 자산은 1_Datas/(2절)
 ├─ Effects/                # Effect(Models/Effect.cs) 서브클래스 — SkillAbility.Effects에 담기는 데이터+로직 홀더
 │  └─ CloseRange_Attack/   #   분류용(ShieldBashEffect 등)
 ├─ Enums/                  # 열거형 13개

@@ -61,7 +61,6 @@ public class AutoBattleSystem : Singleton<AutoBattleSystem>
 
         List<int> dice = Enumerable.Range(1, DiceMax).OrderBy(_ => Random.value).Take(group.Count).ToList();
         int best = dice.IndexOf(dice.Max());
-        Debug.Log($"동속 {group.Count}명 주사위: {string.Join(", ", dice)}");
         return group[best];
     }
 }

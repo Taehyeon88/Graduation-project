@@ -18,7 +18,6 @@ public class TokenServiceAPI : MonoBehaviour
     /// <returns></returns>
     public List<Vector2Int> GetCanMovePlace(Token token, int maxDistance)
     {
-        //Debug.Log($"현재 위치: {gridPosByToken[token]}");
         Vector2Int start = gridPosByToken[token];
         var result = UtilityBFS.FindALLRoots(start, maxDistance);
         return result;

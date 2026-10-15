@@ -17,8 +17,6 @@ public static class DamageCaculator
             damage = CalculateVulnerable(damage, combat);   //약화 연산
         }
 
-        Debug.Log($"기본 : {baseDamage}, 최종 : {Mathf.CeilToInt(damage)}, 힘 수치: {GetPower(attacker)}");
-
         return Mathf.CeilToInt(damage);
     }
 

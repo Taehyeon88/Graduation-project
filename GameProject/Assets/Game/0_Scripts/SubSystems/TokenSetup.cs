@@ -155,10 +155,6 @@ public class TokenSetup : MonoBehaviour
             //SetUpUI에 Slot 삭제
             setupUI.RemoveSlot();
         }
-        else
-        {
-            Debug.Log("해당 위치에는 영웅을 설치 할 수 없습니다.");
-        }
     }
 
     private void EndSetUpHero()

@@ -30,8 +30,6 @@ public class KnockBackProcessor : MonoBehaviour
         int pushedDis = 0;               //실제 넉백 밀리는 거리
         bool chrash = false;             //충돌 여부
 
-        Debug.Log("넉백 성공!!");
-
         var target = TokenSystem.Instance.API.GetTokenByPosition(targetPos) as CombatantView;  //밀쳐질 대상
 
         //넉백 효과 판단 처리
@@ -50,7 +48,6 @@ public class KnockBackProcessor : MonoBehaviour
         MoveGA moveGA = null;
         if (pushedDis > 0)
         {
-            Debug.Log("밀리는 애니메이션 시작");
             Vector2Int pushedPos = targetPos + direction * pushedDis;
             moveGA = new(target, pushedPos, true);
             ActionSystem.Instance.AddReaction(moveGA);
@@ -58,7 +55,6 @@ public class KnockBackProcessor : MonoBehaviour
 
         if (chrash)
         {
-            Debug.Log("충돌 데미지 획득");
             DealDamageGA dealDamageGA = new(crachDamage, target, knockBackGA.Caster);
             ActionSystem.Instance.AddReaction(dealDamageGA);
         }

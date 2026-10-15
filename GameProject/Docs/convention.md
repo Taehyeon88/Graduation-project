@@ -265,7 +265,7 @@ public interface IHaveDamage { float Damage_Amount { get; } }
 <a id="sec-10"></a>
 ## 10. SO 데이터 형태
 
-`Assets/Game/0_Scripts/5.Data/`(스크립트 정의, `~Data` 접미사 12개) ↔ `Assets/Game/1_Datas/`(실제 `.asset` 인스턴스, `1.Enemies/`·`1.Heroes/`·`2.Skills/`·`3.Stages/`·`4.StatusEffects/`·`6.VisualGrids/` 등 타입별 하위 폴더)로 스크립트 폴더와 자산 폴더가 분리되어 있다. `Resources.LoadAll`/Addressables는 쓰지 않는다 — `GameSystem`이 배열을 `[SerializeField]`로 직접 들고, 하위 System은 `GameSystem.Instance.HeroDatas`/`CurrentStageData`로 참조한다(`GameSystem.cs:16,20,24`). `TokenCreator`는 공통 베이스 `TokenData`를 받아 `as HeroData`/`as EnemyData`로 다운캐스트한다.
+`Assets/Game/0_Scripts/5.Data/`(스크립트 정의, `~Data` 접미사 11개) ↔ `Assets/Game/1_Datas/`(실제 `.asset` 인스턴스, `1.Enemies/`·`1.Heroes/`·`2.Skills/`·`3.Stages/`·`4.StatusEffects/`·`6.VisualGrids/` 등 타입별 하위 폴더)로 스크립트 폴더와 자산 폴더가 분리되어 있다. `Resources.LoadAll`/Addressables는 쓰지 않는다 — `GameSystem`이 덱(`List<HeroData>`)을 `[SerializeField]`로 직접 들고, 하위 System은 `GameSystem.Instance.Deck`/`CurrentStageData`로 참조한다(`GameSystem.cs:16,20,24`). `TokenCreator`는 공통 베이스 `TokenData`를 받아 `as HeroData`/`as EnemyData`로 다운캐스트한다.
 
 - **필드 패턴:** `[CreateAssetMenu(menuName = "Data/...")]` + `[field: SerializeField] public X Prop { get; private set; }`.
   ```csharp
@@ -277,7 +277,7 @@ public interface IHaveDamage { float Damage_Amount { get; } }
       [field: SerializeField] public int MovePoint { get; private set; }
   }
   ```
-- `~Data` 클래스 목록: `TokenData`(공통 베이스), `CombatantData`(→ `TokenData` 상속, 추상) → `HeroData`/`EnemyData`, `CardData`, `SkillData`, `PerkData`, `StageData`, `WaveData`, `StatusEffectData`, `SoundData`, `VisualGridData`(전부 `5.Data/`).
+- `~Data` 클래스 목록: `TokenData`(공통 베이스), `CombatantData`(→ `TokenData` 상속, 추상) → `HeroData`/`EnemyData`, `SkillData`, `PerkData`, `StageData`, `WaveData`, `StatusEffectData`, `SoundData`, `VisualGridData`(전부 `5.Data/`).
 - **SO는 데이터만 들고, 동작은 넣지 않는다.** 예외: `VisualGridData.cs`는 `GetVGLayerOrder()`와 중첩 `abstract class VisualGridType`(`FillType`/`BorderType`/`SymbolType`)에 실제 로직을 갖고 있다 — 이번 작업에서 리팩터링하지 않고 11절에 위반으로만 기록한다.
 
 <a id="sec-11"></a>
@@ -287,7 +287,7 @@ public interface IHaveDamage { float Damage_Amount { get; } }
 
 | # | 규약 | 위반 파일:라인 |
 |---|---|---|
-| 1 | (8절) 밸런싱 수치는 SO/`[SerializeField]`로 노출, 리터럴 금지 | `APSystem.cs:7`(`MaxAP = 3`), `MPSystem.cs:7`(`MaxMP = 3`), `KnockBackProcessor.cs:8`(`crachDamage = 1`), `SkillSystem.cs:275`(스킬 AP 코스트 미데이터화), `RewardSystem.cs:24`(`0.7f`) |
+| 1 | (8절) 밸런싱 수치는 SO/`[SerializeField]`로 노출, 리터럴 금지 | `APSystem.cs:9`(`MaxAP = 5`), `MPSystem.cs:7`(`MaxMP = 3`), `KnockBackProcessor.cs:8`(`crachDamage = 1`), `SkillSystem.cs:275`(스킬 AP 코스트 미데이터화), `RewardSystem.cs:24`(`0.7f`) |
 | 2 | (9절) 열거형은 접두사 없이 `~Type`/`~Mode`/`~State` 접미사 + PascalCase | `ETargetModeType`만 `E` 접두사 (나머지 17개엔 없음) |
 | 3 | (9절) 열거형 멤버는 PascalCase | `StatusEffectType`/`ETargetModeType`/`HeroAnimationType`는 멤버가 ALL_CAPS |
 | 4 | (9절) 열거형은 실제로 분기에 쓰여야 함(정리 후보) | `CardSubType`, `ETargetModeType`, `CardAbilityType`, `DamageFormulaType`, `AudioEditorType`, `SEMachanicsType` — 소비하는 코드 없음 |
