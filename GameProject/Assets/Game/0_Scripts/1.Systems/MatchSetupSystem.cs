@@ -6,8 +6,6 @@ using UnityEngine;
 
 public class MatchSetupSystem : MonoBehaviour
 {
-    [SerializeField] AllPerksDisPlayUI allPerksDisplayUI;
-    private HeroData[] heroDatas => GameSystem.Instance.HeroDatas;
     private StageData stageData => GameSystem.Instance.CurrentStageData;
 
 
@@ -41,9 +39,6 @@ public class MatchSetupSystem : MonoBehaviour
 
         //4.4 플레이어/적 코어 체력 설정
         CoreSystem.Instance.SetUp(stageData);
-
-        //4.5 영웅 아이템 정보 UI 설정
-        allPerksDisplayUI.SetUp(heroDatas.ToArray());
 
         //5.플레이어 유닛 카드 덱 구성 (유닛 배치는 전투 중 카드로 진행)
         CardSystem.Instance.SetUp();

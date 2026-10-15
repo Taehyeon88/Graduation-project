@@ -68,10 +68,6 @@ public class HeroSystem : Singleton<HeroSystem>
             hero.ReduceSEWhenMyTurnStart(); //공용 시작시, SE 제거
         }
 
-        //행동 포인트(AP) 회복
-        RefillAPGA refillAPGA = new();
-        ActionSystem.Instance.AddReaction(refillAPGA);
-
         yield return null;
     }
 

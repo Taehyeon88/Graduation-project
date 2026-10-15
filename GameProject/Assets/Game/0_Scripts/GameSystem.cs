@@ -12,7 +12,7 @@ public class GameSystem : Singleton<GameSystem>
     public bool IsGameOver { get; private set; }                            //게임 오버
     public bool IsTutorial { get; set; } = false;                            //튜토리얼                               //카드 덱
 
-    [field: SerializeField] public HeroData[] HeroDatas { get; private set; } //영웅 데이터s
+    [field: SerializeField] public List<HeroData> Deck { get; private set; } //덱 (씬 전환 후에도 유지)
 
     public StageData CurrentStageData
     {

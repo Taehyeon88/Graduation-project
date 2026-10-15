@@ -2,6 +2,7 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class CardSystem : Singleton<CardSystem>
 {
@@ -11,9 +12,9 @@ public class CardSystem : Singleton<CardSystem>
     [SerializeField] private RectTransform drawPilePoint;
     [SerializeField] private RectTransform discardPilePoint;
 
-    [Header("Deck (임시 값 - 원작 확인 필요)")]
-    [SerializeField] private List<CardData> startingDeck;
-    [SerializeField] private int drawAmount;
+    [Header("Draw (임시 값 - 원작 확인 필요)")]
+    [FormerlySerializedAs("drawAmount")]
+    [SerializeField] private int startDrawAmount;   //전투 시작 시 드로우 장수
 
     [Header("Card Direct Element")]
     [SerializeField] private float discardDuration = 0.15f;
@@ -35,13 +36,13 @@ public class CardSystem : Singleton<CardSystem>
     {
         ActionSystem.AttachPerformer<DrawCardsGA>(DrawCardsGAPerformer);
         ActionSystem.AttachPerformer<PlayCardGA>(PlayCardGAPerformer);
-        ActionSystem.SubscribeReaction<TurnGA>(PlayerTurnPostReaction, ReactionTiming.POST);
+        ActionSystem.SubscribeReaction<TurnGA>(StartBattlePreReaction, ReactionTiming.PRE);
     }
     private void OnDisable()
     {
         ActionSystem.DetachPerformer<DrawCardsGA>();
         ActionSystem.DetachPerformer<PlayCardGA>();
-        ActionSystem.UnsubscribeReaction<TurnGA>(PlayerTurnPostReaction, ReactionTiming.POST);
+        ActionSystem.UnsubscribeReaction<TurnGA>(StartBattlePreReaction, ReactionTiming.PRE);
     }
 
     private void Update()
@@ -61,11 +62,12 @@ public class CardSystem : Singleton<CardSystem>
         discardPile.Clear();
         hand.Clear();
 
-        if (startingDeck != null && startingDeck.Count > 0)
+        List<HeroData> deck = GameSystem.Instance.Deck;
+        if (deck != null && deck.Count > 0)
         {
-            //Shuffle은 입력 리스트를 비우므로 복사본 사용
-            foreach (var cardData in new List<CardData>(startingDeck).Shuffle())
-                drawPile.Add(new Card(cardData));
+            //Shuffle은 입력 리스트를 비우므로 복사본 사용 (GameSystem.Deck은 보존)
+            foreach (var heroData in new List<HeroData>(deck).Shuffle())
+                drawPile.Add(new Card(heroData));
         }
 
         PilesReset?.Invoke();
@@ -201,11 +203,12 @@ public class CardSystem : Singleton<CardSystem>
     }
 
     //Reactions
-    private void PlayerTurnPostReaction(TurnGA turnGA)
+    //전투 시작 시에만 드로우 (턴 시작 드로우 없음, 이후 드로우는 카드 뽑기 버튼)
+    private void StartBattlePreReaction(TurnGA turnGA)
     {
-        if (turnGA.Type != TurnType.Player) return;
+        if (turnGA.Type != TurnType.StartBattle) return;
 
-        DrawCardsGA drawCardsGA = new(drawAmount);
+        DrawCardsGA drawCardsGA = new(startDrawAmount);
         ActionSystem.Instance.AddReaction(drawCardsGA);
     }
 }

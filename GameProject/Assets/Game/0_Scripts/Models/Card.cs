@@ -2,14 +2,14 @@ using UnityEngine;
 
 public class Card
 {
-    public HeroData Unit => data.Unit;
+    public HeroData Unit => data;
     public int APCost => data.APCost;
-    public string Title => data.Unit.Name;
-    public Sprite Image => data.Unit.simbolIcon;
+    public string Title => data.Name;
+    public Sprite Image => data.simbolIcon;
 
-    public readonly CardData data;
+    public readonly HeroData data;
 
-    public Card(CardData data)
+    public Card(HeroData data)
     {
         this.data = data;
     }

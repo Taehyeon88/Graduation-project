@@ -13,7 +13,7 @@
 | `Perks/BloodyAxe.cs`, `HeroArmor.cs`, `MuscleTrophy.cs` | 구체 특성(`Perk` 구현체) |
 | `3.Views/CombatantView.cs` | 소유자(영웅·몬스터 공용) — `SetUpBase`에서 구독 시작, `OnDisable`에서 해제, 최대 `MaxPerkCount`(2) 가드 |
 | `5.Data/CombatantData.cs` | 영웅·몬스터 공용 SO 베이스 — `Health`/`Damage`/`Speed`/`Perks`(`List<PerkData>`). `HeroData`/`EnemyData`가 상속 |
-| `UI/PerkUI.cs`, `AllPerksDisPlayUI.cs`, `DisPlayUI.cs` | 특성 아이콘/툴팁 표시 |
+| `UI/PerkUI.cs`, `DisPlayUI.cs` | 특성 아이콘/툴팁 표시 |
 
 ## 1. 한 줄 개요
 

@@ -44,21 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89490b300cdea2b41a5305c10302cb49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameSystem
-  <HeroData>k__BackingField: {fileID: 11400000, guid: e93bb81975e21af4ba578505a4b474fe, type: 2}
-  roomDatas:
-  - {fileID: 11400000, guid: d9c79ed4593b3454dbc32f56525c00cf, type: 2}
-  - {fileID: 11400000, guid: 71ec10a25e8e35949811fd451cc122f0, type: 2}
-  - {fileID: 11400000, guid: 0e1b7967860ce2945bd896dcbb94d8e3, type: 2}
-  - {fileID: 11400000, guid: 933e20e8aee4a3d4ea6b9992b4a5e0a8, type: 2}
-  - {fileID: 11400000, guid: 48895f1e74c36144ba45a6945b7dd134, type: 2}
-  - {fileID: 11400000, guid: 230952f5b35b4054db0b99f164827a8f, type: 2}
-  - {fileID: 11400000, guid: 3235045103874de40affce1aae2a7779, type: 2}
-  tutorialRoomData: {fileID: 11400000, guid: 9ffa97a05146f494182b7dacee048bcb, type: 2}
-  tutorilaDeck:
-  - {fileID: 11400000, guid: 4bb2181ad44476e44912d6ada97dd27d, type: 2}
-  - {fileID: 11400000, guid: d79f847ac4de2cc48a4dddfca7bc43e0, type: 2}
-  - {fileID: 11400000, guid: ef4bfe78bf4df6241923ba52c4646264, type: 2}
-  - {fileID: 11400000, guid: ef4bfe78bf4df6241923ba52c4646264, type: 2}
-  - {fileID: 11400000, guid: d79f847ac4de2cc48a4dddfca7bc43e0, type: 2}
-  - {fileID: 11400000, guid: 4bb2181ad44476e44912d6ada97dd27d, type: 2}
-  - {fileID: 11400000, guid: 528f980f27add8747ba14142a99bb373, type: 2}
+  <Deck>k__BackingField:
+  - {fileID: 11400000, guid: c6672ad59ddb2104ebf588de2c6f47c2, type: 2}
+  - {fileID: 11400000, guid: fbe924b3ed39a4749bafd15716c34eaa, type: 2}
+  - {fileID: 11400000, guid: 05c49e460f03f9c42a231ec00dde93ea, type: 2}
+  stageDatas: []

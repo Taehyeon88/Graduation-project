@@ -19,7 +19,8 @@ MonoBehaviour:
   <Health>k__BackingField: 11
   <Damage>k__BackingField: 3
   <Speed>k__BackingField: 1
-  <heroColor>k__BackingField: {r: 0.69803923, g: 0.9490196, b: 0.73333335, a: 1}
-  <simbolIcon>k__BackingField: {fileID: 21300000, guid: b0eafd546dc6e3441a5ae3ae3d6c8bfa, type: 3}
   <Perks>k__BackingField:
   - {fileID: 11400000, guid: f93f2b8d9a34a91479f264e7fffcdb89, type: 2}
+  <heroColor>k__BackingField: {r: 0.69803923, g: 0.9490196, b: 0.73333335, a: 1}
+  <simbolIcon>k__BackingField: {fileID: 21300000, guid: b0eafd546dc6e3441a5ae3ae3d6c8bfa, type: 3}
+  <APCost>k__BackingField: 2
