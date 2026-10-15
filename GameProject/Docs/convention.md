@@ -277,7 +277,7 @@ public interface IHaveDamage { float Damage_Amount { get; } }
       [field: SerializeField] public int MovePoint { get; private set; }
   }
   ```
-- `~Data` 클래스 목록: `TokenData`(공통 베이스), `CombatantData`(→ `TokenData` 상속, 추상) → `HeroData`/`EnemyData`, `SkillData`, `PerkData`, `StageData`, `WaveData`, `StatusEffectData`, `SoundData`, `VisualGridData`(전부 `5.Data/`).
+- `~Data` 클래스 목록: `TokenData`(공통 베이스), `CombatantData`(→ `TokenData` 상속, 추상) → `HeroData`/`EnemyData`, `SkillData`, `TraitData`, `StageData`, `WaveData`, `StatusEffectData`, `SoundData`, `VisualGridData`(전부 `5.Data/`).
 - **SO는 데이터만 들고, 동작은 넣지 않는다.** 예외: `VisualGridData.cs`는 `GetVGLayerOrder()`와 중첩 `abstract class VisualGridType`(`FillType`/`BorderType`/`SymbolType`)에 실제 로직을 갖고 있다 — 이번 작업에서 리팩터링하지 않고 11절에 위반으로만 기록한다.
 
 <a id="sec-11"></a>

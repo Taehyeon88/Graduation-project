@@ -6,12 +6,12 @@ using TMPro;
 using System;
 using UnityEngine;
 using System.Linq;
-using UnityEngine.UI; 
 
 public class CombatantView : Token, IDamageable
 {
-    [SerializeField] private Slider healthSlider;
     [SerializeField] private TMP_Text healthText;
+    [SerializeField] private TMP_Text damageText;
+    [SerializeField] private TMP_Text speedText;
     [SerializeField] private StatusEffectsUI statusEffectsUI;
 
     protected Dictionary<StatusEffectType, int> statusEffectUIs = new();
@@ -36,12 +36,30 @@ public class CombatantView : Token, IDamageable
 
     public const int MaxTraitCount = 2;   //유닛당 특성 최대 개수
 
-    public int BaseDamage { get; private set; }   //공격력 (IDamageable.Damage 메서드와 이름이 겹쳐 BaseDamage로 노출)
-    public int Speed { get; private set; }
+    public int BaseDamage   //공격력 (IDamageable.Damage 메서드와 이름이 겹쳐 BaseDamage로 노출)
+    {
+        get { return baseDamage; }
+        private set
+        {
+            baseDamage = value;
+            UpdateDamageUI();
+        }
+    }
+    public int Speed
+    {
+        get { return speed; }
+        private set
+        {
+            speed = value;
+            UpdateSpeedUI();
+        }
+    }
     public IReadOnlyList<Trait> Traits => traits;
 
     private int maxHealth;
     private int currentHealth;
+    private int baseDamage;
+    private int speed;
     private readonly List<Trait> traits = new();
 
     private void OnDisable()
@@ -74,6 +92,8 @@ public class CombatantView : Token, IDamageable
         for (int i = 0; i < Mathf.Min(data.Traits.Count, MaxTraitCount); i++)
         {
             if (data.Traits[i] == null) continue;
+
+            if (data.Traits[i].Condition == null || data.Traits[i].Effect == null) continue;
 
             Trait trait = new(data.Traits[i]);
             trait.SetOwner(this);
@@ -115,26 +135,20 @@ public class CombatantView : Token, IDamageable
 
     private void UpdateHealthUI()
     {
-        if (healthSlider != null && healthText != null)
-        {
-            if (TurnSystem.Instance.CurrentTurn == TurnType.GameSetUp)
-            {
-                healthSlider.value = CurrentHealth / (float)MaxHealth;
-            }
-            else
-            {
-                float value = healthSlider.value;
-                DOTween.To(
-                    () => value,
-                    x =>
-                    {
-                        healthSlider.value = value = x;
-                    },
-                    CurrentHealth / (float)MaxHealth,
-                    0.12f);
-            }
-            healthText.SetText($"{CurrentHealth}/{MaxHealth}");
-        }
+        if (healthText != null)
+            healthText.SetText(CurrentHealth.ToString());
+    }
+
+    private void UpdateDamageUI()
+    {
+        if (damageText != null)
+            damageText.SetText(BaseDamage.ToString());
+    }
+
+    private void UpdateSpeedUI()
+    {
+        if (speedText != null)
+            speedText.SetText(Speed.ToString());
     }
 
     public virtual void Damage(int amount, DealDamageGA dealDamageGA)

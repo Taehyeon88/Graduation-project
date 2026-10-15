@@ -15,7 +15,7 @@ public class TurnCondition : TraitCondition
         ActionSystem.UnsubscribeReaction<TurnGA>(reaction, reactionTiming);
     }
 
-    public override bool SubConditionIsMat(GameAction action)
+    public override bool SubConditionIsMat(GameAction action, CombatantView owner)
     {
         var turnGA = action as TurnGA;
         return turnGA.Type == turnType;

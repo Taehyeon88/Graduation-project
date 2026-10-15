@@ -12,17 +12,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 026f0ece6f5db9848894c30ac030961a, type: 3}
   m_Name: "\uC694\uC0C8\uD654"
   m_EditorClassIdentifier: Assembly-CSharp::TraitData
-  <Id>k__BackingField: 6
+  <Id>k__BackingField: 3003
   <Image>k__BackingField: {fileID: 21300000, guid: 55e2e78eeecb38d4ea2c5668cdb2c60f, type: 3}
   <Description>k__BackingField: "\uC790\uC2E0\uC758 \uC8FC\uBCC0\uC5D0 \uC190\uC5D0
     \uC788\uB358 \uC544\uAD70 \uC6A9\uBCD1\uC774 \uBC30\uCE58\uB420 \uB54C\uB9C8\uB2E4
     \uCCB4\uB825+2\uB97C \uC5BB\uC2B5\uB2C8\uB2E4."
   <Condition>k__BackingField:
-    rid: -2
+    rid: 7851380889414795335
   <Effect>k__BackingField:
     rid: -2
+  ConditionName: AllyPlacedNearbyCondition
+  timing: 1
+  EffectName: 
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
+    - rid: 7851380889414795335
+      type: {class: AllyPlacedNearbyCondition, ns: , asm: Assembly-CSharp}
+      data:
+        reactionTiming: 1
+        range: 1

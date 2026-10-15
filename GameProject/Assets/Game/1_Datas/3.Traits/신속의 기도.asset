@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 026f0ece6f5db9848894c30ac030961a, type: 3}
   m_Name: "\uC2E0\uC18D\uC758 \uAE30\uB3C4"
   m_EditorClassIdentifier: Assembly-CSharp::TraitData
-  <Id>k__BackingField: 5
+  <Id>k__BackingField: 3002
   <Image>k__BackingField: {fileID: 21300000, guid: 9a43ce809a34ed34ab59f0d4daf9acf8, type: 3}
   <Description>k__BackingField: "\uC804\uC7A5\uC5D0 \uC788\uB294 \uB3D9\uC548 \uC790\uC2E0\uC758
     \uC18D\uB3C4\uB9CC\uD07C \uB2E4\uB978 \uBAA8\uB4E0 \uC544\uAD70 \uC6A9\uBCD1\uC758

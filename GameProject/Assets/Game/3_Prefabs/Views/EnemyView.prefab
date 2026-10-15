@@ -47,12 +47,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyView
   <Model>k__BackingField: {fileID: 5853630805134474200}
-  healthSlider: {fileID: 1565977914791900305}
   healthText: {fileID: 7018774342355200283}
+  damageText: {fileID: 4973578221252882899}
+  speedText: {fileID: 5705215741738359352}
   statusEffectsUI: {fileID: 3335590562542979427}
-  nextActUIImage: {fileID: 0}
-  nextActText: {fileID: 0}
-  movePointText: {fileID: 0}
 --- !u!114 &7742585303409925659
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -247,17 +245,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 888032aeab9a6884482de47824ac3084, type: 3}
---- !u!114 &1565977914791900305 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2682363767375722196, guid: 888032aeab9a6884482de47824ac3084, type: 3}
-  m_PrefabInstance: {fileID: 3495588531039486533}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &3335590562542979427 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2218223812444212006, guid: 888032aeab9a6884482de47824ac3084, type: 3}
@@ -269,6 +256,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc7b19a2e037393488f5cb300ffeb4a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StatusEffectsUI
+--- !u!114 &4973578221252882899 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8468843405679293334, guid: 888032aeab9a6884482de47824ac3084, type: 3}
+  m_PrefabInstance: {fileID: 3495588531039486533}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!114 &5705215741738359352 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9200339754850310269, guid: 888032aeab9a6884482de47824ac3084, type: 3}
+  m_PrefabInstance: {fileID: 3495588531039486533}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!212 &5853630805134474200 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 7043230744748702109, guid: 888032aeab9a6884482de47824ac3084, type: 3}

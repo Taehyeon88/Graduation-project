@@ -12,7 +12,7 @@ public class AutoBattleTurnCondition : TraitCondition
         ActionSystem.UnsubscribeReaction<AutoBattleTurnGA>(reaction, reactionTiming);
     }
 
-    public override bool SubConditionIsMat(GameAction action)
+    public override bool SubConditionIsMat(GameAction action, CombatantView owner)
     {
         return true;
     }

@@ -25,11 +25,6 @@ public class Token : MonoBehaviour
         //Isometric 설정
         IsoObject isObject = GetComponentInParent<IsoObject>();
 
-        //높낮이 조절
-        float y = Model.gameObject.transform.position.y;
-        Vector3 pos = Model.gameObject.transform.position;
-        Model.gameObject.transform.position = new Vector3(pos.x, y + tokenData.HRange, pos.z);
-
         Defualt_Position = Model.transform.localPosition;
         Defualt_Direction = Model.transform.position - gameObject.transform.position;
     }

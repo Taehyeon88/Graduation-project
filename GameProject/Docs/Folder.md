@@ -44,9 +44,9 @@ Assets/Game/
 │  ├─ Util/                # 정적 헬퍼(Utility, UtilityBFS, DamageCaculator, GridLayoutImageResizer)
 │  └─ DontDestroyedObject.cs
 ├─ Interfaces/             # I 접두사 인터페이스 7개: IHaveCaster, IDamageable, IHaveDamage, IHaveDistance, IUseCondition, IUseCustomRangeVG, IUseCustomTargetVG
-├─ Models/                 # 도메인 모델(SO 아닌 순수 C# 클래스): Token/TokenGrid, Hero/HeroPreview, Skill/SkillAbility/Effect(추상 베이스), Perk/PerkItem, Card
+├─ Models/                 # 도메인 모델(SO 아닌 순수 C# 클래스): Token/TokenGrid, Hero/HeroPreview, Skill/SkillAbility/Effect(추상 베이스), Trait/TraitCondition/TraitEffect(추상), Card
 │  └─ Modes/               #   범위·타겟 선정 전략(RangeMode/TargetMode)
-├─ Perks/                  # Perk(Models/Perk.cs) 서브클래스: BloodyAxe, HeroArmor, MuscleTrophy
+├─ Traits/                 # TraitCondition/TraitEffect(Models/) 서브클래스 — TraitData가 [SerializeReference]로 조립: AutoBattleTurnCondition, DealDamageCondition, TurnCondition / AddStatusTraitEffect, HealOnDamageEffect
 ├─ SubSystems/             # Singleton 파사드가 위임하는 실행 컴포넌트(TokenMainAPI/TokenServiceAPI/TokenSetup, GridSelector, TooltipTrigger)
 ├─ UI/                     # 화면별 UI 컴포넌트(~UI 접미사, SkillsUI/StatusEffectsUI/TurnPopUpUI/CoreUI 등) + AudioMixerController
 └─ GameSystem.cs           # 메타 상태(골드/스테이지/영웅 로스터) 전담 Singleton(상세는 convention.md 6절)
@@ -58,17 +58,17 @@ Assets/Game/
 
 | 폴더 | 자산 수 | 대응 스크립트 클래스 | 비고 |
 |---|---|---|---|
-| `1.Enemies/` | 3 | `EnemyData` | 허수아비 / Larva / ArchorSkeleton |
-| `1.Heroes/` | 3 | `HeroData` | Hero1~3 |
-| `2.Skills/` | 3 | `SkillData` | 타격/사격/방어 |
-| `3.Stages/` | 1 | `StageData` | TestStage |
-| `3.Stages/Waves/` | 1 | `WaveData` | Simple_Wave |
-| `4.StatusEffects/` | 2 | `StatusEffectData` | Armor, Power |
-| `6.VisualGrids/` | 19 | `VisualGridData` | 그리드 하이라이트 전부 |
-| `7.Perks/` | 3 | `PerkData` | 피묻은 도끼 / 근육 트로피 / 용사의 갑옷 |
-| `8.Sounds/` | 18 | `SoundData` | `SoundData.asset`/`SoundData 1.asset`은 이름 정리가 안 된 기본값으로 보임 |
+| `1.Heroes/` | 10 | `HeroData` | Hero1~3 + 감시탑 경비병 / 기병 / 나팔수 / 매복자 / 사제 / 수문장 / 전도 |
+| `2.Enemies/` | 3 | `EnemyData` | 허수아비 / Larva / ArchorSkeleton |
+| `3.Traits/` | 10 | `TraitData` | 1_피묻은 도끼 / 2_근육 트로피 / 3_용사의 갑옷(조건·효과 설정됨) + 나머지 7개(공격 신호, 맹공, 불경한 빛, 빠른 발, 신속의 기도, 요새화, 저격)는 조건·효과 미설정 |
+| `4.Perks/`, `5.Items/` | 0 | — | 빈 폴더 |
+| `6.StatusEffects/` | 2 | `StatusEffectData` | Armor, Power |
+| `7.VisualGrids/` | 19 | `VisualGridData` | 그리드 하이라이트 전부 |
+| `8.Stages/` | 1 | `StageData` | TestStage |
+| `8.Stages/Waves/` | 1 | `WaveData` | Simple_Wave |
+| `9.Sounds/` | 18 | `SoundData` | `SoundData.asset`/`SoundData 1.asset`은 이름 정리가 안 된 기본값으로 보임 |
 
-**관찰(기록만, 수정 대상 아님):** 폴더 번호가 "5."는 건너뛰고 "1."을 `Enemies`/`Heroes` 둘 다에 쓴다 — `0_Scripts/5.Data`의 클래스 11개와 번호가 1:1로 대응하지는 않는다(`TokenData`는 추상 베이스라 자산이 없다).
+**관찰(기록만, 수정 대상 아님):** `SkillData` 클래스는 남아 있지만 `.asset` 인스턴스는 없다(`2.Skills/` 삭제). `0_Scripts/5.Data`의 클래스 11개와 폴더가 1:1로 대응하지는 않는다(`TokenData`/`CombatantData`는 추상 베이스라 자산이 없다).
 
 ## 3. `2_Scenes/` — 씬
 
@@ -83,7 +83,7 @@ Assets/Game/
 | `Isometrics/` | 4 | `Grid_Tile`, `Side_Tile`, `TestWorld_1`, `TileVisual` |
 | `Models/` | 3 | `EnemyModel`, `HeroModel`, `WallModel` |
 | `Projections/` | 2 | `RatGeneral_Stone`, `Skeleton_BoneArrow` |
-| `UI/` | 6 | `DisPlayUI`, `EnemyUI`, `PerkUI`, `SettingUI`, `StatusEffectUI`, `StatusEffectUIAtWorld` |
+| `UI/` | 6 | `DisPlayUI`, `EnemyUI`, `SettingUI`, `StatusEffectUI`, `StatusEffectUIAtWorld`, `TraitUI` |
 | `Views/` | 11 | `ArrowView`, `CardView`, `CardViewInPile`, `CombatantViewBase`, `CoreView`, `EnemyView`, `HeroPreView`, `HeroView`, `PopUp_Text_View`, `ProjectionView`, `SkillView` |
 
 ## 5. `4_Medias/` — 스프라이트/이미지 (98개 png)

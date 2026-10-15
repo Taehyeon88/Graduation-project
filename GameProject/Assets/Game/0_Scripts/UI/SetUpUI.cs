@@ -41,7 +41,7 @@ public class SetUpUI : MonoBehaviour
             //데이터 이미지 할당
             Image image = buttons[i].transform.GetChild(0).GetComponent<Image>();
             if (image != null)
-                image.sprite = heroDatas[i].simbolIcon;
+                image.sprite = heroDatas[i].Sprite;
         }
 
         //Slot 초기화

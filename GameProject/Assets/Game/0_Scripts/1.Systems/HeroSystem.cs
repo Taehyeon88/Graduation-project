@@ -21,7 +21,7 @@ public class HeroSystem : Singleton<HeroSystem>
             {
                 if (!selected_Hero_UI.gameObject.activeSelf)
                     selected_Hero_UI.gameObject.SetActive(true);
-                selected_Hero_UI.sprite = (currentHero.TokenData as HeroData).simbolIcon; //선택된 영웅 이미지 변경
+                selected_Hero_UI.sprite = currentHero.TokenData.Sprite; //선택된 영웅 이미지 변경
             }
         }
     }

@@ -7214,6 +7214,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::APSystem
   apUI: {fileID: 1466926723}
+  startBattleAP: 5
+  turnStartAP: 3
 --- !u!114 &755873346
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10269,6 +10271,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06f10ad5cdfbfe944856de5c45868681, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DrawCardUI
+  drawAmount: 1
+  drawAPCost: 1
 --- !u!1001 &1008282406
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12795,13 +12799,25 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4558058857035119622, guid: 3ae40ca683237ae4e9b2e30f31a96f5f, type: 3}
+      propertyPath: '<Deck>k__BackingField.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 1b290f1f392345345b33c6e582eab0da, type: 2}
+    - target: {fileID: 4558058857035119622, guid: 3ae40ca683237ae4e9b2e30f31a96f5f, type: 3}
+      propertyPath: '<Deck>k__BackingField.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 25e21709632fae3468acc2dac4f97b40, type: 2}
+    - target: {fileID: 4558058857035119622, guid: 3ae40ca683237ae4e9b2e30f31a96f5f, type: 3}
+      propertyPath: '<Deck>k__BackingField.Array.data[2]'
+      value: 
+      objectReference: {fileID: 11400000, guid: c5a4c49842d5abe4d9866a65156d3da5, type: 2}
+    - target: {fileID: 4558058857035119622, guid: 3ae40ca683237ae4e9b2e30f31a96f5f, type: 3}
       propertyPath: '<Deck>k__BackingField.Array.data[3]'
       value: 
-      objectReference: {fileID: 11400000, guid: 05c49e460f03f9c42a231ec00dde93ea, type: 2}
+      objectReference: {fileID: 11400000, guid: 25e21709632fae3468acc2dac4f97b40, type: 2}
     - target: {fileID: 4558058857035119622, guid: 3ae40ca683237ae4e9b2e30f31a96f5f, type: 3}
       propertyPath: '<Deck>k__BackingField.Array.data[4]'
       value: 
-      objectReference: {fileID: 11400000, guid: 05c49e460f03f9c42a231ec00dde93ea, type: 2}
+      objectReference: {fileID: 11400000, guid: 25e21709632fae3468acc2dac4f97b40, type: 2}
     - target: {fileID: 4558058857035119622, guid: 3ae40ca683237ae4e9b2e30f31a96f5f, type: 3}
       propertyPath: <HeroDatas>k__BackingField.Array.size
       value: 5

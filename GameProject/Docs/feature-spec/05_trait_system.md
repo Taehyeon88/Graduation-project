@@ -11,7 +11,7 @@
 | `Models/TraitEffect.cs` | 추상 모델 — 조건 통과 시 "무엇을 하는가"(후속 `GameAction` 생성) 계약 |
 | `Models/Trait.cs` | 런타임 래퍼 — `TraitData` 참조 + 소유자 + 구독/해제 + 소유자 필터 |
 | `5.Data/TraitData.cs` | SO — `Id`, `Image`, `Description`, `Condition`·`Effect`(각각 `[SerializeReference, SR]`) |
-| `Traits/DealDamageCondition.cs`, `TurnCondition.cs`, `AutoBattleTurnCondition.cs` | 구체 조건 |
+| `Traits/DealDamageCondition.cs`, `TurnCondition.cs`, `AutoBattleTurnCondition.cs`, `SelfDeathCondition.cs`, `SelfPlacedCondition.cs`, `AllyPlacedNearbyCondition.cs`, `AttackedOpponentCondition.cs` | 구체 조건 (배치 계열은 손패 카드 배치 `PlayCardGA` 기준 — 초기 배치·웨이브 생성은 제외) |
 | `Traits/HealOnDamageEffect.cs`, `AddStatusTraitEffect.cs` | 구체 효과 |
 | `3.Views/CombatantView.cs` | 소유자(영웅·몬스터 공용) — `SetUpBase`에서 구독 시작, `OnDisable`에서 해제, 최대 `MaxTraitCount`(2) 가드 |
 | `5.Data/CombatantData.cs` | 영웅·몬스터 공용 SO 베이스 — `Health`/`Damage`/`Speed`/`Traits`(`List<TraitData>`). `HeroData`/`EnemyData`가 상속 |
@@ -29,7 +29,7 @@ public abstract class TraitCondition
     [SerializeField] protected ReactionTiming reactionTiming;
     public abstract void SubscribeCondition(Action<GameAction> reaction);
     public abstract void UnsubscribeCondition(Action<GameAction> reaction);
-    public abstract bool SubConditionIsMat(GameAction action);
+    public abstract bool SubConditionIsMat(GameAction action, CombatantView owner);
 }
 
 public abstract class TraitEffect
@@ -40,7 +40,8 @@ public abstract class TraitEffect
 
 - `reactionTiming`: PRE/POST를 SO(인스펙터)에서 정한다. 구체 조건이 `ActionSystem.SubscribeReaction<T>(reaction, reactionTiming)`에 그대로 넘긴다. 어떤 GA 타입을 구독할지는 구체 조건 클래스가 정한다(예: `DealDamageCondition` → `DealDamageGA`).
 - `Subscribe/UnsubscribeCondition`: `OnAdd`/`OnRemove`에서 대칭으로 호출되는 구독·해제.
-- `SubConditionIsMat(action)`: 구독한 GA가 조건에 맞는지 거르는 필터. `owner`를 받지 않는다 — 조건 인스턴스는 `TraitData`(SO)에 든 `SerializeReference`라 **같은 `TraitData`를 쓰는 모든 유닛이 공유**하므로 소유자 상태를 저장하면 안 된다. 예: `TurnCondition`은 `turnType`이 일치할 때만 통과.
+- `SubConditionIsMat(action, owner)`: 구독한 GA가 조건에 맞는지 거르는 필터. `owner`는 판정용 **인자**로만 받는다 — 조건 인스턴스는 `TraitData`(SO)에 든 `SerializeReference`라 **같은 `TraitData`를 쓰는 모든 유닛이 공유**하므로 소유자 상태를 필드로 저장하면 안 된다. 예: `TurnCondition`은 `turnType`이 일치할 때만 통과, `SelfDeathCondition`은 `KillGA.Token == owner`일 때만 통과.
+- **사망 조건 주의**: `SelfDeathCondition`은 `reactionTiming`을 PRE로 둔다. `KillGA` performer가 토큰을 파괴하면 `CombatantView.OnDisable`이 구독을 해제하므로 POST에서는 놓칠 수 있다.
 - **소유자 필터(`Trait.Reaction`)**: `action`이 `IHaveCaster`이고 `Caster != owner`이면 무시한다. `Caster`가 없는 GA(`TurnGA`, `AutoBattleTurnGA`)는 모든 소유자에게 통과한다. 한계: 타인의 GA에 반응하는 특성(예: 아군 공격 시 발동)은 이 공통 필터로는 만들 수 없다 — 필요해지면 조건에 필터 옵션을 추가한다.
 - `TraitEffect.PerformReaction(action, owner)`: 조건·필터 통과 시 후속 `GameAction`을 `AddReaction`한다(`HealOnDamageEffect` → `HealGA`, `AddStatusTraitEffect` → `AddStatusEffectGA`).
 

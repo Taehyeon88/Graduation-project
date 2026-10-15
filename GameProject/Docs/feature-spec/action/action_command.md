@@ -46,7 +46,7 @@
 #### `AutoBattleTurnGA` / `AutoBattleGA`
 - **파일**: `2.GameActions/AutoBattleTurnGA.cs`, `AutoBattleGA.cs` (필드 없음)
 - **Performer**: `TurnSystem.AutoBattleTurnGAPerformer`(팝업 → `AutoBattleSystem.CacheCombatants` → `AddReaction(AutoBattleGA)`), `AutoBattleSystem.AutoBattleGAPerformer`(큐 정리 → 동속 주사위 → `unit.Battle()` → 큐가 남으면 `AddReaction(AutoBattleGA)`)
-- **리액션**: `AutoBattleTurnGA` PRE — `TurnSystem`(`currentTurn` 선반영), `HeroSystem.AutoBattleTurnPreReaction`(영웅 "내 턴 종료" SE 감소), `HeroArmor` 퍽(방어막, `AddStatusEffectGA(ARMOR)` 예약). POST — `TurnSystem`이 `TurnGA(Enemy)` 체이닝
+- **리액션**: `AutoBattleTurnGA` PRE — `TurnSystem`(`currentTurn` 선반영), `HeroSystem.AutoBattleTurnPreReaction`(영웅 "내 턴 종료" SE 감소), `용사의 갑옷` 특성(`AutoBattleTurnCondition` PRE + `AddStatusTraitEffect`, 소유자 방어막 `AddStatusEffectGA(ARMOR)` 예약). POST — `TurnSystem`이 `TurnGA(Enemy)` 체이닝
 - **파생 액션**: `Battle()`이 판단은 모두 예약 시점에 끝내고 GA만 예약 — ① 이동 한계 전이고 정면이 비면 `MoveGA`(1칸, AP 소모 없음) ② 이동했다고 가정한 위치의 정면에 적이 있으면 `DealDamageGA(Amount, target, attacker, true)`(대상 확정), 이동 한계인데 정면이 비어 있으면 `AttackCoreGA`. 기본 공격 `DealDamageGA`는 `DamageSystem`이 기본 공격 모션 1(`Utility.GetBasicAttackTween`: 전진 → 타격 시점에 피해 → 복귀)을 재생. `AutoBattleSystem`은 `IsGameClear`/`IsGameOver`가 되면 큐를 비워 종료
 - **트리거 지점**: `TurnEndUI.TurnEnd`에서 `Perform(AutoBattleTurnGA)`
 
@@ -61,7 +61,7 @@
   - `CardSystem.StartBattlePreReaction` (조건: `Type == StartBattle`) — `AddReaction(DrawCardsGA(startDrawAmount))` (턴 시작 드로우는 없음)
 - **POST 구독자**:
   - `TurnSystem.TurnGAPostReaction` (조건: `Type == Enemy`) — `TurnGA(Player)` 체이닝 (턴 순환의 핵심)
-  - `MuscleTrophy` 퍽 (조건: `Type == StartBattle`) — 보유 영웅에게 `AddStatusEffectGA(POWER)` 예약
+  - `근육 트로피` 특성 (`TurnCondition`, 조건: `Type == StartBattle`) — 보유 영웅에게 `AddStatusEffectGA(POWER)` 예약 (`AddStatusTraitEffect`). `TurnGA`는 Caster가 없어 `Trait.Reaction`의 소유자 필터를 통과
 - **파생 액션 (AddReaction)**: `StartBattle` 처리 중 Performer 내부에서 `TurnGA(Player)` 즉시 체이닝
 - **트리거 지점**: `MatchSetupSystem.StartSetting()`에서 최초 `Perform(TurnGA(StartBattle))` 호출. `TurnGA(Enemy)`는 `AutoBattleTurnGA`의 POST(`TurnSystem.AutoBattleTurnGAPostReaction`)에서 체이닝되고, 이후 `Enemy` 종료 POST에서 다음 `TurnGA(Player)`가 체이닝되며 순환
 - **관련 체인**: §3-1
@@ -124,7 +124,7 @@
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/DealDamageGA.cs` (`IHaveCaster` 구현)
 - **필드**: `float Amount`, `List<IDamageable> Targets` / `IDamageable Target`(`{ get; set; }`), `Token Caster`, `bool IsBasicAttack`(자동 전투 기본 공격 — 공격 모션 재생) (생성자 3개: 다중·단일·`(float amount, IDamageable target, Token caster, bool isBasicAttack)`)
 - **Performer**: `DamageSystem.DealDamagePerformer` — `IsBasicAttack && Target != null`이면(대상은 `Battle()`이 예약 시점에 확정) 기본 공격 모션 재생·타격 시점에 피해, 복귀까지 대기. 이후 `DamageCaculator.GetDamage()`로 최종 수치 계산 + 피격 VFX + `target.Damage()` 호출(방어막 소모 처리, 체력 0 이하 시 `KillGA`를 이 액션의 `PostReactions`에 직접 추가)
-- **POST 구독자**: `BloodyAxe` 퍽 (조건: `Caster == owner`이고 대상이 있는 공격 — 헛스윙 제외) — 확률 조건 충족 시 `HealGA` 예약(자힐)
+- **POST 구독자**: `피묻은 도끼` 특성 (`DealDamageCondition` POST + `HealOnDamageEffect`, 조건: `Trait.Reaction`이 `Caster == owner`인 GA만 통과) — 확률 조건 충족 시 `HealGA` 예약(자힐)
 - **파생 액션**: `CombatantView.Damage()` 내부에서 체력 ≤ 0이면 `dealDamageGA.PostReactions.Add((KillGA, null))` — 전역 체이닝이 아니라 **이 인스턴스에 직접 종속**
 - **트리거 지점**: 전투 계열 다수의 공통 최종 경로 — `CombatantView.Battle`(자동 전투, `isBasicAttack: true`), `AttackEnemyGAPerformer`, `ShieldBashGAPerformer`, `ShoulderBashGAPerformer`, `SplashGAPerformer`, `KnockBackGAPerformer`(충돌 시) 등
 - **관련 체인**: §3-2, §3-3
@@ -156,14 +156,14 @@
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/HealGA.cs` (`IHaveCaster` 명시적 구현)
 - **필드**: `float Amount`, `List<Vector2Int> TargetPoses`, `List<CombatantView> Targets`(런타임에 위치→대상으로 채워짐), `CombatantView Caster`
 - **Performer**: `HealSystem.HealGAPerformer` — 위치를 대상으로 변환 후 순차 회복(연출 딜레이 포함)
-- **트리거 지점**: `BloodyAxe` 퍽의 POST 리액션(자힐), 회복 스킬의 `Effect.GetGameAction()`
+- **트리거 지점**: `피묻은 도끼` 특성(`HealOnDamageEffect`)의 `DealDamageGA` POST 리액션(자힐), 회복 스킬의 `Effect.GetGameAction()`
 
 #### `AddStatusEffectGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/CardEffectRelative/AddStatusEffectGA.cs` (`IHaveCaster` 명시적 구현)
 - **필드**: `StatusEffectType StatusEffectType`, `int StackCount`(set 가능), `List<CombatantView> Targets`, `CombatantView Caster`
 - **트리거 지점**: 아래 목록에 `AddStatusEffectEffect.cs`(버프/디버프 스킬의 Effect) 추가 — `SETargetMode`에 따라 자신/대상/전체에 상태이상 부여
 - **Performer**: `StatusEffectSystem.AddStatusEffectPerformer` — 대상별로 상태이상 스택 부여
-- **트리거 지점**: `ShieldBashProcessor.ShieldBashGAPerformer`(해당 `DealDamageGA`의 `PostReactions`에 직접 종속), `HeroArmor` 퍽(`AutoBattleTurnGA` PRE, ARMOR), `MuscleTrophy` 퍽(`TurnGA` POST, POWER)
+- **트리거 지점**: `ShieldBashProcessor.ShieldBashGAPerformer`(해당 `DealDamageGA`의 `PostReactions`에 직접 종속), `용사의 갑옷` 특성(`AutoBattleTurnGA` PRE, ARMOR), `근육 트로피` 특성(`TurnGA` POST, POWER) — 둘 다 `AddStatusTraitEffect`
 
 ### 2-6. 스킬 실행 파이프라인
 
@@ -257,7 +257,7 @@
      ├─ (PRE) APSystem: AddReaction(RefillAPGA(5))
      ├─ (PRE) CardSystem.StartBattlePreReaction: AddReaction(DrawCardsGA)
      ├─ AddReaction(TurnGA(Player))                         ← Performer 내부 즉시 체이닝
-     └─ (POST) MuscleTrophy 퍽: AddReaction(AddStatusEffectGA(POWER))
+     └─ (POST) 근육 트로피 특성: AddReaction(AddStatusEffectGA(POWER))
 
 TurnGA(Player)
  ├─ (PRE) APSystem.TurnGAPreReaction: AddReaction(RefillAPGA(3))
@@ -269,7 +269,7 @@ AutoBattleTurnGA                                             ← 플레이어가
  └ TurnSystem.AutoBattleTurnGAPerformer: 팝업 → AutoBattleSystem.CacheCombatants → AddReaction(AutoBattleGA)
      ├─ (PRE) TurnSystem: currentTurn = AutoBattle
      ├─ (PRE) HeroSystem.AutoBattleTurnPreReaction: 영웅 SE 감소
-     ├─ (PRE) HeroArmor 퍽: AddReaction(AddStatusEffectGA(ARMOR))
+     ├─ (PRE) 용사의 갑옷 특성: AddReaction(AddStatusEffectGA(ARMOR))
      └─ (POST) TurnSystem.AutoBattleTurnGAPostReaction: AddReaction(TurnGA(Enemy))
 
 TurnGA(Enemy)
@@ -287,7 +287,7 @@ TurnGA(Enemy)
           └─ AddReaction(AttackEnemyGA)       → AttackEnemyProcessor.AttackEnemyGAPerformer
                (공격 모션 재생 대기)
                └─ AddReaction(DealDamageGA)   → DamageSystem.DealDamagePerformer
-                    ├─ (POST 구독) BloodyAxe 퍽: 조건 충족 시 AddReaction(HealGA)
+                    ├─ (POST 구독) 피묻은 도끼 특성: 조건 충족 시 AddReaction(HealGA)
                     └─ target.Damage() 내부에서 체력<=0이면
                          dealDamageGA.PostReactions.Add(KillGA)   ← 인스턴스 직접 종속
                               └─ DamageSystem.KillGAPerformer (토큰 제거)

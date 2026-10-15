@@ -9,4 +9,9 @@ public class TraitData : ScriptableObject
     [field : SerializeField] public string Description { get; private set; }
     [field : SerializeReference, SR] public TraitCondition Condition { get; private set; }
     [field : SerializeReference, SR] public TraitEffect Effect { get; private set; }
+    
+    [Header("작업용 변수s")]
+    [field : SerializeField] public string ConditionName;
+    [field : SerializeField] public ReactionTiming timing;
+    [field : SerializeField] public string EffectName;
 }

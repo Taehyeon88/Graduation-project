@@ -39,7 +39,7 @@ public class Trait
     {
         //소유자의 GA에만 반응 (Caster가 없는 GA는 모두 통과)
         if (gameAction is IHaveCaster haveCaster && haveCaster.Caster != owner) return;
-        if (!condition.SubConditionIsMat(gameAction)) return;
+        if (!condition.SubConditionIsMat(gameAction, owner)) return;
 
         effect.PerformReaction(gameAction, owner);
     }

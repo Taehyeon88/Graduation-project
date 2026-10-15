@@ -12,7 +12,7 @@ public class DealDamageCondition : TraitCondition
         ActionSystem.UnsubscribeReaction<DealDamageGA>(reaction, reactionTiming);
     }
 
-    public override bool SubConditionIsMat(GameAction action)
+    public override bool SubConditionIsMat(GameAction action, CombatantView owner)
     {
         return true;
     }
