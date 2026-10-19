@@ -73,6 +73,12 @@ public class CardSystem : Singleton<CardSystem>
         PilesReset?.Invoke();
     }
 
+    //테스트용: 덱과 무관하게 지정한 영웅 카드를 손패에 추가 (에디터 윈도우에서 호출)
+    public void AddHeroToHand(HeroData heroData)
+    {
+        StartCoroutine(AddHeroToHandRoutine(heroData));
+    }
+
     public void PlayCardTargetMode(CardView cardView)
     {
         if (Interactions.Instance.IsHeroMoveMode)
@@ -160,6 +166,14 @@ public class CardSystem : Singleton<CardSystem>
     private IEnumerator DrawCard()
     {
         Card card = drawPile.Draw();
+        hand.Add(card);
+        CardView cardView = CardViewCreator.Instance.CreateCardView(card, drawPilePoint, handTransform);
+        yield return handView.AddCard(cardView);
+    }
+
+    private IEnumerator AddHeroToHandRoutine(HeroData heroData)
+    {
+        Card card = new(heroData);
         hand.Add(card);
         CardView cardView = CardViewCreator.Instance.CreateCardView(card, drawPilePoint, handTransform);
         yield return handView.AddCard(cardView);

@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: 3.ArchorSkeleton
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   <Id>k__BackingField: 3
-  <Name>k__BackingField: "\uC544\uCC98 \uC2A4\uCF08\uB808\uD1A4"
   <Sprite>k__BackingField: {fileID: 21300000, guid: d648b4b1eb6702944918ff87692db37c, type: 3}
-  <HRange>k__BackingField: 0
   <Health>k__BackingField: 8
-  <Damage>k__BackingField: 3
+  <Damage>k__BackingField: 1
   <Speed>k__BackingField: 1
+  <Traits>k__BackingField: []

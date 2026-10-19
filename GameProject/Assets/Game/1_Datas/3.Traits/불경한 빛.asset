@@ -20,16 +20,17 @@ MonoBehaviour:
   <Condition>k__BackingField:
     rid: 7851380889414795333
   <Effect>k__BackingField:
-    rid: -2
+    rid: 7851380973974323267
   ConditionName: SelfDeathCondition
   timing: 0
-  EffectName: 
+  EffectName: DamageAllOpponentsBySpeedEffect
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
     - rid: 7851380889414795333
       type: {class: SelfDeathCondition, ns: , asm: Assembly-CSharp}
       data:
         reactionTiming: 0
+    - rid: 7851380973974323267
+      type: {class: DamageAllOpponentsBySpeedEffect, ns: , asm: Assembly-CSharp}
+      data: 

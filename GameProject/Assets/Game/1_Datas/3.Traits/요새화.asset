@@ -20,17 +20,21 @@ MonoBehaviour:
   <Condition>k__BackingField:
     rid: 7851380889414795335
   <Effect>k__BackingField:
-    rid: -2
+    rid: 7851380973974323270
   ConditionName: AllyPlacedNearbyCondition
   timing: 1
-  EffectName: 
+  EffectName: ModifyStatTraitEffect
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
     - rid: 7851380889414795335
       type: {class: AllyPlacedNearbyCondition, ns: , asm: Assembly-CSharp}
       data:
         reactionTiming: 1
         range: 1
+    - rid: 7851380973974323270
+      type: {class: ModifyStatTraitEffect, ns: , asm: Assembly-CSharp}
+      data:
+        modifiers:
+        - statType: 0
+          amount: 2

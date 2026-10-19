@@ -34,9 +34,18 @@ public class DamageSystem : Singleton<DamageSystem>
             Vector2Int targetPos = TokenSystem.Instance.API.GetTokenPosition(dealDamageGA.Target as Token);
             Vector2 direction = Utility.GetSignVector2Int(targetPos - attackerPos);
 
-            bool hit = false;
-            attackSeq = Utility.GetBasicAttackTween(attacker, attackerPos, direction, () => hit = true);
-            yield return new WaitUntil(() => hit);
+            if (dealDamageGA.IsRangedAttack)
+            {
+                //원거리: 제자리에서 화살 발사, 도착 시점에 피해 적용
+                Tween arrowTween = ProjectileSystem.Instance.PlayArrowShot(attackerPos, targetPos);
+                yield return arrowTween.WaitForCompletion();
+            }
+            else
+            {
+                bool hit = false;
+                attackSeq = Utility.GetBasicAttackTween(attacker, attackerPos, direction, () => hit = true);
+                yield return new WaitUntil(() => hit);
+            }
         }
 
         if (dealDamageGA.Targets != null)   //동시 단체 피격 처리

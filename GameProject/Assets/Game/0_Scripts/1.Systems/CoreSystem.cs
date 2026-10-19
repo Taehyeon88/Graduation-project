@@ -36,15 +36,27 @@ public class CoreSystem : Singleton<CoreSystem>
         Vector2Int attackerPos = api.GetTokenPosition(attacker);
         Vector2 direction = isHeroAttack ? Vector2.right : Vector2.left;
 
-        //기본 공격 모션, 타격 시점에 피해 적용
-        bool hit = false;
-        Sequence attackSeq = Utility.GetBasicAttackTween(attacker, attackerPos, direction, () => hit = true);
-        yield return new WaitUntil(() => hit);
-
-        if (isHeroAttack)
-            EnemyCoreHealth = Mathf.Max(0, EnemyCoreHealth - attacker.BaseDamage);
+        Sequence attackSeq = null;
+        if (attackCoreGA.IsRangedAttack)
+        {
+            //원거리: 제자리에서 같은 행의 상대 쪽 끝까지 화살 발사, 도착 시점에 피해 적용
+            int edgeX = isHeroAttack ? TokenSystem.Instance.gridWidth - 1 : 0;
+            Tween arrowTween = ProjectileSystem.Instance.PlayArrowShot(attackerPos, new Vector2Int(edgeX, attackerPos.y));
+            yield return arrowTween.WaitForCompletion();
+        }
         else
-            PlayerCoreHealth = Mathf.Max(0, PlayerCoreHealth - attacker.BaseDamage);
+        {
+            //기본 공격 모션, 타격 시점에 피해 적용
+            bool hit = false;
+            attackSeq = Utility.GetBasicAttackTween(attacker, attackerPos, direction, () => hit = true);
+            yield return new WaitUntil(() => hit);
+        }
+
+        int damage = attackCoreGA.Amount ?? attacker.BaseDamage;
+        if (isHeroAttack)
+            EnemyCoreHealth = Mathf.Max(0, EnemyCoreHealth - damage);
+        else
+            PlayerCoreHealth = Mathf.Max(0, PlayerCoreHealth - damage);
 
         //코어 체력 0: 적 코어면 승리, 플레이어 코어면 패배
         if (isHeroAttack && EnemyCoreHealth <= 0)

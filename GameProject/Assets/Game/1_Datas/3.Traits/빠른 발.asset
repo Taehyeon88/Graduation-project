@@ -20,16 +20,23 @@ MonoBehaviour:
   <Condition>k__BackingField:
     rid: 7851380889414795334
   <Effect>k__BackingField:
-    rid: -2
+    rid: 7851380973974323269
   ConditionName: SelfPlacedCondition
   timing: 1
-  EffectName: 
+  EffectName: ModifyStatTraitEffect
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
     - rid: 7851380889414795334
       type: {class: SelfPlacedCondition, ns: , asm: Assembly-CSharp}
       data:
         reactionTiming: 1
+        requireNoOpponentInFront: 1
+    - rid: 7851380973974323269
+      type: {class: ModifyStatTraitEffect, ns: , asm: Assembly-CSharp}
+      data:
+        modifiers:
+        - statType: 1
+          amount: 1
+        - statType: 2
+          amount: 2

@@ -12,11 +12,13 @@ public class AutoBattleSystem : Singleton<AutoBattleSystem>
     private void OnEnable()
     {
         ActionSystem.AttachPerformer<AutoBattleGA>(AutoBattleGAPerformer);
+        ActionSystem.AttachPerformer<ExtraAttackGA>(ExtraAttackGAPerformer);
     }
 
     private void OnDisable()
     {
         ActionSystem.DetachPerformer<AutoBattleGA>();
+        ActionSystem.DetachPerformer<ExtraAttackGA>();
     }
 
     //그리드 위 모든 CombatantView를 속도순으로 캐싱 (Speed 0 유닛은 행동하지 않음)
@@ -47,6 +49,16 @@ public class AutoBattleSystem : Singleton<AutoBattleSystem>
         //남은 유닛이 있으면, 예약한 행동 뒤에 다음 자동 전투 실행
         if (battleQueue.Count > 0)
             ActionSystem.Instance.AddReaction(new AutoBattleGA());
+    }
+
+    //추가 공격 차례 (이동 없이 현재 위치에서 공격 예약)
+    private IEnumerator ExtraAttackGAPerformer(ExtraAttackGA extraAttackGA)
+    {
+        CombatantView caster = extraAttackGA.Caster;
+        if (caster == null || !TokenSystem.Instance.API.IsTokenExist(caster)) yield break;
+        if (GameSystem.Instance.IsGameClear || GameSystem.Instance.IsGameOver) yield break;
+
+        caster.ReserveAttack(TokenSystem.Instance.API.GetTokenPosition(caster));
     }
 
     //가장 빠른 유닛 선택 (동속이면 서로 다른 1~6 주사위로 순서 결정)

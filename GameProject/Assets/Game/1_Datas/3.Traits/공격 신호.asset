@@ -22,16 +22,18 @@ MonoBehaviour:
   <Condition>k__BackingField:
     rid: 7851380889414795331
   <Effect>k__BackingField:
-    rid: -2
+    rid: 7851380973974323273
   ConditionName: AttackedOpponentCondition
   timing: 1
-  EffectName: 
+  EffectName: ExtraAttackEffect
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
     - rid: 7851380889414795331
       type: {class: AttackedOpponentCondition, ns: , asm: Assembly-CSharp}
       data:
         reactionTiming: 1
+    - rid: 7851380973974323273
+      type: {class: ExtraAttackEffect, ns: , asm: Assembly-CSharp}
+      data:
+        speedCost: 2

@@ -102,7 +102,27 @@ public class CombatantView : Token, IDamageable
         }
     }
 
+    //데이터에 해당 Id의 특성이 있는지
+    public bool HasTrait(int traitId)
+    {
+        return TokenData is CombatantData data && data.Traits != null && data.Traits.Any(t => t != null && t.Id == traitId);
+    }
+
+    //데이터의 특성 중 해당 효과와 같은 클래스를 효과로 쓰는 특성의 Id (효과가 자기 특성을 찾을 때 사용)
+    public bool TryGetTraitIdByEffect(TraitEffect effect, out int traitId)
+    {
+        traitId = 0;
+        if (TokenData is not CombatantData data || data.Traits == null) return false;
+
+        TraitData found = data.Traits.FirstOrDefault(t => t != null && t.Effect != null && t.Effect.GetType() == effect.GetType());
+        if (found == null) return false;
+
+        traitId = found.Id;
+        return true;
+    }
+
     protected virtual Vector2Int Forward => Vector2Int.zero;   //정면 방향 (진영별 오버라이드)
+    public Vector2Int FrontDirection => Forward;               //정면 방향 읽기 전용 (조건 등 외부 판정용)
     protected virtual bool IsTarget(Token token) => false;     //공격 대상 여부 (진영별 오버라이드)
 
     protected virtual int GetMoveLimitX(int line) => 0;        //해당 라인에서 이동 가능한 마지막 열 (상대 배치 위치 직전, 진영별 오버라이드)
@@ -115,6 +135,12 @@ public class CombatantView : Token, IDamageable
     {
         if (Forward == Vector2Int.zero) yield break;
 
+        //특성이 행동을 대체하면 기본 이동·공격은 하지 않음
+        foreach (var trait in traits)
+        {
+            if (trait.TryOverrideBattle()) yield break;
+        }
+
         TokenServiceAPI api = TokenSystem.Instance.API;
         Vector2Int pos = api.GetTokenPosition(this);
         Vector2Int front = pos + Forward;
@@ -123,8 +149,18 @@ public class CombatantView : Token, IDamageable
         {
             ActionSystem.Instance.AddReaction(new MoveGA(this, front));
             pos = front;
-            front = pos + Forward;
         }
+
+        ReserveAttack(pos);
+    }
+
+    //pos 기준 정면 공격 예약 (정면에 적이 있으면 공격, 이동 한계인데 정면이 비어 있으면 상대 코어 공격)
+    public void ReserveAttack(Vector2Int pos)
+    {
+        if (Forward == Vector2Int.zero) return;
+
+        TokenServiceAPI api = TokenSystem.Instance.API;
+        Vector2Int front = pos + Forward;
 
         Token frontToken = api.GetTokenByPosition(front);
         if (frontToken != null && IsTarget(frontToken) && frontToken is IDamageable target)
@@ -213,6 +249,23 @@ public class CombatantView : Token, IDamageable
     public void Heal(int amount)
     {
         CurrentHealth = Mathf.Min(CurrentHealth + amount, MaxHealth);
+    }
+    //스탯 증가 (체력은 최대·현재를 함께 증가, 음수는 사망 처리를 하지 않으므로 양수만 사용)
+    public void ModifyStat(StatType type, int amount)
+    {
+        switch (type)
+        {
+            case StatType.HEALTH:
+                MaxHealth += amount;
+                CurrentHealth += amount;
+                break;
+            case StatType.DAMAGE:
+                BaseDamage += amount;
+                break;
+            case StatType.SPEED:
+                Speed += amount;
+                break;
+        }
     }
     public virtual void AddStatusEffect(StatusEffectType type, int stackCount, Sprite sprite)
     {

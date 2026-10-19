@@ -22,11 +22,21 @@ MonoBehaviour:
     \uACF5\uACA9\uB825\uC774 1 \uAC10\uC18C\uD558\uC9C0\uB9CC, 1 \uBBF8\uB9CC\uC73C\uB85C
     \uB0B4\uB824\uAC00\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."
   <Condition>k__BackingField:
-    rid: -2
+    rid: 7851380973974323276
   <Effect>k__BackingField:
-    rid: -2
+    rid: 7851380973974323277
+  ConditionName: AutoBattleTurnCondition
+  timing: 1
+  EffectName: SniperEffect
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 7851380973974323276
+      type: {class: AutoBattleTurnCondition, ns: , asm: Assembly-CSharp}
+      data:
+        reactionTiming: 1
+    - rid: 7851380973974323277
+      type: {class: SniperEffect, ns: , asm: Assembly-CSharp}
+      data:
+        damageDecay: 1
+        minDamage: 1

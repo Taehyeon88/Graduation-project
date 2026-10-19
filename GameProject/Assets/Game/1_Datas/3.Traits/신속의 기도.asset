@@ -19,11 +19,19 @@ MonoBehaviour:
     \uC18D\uB3C4\uB97C \uC99D\uAC00\uC2DC\uD0B5\uB2C8\uB2E4. \uAC19\uC740 \uD2B9\uC131\uC744
     \uAC00\uC9C4 \uC6A9\uBCD1\uC5D0\uAC8C\uB294 \uC801\uC6A9\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."
   <Condition>k__BackingField:
-    rid: -2
+    rid: 7851380973974323274
   <Effect>k__BackingField:
-    rid: -2
+    rid: 7851380973974323275
+  ConditionName: AuraTriggerCondition
+  timing: 1
+  EffectName: AllySpeedAuraEffect
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 7851380973974323274
+      type: {class: AuraTriggerCondition, ns: , asm: Assembly-CSharp}
+      data:
+        reactionTiming: 1
+    - rid: 7851380973974323275
+      type: {class: AllySpeedAuraEffect, ns: , asm: Assembly-CSharp}
+      data: 

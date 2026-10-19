@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: 2.Larva
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   <Id>k__BackingField: 1
-  <Name>k__BackingField: "\uC560\uBC8C\uB808"
   <Sprite>k__BackingField: {fileID: 21300000, guid: aa0d1c860cb904911a6d086803e590ca, type: 3}
-  <HRange>k__BackingField: 0
   <Health>k__BackingField: 10
-  <Damage>k__BackingField: 3
+  <Damage>k__BackingField: 1
   <Speed>k__BackingField: 1
+  <Traits>k__BackingField: []

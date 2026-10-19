@@ -14,6 +14,7 @@
 |---|---|---|---|
 | `AutoBattleTurnGA` | 턴/루프 | `TurnSystem` | 자동 전투 턴 — 팝업 → 큐 캐싱 → `AutoBattleGA` 시작, POST에서 `TurnGA(Enemy)` |
 | `AutoBattleGA` | 턴/루프 | `AutoBattleSystem` | 유닛 1명 행동 예약(`Battle()`) 후 다음 `AutoBattleGA`를 리액션으로 반복 |
+| [`ExtraAttackGA`](#extraattackga) | 턴/루프 | `AutoBattleSystem` | 이동 없이 현재 위치에서 정면 공격을 한 번 더 예약 — 특성 `ExtraAttackEffect`가 예약 |
 | [`TurnGA`](#turnga) | 턴/루프 | `TurnSystem` | 턴 전환의 축 — StartBattle → Player ↔ Enemy 순환 |
 | [`SpendAPGA`](#spendapga) | 자원 | `APSystem` | AP(행동력) 소모 |
 | [`RefillAPGA`](#refillapga) | 자원 | `APSystem` | AP 획득(`Amount`, 최대 AP 초과분 제외) — `TurnGA` PRE에서 예약 |
@@ -28,6 +29,7 @@
 | [`AttackEnemyGA`](#attackenemyga) | 전투 | `AttackEnemyProcessor` | 영웅 근접/원거리 공격(모션 + 데미지) |
 | [`HealGA`](#healga) | 회복/상태 | `HealSystem` | 대상 회복 |
 | [`AddStatusEffectGA`](#addstatuseffectga) | 회복/상태 | `StatusEffectSystem` | 상태이상(ARMOR/POWER 등) 스택 부여 |
+| [`ModifyStatGA`](#modifystatga) | 회복/상태 | `StatSystem` | 대상의 스탯(체력/공격력/속도) 증감 — 특성 `ModifyStatTraitEffect`가 예약 |
 | [`PlaySkillGA`](#playskillga) | 스킬 | `SkillSystem` | 스킬 사용 시작(최상위 트리거) |
 | [`PerformEffectGA`](#performeffectga) | 스킬 | `EffectProcessor` | 스킬 내 Effect 1개 실행 |
 | [`SplashGA`](#splashga) | 콤보 | `SplashProcessor` | 범위(스플래시) 공격 |
@@ -49,6 +51,12 @@
 - **리액션**: `AutoBattleTurnGA` PRE — `TurnSystem`(`currentTurn` 선반영), `HeroSystem.AutoBattleTurnPreReaction`(영웅 "내 턴 종료" SE 감소), `용사의 갑옷` 특성(`AutoBattleTurnCondition` PRE + `AddStatusTraitEffect`, 소유자 방어막 `AddStatusEffectGA(ARMOR)` 예약). POST — `TurnSystem`이 `TurnGA(Enemy)` 체이닝
 - **파생 액션**: `Battle()`이 판단은 모두 예약 시점에 끝내고 GA만 예약 — ① 이동 한계 전이고 정면이 비면 `MoveGA`(1칸, AP 소모 없음) ② 이동했다고 가정한 위치의 정면에 적이 있으면 `DealDamageGA(Amount, target, attacker, true)`(대상 확정), 이동 한계인데 정면이 비어 있으면 `AttackCoreGA`. 기본 공격 `DealDamageGA`는 `DamageSystem`이 기본 공격 모션 1(`Utility.GetBasicAttackTween`: 전진 → 타격 시점에 피해 → 복귀)을 재생. `AutoBattleSystem`은 `IsGameClear`/`IsGameOver`가 되면 큐를 비워 종료
 - **트리거 지점**: `TurnEndUI.TurnEnd`에서 `Perform(AutoBattleTurnGA)`
+
+#### `ExtraAttackGA`
+- **파일**: `Assets/Game/0_Scripts/2.GameActions/ExtraAttackGA.cs` (`IHaveCaster` 명시적 구현)
+- **필드**: `CombatantView Caster`
+- **Performer**: `AutoBattleSystem.ExtraAttackGAPerformer` — Caster가 null이거나 그리드에 없거나 `IsGameClear`/`IsGameOver`이면 종료, 아니면 `Caster.ReserveAttack(현재 위치)`로 이동 없이 정면 공격(`DealDamageGA`) 또는 코어 공격(`AttackCoreGA`)을 예약
+- **트리거 지점**: `공격 신호` 특성(`DealDamageGA`/`AttackCoreGA` POST, `AttackedOpponentCondition` + `ExtraAttackEffect`) — 효과가 `ModifyStatGA(SPEED, -2)`와 함께 예약하며(속도가 2 미만이면 예약하지 않음), 추가 공격이 조건을 다시 충족해 속도가 2 미만이 될 때까지 반복
 
 #### `TurnGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/TurnGA.cs`
@@ -122,8 +130,8 @@
 
 #### `DealDamageGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/DealDamageGA.cs` (`IHaveCaster` 구현)
-- **필드**: `float Amount`, `List<IDamageable> Targets` / `IDamageable Target`(`{ get; set; }`), `Token Caster`, `bool IsBasicAttack`(자동 전투 기본 공격 — 공격 모션 재생) (생성자 3개: 다중·단일·`(float amount, IDamageable target, Token caster, bool isBasicAttack)`)
-- **Performer**: `DamageSystem.DealDamagePerformer` — `IsBasicAttack && Target != null`이면(대상은 `Battle()`이 예약 시점에 확정) 기본 공격 모션 재생·타격 시점에 피해, 복귀까지 대기. 이후 `DamageCaculator.GetDamage()`로 최종 수치 계산 + 피격 VFX + `target.Damage()` 호출(방어막 소모 처리, 체력 0 이하 시 `KillGA`를 이 액션의 `PostReactions`에 직접 추가)
+- **필드**: `float Amount`, `List<IDamageable> Targets` / `IDamageable Target`(`{ get; set; }`), `Token Caster`, `bool IsBasicAttack`(자동 전투 기본 공격 — 공격 모션 재생), `bool IsRangedAttack`(기본 공격 모션을 근접 돌진 대신 화살 발사로 재생, 저격) (생성자 4개: 다중·단일·`(float amount, IDamageable target, Token caster, bool isBasicAttack)`·`(…, bool isBasicAttack, bool isRangedAttack)`)
+- **Performer**: `DamageSystem.DealDamagePerformer` — `IsBasicAttack && Target != null`이면(대상은 `Battle()`이 예약 시점에 확정) 기본 공격 모션 재생·타격 시점에 피해, 복귀까지 대기. `IsRangedAttack`이면 근접 모션 대신 `ProjectileSystem.PlayArrowShot`으로 제자리에서 화살을 쏘고 도착 시점에 피해(복귀 대기 없음). 이후 `DamageCaculator.GetDamage()`로 최종 수치 계산 + 피격 VFX + `target.Damage()` 호출(방어막 소모 처리, 체력 0 이하 시 `KillGA`를 이 액션의 `PostReactions`에 직접 추가)
 - **POST 구독자**: `피묻은 도끼` 특성 (`DealDamageCondition` POST + `HealOnDamageEffect`, 조건: `Trait.Reaction`이 `Caster == owner`인 GA만 통과) — 확률 조건 충족 시 `HealGA` 예약(자힐)
 - **파생 액션**: `CombatantView.Damage()` 내부에서 체력 ≤ 0이면 `dealDamageGA.PostReactions.Add((KillGA, null))` — 전역 체이닝이 아니라 **이 인스턴스에 직접 종속**
 - **트리거 지점**: 전투 계열 다수의 공통 최종 경로 — `CombatantView.Battle`(자동 전투, `isBasicAttack: true`), `AttackEnemyGAPerformer`, `ShieldBashGAPerformer`, `ShoulderBashGAPerformer`, `SplashGAPerformer`, `KnockBackGAPerformer`(충돌 시) 등
@@ -138,8 +146,8 @@
 
 #### `AttackCoreGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/AttackCoreGA.cs` (`IHaveCaster` 구현)
-- **필드**: `Token Caster` (Performer에서 `as CombatantView`로 변환)
-- **Performer**: `CoreSystem.AttackCoreGAPerformer` — 기본 공격 모션(`Utility.GetBasicAttackTween`) 재생 → 타격 시점에 `Caster.BaseDamage`만큼 상대 코어 HP 차감(영웅이면 적 코어, 적이면 플레이어 코어) → HP 0이면 `GameClearGA`(영웅 공격)/`GameOverGA`(적 공격) 체이닝 → 모션 복귀까지 대기
+- **필드**: `Token Caster` (Performer에서 `as CombatantView`로 변환), `int? Amount`, `bool IsRangedAttack`(화살 발사 모션, 저격) (생성자 3개: `(caster)`·`(caster, amount)`·`(caster, bool isRangedAttack)`)
+- **Performer**: `CoreSystem.AttackCoreGAPerformer` — 기본 공격 모션(`Utility.GetBasicAttackTween`) 재생(`IsRangedAttack`이면 제자리에서 같은 행의 상대 쪽 그리드 끝까지 `ProjectileSystem.PlayArrowShot` 화살 발사 후 도착 시점에 피해) → 타격 시점에 `Caster.BaseDamage`만큼 상대 코어 HP 차감(영웅이면 적 코어, 적이면 플레이어 코어) → HP 0이면 `GameClearGA`(영웅 공격)/`GameOverGA`(적 공격) 체이닝 → 모션 복귀까지 대기
 - **트리거 지점**: `CombatantView.Battle()`(자동 전투 — 이동 한계에서 정면이 비어 있을 때 `AddReaction`)
 - **관련 체인**: §3-4
 
@@ -164,6 +172,12 @@
 - **트리거 지점**: 아래 목록에 `AddStatusEffectEffect.cs`(버프/디버프 스킬의 Effect) 추가 — `SETargetMode`에 따라 자신/대상/전체에 상태이상 부여
 - **Performer**: `StatusEffectSystem.AddStatusEffectPerformer` — 대상별로 상태이상 스택 부여
 - **트리거 지점**: `ShieldBashProcessor.ShieldBashGAPerformer`(해당 `DealDamageGA`의 `PostReactions`에 직접 종속), `용사의 갑옷` 특성(`AutoBattleTurnGA` PRE, ARMOR), `근육 트로피` 특성(`TurnGA` POST, POWER) — 둘 다 `AddStatusTraitEffect`
+
+#### `ModifyStatGA`
+- **파일**: `Assets/Game/0_Scripts/2.GameActions/ModifyStatGA.cs` (`IHaveCaster` 명시적 구현)
+- **필드**: `StatType StatType`(HEALTH/DAMAGE/SPEED), `int Amount`(증감량), `List<CombatantView> Targets`, `CombatantView Caster`
+- **Performer**: `StatSystem.ModifyStatGAPerformer` — 대상별 `CombatantView.ModifyStat` 호출 (HEALTH는 최대·현재 체력 함께 증가). 음수 증감 시 사망 처리는 구현되어 있지 않다
+- **트리거 지점**: `요새화` 특성(`PlayCardGA` POST, `AllyPlacedNearbyCondition` + `ModifyStatTraitEffect`, 소유자 자신의 체력 +2), `빠른 발` 특성(`PlayCardGA` POST, `SelfPlacedCondition`(정면에 적 없음) + `ModifyStatTraitEffect`, 소유자 자신의 공격력 +1·속도 +2 — 항목마다 `ModifyStatGA` 1개씩 예약), `맹공` 특성(`DealDamageGA`/`AttackCoreGA` POST, `AttackedOpponentCondition` + `ModifyStatTraitEffect`, 소유자 자신의 공격력 +1, `maxTriggers` 4로 유닛당 최대 4회)
 
 ### 2-6. 스킬 실행 파이프라인
 
