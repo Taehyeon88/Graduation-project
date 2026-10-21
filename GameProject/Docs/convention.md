@@ -234,7 +234,8 @@ public interface IHaveDamage { float Damage_Amount { get; } }
   ...
   AttackEnemyGA attackEnemyGA = new(targetpoes, amount, count, myView, animationType);
   ```
-- 현재 위반 사례(이번 작업에서 수정하지 않음, 11절 참고): `APSystem.MaxAP`/`MPSystem.MaxMP`(자동 프로퍼티 초기값 `= 3`), `KnockBackProcessor.crachDamage`(`const int` `= 1`), `SkillSystem`에서 모든 스킬의 AP 코스트가 `SpendAPGA` 기본 파라미터 `1`로 고정(`SkillData`/`SkillAbility`엔 코스트 필드 자체가 없음), `RewardSystem`의 보상 등급 확률(`0.7f`).
+- **의도적 예외:** 모든 플레이어 스킬이 공유하는 규칙 상수(AP 1)는 SO 필드가 아니라 이름 있는 `const`로 둔다 — `PlayerSkillSystem.APCost`. 스킬별 수치(피해량 등)는 스킬 클래스의 `[SerializeField]`(`SharpDagger.damage`)와 SO(`PlayerSkillData.MaxUses`)로 노출한다.
+- 현재 위반 사례(이번 작업에서 수정하지 않음, 11절 참고): `APSystem.MaxAP`(자동 프로퍼티 초기값 `= 5`), `KnockBackProcessor.crachDamage`(`const int` `= 1`), `RewardSystem`의 보상 등급 확률(`0.7f`). (`MPSystem`과 `SkillSystem`은 제거되어 목록에서 뺐다.)
 
 <a id="sec-9"></a>
 ## 9. 시그니처(열거형)
@@ -244,7 +245,7 @@ public interface IHaveDamage { float Damage_Amount { get; } }
 - **GameAction 필드나 SO 데이터의 구분자로 쓰이는 열거형은 System 분기를 좌우하는 고정 계약이다.** 멤버 이름을 바꾸면 그 값으로 분기하는 모든 System이 깨지므로, 기존 멤버명은 그대로 두고 확장만 한다.
   ```csharp
   // Enums/TurnType.cs — TurnGA.Type의 값, TurnSystem/HeroSystem의 Pre·PostReaction 분기를 결정
-  public enum TurnType { Enemy, Player, StartBattle, GameSetUp }
+  public enum TurnType { Enemy, Player, StartBattle, GameSetUp, AutoBattle }
   ```
 
 | 열거형 | 파일 | 분기 위치 |
@@ -266,7 +267,7 @@ public interface IHaveDamage { float Damage_Amount { get; } }
 <a id="sec-10"></a>
 ## 10. SO 데이터 형태
 
-`Assets/Game/0_Scripts/5.Data/`(스크립트 정의, `~Data` 접미사 11개) ↔ `Assets/Game/1_Datas/`(실제 `.asset` 인스턴스, `1.Enemies/`·`1.Heroes/`·`2.Skills/`·`3.Stages/`·`4.StatusEffects/`·`6.VisualGrids/` 등 타입별 하위 폴더)로 스크립트 폴더와 자산 폴더가 분리되어 있다. `Resources.LoadAll`/Addressables는 쓰지 않는다 — `GameSystem`이 덱(`List<HeroData>`)을 `[SerializeField]`로 직접 들고, 하위 System은 `GameSystem.Instance.Deck`/`CurrentStageData`로 참조한다(`GameSystem.cs:16,20,24`). `TokenCreator`는 공통 베이스 `TokenData`를 받아 `as HeroData`/`as EnemyData`로 다운캐스트한다.
+`Assets/Game/0_Scripts/5.Data/`(스크립트 정의, `~Data` 접미사 14개) ↔ `Assets/Game/1_Datas/`(실제 `.asset` 인스턴스, `1.Heroes/`·`2.Enemies/`·`3.Traits/`·`6.StatusEffects/`·`7.VisualGrids/`·`8.Stages/`·`10.Cores/`·`10.PlayerSkills/` 등 타입별 하위 폴더 — 전체는 [Folder.md](Folder.md) 2절)로 스크립트 폴더와 자산 폴더가 분리되어 있다. `Resources.LoadAll`/Addressables는 쓰지 않는다 — `GameSystem`이 덱(`List<HeroData>`)을 `[SerializeField]`로 직접 들고, 하위 System은 `GameSystem.Instance.Deck`/`CurrentStageData`로 참조한다(`GameSystem.cs:16,20,24`). `TokenCreator`는 공통 베이스 `TokenData`를 받아 `as HeroData`/`as EnemyData`로 다운캐스트한다.
 
 - **필드 패턴:** `[CreateAssetMenu(menuName = "Data/...")]` + `[field: SerializeField] public X Prop { get; private set; }`.
   ```csharp
@@ -278,7 +279,7 @@ public interface IHaveDamage { float Damage_Amount { get; } }
       [field: SerializeField] public int MovePoint { get; private set; }
   }
   ```
-- `~Data` 클래스 목록: `TokenData`(공통 베이스), `CombatantData`(→ `TokenData` 상속, 추상) → `HeroData`/`EnemyData`, `SkillData`, `TraitData`, `StageData`, `WaveData`, `StatusEffectData`, `SoundData`, `VisualGridData`(전부 `5.Data/`).
+- `~Data` 클래스 목록: `TokenData`(공통 베이스), `CombatantData`(→ `TokenData` 상속, 추상) → `HeroData`/`EnemyData`/`EnemyFlagData`/`HeroCaptainData`, `SkillData`(휴면), `PlayerSkillData`, `TraitData`, `StageData`, `WaveData`, `StatusEffectData`, `SoundData`, `VisualGridData`(전부 `5.Data/`, 총 14개). `PlayerSkillData`는 `TraitData`처럼 `[field: SerializeReference, SR]`로 추상 `PlayerSkill`(`Models/`) 서브클래스(`PlayerSkills/`)를 조립한다.
 - **SO는 데이터만 들고, 동작은 넣지 않는다.** 예외: `VisualGridData.cs`는 `GetVGLayerOrder()`와 중첩 `abstract class VisualGridType`(`FillType`/`BorderType`/`SymbolType`)에 실제 로직을 갖고 있다 — 이번 작업에서 리팩터링하지 않고 11절에 위반으로만 기록한다.
 
 <a id="sec-11"></a>
@@ -288,7 +289,7 @@ public interface IHaveDamage { float Damage_Amount { get; } }
 
 | # | 규약 | 위반 파일:라인 |
 |---|---|---|
-| 1 | (8절) 밸런싱 수치는 SO/`[SerializeField]`로 노출, 리터럴 금지 | `APSystem.cs:9`(`MaxAP = 5`), `MPSystem.cs:7`(`MaxMP = 3`), `KnockBackProcessor.cs:8`(`crachDamage = 1`), `SkillSystem.cs:275`(스킬 AP 코스트 미데이터화), `RewardSystem.cs:24`(`0.7f`) |
+| 1 | (8절) 밸런싱 수치는 SO/`[SerializeField]`로 노출, 리터럴 금지 | `APSystem.cs:9`(`MaxAP = 5`), `KnockBackProcessor.cs:8`(`crachDamage = 1`), `RewardSystem.cs:24`(`0.7f`) |
 | 2 | (9절) 열거형은 접두사 없이 `~Type`/`~Mode`/`~State` 접미사 + PascalCase | `ETargetModeType`만 `E` 접두사 (나머지 17개엔 없음) |
 | 3 | (9절) 열거형 멤버는 전부 대문자(ALL_CAPS) | 멤버가 PascalCase인 기존 열거형(`TurnType` 등 ALL_CAPS가 아닌 것 전부) — 규칙 이전 코드, 아직 정리하지 않음 |
 | 4 | (9절) 열거형은 실제로 분기에 쓰여야 함(정리 후보) | `CardSubType`, `ETargetModeType`, `CardAbilityType`, `DamageFormulaType`, `AudioEditorType` — 소비하는 코드 없음 (`SEMachanicsType`은 삭제됨) |

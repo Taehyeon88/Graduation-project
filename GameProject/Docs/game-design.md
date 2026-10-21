@@ -79,7 +79,7 @@
 - **카드 = 용병 1명**: 카드 1장을 사용하면 선택한 타일에 해당 용병이 배치되고, 카드의 AP 비용이 차감된다.
 - **카드·AP 사이클**: 게임 시작 시 3장 드로우. 카드를 사용했을 때만 버린 카드 더미로 이동. AP 1을 쓰는 카드 뽑기 버튼으로만 1장 추가 드로우(턴 시작 시 드로우 없음, 턴 종료 시 카드 버리기 없음). 전투 시작 시 AP 5, 플레이어 턴 시작 시마다 AP 3 획득(최대 AP 5) — [Rule/combat-rules.md](Rule/combat-rules.md) §5. 구현 상세는 [feature-spec/04_card_system.md](feature-spec/04_card_system.md).
 - **특성**: 용병당 최대 2개. 전투 중 조건(`GameAction`)에 반응해 발동한다 — 상세는 [feature-spec/05_trait_system.md](feature-spec/05_trait_system.md).
-- 현재 코드의 AP(`MaxAP = 3`, 턴 시작 시 리필)는 위 규칙(전투 시작 시 AP 5, 턴 시작 시마다 AP 3 획득, 최대 AP 5)와 다르다. 코드는 아직 규칙에 맞춰 바뀌지 않았다.
+- 현재 코드의 AP는 위 규칙과 일치한다: `APSystem`의 `MaxAP = 5`, `startBattleAP = 5`(전투 시작 시 `RefillAPGA`), `turnStartAP = 3`(플레이어 턴 시작마다 `RefillAPGA`, 최대치 초과분은 버림).
 - **턴 구조(현재 코드)**: `Player → AutoBattle → Enemy → Player …` 반복. 턴 단위는 `AutoBattleTurnGA`(팝업 → `AutoBattleSystem.CacheCombatants()`로 `Speed` 내림차순 큐 캐싱 → `AutoBattleGA` 시작). `AutoBattleGA` 1회 = 유닛 1명: 큐 맨 앞 속도의 동속 그룹에서 서로 다른 1~6 주사위로 1명을 고르고 `CombatantView.Battle()`로 행동을 예약한 뒤, 마지막에 다음 `AutoBattleGA`를 `AddReaction`해 큐가 빌 때까지(또는 한쪽 전멸) 반복한다. `Battle()` 공용 패턴: **정면 한 줄만** 사용 — 정면 칸이 비어 있으면 1칸 이동을 예약하고(이동은 `Speed`와 무관), 이어서 공격(`DealDamageGA`)을 예약한다. 공격 대상은 예약 시점이 아니라 **`DealDamageGA` 실행 시점의 공격자 정면**(영웅은 적, 몬스터는 영웅)에서 정하고 없으면 공격하지 않는다. 정면은 영웅 +x, 몬스터 -x. 자동 전투 이동은 `MoveGA` 직접 예약(AP 소모 없음). `Speed` 0 유닛(허수아비)은 행동하지 않는다. 속도순·동속 주사위·1회 행동량·사거리(현재 정면 1칸)·전투 종료 조건·몬스터 행동은 (원작 확인 필요). 몬스터 턴은 AI 도입 전까지 빈 턴이다. 웨이브 코어(깃발)는 제거했고 몬스터 생성 위치는 `WaveData.SpawnPositions`(몬스터별, 테스트용)로 지정한다. 승리·패배 조건은 (원작 확인 필요).
 - 플레이어 턴 종료(= `AutoBattle` 시작) 시점에 영웅 상태이상 감소(`HeroSystem`)와 방어막 특성(`HeroArmor`)이 걸린다. `MuscleTrophy`(전투 시작 시)는 그대로이며 발동 시점은 (원작 확인 필요).
 - **유닛 공용 데이터(영웅·몬스터)**: `CombatantData`(`Health` 체력, `Damage` 공격력, `Speed` 행동 순서(속도), `Perks` 특성 리스트 최대 2개). `Damage`/`Speed`는 자동 전투(`CombatantView.Battle`, `AutoBattleSystem`)가 소비한다 — 피해는 `DealDamageGA` → `DamageCaculator.GetDamage`로 `POWER`/약화/취약과 합성. `Speed`가 순서 키 외에 이동 거리를 겸하는지(현재는 순서 키 전용, 이동은 항상 1칸), `Damage`가 모든 행동의 기준인지는 (원작 확인 필요). 에셋의 `Damage`/`Speed` 값(영웅 4/3/2·1, 몬스터 0/3/3·0/1/1)은 기존 스킬·AI 수치에서 유추한 **임시값**이다. 영웅 런타임 복사본(`Hero`)과 수동 스킬 보유(`StartingSkills`), 골드는 제거했다.
@@ -92,9 +92,9 @@
 
 ## 7. 스코프
 
-- **포함**: 용병 모집·덱빌딩, 용병 카드 시스템(드로우/손패/버림 + AP 배치), 그리드 배치(AP), 속도순 자동 전투, 특성 시스템(용병당 최대 2개), 다중 라운드·로그라이크 진행
+- **포함**: 용병 모집·덱빌딩, 용병 카드 시스템(드로우/손패/버림 + AP 배치), 그리드 배치(AP), 속도순 자동 전투, 특성 시스템(용병당 최대 2개), 플레이어 스킬(AP 1, 턴당 1회, 전투당 횟수 제한 — 첫 스킬 '날카로운 단도', [feature-spec/07_player_skill.md](feature-spec/07_player_skill.md)), 다중 라운드·로그라이크 진행
 - **제외**: 원작 아트·연출 모방 (아트는 모작 대상이 아님)
-- **제거됨**: 수동 스킬 시스템(`SkillSystem` — 스킬 버튼 클릭→타겟팅 UI, [feature-spec/02_skill_system.md](feature-spec/02_skill_system.md), 역사 기록). `Effect` → `PerformEffectGA` → 구체 GA 체인, `TargetMode`/`RangeMode`, `Skill`/`SkillData` 데이터 모델은 유닛 행동 실행부로 남겼다(현재 호출 경로 없음).
+- **제거됨**: 영웅 수동 스킬 시스템(`SkillSystem` — 스킬 버튼 클릭→타겟팅 UI, [feature-spec/02_skill_system.md](feature-spec/02_skill_system.md), 역사 기록). 새로 도입한 **플레이어 스킬**(`PlayerSkillSystem`)은 이것과 별개다. `Effect` → `PerformEffectGA` → 구체 GA 체인, `TargetMode`/`RangeMode`, `Skill`/`SkillData` 데이터 모델은 유닛 행동 실행부로 남겼다(현재 호출 경로 없음).
 - **제거됨**: 몬스터 자율 행동 계층(`EnemySystem`, `Enemy`/`EnemyAction` 판단·행동 모델과 구현체, `AttackHeroGA`/`PlayEnemyEAGA`, [feature-spec/01_enemy_system.md](feature-spec/01_enemy_system.md), 역사 기록). 몬스터는 체력·스프라이트만 가진 수동적 토큰이며 적 턴은 빈 턴이다. 적의 유닛 배치·이동 AI는 새로 설계한다(원본은 git 이력).
 - **제거 예정**: 플레이어 수동 이동 모드(`MoveSystem`) — 속도순 자동 행동 도입 시 함께 정리.
 - **재확인 필요**: 세이브/로드, 인게임 옵션 메뉴, 다국어, 터치 입력 (이전 기획에서는 비스코프였음, 원작 대응 여부 미정)
@@ -107,9 +107,9 @@
 | 플레이어 개입 | 배치 단계 | 매 턴 직접 행동 |
 | 말 / 유닛 | 용병 말 + 특성(최대 2개) | `Hero1~3` 등 영웅 SO + `Perk`(용병당 최대 2개 제약 구현됨) |
 | 용병 획득·배치 | 카드(용병)를 AP로 배치 | 전투 시작 시 영웅이 `TokenSetup`으로 고정 배치 (카드 시스템은 복구 중, [04_card_system](feature-spec/04_card_system.md)) |
-| AP | 전투 시작 시 AP 5, 턴 시작 시마다 AP 3 획득, 최대 AP 5, 카드 뽑기 1 AP | `MaxAP = 3`, 턴 시작 시 리필 |
+| AP | 전투 시작 시 AP 5, 턴 시작 시마다 AP 3 획득, 최대 AP 5, 카드 뽑기 1 AP | 원작 규칙과 일치 (`MaxAP = 5`, 전투 시작 5, 턴 시작 +3, 카드 뽑기 1 AP) |
 | 전투 판 | 4×4, 배치 구간은 `StageSO` 기준 | 그리드 구현은 있으나 배치 구간·코어 공격 규칙 미반영 |
-| 행동 수단 | 속도순 자동 행동 | 영웅별 스킬 버튼(`SkillSystem`) 수동 사용 + 수동 이동(AP 1칸) |
+| 행동 수단 | 속도순 자동 행동 | 속도순 자동 전투(`AutoBattleSystem`) + 플레이어 스킬(`UseSkillUI` 드래그, AP 1, [07_player_skill](feature-spec/07_player_skill.md)). 영웅 수동 스킬(`SkillSystem`)은 제거됨. 수동 이동 모드(`MoveSystem`)는 남아 있으나 제거 예정 |
 | 메타 | 용병 모집, 덱빌딩, 로그라이트 | 단일 전투 스테이지 (웨이브 생성까지 구현) |
 
 기존 `ActionSystem`(GameAction + PRE/POST 리액션) 파이프라인 위에 AP 배치·속도순 자동 행동·특성을 얹는 방향이다. 어떤 기존 시스템을 유지·교체할지는 챕터별 명세(`feature-spec/`)를 갱신할 때 결정한다.

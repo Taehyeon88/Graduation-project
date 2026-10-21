@@ -61,8 +61,8 @@ public class DamageSystem : Singleton<DamageSystem>
             {
                 if (target == null) continue;
 
-                //회피 : 스택 1 소모하고 피해·피격 연출 생략
-                if (target is CombatantView dodger && dodger.CheckStatusEffectExist(StatusEffectType.DODGE))
+                //회피 : 스택 1 소모하고 피해·피격 연출 생략 (회피 무시 시 건너뜀)
+                if (!dealDamageGA.IgnoreDodge && target is CombatantView dodger && dodger.CheckStatusEffectExist(StatusEffectType.DODGE))
                 {
                     dodger.RemoveStatusEffect(StatusEffectType.DODGE, 1);
                     continue;
@@ -84,7 +84,7 @@ public class DamageSystem : Singleton<DamageSystem>
                 target.Damage(amountInt, dealDamageGA);
             }
         }
-        else if (dealDamageGA.Target is CombatantView singleDodger && singleDodger.CheckStatusEffectExist(StatusEffectType.DODGE))
+        else if (!dealDamageGA.IgnoreDodge && dealDamageGA.Target is CombatantView singleDodger && singleDodger.CheckStatusEffectExist(StatusEffectType.DODGE))
         {
             //회피 : 스택 1 소모하고 피해·피격 연출 생략
             singleDodger.RemoveStatusEffect(StatusEffectType.DODGE, 1);

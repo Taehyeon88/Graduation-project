@@ -13,6 +13,7 @@ public class GameSystem : Singleton<GameSystem>
     public bool IsTutorial { get; set; } = false;                            //튜토리얼                               //카드 덱
 
     [field: SerializeField] public List<HeroData> Deck { get; private set; } //덱 (씬 전환 후에도 유지)
+    [field: SerializeField] public List<PerkData> Perks { get; private set; } //유저 소유 유물 (씬 전환 후에도 유지)
 
     public StageData CurrentStageData
     {

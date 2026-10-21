@@ -10,6 +10,7 @@ public class DealDamageGA : GameAction, IHaveCaster
     public Token Caster { get; private set; }
     public bool IsBasicAttack { get; private set; }   //자동 전투 기본 공격 (공격 모션 재생)
     public bool IsRangedAttack { get; private set; }  //기본 공격 모션을 근접 돌진 대신 화살 발사로 재생
+    public bool IgnoreDodge { get; private set; }     //회피 무시 (회피 스택 소모 없이 피해 적용)
 
     public DealDamageGA(float amount, List<IDamageable> targets, Token caster)
     {
@@ -37,5 +38,11 @@ public class DealDamageGA : GameAction, IHaveCaster
         : this(amount, target, caster, isBasicAttack)
     {
         IsRangedAttack = isRangedAttack;
+    }
+
+    public DealDamageGA(float amount, IDamageable target, Token caster, bool isBasicAttack, bool isRangedAttack, bool ignoreDodge)
+        : this(amount, target, caster, isBasicAttack, isRangedAttack)
+    {
+        IgnoreDodge = ignoreDodge;
     }
 }

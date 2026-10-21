@@ -66,6 +66,8 @@
   - `WaveSystem.TurnGAPreReaction` (조건: `Type == Player`) — 웨이브 카운트다운(`turnsUntilNextWave`) 감소, 0 이하이면 `AddReaction(SpawnWaveGA)`
   - `APSystem.TurnGAPreReaction` (조건: `Type == StartBattle` / `Player`) — `AddReaction(RefillAPGA(5))` / `AddReaction(RefillAPGA(3))`
   - `CardSystem.StartBattlePreReaction` (조건: `Type == StartBattle`) — `AddReaction(DrawCardsGA(startDrawAmount))` (턴 시작 드로우는 없음)
+  - `PerkSystem.TurnGAPreReaction` (조건: `Type == StartBattle`) — 소유 유물(`Perk`)의 전투당 발동 횟수 초기화 (파생 GA 없음)
+  - `PlayerSkillSystem.TurnGAPreReaction` (조건: `Type == StartBattle` / `Player`) — `StartBattle`이면 남은 사용 횟수를 `MaxUses`로 리셋, 두 경우 모두 이번 턴 사용 여부 초기화 (파생 GA 없음)
 - **POST 구독자**:
   - `TurnSystem.TurnGAPostReaction` (조건: `Type == Enemy`) — `TurnGA(Player)` 체이닝 (턴 순환의 핵심)
   - `근육 트로피` 특성 (`TurnCondition`, 조건: `Type == StartBattle`) — 보유 영웅에게 `AddStatusEffectGA(POWER)` 예약 (`AddStatusTraitEffect`). `TurnGA`는 Caster가 없어 `Trait.Reaction`의 소유자 필터를 통과
@@ -81,7 +83,7 @@
 - **Performer**: `APSystem.SpendAPPerformer` — `CurrentAP -= Amount`, `APUI` 갱신
 - **PRE/POST 구독자**: 없음
 - **파생 액션**: 없음
-- **트리거 지점**: `SkillSystem.PlaySkillPerformer`(스킬 사용 시 `AddReaction`)
+- **트리거 지점**: `SkillSystem.PlaySkillPerformer`(스킬 사용 시 `AddReaction`), `PlayerSkillSystem.TryUse`(플레이어 스킬 — 스킬 GA의 `PreReactions`에 `SpendAPGA(APCost)`를 직접 종속)
 - **관련 체인**: §3-2
 
 #### `RefillAPGA`
@@ -129,11 +131,11 @@
 
 #### `DealDamageGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/DealDamageGA.cs` (`IHaveCaster` 구현)
-- **필드**: `float Amount`, `List<IDamageable> Targets` / `IDamageable Target`(`{ get; set; }`), `Token Caster`, `bool IsBasicAttack`(자동 전투 기본 공격 — 공격 모션 재생), `bool IsRangedAttack`(기본 공격 모션을 근접 돌진 대신 화살 발사로 재생, 저격) (생성자 4개: 다중·단일·`(float amount, IDamageable target, Token caster, bool isBasicAttack)`·`(…, bool isBasicAttack, bool isRangedAttack)`)
-- **Performer**: `DamageSystem.DealDamagePerformer` — `IsBasicAttack && Target != null`이면(대상은 `Battle()`이 예약 시점에 확정) 기본 공격 모션 재생·타격 시점에 피해, 복귀까지 대기. `IsRangedAttack`이면 근접 모션 대신 `ProjectileSystem.PlayArrowShot`으로 제자리에서 화살을 쏘고 도착 시점에 피해(복귀 대기 없음). 이후 `DamageCaculator.GetDamage()`로 최종 수치 계산 + 피격 VFX + `target.Damage()` 호출(체력 감소 처리, 체력 0 이하 시 `KillGA`를 이 액션의 `PostReactions`에 직접 추가)
+- **필드**: `float Amount`, `List<IDamageable> Targets` / `IDamageable Target`(`{ get; set; }`), `Token Caster`, `bool IsBasicAttack`(자동 전투 기본 공격 — 공격 모션 재생), `bool IsRangedAttack`(기본 공격 모션을 근접 돌진 대신 화살 발사로 재생, 저격), `bool IgnoreDodge`(회피 스택 소모 없이 피해 적용, 날카로운 단도) (생성자 5개: 다중·단일·`(float amount, IDamageable target, Token caster, bool isBasicAttack)`·`(…, bool isBasicAttack, bool isRangedAttack)`·`(…, bool isRangedAttack, bool ignoreDodge)`). 플레이어 스킬은 `Caster`가 null이다
+- **Performer**: `DamageSystem.DealDamagePerformer` — `IsBasicAttack && Target != null`이면(대상은 `Battle()`이 예약 시점에 확정) 기본 공격 모션 재생·타격 시점에 피해, 복귀까지 대기. `IsRangedAttack`이면 근접 모션 대신 `ProjectileSystem.PlayArrowShot`으로 제자리에서 화살을 쏘고 도착 시점에 피해(복귀 대기 없음). 대상이 `DODGE` 상태이상을 가졌고 `IgnoreDodge`가 아니면 스택 1을 소모하고 피해·피격 연출을 생략(다중 대상은 해당 대상만 건너뜀). 이후 `DamageCaculator.GetDamage()`로 최종 수치 계산 + 피격 VFX + `target.Damage()` 호출(체력 감소 처리, 체력 0 이하 시 `KillGA`를 이 액션의 `PostReactions`에 직접 추가)
 - **POST 구독자**: `피묻은 도끼` 특성 (`DealDamageCondition` POST + `HealOnDamageEffect`, 조건: `Trait.Reaction`이 `Caster == owner`인 GA만 통과) — 확률 조건 충족 시 `HealGA` 예약(자힐)
 - **파생 액션**: `CombatantView.Damage()` 내부에서 체력 ≤ 0이면 `dealDamageGA.PostReactions.Add((KillGA, null))` — 전역 체이닝이 아니라 **이 인스턴스에 직접 종속**
-- **트리거 지점**: 전투 계열 다수의 공통 최종 경로 — `CombatantView.Battle`(자동 전투, `isBasicAttack: true`), `AttackEnemyGAPerformer`, `ShoulderBashGAPerformer`, `SplashGAPerformer`, `KnockBackGAPerformer`(충돌 시) 등
+- **트리거 지점**: 전투 계열 다수의 공통 최종 경로 — `CombatantView.Battle`(자동 전투, `isBasicAttack: true`), `AttackEnemyGAPerformer`, `ShoulderBashGAPerformer`, `SplashGAPerformer`, `KnockBackGAPerformer`(충돌 시) 등. `응수` 특성(`RetaliateEffect`, 용병대장이 코어 공격자에게 반격), 플레이어 스킬 `SharpDagger`(`PlayerSkillSystem.TryUse`가 `Perform`, `Caster` null·`IgnoreDodge` true)
 - **관련 체인**: §3-2, §3-3
 
 #### `KillGA`
@@ -145,9 +147,11 @@
 
 #### `AttackCoreGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/AttackCoreGA.cs` (`IHaveCaster` 구현)
-- **필드**: `Token Caster` (Performer에서 `as CombatantView`로 변환), `int? Amount`, `bool IsRangedAttack`(화살 발사 모션, 저격) (생성자 3개: `(caster)`·`(caster, amount)`·`(caster, bool isRangedAttack)`)
-- **Performer**: `CoreSystem.AttackCoreGAPerformer` — 기본 공격 모션(`Utility.GetBasicAttackTween`) 재생(`IsRangedAttack`이면 제자리에서 같은 행의 상대 쪽 그리드 끝까지 `ProjectileSystem.PlayArrowShot` 화살 발사 후 도착 시점에 피해) → 타격 시점에 `Caster.BaseDamage`만큼 상대 코어 HP 차감(영웅이면 적 코어, 적이면 플레이어 코어) → HP 0이면 `GameClearGA`(영웅 공격)/`GameOverGA`(적 공격) 체이닝 → 모션 복귀까지 대기
-- **트리거 지점**: `CombatantView.Battle()`(자동 전투 — 이동 한계에서 정면이 비어 있을 때 `AddReaction`)
+- **필드**: `Token Caster` (Performer에서 `as CombatantView`로 변환), `int? Amount`, `bool IsRangedAttack`(화살 발사 모션, 저격), `bool IsMissed`(`{ get; set; }` — PRE 리액션이 true로 바꾸면 모션만 재생하고 피해 없음) (생성자 3개: `(caster)`·`(caster, amount)`·`(caster, bool isRangedAttack)`). `Caster`가 null이면 플레이어 스킬(적 코어에 `Amount` 직접 피해, 모션 없음)
+- **Performer**: `CoreSystem.AttackCoreGAPerformer` — `Caster == null`(스킬)이면 모션 생략, 아니면 기본 공격 모션(`Utility.GetBasicAttackTween`) 재생(`IsRangedAttack`이면 제자리에서 같은 행의 상대 쪽 그리드 끝까지 `ProjectileSystem.PlayArrowShot` 화살 발사 후 도착 시점에 피해) → `IsMissed`가 아니면 `Amount ?? Caster.BaseDamage`만큼 상대 코어 HP 차감(영웅·스킬이면 적 코어 `EnemyFlag`, 적이면 `HeroCaptain.ReceiveCoreDamage`) → HP 0이면 `GameClearGA`(영웅·스킬 공격)/`GameOverGA`(적 공격) 체이닝 → 모션 복귀까지 대기
+- **PRE 구독자**: 유물(`Perk`) `AllyCoreAttackedByEnemyCondition`(Caster가 `EnemyView`) + `MissCoreAttackEffect` — `IsMissed = true`로 바꿔 빗나가게 함
+- **POST 구독자**: `응수` 특성(`CoreAttackedCondition` + `RetaliateEffect`) — 적이 용병대장을 공격하면 `DealDamageGA`(반격) 예약
+- **트리거 지점**: `CombatantView.Battle()`(자동 전투 — 이동 한계에서 정면이 비어 있을 때 `AddReaction`), `PlayerSkillSystem.TryUse`(플레이어 스킬 `SharpDagger`로 적 깃발 지정 시 `Perform`, `Caster` null)
 - **관련 체인**: §3-4
 
 #### `AttackEnemyGA`

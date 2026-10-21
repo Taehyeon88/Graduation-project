@@ -18,6 +18,6 @@ public class CoreAttackedCondition : TraitCondition
     public override bool SubConditionIsMat(GameAction action, CombatantView owner)
     {
         var attackCoreGA = action as AttackCoreGA;
-        return owner is HeroCaptainView && owner.CurrentHealth > 0 && attackCoreGA.Caster is not HeroView;
+        return owner is HeroCaptainView && owner.CurrentHealth > 0 && attackCoreGA.Caster != null && attackCoreGA.Caster is not HeroView;   //Caster 없음 = 플레이어 스킬의 적 코어 공격
     }
 }

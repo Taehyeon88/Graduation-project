@@ -23,3 +23,5 @@
 | 05 | [trait.md](feature-spec/Trait/trait.md) | 특성 부품 레지스트리 — 재사용 가능한 조건·효과 목록 (`/trait` 커맨드가 가장 먼저 대조) |
 | 05 | [trait_catalog.md](feature-spec/Trait/trait_catalog.md) | 특성 카탈로그 — 특성별 조건·효과·타이밍 연결 (현재 불경한 빛 1개) |
 | 06 | [StatusEffect.md](feature-spec/StatusEffect.md) | 상태효과 카탈로그 — 상태효과별 이름·설명·`StatusEffectType`·판정 위치·감소 규칙 (힘·방어·취약·약화·회피) |
+| 07 | [07_player_skill.md](feature-spec/07_player_skill.md) | PlayerSkill — UseSkillUI 드래그로 쓰는 플레이어 스킬(날카로운 단도). AP 1·턴당 1회·전투당 횟수, `PlayerSkill` 추상 + `PlayerSkillData` SO, 전용 GA 없음 |
+| 07 | [player_skill_catalog.md](feature-spec/PlayerSkill/player_skill_catalog.md) | 플레이어 스킬 카탈로그 — 스킬별 이름·설명·대상·실행 GA·연결 흐름·한계 (현재 날카로운 단도 1개) |

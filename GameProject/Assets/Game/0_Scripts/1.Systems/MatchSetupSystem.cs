@@ -47,6 +47,9 @@ public class MatchSetupSystem : MonoBehaviour
         //5.플레이어 유닛 카드 덱 구성 (유닛 배치는 전투 중 카드로 진행)
         CardSystem.Instance.SetUp();
 
+        //5.5 유저 소유 유물 구독 시작
+        PerkSystem.Instance.SetUp();
+
         //6.전투 시작(Event)
         TurnGA turnGA = new(TurnType.StartBattle);
         ActionSystem.Instance.Perform(turnGA);

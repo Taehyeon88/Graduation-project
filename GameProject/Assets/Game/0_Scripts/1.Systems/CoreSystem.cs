@@ -29,15 +29,20 @@ public class CoreSystem : Singleton<CoreSystem>
     private IEnumerator AttackCoreGAPerformer(AttackCoreGA attackCoreGA)
     {
         CombatantView attacker = attackCoreGA.Caster as CombatantView;
-        if (attacker == null) yield break;
+        bool isSkillAttack = attackCoreGA.Caster == null;   //플레이어 스킬: 시전자·모션 없이 적 코어에 Amount만큼 직접 피해
+        if (attacker == null && !isSkillAttack) yield break;
 
-        bool isHeroAttack = attacker is HeroView;   //영웅은 적 코어, 적은 플레이어 코어를 공격
+        bool isHeroAttack = isSkillAttack || attacker is HeroView;   //영웅은 적 코어, 적은 플레이어 코어를 공격
         TokenServiceAPI api = TokenSystem.Instance.API;
-        Vector2Int attackerPos = api.GetTokenPosition(attacker);
+        Vector2Int attackerPos = isSkillAttack ? Vector2Int.zero : api.GetTokenPosition(attacker);
         Vector2 direction = isHeroAttack ? Vector2.right : Vector2.left;
 
         Sequence attackSeq = null;
-        if (attackCoreGA.IsRangedAttack)
+        if (isSkillAttack)
+        {
+            //모션 생략
+        }
+        else if (attackCoreGA.IsRangedAttack)
         {
             //원거리: 제자리에서 같은 행의 상대 쪽 끝까지 화살 발사, 도착 시점에 피해 적용
             int edgeX = isHeroAttack ? TokenSystem.Instance.gridWidth - 1 : 0;
@@ -52,24 +57,27 @@ public class CoreSystem : Singleton<CoreSystem>
             yield return new WaitUntil(() => hit);
         }
 
-        int damage = attackCoreGA.Amount ?? attacker.BaseDamage;
-        if (isHeroAttack)
+        if (!attackCoreGA.IsMissed)   //빗나감이면 모션만 재생하고 피해·승패 판정은 건너뜀
         {
-            EnemyCoreHealth = Mathf.Max(0, EnemyCoreHealth - damage);
-            EnemyFlag.UpdateHealth(EnemyCoreHealth);
-            EnemyFlag.PlayHitShake();
-        }
-        else
-        {
-            HeroCaptain.ReceiveCoreDamage(damage);
-            HeroCaptain.PlayHitShake();
-        }
+            int damage = attackCoreGA.Amount ?? (isSkillAttack ? 0 : attacker.BaseDamage);
+            if (isHeroAttack)
+            {
+                EnemyCoreHealth = Mathf.Max(0, EnemyCoreHealth - damage);
+                EnemyFlag.UpdateHealth(EnemyCoreHealth);
+                EnemyFlag.PlayHitShake();
+            }
+            else
+            {
+                HeroCaptain.ReceiveCoreDamage(damage);
+                HeroCaptain.PlayHitShake();
+            }
 
-        //코어 체력 0: 적 코어면 승리, 플레이어 코어면 패배
-        if (isHeroAttack && EnemyCoreHealth <= 0)
-            ActionSystem.Instance.AddReaction(new GameClearGA());
-        else if (!isHeroAttack && PlayerCoreHealth <= 0)
-            ActionSystem.Instance.AddReaction(new GameOverGA());
+            //코어 체력 0: 적 코어면 승리, 플레이어 코어면 패배
+            if (isHeroAttack && EnemyCoreHealth <= 0)
+                ActionSystem.Instance.AddReaction(new GameClearGA());
+            else if (!isHeroAttack && PlayerCoreHealth <= 0)
+                ActionSystem.Instance.AddReaction(new GameOverGA());
+        }
 
         if (attackSeq != null && attackSeq.IsActive())
             yield return attackSeq.WaitForCompletion();   //복귀까지 대기

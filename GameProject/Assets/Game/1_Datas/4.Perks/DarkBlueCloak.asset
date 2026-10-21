@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5763ce6e06e8125418fcab114585578a, type: 3}
+  m_Name: DarkBlueCloak
+  m_EditorClassIdentifier: Assembly-CSharp::PerkData
+  <Id>k__BackingField: 1
+  <Image>k__BackingField: {fileID: 0}
+  <Description>k__BackingField: "\uC544\uAD70 \uAE43\uBC1C\uC5D0 \uB300\uD55C \uC801
+    \uC6A9\uBCD1\uC758 \uACF5\uACA9\uC774 \uBE57\uB098\uAC11\uB2C8\uB2E4. \uC804\uD22C\uB2F9
+    1\uBC88 \uBC1C\uB3D9\uB429\uB2C8\uB2E4."
+  <MaxTriggersPerBattle>k__BackingField: 1
+  <Condition>k__BackingField:
+    rid: 7851381000000000001
+  <Effect>k__BackingField:
+    rid: 7851381000000000002
+  references:
+    version: 2
+    RefIds:
+    - rid: 7851381000000000001
+      type: {class: AllyCoreAttackedByEnemyCondition, ns: , asm: Assembly-CSharp}
+      data:
+        reactionTiming: 0
+    - rid: 7851381000000000002
+      type: {class: MissCoreAttackEffect, ns: , asm: Assembly-CSharp}
+      data:
