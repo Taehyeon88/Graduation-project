@@ -28,13 +28,12 @@
 | [`AttackCoreGA`](#attackcorega) | 전투 | `CoreSystem` | 이동 한계에서 정면이 비면 상대 코어 공격 — 연출 후 코어 HP 차감, 0이면 승패 GA |
 | [`AttackEnemyGA`](#attackenemyga) | 전투 | `AttackEnemyProcessor` | 영웅 근접/원거리 공격(모션 + 데미지) |
 | [`HealGA`](#healga) | 회복/상태 | `HealSystem` | 대상 회복 |
-| [`AddStatusEffectGA`](#addstatuseffectga) | 회복/상태 | `StatusEffectSystem` | 상태이상(ARMOR/POWER 등) 스택 부여 |
+| [`AddStatusEffectGA`](#addstatuseffectga) | 회복/상태 | `StatusEffectSystem` | 상태이상(POWER/DODGE 등) 스택 부여 |
 | [`ModifyStatGA`](#modifystatga) | 회복/상태 | `StatSystem` | 대상의 스탯(체력/공격력/속도) 증감 — 특성 `ModifyStatTraitEffect`가 예약 |
 | [`PlaySkillGA`](#playskillga) | 스킬 | `SkillSystem` | 스킬 사용 시작(최상위 트리거) |
 | [`PerformEffectGA`](#performeffectga) | 스킬 | `EffectProcessor` | 스킬 내 Effect 1개 실행 |
 | [`SplashGA`](#splashga) | 콤보 | `SplashProcessor` | 범위(스플래시) 공격 |
 | [`ShoulderBashGA`](#shoulderbashga) | 콤보 | `ShoulderBashProcessor` | 돌진(이동+공격+넉백) 콤보 |
-| [`ShieldBashGA`](#shieldbashga) | 콤보 | `ShieldBashProcessor` | 방패강타(데미지+자기 방어막) |
 | [`DOAnimationGA`](#doanimationga) | 연출 | `AnimationSystem` | DOTween Sequence/Tween 재생 대기 |
 | [`GameClearGA`](#gameclearga) | 종료 | `GameSystem` | 게임 클리어 |
 | [`GameOverGA`](#gameoverga) | 종료 | `GameSystem` | 게임 오버 |
@@ -48,7 +47,7 @@
 #### `AutoBattleTurnGA` / `AutoBattleGA`
 - **파일**: `2.GameActions/AutoBattleTurnGA.cs`, `AutoBattleGA.cs` (필드 없음)
 - **Performer**: `TurnSystem.AutoBattleTurnGAPerformer`(팝업 → `AutoBattleSystem.CacheCombatants` → `AddReaction(AutoBattleGA)`), `AutoBattleSystem.AutoBattleGAPerformer`(큐 정리 → 동속 주사위 → `unit.Battle()` → 큐가 남으면 `AddReaction(AutoBattleGA)`)
-- **리액션**: `AutoBattleTurnGA` PRE — `TurnSystem`(`currentTurn` 선반영), `HeroSystem.AutoBattleTurnPreReaction`(영웅 "내 턴 종료" SE 감소), `용사의 갑옷` 특성(`AutoBattleTurnCondition` PRE + `AddStatusTraitEffect`, 소유자 방어막 `AddStatusEffectGA(ARMOR)` 예약). POST — `TurnSystem`이 `TurnGA(Enemy)` 체이닝
+- **리액션**: `AutoBattleTurnGA` PRE — `TurnSystem`(`currentTurn` 선반영), `HeroSystem.AutoBattleTurnPreReaction`(영웅 "내 턴 종료" SE 감소). POST — `TurnSystem`이 `TurnGA(Enemy)` 체이닝
 - **파생 액션**: `Battle()`이 판단은 모두 예약 시점에 끝내고 GA만 예약 — ① 이동 한계 전이고 정면이 비면 `MoveGA`(1칸, AP 소모 없음) ② 이동했다고 가정한 위치의 정면에 적이 있으면 `DealDamageGA(Amount, target, attacker, true)`(대상 확정), 이동 한계인데 정면이 비어 있으면 `AttackCoreGA`. 기본 공격 `DealDamageGA`는 `DamageSystem`이 기본 공격 모션 1(`Utility.GetBasicAttackTween`: 전진 → 타격 시점에 피해 → 복귀)을 재생. `AutoBattleSystem`은 `IsGameClear`/`IsGameOver`가 되면 큐를 비워 종료
 - **트리거 지점**: `TurnEndUI.TurnEnd`에서 `Perform(AutoBattleTurnGA)`
 
@@ -131,10 +130,10 @@
 #### `DealDamageGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/DealDamageGA.cs` (`IHaveCaster` 구현)
 - **필드**: `float Amount`, `List<IDamageable> Targets` / `IDamageable Target`(`{ get; set; }`), `Token Caster`, `bool IsBasicAttack`(자동 전투 기본 공격 — 공격 모션 재생), `bool IsRangedAttack`(기본 공격 모션을 근접 돌진 대신 화살 발사로 재생, 저격) (생성자 4개: 다중·단일·`(float amount, IDamageable target, Token caster, bool isBasicAttack)`·`(…, bool isBasicAttack, bool isRangedAttack)`)
-- **Performer**: `DamageSystem.DealDamagePerformer` — `IsBasicAttack && Target != null`이면(대상은 `Battle()`이 예약 시점에 확정) 기본 공격 모션 재생·타격 시점에 피해, 복귀까지 대기. `IsRangedAttack`이면 근접 모션 대신 `ProjectileSystem.PlayArrowShot`으로 제자리에서 화살을 쏘고 도착 시점에 피해(복귀 대기 없음). 이후 `DamageCaculator.GetDamage()`로 최종 수치 계산 + 피격 VFX + `target.Damage()` 호출(방어막 소모 처리, 체력 0 이하 시 `KillGA`를 이 액션의 `PostReactions`에 직접 추가)
+- **Performer**: `DamageSystem.DealDamagePerformer` — `IsBasicAttack && Target != null`이면(대상은 `Battle()`이 예약 시점에 확정) 기본 공격 모션 재생·타격 시점에 피해, 복귀까지 대기. `IsRangedAttack`이면 근접 모션 대신 `ProjectileSystem.PlayArrowShot`으로 제자리에서 화살을 쏘고 도착 시점에 피해(복귀 대기 없음). 이후 `DamageCaculator.GetDamage()`로 최종 수치 계산 + 피격 VFX + `target.Damage()` 호출(체력 감소 처리, 체력 0 이하 시 `KillGA`를 이 액션의 `PostReactions`에 직접 추가)
 - **POST 구독자**: `피묻은 도끼` 특성 (`DealDamageCondition` POST + `HealOnDamageEffect`, 조건: `Trait.Reaction`이 `Caster == owner`인 GA만 통과) — 확률 조건 충족 시 `HealGA` 예약(자힐)
 - **파생 액션**: `CombatantView.Damage()` 내부에서 체력 ≤ 0이면 `dealDamageGA.PostReactions.Add((KillGA, null))` — 전역 체이닝이 아니라 **이 인스턴스에 직접 종속**
-- **트리거 지점**: 전투 계열 다수의 공통 최종 경로 — `CombatantView.Battle`(자동 전투, `isBasicAttack: true`), `AttackEnemyGAPerformer`, `ShieldBashGAPerformer`, `ShoulderBashGAPerformer`, `SplashGAPerformer`, `KnockBackGAPerformer`(충돌 시) 등
+- **트리거 지점**: 전투 계열 다수의 공통 최종 경로 — `CombatantView.Battle`(자동 전투, `isBasicAttack: true`), `AttackEnemyGAPerformer`, `ShoulderBashGAPerformer`, `SplashGAPerformer`, `KnockBackGAPerformer`(충돌 시) 등
 - **관련 체인**: §3-2, §3-3
 
 #### `KillGA`
@@ -171,7 +170,7 @@
 - **필드**: `StatusEffectType StatusEffectType`, `int StackCount`(set 가능), `List<CombatantView> Targets`, `CombatantView Caster`
 - **트리거 지점**: 아래 목록에 `AddStatusEffectEffect.cs`(버프/디버프 스킬의 Effect) 추가 — `SETargetMode`에 따라 자신/대상/전체에 상태이상 부여
 - **Performer**: `StatusEffectSystem.AddStatusEffectPerformer` — 대상별로 상태이상 스택 부여
-- **트리거 지점**: `ShieldBashProcessor.ShieldBashGAPerformer`(해당 `DealDamageGA`의 `PostReactions`에 직접 종속), `용사의 갑옷` 특성(`AutoBattleTurnGA` PRE, ARMOR), `근육 트로피` 특성(`TurnGA` POST, POWER) — 둘 다 `AddStatusTraitEffect`
+- **트리거 지점**: `근육 트로피` 특성(`TurnGA` POST, POWER) — `AddStatusTraitEffect`
 
 #### `ModifyStatGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/ModifyStatGA.cs` (`IHaveCaster` 명시적 구현)
@@ -208,13 +207,6 @@
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/CardEffectRelative/ShoulderBashGA.cs` (`IHaveCaster` 명시적 구현)
 - **필드**: `int Distance`, `int AttackDistance`, `float Damage`, `List<Vector2Int> TargetPoses`, `HeroView Caster`
 - **Performer**: `ShoulderBashProcessor.ShoulderBashGAPerformer` — 경로 계산 후 `PerformMoveGA`(돌진 이동) → `DealDamageGA`(공격) → `KnockBackGA`(넉백) 순서로 형제 `AddReaction` 체이닝
-- **트리거 지점**: `PerformEffectGA`(`Effect.GetGameAction()`)
-- **관련 체인**: §3-3
-
-#### `ShieldBashGA`
-- **파일**: `Assets/Game/0_Scripts/2.GameActions/CardEffectRelative/ShieldBashGA.cs` (`IHaveCaster` 명시적 구현)
-- **필드**: `float Amount`, `List<Vector2Int> TargetPoses`, `HeroView Caster`
-- **Performer**: `ShieldBashProcessor.ShieldBashGAPerformer` — `DealDamageGA` 체이닝 + `AddStatusEffectGA(ARMOR)`를 그 `DealDamageGA`의 `PostReactions`에 직접 종속
 - **트리거 지점**: `PerformEffectGA`(`Effect.GetGameAction()`)
 - **관련 체인**: §3-3
 
@@ -283,7 +275,6 @@ AutoBattleTurnGA                                             ← 플레이어가
  └ TurnSystem.AutoBattleTurnGAPerformer: 팝업 → AutoBattleSystem.CacheCombatants → AddReaction(AutoBattleGA)
      ├─ (PRE) TurnSystem: currentTurn = AutoBattle
      ├─ (PRE) HeroSystem.AutoBattleTurnPreReaction: 영웅 SE 감소
-     ├─ (PRE) 용사의 갑옷 특성: AddReaction(AddStatusEffectGA(ARMOR))
      └─ (POST) TurnSystem.AutoBattleTurnGAPostReaction: AddReaction(TurnGA(Enemy))
 
 TurnGA(Enemy)
@@ -317,13 +308,8 @@ ShoulderBashProcessor.ShoulderBashGAPerformer
  └─ AddReaction(KnockBackGA)     [넉백]
    → 셋 다 "현재 진행 중인 단계"의 형제로 등록되어 순서대로 실행(서로 독립적인 형제 액션)
 
-(B) 특정 GA 인스턴스에 직접 종속 — ShieldBashGA / SplashGA
-ShieldBashProcessor.ShieldBashGAPerformer
- ├─ AddReaction(DealDamageGA) → dealDamageGA
- └─ dealDamageGA.PostReactions.Add(AddStatusEffectGA(ARMOR))
-   → ARMOR 부여는 반드시 "이 DealDamageGA의 POST 단계"에서만 실행됨
-
-SplashProcessor.SplashGAPerformer도 동일 패턴:
+(B) 특정 GA 인스턴스에 직접 종속 — SplashGA
+SplashProcessor.SplashGAPerformer:
  ├─ AddReaction(DealDamageGA) → dealDamageGA(직격)
  └─ dealDamageGA.PostReactions.Add(DealDamageGA(스플래시))
 ```

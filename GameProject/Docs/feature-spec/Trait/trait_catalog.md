@@ -2,7 +2,7 @@
 
 > 특성 하나가 어떤 `TraitCondition` + `TraitEffect` + 타이밍으로 묶여 있는지 **특성 단위**로 정리한 문서. 구조·계약·로드 파이프라인은 [05_trait_system.md](../05_trait_system.md), 특성 제작 절차는 [trait_howto.md](../../howto/trait_howto.md), 재사용 가능한 조건·효과 목록은 [trait.md](./trait.md)를 본다.
 > 새 특성(`TraitData` 에셋)을 만들면 이 문서에 섹션을 추가한다. 원작에서 확인하지 못한 규칙은 `(원작 확인 필요)`로 표기한다.
-> **현재 수록: 불경한 빛 1개.** `Assets/Game/1_Datas/3.Traits/`의 나머지 에셋(근육 트로피, 용사의 갑옷, 피묻은 도끼, 신속의 기도, 저격, 공격 신호, 빠른 발, 맹공, 요새화)은 아직 조사하지 않았다.
+> **현재 수록: 8개** — 3001 불경한 빛, 3002 신속의 기도, 3003 요새화, 3004 빠른 발, 3005 맹공, 3006 저격, 3007 공격 신호, 3008 응수. `Assets/Game/1_Datas/3.Traits/`의 에셋 전부다.
 
 ## 3003 · 요새화
 
@@ -264,3 +264,41 @@ DealDamageGA / AttackCoreGA  POST   (기본 공격 또는 추가 공격)
 - `StatSystem`이 씬에 배치되어 있어야 동작한다. Play 테스트는 아직 하지 않았다.
 
 **에디터 설정**: `Condition`=`AttackedOpponentCondition`(`reactionTiming`=POST), `Effect`=`ExtraAttackEffect`(`speedCost`=2). `Image`는 연결되어 있다. 영웅 `CombatantData.Traits`에 등록하는 에디터 작업은 아직 하지 않았다 (유닛당 최대 2개).
+
+## 3008 · 응수
+
+에셋: `Assets/Game/1_Datas/3.Traits/Cores/응수.asset`
+
+| 항목 | 값 |
+|---|---|
+| Id | 3008 |
+| 설명 (`Description`) | 피격 시 반격해 자신에게 피해를 준 용병을 공격합니다. |
+| 조건 | `CoreAttackedCondition` — 구독 `AttackCoreGA`, 판정: owner가 `HeroCaptainView`이고 `owner.CurrentHealth > 0`이며 `AttackCoreGA.Caster`가 `HeroView`가 아닐 것. `FiltersByCaster` = false |
+| 타이밍 | POST (`reactionTiming: 1`) — `CoreSystem`이 용병대장 체력을 깎은 뒤 반응하므로 `CurrentHealth > 0` 검사가 피해 반영 후 값이다 |
+| 효과 | `RetaliateEffect` — 노출 수치 없음 |
+| 효과 동작 | `AttackCoreGA.Caster`가 `IDamageable`이면 그 공격자에게 `DealDamageGA(owner.BaseDamage, 공격자, owner, true)`(기본 공격)를 예약. `DamageSystem`이 `Caster is HeroCaptainView`이면 Iso 오른쪽 근접 모션을 재생한 뒤 타격 시점에 피해를 적용 |
+| 파생 GA | `DealDamageGA` ([action_command.md](../action/action_command.md)) |
+| 코드 | `Traits/Conditions/CoreAttackedCondition.cs`, `Traits/RetaliateEffect.cs`, `Models/TraitCondition.cs`(`FiltersByCaster`), `Models/Trait.cs`(필터 분기), `3.Views/HeroCaptainView.cs`, `1.Systems/CoreSystem.cs`, `1.Systems/Skills/DamageSystem.cs` |
+
+**연결 흐름**
+
+```
+AttackCoreGA(적 → 아군 코어) 수행: CoreSystem이 HeroCaptain.ReceiveCoreDamage
+AttackCoreGA POST
+ └ Trait.Reaction  (FiltersByCaster == false → Caster != owner 필터 건너뜀)
+    └ CoreAttackedCondition.SubConditionIsMat  (owner는 HeroCaptainView, 체력 > 0, Caster가 HeroView 아님)
+       └ RetaliateEffect.PerformReaction  (Caster가 IDamageable일 때만)
+          └ AddReaction(DealDamageGA, 대상=공격자, Caster=용병대장, 기본 공격)
+             └ DamageSystem: HeroCaptainView 근접 모션 → 피해 적용
+```
+
+**주의·한계**
+- 소유자는 `HeroCaptainData`(지그먼트, Id 9001)의 `Traits`에 등록된 용병대장뿐이다. `HeroCaptainView`는 그리드 밖이고 `Forward`가 없어 자동 전투를 하지 않으므로, 반격이 용병대장의 유일한 공격이다.
+- 코어 체력이 0이 된 공격에는 반격하지 않는다 (`CurrentHealth > 0` 검사). 이때는 곧 패배 처리된다.
+- `HeroView`(영웅)가 적 코어를 공격하는 `AttackCoreGA`는 `Caster is not HeroView`로 제외된다.
+- 반격 피해량은 `owner.BaseDamage`(지그먼트 `Damage` 3)이고 `DamageCaculator` 보정 적용 여부는 `DealDamageGA` 경로를 그대로 따른다.
+- 효과가 예약한 `DealDamageGA`는 이 조건의 구독 대상(`AttackCoreGA`)이 아니므로 무한 루프는 없다.
+- 공격자가 `IDamageable`이 아니면 (`Caster`가 용병대장·영웅 외 비피격 토큰) 효과가 무시된다.
+- `Image`가 비어 있다 (`<Image>`가 `fileID: 0`). Play 테스트는 아직 하지 않았다.
+
+**에디터 설정**: `Condition`=`CoreAttackedCondition`(`reactionTiming`=POST), `Effect`=`RetaliateEffect`(설정 값 없음). 영웅 `지그먼트`(`10.Cores/HeroCaptains/지그먼트.asset`)의 `Traits`에 연결되어 있다.

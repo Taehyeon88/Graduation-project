@@ -189,54 +189,18 @@ public class CombatantView : Token, IDamageable
 
     public virtual void Damage(int amount, DealDamageGA dealDamageGA)
     {
-        Tween hit_Tween = null;
+        SoundSystem.Instance.PlaySound(1);
+        Tween hit_Tween = Utility.GetModelShakeTween(
+                this,
+                0.18f,
+                new Vector3(0.10f, 0.03f, 0f),
+                10,
+                90f
+            );
 
-        int remainingDamage = amount;
-        int currentArmor = GetStatusEffectStacks(StatusEffectType.ARMOR);
-        if (currentArmor > 0)
+        if (amount > 0)
         {
-            if (currentArmor >= remainingDamage)  //퍼펙트 방어
-            {
-                RemoveStatusEffect(StatusEffectType.ARMOR, remainingDamage);
-                remainingDamage = 0;
-                SoundSystem.Instance.PlaySound(3);
-                hit_Tween = Utility.GetModelShakeTween(
-                        this,
-                        0.08f,
-                        new Vector3(0.05f, 0.015f, 0f),
-                        3,
-                        0f
-                    );
-            }
-            else if (currentArmor < remainingDamage)//방패 파괴
-            {
-                RemoveStatusEffect(StatusEffectType.ARMOR, currentArmor);
-                remainingDamage -= currentArmor;
-                SoundSystem.Instance.PlaySound(4);
-                hit_Tween = Utility.GetModelShakeTween(
-                        this,
-                        0.14f,
-                        new Vector3(0.07f, 0.02f, 0f),
-                        6,
-                        60f
-                    );
-            }
-        }
-        else  //방패 없음
-        {
-            SoundSystem.Instance.PlaySound(1);
-            hit_Tween = Utility.GetModelShakeTween(
-                    this,
-                    0.18f,
-                    new Vector3(0.10f, 0.03f, 0f),
-                    10,
-                    90f
-                );
-        }
-
-        if (remainingDamage > 0)
-        {
-            CurrentHealth = Mathf.Max(CurrentHealth - remainingDamage, 0);
+            CurrentHealth = Mathf.Max(CurrentHealth - amount, 0);
         }
 
         if(CurrentHealth <= 0)
@@ -299,12 +263,6 @@ public class CombatantView : Token, IDamageable
     public bool CheckStatusEffectExist(StatusEffectType type) => statusEffectUIs.ContainsKey(type);
     public StatusEffectType[] GetStatusEffects() => statusEffectUIs.Keys.ToArray();
 
-    public void ReduceSEWhenMyTurnStart()  //공용 버프 삭제
-    {
-        //방어 스택 삭제
-        int armorStack = GetStatusEffectStacks(StatusEffectType.ARMOR);
-        if (armorStack > 0) RemoveStatusEffect(StatusEffectType.ARMOR, armorStack);
-    }
     public void ReduceSEWhenMyTurnEnd()  //공용 디버프 삭제
     {
         RemoveStatusEffect(StatusEffectType.WEAK, 1);       //취약 감소

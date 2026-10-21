@@ -22,3 +22,4 @@
 | 05 | [05_trait_system.md](feature-spec/05_trait_system.md) | 특성(Trait) 시스템 — 기존 `Perk` 구조 관찰 + 용병당 최대 2개 제약 등 목표 변경 |
 | 05 | [trait.md](feature-spec/Trait/trait.md) | 특성 부품 레지스트리 — 재사용 가능한 조건·효과 목록 (`/trait` 커맨드가 가장 먼저 대조) |
 | 05 | [trait_catalog.md](feature-spec/Trait/trait_catalog.md) | 특성 카탈로그 — 특성별 조건·효과·타이밍 연결 (현재 불경한 빛 1개) |
+| 06 | [StatusEffect.md](feature-spec/StatusEffect.md) | 상태효과 카탈로그 — 상태효과별 이름·설명·`StatusEffectType`·판정 위치·감소 규칙 (힘·방어·취약·약화·회피) |

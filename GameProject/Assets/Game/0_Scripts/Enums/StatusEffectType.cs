@@ -1,7 +1,8 @@
 ﻿public enum StatusEffectType
 { 
-    POWER,           //힘
-    ARMOR,           //방어
-    WEAK,            //취약 : 공격자 디버프
-    VULNERABLE       //약화 : 피격자 디버프
+    //1번은 삭제된 ARMOR(방어)의 자리 — 에셋에 정수로 직렬화되므로 값을 고정한다
+    POWER = 0,           //힘
+    WEAK = 2,            //취약 : 공격자 디버프
+    VULNERABLE = 3,      //약화 : 피격자 디버프
+    DODGE = 4            //회피 : 다음 1회 공격·피해 무효
 }

@@ -37,15 +37,4 @@ public class StatusEffectSystem : Singleton<StatusEffectSystem>
             }
         }
     }
-
-
-    //Publics
-    public SEMachanicsType GetMachanicsType(StatusEffectType statusEffectType)
-    {
-        if (effectDataByType.ContainsKey(statusEffectType))
-        {
-            return effectDataByType[statusEffectType].SEMachanicsType;
-        }
-        return SEMachanicsType.None;
-    }
 }

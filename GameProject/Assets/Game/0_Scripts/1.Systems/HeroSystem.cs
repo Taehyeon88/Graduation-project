@@ -1,11 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class HeroSystem : Singleton<HeroSystem>
 {
-    public Image selected_Hero_UI;
     public IReadOnlyList<HeroView> HeroViews => TokenSystem.Instance.HeroViews;
     public HeroCaptainView HeroCaptain { get; set; }   //용병대장 (TokenSetup만 설정)
     public HeroView CurrentHero
@@ -17,13 +15,6 @@ public class HeroSystem : Singleton<HeroSystem>
                 || currentHero == value) return;
 
             currentHero = value;
-
-            if (selected_Hero_UI != null)
-            {
-                if (!selected_Hero_UI.gameObject.activeSelf)
-                    selected_Hero_UI.gameObject.SetActive(true);
-                selected_Hero_UI.sprite = currentHero.TokenData.Sprite; //선택된 영웅 이미지 변경
-            }
         }
     }
 
@@ -62,11 +53,6 @@ public class HeroSystem : Singleton<HeroSystem>
 
     public IEnumerator PlayHeroTurnPerformer()
     {
-        foreach (var hero in HeroViews)
-        {
-            hero.ReduceSEWhenMyTurnStart(); //공용 시작시, SE 제거
-        }
-
         yield return null;
     }
 

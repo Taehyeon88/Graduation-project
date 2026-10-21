@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81ca9361e2a2ceb498a99fc6c8f70e8f, type: 3}
+  m_Name: "\uD68C\uD53C"
+  m_EditorClassIdentifier: Assembly-CSharp::StatusEffectData
+  <EffectType>k__BackingField: 4
+  <Discription>k__BackingField: "\uC774 \uC6A9\uBCD1\uC744 \uB300\uC0C1\uC73C\uB85C
+    \uD558\uB294 \uB2E4\uC74C 1\uD68C\uC758 \uBAA8\uB4E0 \uACF5\uACA9\uACFC \uD53C\uD574\uAC00
+    \uBE57\uB098\uAC11\uB2C8\uB2E4. \uD6A8\uACFC\uAC00 \uBC1C\uB3D9\uD558\uAC70\uB098
+    \uC9C0\uC18D\uC2DC\uAC04\uC774 \uC885\uB8CC\uB418\uBA74 \uC774 \uC0C1\uD0DC\uAC00
+    \uD574\uC81C\uB429\uB2C8\uB2E4."
+  <spriteImage>k__BackingField: {fileID: 21300000, guid: 0e4736c78b5af2641b544d7410c03b6d, type: 3}

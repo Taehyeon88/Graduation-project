@@ -34,7 +34,7 @@ Assets/Game/
 ├─ 4.Creators/             # TokenCreator/ProjectionCreator 등 생성 담당
 ├─ 5.Data/                 # ScriptableObject 데이터 클래스 정의(~Data 접미사, 11개) — 실 자산은 1_Datas/(2절)
 ├─ Effects/                # Effect(Models/Effect.cs) 서브클래스 — SkillAbility.Effects에 담기는 데이터+로직 홀더
-│  └─ CloseRange_Attack/   #   분류용(ShieldBashEffect 등)
+│  └─ CloseRange_Attack/   #   분류용(ShoulderBashEffect 등)
 ├─ Enums/                  # 열거형 13개
 ├─ Extensions/             # 확장 메서드(ArrayExtenstion, ListExtension)
 ├─ General/
@@ -60,9 +60,9 @@ Assets/Game/
 |---|---|---|---|
 | `1.Heroes/` | 10 | `HeroData` | Hero1~3 + 감시탑 경비병 / 기병 / 나팔수 / 매복자 / 사제 / 수문장 / 전도 |
 | `2.Enemies/` | 3 | `EnemyData` | 허수아비 / Larva / ArchorSkeleton |
-| `3.Traits/` | 10 | `TraitData` | 1_피묻은 도끼 / 2_근육 트로피 / 3_용사의 갑옷(조건·효과 설정됨) + 나머지 7개(공격 신호, 맹공, 불경한 빛, 빠른 발, 신속의 기도, 요새화, 저격)는 조건·효과 미설정 |
+| `3.Traits/` | 8 | `TraitData` | 공격 신호 / 맹공 / 불경한 빛 / 빠른 발 / 신속의 기도 / 요새화 / 저격 + `Cores/응수`(용병대장 전용). 전부 조건·효과 설정됨 |
 | `4.Perks/`, `5.Items/` | 0 | — | 빈 폴더 |
-| `6.StatusEffects/` | 2 | `StatusEffectData` | Armor, Power |
+| `6.StatusEffects/` | 2 | `StatusEffectData` | Power, 회피 |
 | `7.VisualGrids/` | 19 | `VisualGridData` | 그리드 하이라이트 전부 |
 | `8.Stages/` | 1 | `StageData` | TestStage |
 | `8.Stages/Waves/` | 1 | `WaveData` | Simple_Wave |

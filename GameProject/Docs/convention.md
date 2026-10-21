@@ -27,8 +27,8 @@
 ## 1. 네이밍
 
 - **MonoBehaviour 오케스트레이터**: `~System` 접미사. 예: `HeroSystem`, `MoveSystem`, `SkillSystem`, `DamageSystem`, `TurnSystem`, `APSystem`, `MPSystem`.
-- **`~Processor`**: `~System` 중에서도 `ActionSystem`에 Performer만 등록해 GA를 처리할 뿐, 외부에서 `.Instance`로 조회할 상태가 없는 클래스는 `~System` 대신 `~Processor` 접미사를 쓴다. 예: `EffectProcessor`, `AttackEnemyProcessor`, `ShieldBashProcessor`, `SplashProcessor`, `ShoulderBashProcessor`, `KnockBackProcessor`.
-- **`GameAction` 서브클래스**: `~GA` 접미사. "GameAction"이라는 단어 자체는 클래스명에 쓰지 않는다. 예: `DealDamageGA`, `TurnGA`, `ShieldBashGA`, `KnockBackGA`.
+- **`~Processor`**: `~System` 중에서도 `ActionSystem`에 Performer만 등록해 GA를 처리할 뿐, 외부에서 `.Instance`로 조회할 상태가 없는 클래스는 `~System` 대신 `~Processor` 접미사를 쓴다. 예: `EffectProcessor`, `AttackEnemyProcessor`, `SplashProcessor`, `ShoulderBashProcessor`, `KnockBackProcessor`.
+- **`GameAction` 서브클래스**: `~GA` 접미사. "GameAction"이라는 단어 자체는 클래스명에 쓰지 않는다. 예: `DealDamageGA`, `TurnGA`, `SplashGA`, `KnockBackGA`.
 - **인터페이스**: `I` 접두사 + 단일 책임의 작은 캡슐. 예: `IHaveCaster`, `IDamageable`, `IHaveDamage`.
 - 파일당 public 타입 1개, 파일명 = 타입명.
 - **네임스페이스 미사용** — `1.Systems` 트리 전체에서 `namespace` 선언 0건. 새 코드도 전역 네임스페이스에 추가한다.
@@ -55,8 +55,8 @@
   ```
 - `[Header("...")]`로 필드를 그룹핑한다. 헤더 텍스트는 한글/영문 혼용. 예: `SoundSystem.cs:10,18`(`"BGM,SFX Setting"`, `"MixerGroup"`), `SkillSystem.cs:9,13`.
 - 필드 케이싱은 camelCase로 통일한다 (`[field: SerializeField] public X Prop { get; private set; }` 패턴만 예외로 PascalCase 유지). `hero_moveRange`/`hero_mover`/`reserved_hero_moves`(`MoveSystem.cs`), `reserved_Skills`/`current_Selected_Skill`/`start_Switch_Skill`(`SkillSystem.cs`) 등 순수 private 필드의 언더스코어 위반은 정리됨.
-  - **(남은 예외)** `[SerializeField]`/`public` 필드 중 일부는 아직 언더스코어가 섞여 있다: `upSkill_Distance`(`SkillSystem.cs`), `bgm_Source_Count`/`sfx_Source_Count`(`SoundSystem.cs`), `selected_Hero_UI`(`HeroSystem.cs`, public) 등. 유니티가 필드명으로 씬/프리팹/에셋에 값을 직렬화하기 때문에, 이름을 바꾸면 기존 인스펙터 참조가 끊길 위험이 있어 `[FormerlySerializedAs]` 적용 여부를 정한 뒤 별도로 정리한다.
-- `GameAction`에서 "누가 시전했는가"를 나타내는 프로퍼티명은 `Caster`로 통일하고 `IHaveCaster`를 구현한다. 캐스터+대상이 모두 있는 전투 계열 GA 11개(`DealDamageGA`, `PlaySkillGA`, `PerformEffectGA`, `AttackEnemyGA`, `AttackCoreGA`, `ShoulderBashGA`, `ShieldBashGA`, `SplashGA`, `KnockBackGA`, `HealGA`, `AddStatusEffectGA`) 전부 적용됐다.
+  - **(남은 예외)** `[SerializeField]`/`public` 필드 중 일부는 아직 언더스코어가 섞여 있다: `upSkill_Distance`(`SkillSystem.cs`), `bgm_Source_Count`/`sfx_Source_Count`(`SoundSystem.cs`) 등. 유니티가 필드명으로 씬/프리팹/에셋에 값을 직렬화하기 때문에, 이름을 바꾸면 기존 인스펙터 참조가 끊길 위험이 있어 `[FormerlySerializedAs]` 적용 여부를 정한 뒤 별도로 정리한다.
+- `GameAction`에서 "누가 시전했는가"를 나타내는 프로퍼티명은 `Caster`로 통일하고 `IHaveCaster`를 구현한다. 캐스터+대상이 모두 있는 전투 계열 GA 10개(`DealDamageGA`, `PlaySkillGA`, `PerformEffectGA`, `AttackEnemyGA`, `AttackCoreGA`, `ShoulderBashGA`, `SplashGA`, `KnockBackGA`, `HealGA`, `AddStatusEffectGA`) 전부 적용됐다.
   - `IHaveCaster`는 `Token Caster { get; }`를 요구하지만, 캐스터가 항상 특정 구체 타입(예: 스킬 계열은 `HeroView`, 콤보 계열은 `CombatantView`)인 GA는 공개 프로퍼티를 그 구체 타입으로 유지하고 `IHaveCaster`는 **명시적 인터페이스 구현**(`Token IHaveCaster.Caster => Caster;`)으로 만족시킨다. 실제로 몬스터/영웅 양쪽에서 캐스터가 올 수 있어 `Token` 다형성이 필요한 `DealDamageGA`만 공개 프로퍼티 자체가 `Token`이다.
 
 <a id="sec-3"></a>
@@ -142,7 +142,7 @@ public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
       InitializeGameData();
   }
   ```
-- `~System` 접미사 클래스는 전부 `Singleton<T>`를 상속한다 — 단, `MatchSetupSystem`처럼 시작 시 한 번만 실행되고 끝나는 부트스트랩 스크립트는 예외다. `ActionSystem`에 Performer만 등록해서 GA를 처리할 뿐 외부에서 조회할 상태가 없는 클래스는 `~System`이 아니라 `~Processor` 접미사를 쓴다(`EffectProcessor`, `AttackEnemyProcessor`, `ShieldBashProcessor`, `SplashProcessor`, `ShoulderBashProcessor`, `KnockBackProcessor`).
+- `~System` 접미사 클래스는 전부 `Singleton<T>`를 상속한다 — 단, `MatchSetupSystem`처럼 시작 시 한 번만 실행되고 끝나는 부트스트랩 스크립트는 예외다. `ActionSystem`에 Performer만 등록해서 GA를 처리할 뿐 외부에서 조회할 상태가 없는 클래스는 `~System`이 아니라 `~Processor` 접미사를 쓴다(`EffectProcessor`, `AttackEnemyProcessor`, `SplashProcessor`, `ShoulderBashProcessor`, `KnockBackProcessor`).
 
 ### ActionSystem / GameAction / ReactionTiming
 
@@ -174,13 +174,13 @@ private IEnumerator XPerformer(XGA gameAction) { ... yield return null; }
 후속 `GameAction`을 연결하는 방법은 두 가지다:
 
 ```csharp
-// 1) 형제 리액션으로 큐잉 — ShieldBashProcessor.cs:22-23
-DealDamageGA dealDamageGA = new(shieldBashGA.Amount, combatants, shieldBashGA.Caster);
+// 1) 형제 리액션으로 큐잉 — SplashProcessor.cs:25-26
+DealDamageGA dealDamageGA = new(splashGA.Damage, target, splashGA.Caster);
 ActionSystem.Instance.AddReaction(dealDamageGA);
 
-// 2) 다른 GA의 후속 효과로 종속 연결 — ShieldBashProcessor.cs:26-27
-AddStatusEffectGA addStatusEffectGA = new(StatusEffectType.ARMOR, shieldStack, new() { shieldBashGA.Caster }, shieldBashGA.Caster);
-dealDamageGA.PostReactions.Add((addStatusEffectGA, null));
+// 2) 다른 GA의 후속 효과로 종속 연결 — SplashProcessor.cs:31-32
+DealDamageGA dDGA = new(splashGA.SplashDamage, splashTargets, splashGA.Caster);
+dealDamageGA.PostReactions.Add((dDGA, null));
 ```
 
 생성자는 target-typed `new(...)`(C# 9)를 쓴다: `TurnGA turnGA = new(TurnType.StartBattle);`(`MatchSetupSystem.cs:45`).
@@ -205,7 +205,7 @@ public interface IDamageable { public void Damage(int amount, DealDamageGA dealD
 public interface IHaveDamage { float Damage_Amount { get; } }
 ```
 
-- **`IHaveCaster`는 전투 중 캐스터와 대상이 모두 있는 GA에는 무조건 적용한다.** 새 GA를 추가할 때도 이 조건에 해당하면 예외 없이 구현한다(현재 11개: `DealDamageGA`, `PlaySkillGA`, `PerformEffectGA`, `AttackEnemyGA`, `AttackCoreGA`, `ShoulderBashGA`, `ShieldBashGA`, `SplashGA`, `KnockBackGA`, `HealGA`, `AddStatusEffectGA`). `TurnGA`, `MoveGA`, `SpendAPGA` 등 캐스터 개념이 없는 순수 턴/자원/이동 GA는 구현하지 않는다.
+- **`IHaveCaster`는 전투 중 캐스터와 대상이 모두 있는 GA에는 무조건 적용한다.** 새 GA를 추가할 때도 이 조건에 해당하면 예외 없이 구현한다(현재 10개: `DealDamageGA`, `PlaySkillGA`, `PerformEffectGA`, `AttackEnemyGA`, `AttackCoreGA`, `ShoulderBashGA`, `SplashGA`, `KnockBackGA`, `HealGA`, `AddStatusEffectGA`). `TurnGA`, `MoveGA`, `SpendAPGA` 등 캐스터 개념이 없는 순수 턴/자원/이동 GA는 구현하지 않는다.
 - **`IDamageable`은 피격이 있는 모든 `Token` 클래스가 상속받는다.** 현재 `CombatantView`(→`HeroView`/`EnemyView`가 상속으로 자동 충족)가 구현한다. `HeroPreview`처럼 전투에서 피격되지 않는 `Token` 서브클래스는 구현하지 않는다.
 - `IDamageable`/`HeroView`/`Token` 등은 다형성 디스패치보다 **런타임 `as`/`is` 패턴 매칭**으로 다뤄지는 경우가 많다:
   ```csharp
@@ -259,8 +259,8 @@ public interface IHaveDamage { float Damage_Amount { get; } }
 | `AudioType` | `Enums/AudioType.cs` | `SoundSystem.cs:96-121` 믹서 그룹 switch |
 | `TokenType` | `4.Creators/TokenCreator.cs:5` | 같은 파일 `CreateToken`의 switch — 프리팹/셋업 분기 |
 
-- **선언은 있지만 소비하는 코드가 없는 열거형**(정리 후보, 11절 참고): `CardSubType`, `ETargetModeType`, `CardAbilityType`, `DamageFormulaType`, `AudioEditorType`, `SEMachanicsType`(기본값 `None`만 반환).
-- **멤버 표기 규칙(신규):** 열거형 멤버는 전부 대문자(ALL_CAPS, 단어 구분은 `_`)로 표기한다. 예: `StatType.HEALTH`, `StatusEffectType.ARMOR`. 새로 작성하는 열거형부터 적용하며, 기존 PascalCase 멤버(`TurnType` 등)는 11절 체크리스트로만 관리한다.
+- **선언은 있지만 소비하는 코드가 없는 열거형**(정리 후보, 11절 참고): `CardSubType`, `ETargetModeType`, `CardAbilityType`, `DamageFormulaType`, `AudioEditorType`. (`SEMachanicsType`은 삭제됨)
+- **멤버 표기 규칙(신규):** 열거형 멤버는 전부 대문자(ALL_CAPS, 단어 구분은 `_`)로 표기한다. 예: `StatType.HEALTH`, `StatusEffectType.DODGE`. 새로 작성하는 열거형부터 적용하며, 기존 PascalCase 멤버(`TurnType` 등)는 11절 체크리스트로만 관리한다.
 - **네이밍 관찰:** 대부분 `~Type`/`~Mode`/`~State` 접미사. `ETargetModeType`만 `E` 접두사가 붙는 예외로 11절에 기록. 멤버는 `StatusEffectType`/`ETargetModeType`/`HeroAnimationType`/`StatType`이 ALL_CAPS(위 규칙과 일치), 나머지는 PascalCase(규칙 이전 코드).
 
 <a id="sec-10"></a>
@@ -291,5 +291,5 @@ public interface IHaveDamage { float Damage_Amount { get; } }
 | 1 | (8절) 밸런싱 수치는 SO/`[SerializeField]`로 노출, 리터럴 금지 | `APSystem.cs:9`(`MaxAP = 5`), `MPSystem.cs:7`(`MaxMP = 3`), `KnockBackProcessor.cs:8`(`crachDamage = 1`), `SkillSystem.cs:275`(스킬 AP 코스트 미데이터화), `RewardSystem.cs:24`(`0.7f`) |
 | 2 | (9절) 열거형은 접두사 없이 `~Type`/`~Mode`/`~State` 접미사 + PascalCase | `ETargetModeType`만 `E` 접두사 (나머지 17개엔 없음) |
 | 3 | (9절) 열거형 멤버는 전부 대문자(ALL_CAPS) | 멤버가 PascalCase인 기존 열거형(`TurnType` 등 ALL_CAPS가 아닌 것 전부) — 규칙 이전 코드, 아직 정리하지 않음 |
-| 4 | (9절) 열거형은 실제로 분기에 쓰여야 함(정리 후보) | `CardSubType`, `ETargetModeType`, `CardAbilityType`, `DamageFormulaType`, `AudioEditorType`, `SEMachanicsType` — 소비하는 코드 없음 |
+| 4 | (9절) 열거형은 실제로 분기에 쓰여야 함(정리 후보) | `CardSubType`, `ETargetModeType`, `CardAbilityType`, `DamageFormulaType`, `AudioEditorType` — 소비하는 코드 없음 (`SEMachanicsType`은 삭제됨) |
 | 5 | (10절) SO는 데이터만, 동작 금지 | `VisualGridData.cs`(`GetVGLayerOrder()`, 중첩 `VisualGridType`/`FillType`/`BorderType`/`SymbolType`의 `GetVGType*()`) |
