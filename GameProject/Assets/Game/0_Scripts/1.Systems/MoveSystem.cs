@@ -30,6 +30,8 @@ public class MoveSystem : Singleton<MoveSystem>
             return;
 
         var performMoveGA = reservedHeroMoves.Dequeue();
+        if (performMoveGA.mover is HeroView && !APSystem.Instance.HasEnoughAP()) return;   //예약 후 AP가 부족해졌으면 이동 취소
+
         ActionSystem.Instance.Perform(performMoveGA);
     }
 
@@ -37,6 +39,7 @@ public class MoveSystem : Singleton<MoveSystem>
     public void PlayPlayerMoveMode(HeroView heroView)
     {
         if (Interactions.Instance.IsCardTargetMode) return;   //카드 타겟 모드 중, 이동 모드 진입 불가
+        if (!APSystem.Instance.HasEnoughAP()) return;         //AP 부족 시, 이동 모드 진입 불가
 
         if (heroMover == null || heroMover != heroView)
         {

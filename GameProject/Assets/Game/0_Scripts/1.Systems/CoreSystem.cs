@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class CoreSystem : Singleton<CoreSystem>
 {
-    public int PlayerCoreHealth { get; private set; }
+    private HeroCaptainView HeroCaptain => HeroSystem.Instance.HeroCaptain;
+    private EnemyFlagView EnemyFlag => EnemySystem.Instance.EnemyFlag;
+
+    public int PlayerCoreHealth => HeroCaptain != null ? HeroCaptain.CurrentHealth : 0;   //용병대장 체력
     public int EnemyCoreHealth { get; private set; }
-    public int PlayerCoreMaxHealth { get; private set; }
-    public int EnemyCoreMaxHealth { get; private set; }
 
     private void OnEnable()
     {
@@ -21,8 +22,7 @@ public class CoreSystem : Singleton<CoreSystem>
 
     public void SetUp(StageData stageData)
     {
-        PlayerCoreMaxHealth = PlayerCoreHealth = stageData.PlayerCoreHealth;
-        EnemyCoreMaxHealth = EnemyCoreHealth = stageData.EnemyCoreHealth;
+        EnemyCoreHealth = stageData.EnemyCoreHealth;   //플레이어 코어 체력은 HeroCaptainData에서 View가 보유
     }
 
     //Performers
@@ -54,9 +54,16 @@ public class CoreSystem : Singleton<CoreSystem>
 
         int damage = attackCoreGA.Amount ?? attacker.BaseDamage;
         if (isHeroAttack)
+        {
             EnemyCoreHealth = Mathf.Max(0, EnemyCoreHealth - damage);
+            EnemyFlag.UpdateHealth(EnemyCoreHealth);
+            EnemyFlag.PlayHitShake();
+        }
         else
-            PlayerCoreHealth = Mathf.Max(0, PlayerCoreHealth - damage);
+        {
+            HeroCaptain.ReceiveCoreDamage(damage);
+            HeroCaptain.PlayHitShake();
+        }
 
         //코어 체력 0: 적 코어면 승리, 플레이어 코어면 패배
         if (isHeroAttack && EnemyCoreHealth <= 0)

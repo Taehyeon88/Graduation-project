@@ -12,6 +12,10 @@ public class TokenSetup : MonoBehaviour
     [Header("SetUpUI")]
     [field: SerializeField] private SetUpUI setupUI;
 
+    [Header("CoreViewPositions (그리드 밖 Iso 좌표)")]
+    [SerializeField] private Vector3 heroCaptainIsoPosition;
+    [SerializeField] private Vector3 enemyFlagIsoPosition;
+
     private List<EnemyView> EnemyViews => TokenSystem.Instance.EnemyViews;
     private List<HeroView> HeroViews => TokenSystem.Instance.HeroViews;
 
@@ -78,6 +82,22 @@ public class TokenSetup : MonoBehaviour
             poses.Add(pos);
         }
         return poses;
+    }
+
+    //용병대장 생성 (그리드 밖, TokenGrid 미등록)
+    public void SetUpHeroCaptain(HeroCaptainData heroCaptainData)
+    {
+        Token token = TokenCreator.Instance.CreateToken(heroCaptainData, TokenType.HeroCaptain, heroCaptainIsoPosition);
+        HeroSystem.Instance.HeroCaptain = token as HeroCaptainView;
+    }
+
+    //적 세력 깃발 생성 (그리드 밖, TokenGrid 미등록)
+    public void SetUpEnemyFlag(EnemyFlagData enemyFlagData, int health)
+    {
+        Token token = TokenCreator.Instance.CreateToken(enemyFlagData, TokenType.EnemyFlag, enemyFlagIsoPosition);
+        EnemyFlagView enemyFlagView = token as EnemyFlagView;
+        enemyFlagView.UpdateHealth(health);
+        EnemySystem.Instance.EnemyFlag = enemyFlagView;
     }
 
     /// <summary>

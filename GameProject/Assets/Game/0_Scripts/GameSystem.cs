@@ -20,6 +20,9 @@ public class GameSystem : Singleton<GameSystem>
     }
     [SerializeField] private StageData[] stageDatas;           //스테이지 데이터 배열
 
+    [field: SerializeField] public HeroCaptainData HeroCaptainData { get; private set; }   //용병대장(아군 코어) 초기 데이터
+    [field: SerializeField] public EnemyFlagData EnemyFlagData { get; private set; }       //적 세력 깃발(적 코어) 데이터
+
 
     protected override void Awake()
     {

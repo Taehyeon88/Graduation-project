@@ -7,6 +7,7 @@ public class HeroSystem : Singleton<HeroSystem>
 {
     public Image selected_Hero_UI;
     public IReadOnlyList<HeroView> HeroViews => TokenSystem.Instance.HeroViews;
+    public HeroCaptainView HeroCaptain { get; set; }   //용병대장 (TokenSetup만 설정)
     public HeroView CurrentHero
     {
         get { return currentHero; }

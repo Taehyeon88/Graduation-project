@@ -21,12 +21,11 @@ public class AutoBattleSystem : Singleton<AutoBattleSystem>
         ActionSystem.DetachPerformer<ExtraAttackGA>();
     }
 
-    //그리드 위 모든 CombatantView를 속도순으로 캐싱 (Speed 0 유닛은 행동하지 않음)
+    //그리드 위 모든 CombatantView를 속도순으로 캐싱 (Speed 0은 가장 늦게 행동)
     public void CacheCombatants()
     {
         battleQueue = TokenSystem.Instance.API.GetAllTokens()
             .OfType<CombatantView>()
-            .Where(c => c.Speed > 0)
             .OrderByDescending(c => c.Speed)
             .ToList();
     }

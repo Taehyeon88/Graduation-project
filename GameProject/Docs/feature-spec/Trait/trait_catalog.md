@@ -177,7 +177,7 @@ PlayCardGA POST / KillGA PRE  (둘 다 IHaveCaster 아님 → 소유자 필터 �
 **주의·한계**
 - 손패 카드 배치(`PlayCardGA`)만 감지한다. 전투 전 초기 배치(`TokenSetup`)·웨이브 생성은 발동하지 않아, 초기 배치 영웅이 이 특성을 가져도 오라가 없다.
 - 부여량은 **배치 시점 `owner.Speed` 스냅샷**이다. 이후 owner 속도 변화는 반영되지 않는다 (원작 확인 필요).
-- 회수 시 기록량을 그대로 빼므로, 그 사이 대상 속도가 줄었으면(예: 공격 신호) 0 미만이 될 수 있다 (`ModifyStat`에 하한 없음).
+- 회수 시 기록량을 그대로 빼므로, 그 사이 대상 속도가 줄었으면(예: 공격 신호) 0 미만이 될 수 있다 (`ModifyStat` 자체엔 하한이 없지만 `CombatantView.Speed` setter가 0으로 보정한다). 이 경우 회수량이 부여량보다 커져 속도가 원래보다 낮아질 수 있다.
 - "같은 특성" 판정 단위는 **효과 클래스**다. 서로 다른 두 특성이 `AllySpeedAuraEffect`를 쓰면 같은 특성으로 취급한다(현재는 3002 하나뿐).
 - `HasTrait`는 `CombatantData.Traits` 기준이라 `MaxTraitCount` 초과로 잘린 특성도 보유로 본다.
 - 두 GA를 구독하는 조건은 `ActionSystem.wrapperMap`이 델리게이트 키를 덮어써 해제 시 구독이 목록에 남을 수 있다 (`AttackedOpponentCondition`도 동일). 인프라라 고치지 않고 조건에서 `owner == null`로 무시한다.
@@ -221,7 +221,7 @@ AutoBattleTurnGA POST  (IHaveCaster 아님 → 소유자 필터 전원 통과)
 - 공격 신호의 `ExtraAttackGA`는 `Battle()`을 거치지 않으므로 정면 공격 그대로다.
 - 공격 모션은 `ProjectileSystem.PlayArrowShot`(`GetArrowBezierTween`)의 화살이다. 칸 사이 유닛을 통과해 날아가고 비행 시간은 `ProjectileSystem`의 `arrowSecondsPerTile`/`arrowMinDuration`으로 조정한다. 코어 공격은 코어 오브젝트 위치가 아니라 같은 행의 상대 쪽 그리드 끝까지 쏜다. 화살 사운드는 넣지 않았다 (Play 확인).
 - `AttackCoreGA`는 `DamageCaculator` 보정을 받지 않아 유닛 공격과 피해량이 다를 수 있다 (원작 확인 필요).
-- 속도 0 유닛은 행동하지 않는다 (기존 규칙).
+- 속도 0은 행동 안 함이 아니라 가장 늦게 행동하는 최하위 속도다.
 - `StatSystem`이 씬에 있어야 공격력 감소가 동작한다. Play 테스트는 아직 하지 않았다.
 
 **에디터 설정**: `Condition`=`AutoBattleTurnCondition`(`reactionTiming`=POST), `Effect`=`SniperEffect`(`damageDecay`=1, `minDamage`=1). `Image`는 연결되어 있다. 영웅 `CombatantData.Traits`에 등록하는 에디터 작업은 아직 하지 않았다 (유닛당 최대 2개).
@@ -255,12 +255,12 @@ DealDamageGA / AttackCoreGA  POST   (기본 공격 또는 추가 공격)
 ```
 
 **주의·한계**
-- 속도 소모는 **영구**다 (복구 로직 없음). 속도가 0이 되면 다음 `CacheCombatants`부터 해당 유닛은 행동하지 않는다.
+- 속도 소모는 **영구**다 (복구 로직 없음). 속도가 0이 되면 다음 `CacheCombatants`부터 해당 유닛은 가장 늦게 행동한다 (행동은 계속한다).
 - 속도가 `speedCost`(2) 이상일 때만 발동하고 매번 2만 소모한다 (속도 3 → 추가 공격 1회, 속도 1 남음 / 속도 5 → 추가 2회, 속도 1 남음). 설명의 "2 미만이더라도 0까지 반복"은 이 규칙과 맞지 않는다 (Play 테스트에서 속도 3이 추가 2회가 되어 규칙을 바꿈).
 - 정면에 대상이 없고 코어 공격 조건도 아니면 `ReserveAttack`이 GA를 만들지 않아 속도가 남아도 연쇄가 끝난다.
 - 코어 공격(`AttackCoreGA`)도 조건을 만족하므로 코어를 쳐도 연쇄한다. 코어가 파괴되어 `IsGameClear`/`IsGameOver`이면 `ExtraAttackGA` performer가 중단한다.
 - 연쇄는 매 회 속도가 줄어 반드시 끝난다 (효과가 예약한 `ModifyStatGA`/`ExtraAttackGA`는 조건 구독 대상이 아님). 다만 `ExtraAttackGA`가 만드는 `DealDamageGA`가 다시 조건을 트리거하는 것은 의도된 반복이다.
-- `ModifyStatGA`의 음수 증감을 SPEED에 처음 쓴다 (`StatSystem`은 사망 처리 없이 `Speed`에 더한다). `Speed < speedCost`면 발동하지 않아 0 미만이 되지 않는다.
+- `ModifyStatGA`의 음수 증감을 SPEED에 처음 쓴다 (`StatSystem`은 사망 처리 없이 `Speed`에 더한다). `Speed < speedCost`면 발동하지 않아 0 미만이 되지 않는다 (`Speed` setter도 0 미만을 0으로 보정).
 - `StatSystem`이 씬에 배치되어 있어야 동작한다. Play 테스트는 아직 하지 않았다.
 
 **에디터 설정**: `Condition`=`AttackedOpponentCondition`(`reactionTiming`=POST), `Effect`=`ExtraAttackEffect`(`speedCost`=2). `Image`는 연결되어 있다. 영웅 `CombatantData.Traits`에 등록하는 에디터 작업은 아직 하지 않았다 (유닛당 최대 2개).

@@ -252,7 +252,7 @@ public static class Utility
         return combatants;
     }
 
-    public static Tween GetModelTween(Token token, Vector2Int current_Pos, Vector2 direction, float distance, float duration, Ease ease)
+    public static Tween GetModelTween(Token token, Vector2 current_Pos, Vector2 direction, float distance, float duration, Ease ease)
     {
         Vector3 endPos = Utility.IsoPositionToWorldPoint(
             token,
@@ -266,7 +266,7 @@ public static class Utility
         return token.Model.transform.DOLocalMove(endPos, duration).SetEase(ease);
     }
     //기본 공격 모션 1: 모델이 방향으로 전진 → onHit(타격 시점) → 복귀
-    public static Sequence GetBasicAttackTween(Token attacker, Vector2Int attackerPos, Vector2 direction, TweenCallback onHit)
+    public static Sequence GetBasicAttackTween(Token attacker, Vector2 attackerPos, Vector2 direction, TweenCallback onHit)
     {
         Sequence seq = DOTween.Sequence();
         seq.Append(GetModelTween(attacker, attackerPos, direction, 0.4f, 0.12f, Ease.InQuad))
@@ -282,5 +282,10 @@ public static class Utility
     public static Tween GetModelShakeTween(Token token, float duration, Vector3 strangth, int vibrato, float randomness)
     {
         return token.Model.transform.DOShakePosition(duration, strangth, vibrato, randomness);
+    }
+    //코어 View 피격 흔들림 (전방향 랜덤: x, y 세기를 같게 둠)
+    public static Tween GetHitShakeTween(Token token)
+    {
+        return GetModelShakeTween(token, 0.18f, new Vector3(0.15f, 0.15f, 0f), 10, 90f);
     }
 }

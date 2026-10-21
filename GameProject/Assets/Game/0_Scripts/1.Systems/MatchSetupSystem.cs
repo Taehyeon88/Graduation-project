@@ -37,6 +37,10 @@ public class MatchSetupSystem : MonoBehaviour
             );
         WaveSystem.Instance.SetUpFirstEnemys();
 
+        //4.2 용병대장/적 세력 깃발 View 생성 (그리드 밖)
+        tokenSetup.SetUpHeroCaptain(GameSystem.Instance.HeroCaptainData);
+        tokenSetup.SetUpEnemyFlag(GameSystem.Instance.EnemyFlagData, stageData.EnemyCoreHealth);
+
         //4.4 플레이어/적 코어 체력 설정
         CoreSystem.Instance.SetUp(stageData);
 

@@ -27,7 +27,14 @@ public class DamageSystem : Singleton<DamageSystem>
         Sequence attackSeq = null;
 
         //자동 전투 기본 공격: 대상은 Battle()이 예약 시점에 확정, 여기서는 모션만 재생
-        if (dealDamageGA.IsBasicAttack && dealDamageGA.Target != null && dealDamageGA.Caster is CombatantView attacker)
+        if (dealDamageGA.IsBasicAttack && dealDamageGA.Target != null && dealDamageGA.Caster is HeroCaptainView captain)
+        {
+            //그리드 밖 용병대장: Iso 오른쪽으로 근접 모션, 타격 시점에 피해 적용
+            bool hit = false;
+            attackSeq = Utility.GetBasicAttackTween(captain, captain.TokenTransform.positionXY, Vector2.right, () => hit = true);
+            yield return new WaitUntil(() => hit);
+        }
+        else if (dealDamageGA.IsBasicAttack && dealDamageGA.Target != null && dealDamageGA.Caster is CombatantView attacker)
         {
             //기본 공격 모션 1 재생, 타격 시점에 피해 적용
             Vector2Int attackerPos = TokenSystem.Instance.API.GetTokenPosition(attacker);

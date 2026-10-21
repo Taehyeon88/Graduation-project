@@ -12,15 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 880c622939e1d6a47961ec0f0c85aa6b, type: 3}
   m_Name: Simple_Wave
   m_EditorClassIdentifier: Assembly-CSharp::WaveData
-  <Id>k__BackingField: -1
+  <Id>k__BackingField: 8001
   <EnemyDatas>k__BackingField:
-  - {fileID: 11400000, guid: ec5ea812691e02842aed134d63a60bc2, type: 2}
-  - {fileID: 11400000, guid: ec5ea812691e02842aed134d63a60bc2, type: 2}
-  - {fileID: 11400000, guid: ec5ea812691e02842aed134d63a60bc2, type: 2}
-  - {fileID: 11400000, guid: ec5ea812691e02842aed134d63a60bc2, type: 2}
-  - {fileID: 11400000, guid: ec5ea812691e02842aed134d63a60bc2, type: 2}
-  - {fileID: 11400000, guid: 7c1983e88cd4af4498349d521678d295, type: 2}
-  - {fileID: 11400000, guid: ec5ea812691e02842aed134d63a60bc2, type: 2}
-  <WavePerEnemyCount>k__BackingField: 02000000030000000100000001000000
-  <WaveTurnIntervals>k__BackingField: 00000000020000000100000001000000
-  <SpawnLines>k__BackingField: 01000000020000000000000001000000030000000200000001000000
+  - {fileID: 11400000, guid: fb9e9ddd0811b5e4a8f0f7870609fa16, type: 2}
+  - {fileID: 11400000, guid: fb9e9ddd0811b5e4a8f0f7870609fa16, type: 2}
+  - {fileID: 11400000, guid: c91b92b77b2874441be017b8e4ac91d6, type: 2}
+  - {fileID: 11400000, guid: c91b92b77b2874441be017b8e4ac91d6, type: 2}
+  <WavePerEnemyCount>k__BackingField: 020000000100000001000000
+  <WaveTurnIntervals>k__BackingField: 000000000100000001000000
+  <SpawnLines>k__BackingField: 01000000030000000200000000000000

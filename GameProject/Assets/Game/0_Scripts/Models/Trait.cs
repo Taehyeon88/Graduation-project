@@ -44,7 +44,7 @@ public class Trait
     public void Reaction(GameAction gameAction)
     {
         //소유자의 GA에만 반응 (Caster가 없는 GA는 모두 통과)
-        if (gameAction is IHaveCaster haveCaster && haveCaster.Caster != owner) return;
+        if (condition.FiltersByCaster && gameAction is IHaveCaster haveCaster && haveCaster.Caster != owner) return;
         if (!condition.SubConditionIsMat(gameAction, owner)) return;
         if (effect is ILimitedTrigger limited && limited.MaxTriggers > 0 && triggerCount >= limited.MaxTriggers) return;
 

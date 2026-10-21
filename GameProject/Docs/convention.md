@@ -260,7 +260,8 @@ public interface IHaveDamage { float Damage_Amount { get; } }
 | `TokenType` | `4.Creators/TokenCreator.cs:5` | 같은 파일 `CreateToken`의 switch — 프리팹/셋업 분기 |
 
 - **선언은 있지만 소비하는 코드가 없는 열거형**(정리 후보, 11절 참고): `CardSubType`, `ETargetModeType`, `CardAbilityType`, `DamageFormulaType`, `AudioEditorType`, `SEMachanicsType`(기본값 `None`만 반환).
-- **네이밍 관찰:** 대부분 `~Type`/`~Mode`/`~State` 접미사 + PascalCase 멤버. `ETargetModeType`만 `E` 접두사가 붙고, `StatusEffectType`/`ETargetModeType`/`HeroAnimationType`는 멤버가 ALL_CAPS — 다수 스타일과 다른 예외로 11절에 기록.
+- **멤버 표기 규칙(신규):** 열거형 멤버는 전부 대문자(ALL_CAPS, 단어 구분은 `_`)로 표기한다. 예: `StatType.HEALTH`, `StatusEffectType.ARMOR`. 새로 작성하는 열거형부터 적용하며, 기존 PascalCase 멤버(`TurnType` 등)는 11절 체크리스트로만 관리한다.
+- **네이밍 관찰:** 대부분 `~Type`/`~Mode`/`~State` 접미사. `ETargetModeType`만 `E` 접두사가 붙는 예외로 11절에 기록. 멤버는 `StatusEffectType`/`ETargetModeType`/`HeroAnimationType`/`StatType`이 ALL_CAPS(위 규칙과 일치), 나머지는 PascalCase(규칙 이전 코드).
 
 <a id="sec-10"></a>
 ## 10. SO 데이터 형태
@@ -289,6 +290,6 @@ public interface IHaveDamage { float Damage_Amount { get; } }
 |---|---|---|
 | 1 | (8절) 밸런싱 수치는 SO/`[SerializeField]`로 노출, 리터럴 금지 | `APSystem.cs:9`(`MaxAP = 5`), `MPSystem.cs:7`(`MaxMP = 3`), `KnockBackProcessor.cs:8`(`crachDamage = 1`), `SkillSystem.cs:275`(스킬 AP 코스트 미데이터화), `RewardSystem.cs:24`(`0.7f`) |
 | 2 | (9절) 열거형은 접두사 없이 `~Type`/`~Mode`/`~State` 접미사 + PascalCase | `ETargetModeType`만 `E` 접두사 (나머지 17개엔 없음) |
-| 3 | (9절) 열거형 멤버는 PascalCase | `StatusEffectType`/`ETargetModeType`/`HeroAnimationType`는 멤버가 ALL_CAPS |
+| 3 | (9절) 열거형 멤버는 전부 대문자(ALL_CAPS) | 멤버가 PascalCase인 기존 열거형(`TurnType` 등 ALL_CAPS가 아닌 것 전부) — 규칙 이전 코드, 아직 정리하지 않음 |
 | 4 | (9절) 열거형은 실제로 분기에 쓰여야 함(정리 후보) | `CardSubType`, `ETargetModeType`, `CardAbilityType`, `DamageFormulaType`, `AudioEditorType`, `SEMachanicsType` — 소비하는 코드 없음 |
 | 5 | (10절) SO는 데이터만, 동작 금지 | `VisualGridData.cs`(`GetVGLayerOrder()`, 중첩 `VisualGridType`/`FillType`/`BorderType`/`SymbolType`의 `GetVGType*()`) |

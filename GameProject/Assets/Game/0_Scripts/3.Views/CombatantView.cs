@@ -20,14 +20,14 @@ public class CombatantView : Token, IDamageable
         get { return maxHealth; }
         private set
         {
-            maxHealth = value;
+            maxHealth = Mathf.Max(1, value);
             UpdateHealthUI();
         }
     }
     public int CurrentHealth
     {
         get { return currentHealth; }
-        private set
+        protected set
         {
             currentHealth = value;
             UpdateHealthUI();
@@ -41,7 +41,7 @@ public class CombatantView : Token, IDamageable
         get { return baseDamage; }
         private set
         {
-            baseDamage = value;
+            baseDamage = Mathf.Max(1, value);
             UpdateDamageUI();
         }
     }
@@ -50,7 +50,7 @@ public class CombatantView : Token, IDamageable
         get { return speed; }
         private set
         {
-            speed = value;
+            speed = Mathf.Max(0, value);
             UpdateSpeedUI();
         }
     }

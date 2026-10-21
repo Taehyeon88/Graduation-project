@@ -4,6 +4,7 @@ using UnityEngine;
 public class EnemySystem : Singleton<EnemySystem>
 {
     public IReadOnlyList<Vector2Int> SetupPoses => setupPoses;   //적 배치 가능 위치 (라인당 1개, 전투 중 불변)
+    public EnemyFlagView EnemyFlag { get; set; }                 //적 세력 깃발 (TokenSetup만 설정)
 
     private List<Vector2Int> setupPoses = new();
 
