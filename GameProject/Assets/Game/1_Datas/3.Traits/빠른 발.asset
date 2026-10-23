@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: "\uBE60\uB978 \uBC1C"
   m_EditorClassIdentifier: Assembly-CSharp::TraitData
   <Id>k__BackingField: 3004
-  <Image>k__BackingField: {fileID: 21300000, guid: cc84a68d8d07b0a4b86f6b206cdc79a8, type: 3}
+  <OwnerType>k__BackingField: 0
+  <Image>k__BackingField: {fileID: 21300000, guid: c3d79b38b3a23a045bf4b2e5f3ec865e, type: 3}
   <Description>k__BackingField: "\uBC30\uCE58 \uC2DC \uBC14\uB85C \uC55E\uC5D0 \uC801
     \uC6A9\uBCD1\uC774 \uC5C6\uB2E4\uBA74 \uACF5\uACA9\uB825+1, \uC18D\uB3C4+2\uB97C
     \uC5BB\uC2B5\uB2C8\uB2E4."
@@ -40,3 +41,4 @@ MonoBehaviour:
           amount: 1
         - statType: 2
           amount: 2
+        maxTriggers: 0

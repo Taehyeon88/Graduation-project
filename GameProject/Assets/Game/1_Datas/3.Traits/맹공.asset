@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: "\uB9F9\uACF5"
   m_EditorClassIdentifier: Assembly-CSharp::TraitData
   <Id>k__BackingField: 3005
-  <Image>k__BackingField: {fileID: 21300000, guid: a24691f8ea6b2f24698c33e6f826d379, type: 3}
+  <OwnerType>k__BackingField: 0
+  <Image>k__BackingField: {fileID: 21300000, guid: 31a348faa1e546e42aaa1794da8d139c, type: 3}
   <Description>k__BackingField: "\uC801 \uC6A9\uBCD1 \uB610\uB294 \uC6B0\uB450\uBA38\uB9AC\uB97C
     \uACF5\uACA9\uD55C \uB4A4, \uACF5\uACA9\uB825+1\uC744 \uC5BB\uC2B5\uB2C8\uB2E4.
     \uC804\uD22C\uB2F9 4\uBC88 \uBC1C\uB3D9\uB429\uB2C8\uB2E4."
@@ -34,7 +35,7 @@ MonoBehaviour:
     - rid: 7851380973974323271
       type: {class: ModifyStatTraitEffect, ns: , asm: Assembly-CSharp}
       data:
-        maxTriggers: 4
         modifiers:
         - statType: 1
           amount: 1
+        maxTriggers: 4

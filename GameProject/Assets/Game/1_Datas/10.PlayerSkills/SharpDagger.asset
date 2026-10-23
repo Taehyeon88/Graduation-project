@@ -17,7 +17,7 @@ MonoBehaviour:
     \uC9C0\uC815\uD574 2\uC758 \uD53C\uD574\uB97C \uC90D\uB2C8\uB2E4. \uD68C\uD53C\uB97C
     \uBB34\uC2DC\uD558\uBA70, \uC7A5\uC560\uBB3C\uC740 \uC9C0\uC815\uD560 \uC218
     \uC5C6\uC2B5\uB2C8\uB2E4."
-  <Image>k__BackingField: {fileID: 0}
+  <Image>k__BackingField: {fileID: 21300000, guid: b367c45c3705b0f488df9f188cdce9c2, type: 3}
   <MaxUses>k__BackingField: 2
   <Skill>k__BackingField:
     rid: 1001

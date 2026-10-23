@@ -17,7 +17,7 @@ MonoBehaviour:
     \uD68C\uD53C\uB97C \uC5BB\uC2B5\uB2C8\uB2E4. \uD0C0\uC77C \uC704\uC758 \uC6A9\uBCD1\uC774
     \uACF5\uACA9\uC744 \uBC1B\uC73C\uBA74 \uC774 \uC9C0\uD615\uC9C0\uBB3C\uC774 \uC81C\uAC70\uB418\uBA70,
     2\uB77C\uC6B4\uB4DC \uD6C4 \uB2E4\uC2DC \uC0DD\uC131\uB429\uB2C8\uB2E4."
-  <Sprite>k__BackingField: {fileID: 21300000, guid: ad2d0a2c32897894489de16a79ab5d5e, type: 3}
+  <Sprite>k__BackingField: {fileID: 21300000, guid: b2d16e9d62415cb43b04e4440c79cbbc, type: 3}
   <Effect>k__BackingField:
     rid: 7851381067326685254
   references:

@@ -155,6 +155,22 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2287549908580363436, guid: 888032aeab9a6884482de47824ac3084, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2287549908580363436, guid: 888032aeab9a6884482de47824ac3084, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2287549908580363436, guid: 888032aeab9a6884482de47824ac3084, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2287549908580363436, guid: 888032aeab9a6884482de47824ac3084, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2900142424467000704, guid: 888032aeab9a6884482de47824ac3084, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: "\uC21C\uB840\uC7901"
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   <Id>k__BackingField: 2001
-  <Sprite>k__BackingField: {fileID: 21300000, guid: aa0d1c860cb904911a6d086803e590ca, type: 3}
+  <Sprite>k__BackingField: {fileID: 21300000, guid: 4d8adc3bb48fba04aa88d2d27fb4e9f1, type: 3}
   <Health>k__BackingField: 2
   <Damage>k__BackingField: 3
   <Speed>k__BackingField: 0

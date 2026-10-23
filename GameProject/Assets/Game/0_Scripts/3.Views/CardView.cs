@@ -30,6 +30,7 @@ public class CardView : MonoBehaviour, IPointerClickHandler
         title.text = card.Title;
         apCost.text = card.APCost.ToString();
         image.sprite = card.Image;
+        image.preserveAspect = true;   //틀은 1:1 고정, 스프라이트 비율 유지
     }
 
     public void SetSelected(bool selected)

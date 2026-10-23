@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b792736534ecc194497e152845ea6254, type: 3}
+  m_Name: "\uD654\uC57D\uD1B5"
+  m_EditorClassIdentifier: Assembly-CSharp::ObstacleData
+  <Id>k__BackingField: 3003
+  <Sprite>k__BackingField: {fileID: 21300000, guid: e26a8f5cade5f5247a616bada165358f, type: 3}
+  <Health>k__BackingField: 4
+  <Damage>k__BackingField: 2
+  <Speed>k__BackingField: 0
+  <Traits>k__BackingField: []
+  <Description>k__BackingField: "\uD589\uB3D9\uB825\uC744 \uC18C\uBAA8\uD574 \uB2E4\uB978
+    \uC911\uB9BD \uD0C0\uC77C\uB85C \uC774\uB3D9\uC2DC\uD0AC \uC218 \uC788\uC2B5\uB2C8\uB2E4.
+    \uC774 \uC7A5\uC560\uBB3C\uC774 \uD30C\uAD34\uB418\uBA74 \uC8FC\uBCC0 \uBAA8\uB4E0
+    \uC601\uC6C5\uC5D0\uAC8C 2\uC758 \uD53C\uD574\uB97C \uC90D\uB2C8\uB2E4."

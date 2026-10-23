@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: "\uB3CC\uACA9 \uD654\uC0B4\uD1B5"
   m_EditorClassIdentifier: Assembly-CSharp::ObstacleData
   <Id>k__BackingField: 3001
-  <Sprite>k__BackingField: {fileID: 21300000, guid: 080874fcdf764124db72cf952ce21aab, type: 3}
+  <Sprite>k__BackingField: {fileID: 21300000, guid: f4bbfafbc2afbe64fbe4a029bc6f8228, type: 3}
   <Health>k__BackingField: 4
   <Damage>k__BackingField: 0
   <Speed>k__BackingField: 0

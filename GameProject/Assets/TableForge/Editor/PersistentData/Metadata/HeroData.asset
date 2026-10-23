@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: HeroData
   m_EditorClassIdentifier: TableForge.Editor::TableForge.Editor.UI.TableMetadata
   expandedTables:
-    values: 1a761038c7e882477e55a5eef1eeed6abf5f07a07cb209da375da5127c8903be
+    values: 7c8903be
   transposedTables:
     values: 
   hiddenFields:
@@ -23,7 +23,7 @@ MonoBehaviour:
   itemGUIDs:
     values: []
   cellAnchorMetadata:
-    mKeys: de563e9f794780cf7b206565a00218f679a46a0156af06ff9de91071e00899a4ce3ea3c4bb18e438c66cf2a37001201f2c3b9425bb7fb9b47ff671a043819fa551553801
+    mKeys: de563e9f794780cf7b206565a00218f679a46a0156af06ff9de91071e00899a4ce3ea3c4bb18e438c66cf2a37001201f2c3b9425bb7fb9b47ff671a043819fa551553801b44d0889f3f852ef
     mValues:
     - position: 1
       size: {x: 0, y: 25}
@@ -32,21 +32,21 @@ MonoBehaviour:
     - position: 3
       size: {x: 0, y: 25}
     - position: 0
-      size: {x: 154, y: 0}
+      size: {x: 62, y: 0}
     - position: 1
-      size: {x: 0, y: 69}
+      size: {x: 0, y: 25}
     - position: 2
-      size: {x: 0, y: 69}
+      size: {x: 0, y: 25}
     - position: 3
-      size: {x: 0, y: 69}
+      size: {x: 0, y: 25}
     - position: 4
-      size: {x: 0, y: 69}
+      size: {x: 0, y: 25}
     - position: 5
-      size: {x: 0, y: 69}
+      size: {x: 0, y: 25}
     - position: 6
-      size: {x: 0, y: 69}
+      size: {x: 0, y: 25}
     - position: 7
-      size: {x: 0, y: 69}
+      size: {x: 0, y: 25}
     - position: 0
       size: {x: 64, y: 0}
     - position: 0
@@ -59,6 +59,10 @@ MonoBehaviour:
       size: {x: 0, y: 0}
     - position: 10
       size: {x: 0, y: 0}
+    - position: 11
+      size: {x: 0, y: 25}
+    - position: 12
+      size: {x: 0, y: 25}
   functions:
     mKeys: 
     mValues: []

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5e019695d48e8c49b4a29f252771c88, type: 3}
+  m_Name: "\uBB3C \uC6C5\uB369\uC774"
+  m_EditorClassIdentifier: Assembly-CSharp::TerrainData
+  <Id>k__BackingField: 3
+  <Description>k__BackingField: "\uC774 \uD0C0\uC77C \uC704\uC758 \uC601\uC6C5\uC740
+    \uC774\uB3D9\uB825\uC774 0\uC73C\uB85C \uAC10\uC18C\uD558\uC9C0\uB9CC, \uACF5\uACA9\uB825
+    +2\uB97C \uC5BB\uC2B5\uB2C8\uB2E4."
+  <Sprite>k__BackingField: {fileID: 21300000, guid: 8f354806b9e861949b5b7035c8c11278, type: 3}
+  <Effect>k__BackingField:
+    rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }

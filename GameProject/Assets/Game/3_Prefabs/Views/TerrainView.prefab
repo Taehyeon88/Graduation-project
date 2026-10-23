@@ -27,8 +27,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.01199913, y: 1.53, z: 3.500001}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 1
+  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 824141371707005320}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -81,7 +81,7 @@ SpriteRenderer:
   m_SortingLayer: 2
   m_SortingOrder: -9
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: ad2d0a2c32897894489de16a79ab5d5e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b2d16e9d62415cb43b04e4440c79cbbc, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -103,7 +103,7 @@ GameObject:
   - component: {fileID: 6412822782620368632}
   - component: {fileID: 7603434332076218204}
   m_Layer: 0
-  m_Name: TerrainTileView
+  m_Name: TerrainView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -138,7 +138,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _size: {x: 1, y: 1, z: 1}
-  _position: {x: 0, y: 1, z: 1}
+  _position: {x: 1, y: 2, z: 1}
   _renderersMode: 0
   _cachedRenderers: 0
 --- !u!114 &7603434332076218204
