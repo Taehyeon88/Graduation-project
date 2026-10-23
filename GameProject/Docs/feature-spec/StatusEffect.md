@@ -59,4 +59,5 @@ DealDamageGA → DamageSystem.DealDamageGAPerformer
   - `DealDamageGA` 자체는 실행되므로 `DealDamageCondition`/`AttackedOpponentCondition`을 구독한 특성(공격 신호, 맹공, 반격 등)은 빗나가도 발동한다 (공격자 쪽 반응 유지, 사용자 결정).
   - `AttackCoreGA`(코어 공격)는 대상이 코어라 회피와 무관하다.
   - "MISS" 표시·회피 연출·사운드는 없다 (아트 제외).
+  - 부여 수단: 발판 '풀숲' — `TerrainSystem`이 용병이 풀숲에 들어오면(`MoveGA`/`PlayCardGA` POST) `AddStatusEffectGA(DODGE, 1)`을 부여하고, 떠나면 1을 회수한다. 출처 구분은 없다 ([08_terrain_obstacle.md](08_terrain_obstacle.md) §5).
   - 에디터: 에셋의 `EffectType`=`DODGE`, `Discription` 입력, `spriteImage` 연결, `StatusEffectSystem.effectDatas`에 등록 필요. Play 테스트는 아직 하지 않았다.

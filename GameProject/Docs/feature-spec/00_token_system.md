@@ -82,7 +82,8 @@ private List<Vector2Int> remainCells = new();     //비어있는 셀 목록
 - **`TokenSystem.SelectedToken`은 죽은 프로퍼티다.** `private set`인데 프로젝트 전체에서 이 값을 설정하는 코드가 없다. 실제 "선택된 영웅" 상태는 `HeroSystem.CurrentHero`(설정: `GridSelector`의 그리드 클릭 처리)가 전담한다.
 - **(제거됨 — 웨이브 코어 삭제) `WaveCoreView`는 `CombatantView`를 상속하지 않고 `IDamageable`을 독립적으로 구현한다.** HP 차감/피격 연출 로직이 `CombatantView.Damage()`와 사실상 중복되어 있고, 코어 체력이 0 이하가 되어도 `Debug.Log("게임 승리")`만 호출할 뿐 실제 게임 종료 처리(`GameClearGA` 등)로 이어지지 않는 미완성 상태다.
 - **`TokenMainAPI.MoveToken`의 `useMovedPath` 파라미터는 시그니처에만 있고 메서드 본문에서 전혀 쓰이지 않는다.**
-- **`TokenMainAPI.AddToken`은 현재 외부 호출자가 없다** — "게임 진행 중 토큰 추가" 용도로 예비되어 있으나 아직 어떤 시스템도 사용하지 않는다.
+- **`TokenMainAPI.AddToken`의 호출자**: 카드 배치(`PlayCardGAPerformer`), 웨이브 스폰(`AddEnemys`), 장애물 배치(`TokenSetup.SetUpObstacles`). 영웅·적은 각 목록(`HeroViews`/`EnemyViews`)에도 추가하지만 `ObstacleView`는 그리드에만 등록한다.
+- **토큰 없이 막힌 칸(중립지대)이 있다** — `simpleGrid`=1인데 `tokenByGridPos`에는 없는 칸이다. `GetTokenByPosition`은 null을 반환하므로, `simpleGrid`를 직접 읽는 코드가 아니라면 "토큰 없음 = 이동 가능"으로 가정하지 말고 `IsGridEmpty`/`CanSet`을 쓴다 ([08_terrain_obstacle.md](08_terrain_obstacle.md)).
 - **`RemoveToken`(코루틴, 연출 O) vs `RemoveToken2`(즉시, 연출 X)** 구분에 주의한다 — 후자는 주석상 "CombatantView가 아닌 것들의 제거" 용도로 만들어졌다.
 
 ## 5. 새 토큰 타입/기능 추가 시 체크리스트

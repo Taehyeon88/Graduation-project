@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum TokenType
 {
-    None, Hero, Enemy, HeroCaptain, EnemyFlag
+    None, Hero, Enemy, HeroCaptain, EnemyFlag, Obstacle
 }
 
 public class TokenCreator : Singleton<TokenCreator>
@@ -14,6 +14,8 @@ public class TokenCreator : Singleton<TokenCreator>
     [SerializeField] private Token enemyTokenPrefab;
     [SerializeField] private Token heroCaptainPrefab;
     [SerializeField] private Token enemyFlagPrefab;
+    [SerializeField] private Token obstaclePrefab;
+    [SerializeField] private TerrainView terrainPrefab;
     [SerializeField] private Transform isoWorld;      //토큰들을 생성할 부모 오브젝트
 
     private Token tokenPrefab;
@@ -27,6 +29,7 @@ public class TokenCreator : Singleton<TokenCreator>
             case TokenType.Enemy: tokenPrefab = enemyTokenPrefab; break;
             case TokenType.HeroCaptain: tokenPrefab = heroCaptainPrefab; break;
             case TokenType.EnemyFlag: tokenPrefab = enemyFlagPrefab; break;
+            case TokenType.Obstacle: tokenPrefab = obstaclePrefab; break;
             default: tokenPrefab = null; break;
         }
         if (tokenPrefab == null)
@@ -55,11 +58,29 @@ public class TokenCreator : Singleton<TokenCreator>
                 EnemyFlagView enemyFlagView = token as EnemyFlagView;
                 enemyFlagView.SetUp(data as EnemyFlagData);
                 break;
+            case TokenType.Obstacle:
+                ObstacleView obstacleView = token as ObstacleView;
+                obstacleView.SetUp(data as ObstacleData);
+                break;
         }
 
         token.TokenTransform.position = isoPosition;
 
         return token;
+    }
+
+    //발판은 토큰이 아니므로 그리드에 등록하지 않는다
+    public TerrainView CreateTerrain(TerrainData data, Vector2Int gridPosition)
+    {
+        if (terrainPrefab == null)
+        {
+            Debug.LogError("TokenCreator : 발판 생성 불가");
+            return null;
+        }
+
+        TerrainView terrain = Instantiate(terrainPrefab, isoWorld);
+        terrain.SetUp(data, gridPosition);
+        return terrain;
     }
 
     public HeroPreview CreateTokenPreview(TokenData data)

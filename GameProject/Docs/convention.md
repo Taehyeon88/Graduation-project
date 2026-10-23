@@ -267,7 +267,7 @@ public interface IHaveDamage { float Damage_Amount { get; } }
 <a id="sec-10"></a>
 ## 10. SO 데이터 형태
 
-`Assets/Game/0_Scripts/5.Data/`(스크립트 정의, `~Data` 접미사 14개) ↔ `Assets/Game/1_Datas/`(실제 `.asset` 인스턴스, `1.Heroes/`·`2.Enemies/`·`3.Traits/`·`6.StatusEffects/`·`7.VisualGrids/`·`8.Stages/`·`10.Cores/`·`10.PlayerSkills/` 등 타입별 하위 폴더 — 전체는 [Folder.md](Folder.md) 2절)로 스크립트 폴더와 자산 폴더가 분리되어 있다. `Resources.LoadAll`/Addressables는 쓰지 않는다 — `GameSystem`이 덱(`List<HeroData>`)을 `[SerializeField]`로 직접 들고, 하위 System은 `GameSystem.Instance.Deck`/`CurrentStageData`로 참조한다(`GameSystem.cs:16,20,24`). `TokenCreator`는 공통 베이스 `TokenData`를 받아 `as HeroData`/`as EnemyData`로 다운캐스트한다.
+`Assets/Game/0_Scripts/5.Data/`(스크립트 정의, `~Data` 접미사 16개) ↔ `Assets/Game/1_Datas/`(실제 `.asset` 인스턴스, `1.Heroes/`·`2.Enemies/`·`3.Traits/`·`6.StatusEffects/`·`7.VisualGrids/`·`8.Stages/`·`10.Cores/`·`10.PlayerSkills/` 등 타입별 하위 폴더 — 전체는 [Folder.md](Folder.md) 2절)로 스크립트 폴더와 자산 폴더가 분리되어 있다. `Resources.LoadAll`/Addressables는 쓰지 않는다 — `GameSystem`이 덱(`List<HeroData>`)을 `[SerializeField]`로 직접 들고, 하위 System은 `GameSystem.Instance.Deck`/`CurrentStageData`로 참조한다(`GameSystem.cs:16,20,24`). `TokenCreator`는 공통 베이스 `TokenData`를 받아 `as HeroData`/`as EnemyData`로 다운캐스트한다.
 
 - **필드 패턴:** `[CreateAssetMenu(menuName = "Data/...")]` + `[field: SerializeField] public X Prop { get; private set; }`.
   ```csharp
@@ -279,7 +279,7 @@ public interface IHaveDamage { float Damage_Amount { get; } }
       [field: SerializeField] public int MovePoint { get; private set; }
   }
   ```
-- `~Data` 클래스 목록: `TokenData`(공통 베이스), `CombatantData`(→ `TokenData` 상속, 추상) → `HeroData`/`EnemyData`/`EnemyFlagData`/`HeroCaptainData`, `SkillData`(휴면), `PlayerSkillData`, `TraitData`, `StageData`, `WaveData`, `StatusEffectData`, `SoundData`, `VisualGridData`(전부 `5.Data/`, 총 14개). `PlayerSkillData`는 `TraitData`처럼 `[field: SerializeReference, SR]`로 추상 `PlayerSkill`(`Models/`) 서브클래스(`PlayerSkills/`)를 조립한다.
+- `~Data` 클래스 목록: `TokenData`(공통 베이스), `CombatantData`(→ `TokenData` 상속, 추상) → `HeroData`/`EnemyData`/`ObstacleData`/`EnemyFlagData`/`HeroCaptainData`, `TerrainData`(토큰이 아닌 발판 데이터, `ScriptableObject` 직접 상속), `SkillData`(휴면), `PlayerSkillData`, `TraitData`, `StageData`, `WaveData`, `StatusEffectData`, `SoundData`, `VisualGridData`(전부 `5.Data/`, 총 16개). `StageData`는 `NeutralPositions`/`ObstacleSpawns`/`TerrainSpawns`로 지형 배치를 들고 있다([feature-spec/08_terrain_obstacle.md](feature-spec/08_terrain_obstacle.md)). `PlayerSkillData`는 `TraitData`처럼 `[field: SerializeReference, SR]`로 추상 `PlayerSkill`(`Models/`) 서브클래스(`PlayerSkills/`)를 조립한다.
 - **SO는 데이터만 들고, 동작은 넣지 않는다.** 예외: `VisualGridData.cs`는 `GetVGLayerOrder()`와 중첩 `abstract class VisualGridType`(`FillType`/`BorderType`/`SymbolType`)에 실제 로직을 갖고 있다 — 이번 작업에서 리팩터링하지 않고 11절에 위반으로만 기록한다.
 
 <a id="sec-11"></a>

@@ -32,7 +32,7 @@ Assets/Game/
 │  └─ CardEffectRelative/  #   분류용
 ├─ 3.Views/                # CombatantView/HeroView/EnemyView 등 토큰의 뷰 레이어
 ├─ 4.Creators/             # TokenCreator/ProjectionCreator 등 생성 담당
-├─ 5.Data/                 # ScriptableObject 데이터 클래스 정의(~Data 접미사, 14개) — 실 자산은 1_Datas/(2절)
+├─ 5.Data/                 # ScriptableObject 데이터 클래스 정의(~Data 접미사, 16개) — 실 자산은 1_Datas/(2절)
 ├─ Effects/                # Effect(Models/Effect.cs) 서브클래스 — SkillAbility.Effects에 담기는 데이터+로직 홀더
 │  └─ CloseRange_Attack/   #   분류용(ShoulderBashEffect 등)
 ├─ Enums/                  # 열거형 13개
@@ -44,9 +44,10 @@ Assets/Game/
 │  ├─ Util/                # 정적 헬퍼(Utility, UtilityBFS, DamageCaculator, GridLayoutImageResizer)
 │  └─ DontDestroyedObject.cs
 ├─ Interfaces/             # I 접두사 인터페이스 7개: IHaveCaster, IDamageable, IHaveDamage, IHaveDistance, IUseCondition, IUseCustomRangeVG, IUseCustomTargetVG
-├─ Models/                 # 도메인 모델(SO 아닌 순수 C# 클래스): Token/TokenGrid, Hero/HeroPreview, Skill/SkillAbility/Effect(추상 베이스), Trait/TraitCondition/TraitEffect(추상), Card
+├─ Models/                 # 도메인 모델(SO 아닌 순수 C# 클래스): Token/TokenGrid, Hero/HeroPreview, Skill/SkillAbility/Effect(추상 베이스), Trait/TraitCondition/TraitEffect(추상), TerrainEffect(추상), Card
 │  └─ Modes/               #   범위·타겟 선정 전략(RangeMode/TargetMode)
 ├─ Traits/                 # TraitCondition/TraitEffect(Models/) 서브클래스 — TraitData가 [SerializeReference]로 조립: AutoBattleTurnCondition, DealDamageCondition, TurnCondition / AddStatusTraitEffect, HealOnDamageEffect
+├─ Terrains/               # TerrainEffect(Models/) 서브클래스 — TerrainData가 [SerializeReference]로 조립: BushEffect
 ├─ PlayerSkills/           # PlayerSkill(Models/) 서브클래스 — PlayerSkillData가 [SerializeReference]로 조립: SharpDagger
 ├─ SubSystems/             # Singleton 파사드가 위임하는 실행 컴포넌트(TokenMainAPI/TokenServiceAPI/TokenSetup, GridSelector, TooltipTrigger)
 ├─ UI/                     # 화면별 UI 컴포넌트(~UI 접미사, SkillsUI/StatusEffectsUI/TurnPopUpUI 등) + AudioMixerController
@@ -61,7 +62,7 @@ Assets/Game/
 |---|---|---|---|
 | `1.Heroes/` | 10 | `HeroData` | Hero1~3 + 감시탑 경비병 / 기병 / 나팔수 / 매복자 / 사제 / 수문장 / 전도 |
 | `2.Enemies/` | 3 | `EnemyData` | 허수아비 / Larva / ArchorSkeleton |
-| `3.Traits/` | 8 | `TraitData` | 공격 신호 / 맹공 / 불경한 빛 / 빠른 발 / 신속의 기도 / 요새화 / 저격 + `Cores/응수`(용병대장 전용). 전부 조건·효과 설정됨 |
+| `3.Traits/` | 9 | `TraitData` | 공격 신호 / 맹공 / 불경한 빛 / 빠른 발 / 신속의 기도 / 요새화 / 저격 / 돌격 화살통(장애물 전용) + `Cores/응수`(용병대장 전용). 전부 조건·효과 설정됨 |
 | `4.Perks/`, `5.Items/` | 0 | — | 빈 폴더 |
 | `6.StatusEffects/` | 2 | `StatusEffectData` | Power, 회피 |
 | `7.VisualGrids/` | 19 | `VisualGridData` | 그리드 하이라이트 전부 |
@@ -69,16 +70,18 @@ Assets/Game/
 | `8.Stages/Waves/` | 1 | `WaveData` | Simple_Wave |
 | `10.Cores/` | 2 | `EnemyFlagData`, `HeroCaptainData` | `EnemyFlag`(적 코어) + `HeroCaptains/지그먼트`(용병대장) |
 | `10.PlayerSkills/` | 1 | `PlayerSkillData` | SharpDagger(날카로운 단도) |
+| `11.Obstacles/` | 1 | `ObstacleData` | 돌격 화살통 (체력 4, 공격력 0, 속도 0, 특성 9001) |
+| `12.Terrains/` | 1 | `TerrainData` | 풀숲 (임시 스프라이트) |
 | `9.Sounds/` | 18 | `SoundData` | `SoundData.asset`/`SoundData 1.asset`은 이름 정리가 안 된 기본값으로 보임 |
 
-**관찰(기록만, 수정 대상 아님):** `SkillData` 클래스는 남아 있지만 `.asset` 인스턴스는 없다(`2.Skills/` 삭제). `0_Scripts/5.Data`의 클래스 14개와 폴더가 1:1로 대응하지는 않는다(`TokenData`/`CombatantData`는 추상 베이스라 자산이 없다).
+**관찰(기록만, 수정 대상 아님):** `SkillData` 클래스는 남아 있지만 `.asset` 인스턴스는 없다(`2.Skills/` 삭제). `0_Scripts/5.Data`의 클래스 16개와 폴더가 1:1로 대응하지는 않는다(`TokenData`/`CombatantData`는 추상 베이스라 자산이 없다).
 
 ## 3. `2_Scenes/` — 씬
 
 - **실제 씬**(루트): `GameDemoScene.unity`, `StartScene.unity`
 - **개발·테스트용**(`DevelopScene/`, 4개): `MapTestScene.unity`, `New Scene.unity`, `SpriteTestScene.unity`, `UIScene.unity`
 
-## 4. `3_Prefabs/` — 프리팹 (35개)
+## 4. `3_Prefabs/` — 프리팹 (37개)
 
 | 폴더 | 개수 | 파일 |
 |---|---|---|
@@ -87,7 +90,7 @@ Assets/Game/
 | `Models/` | 3 | `EnemyModel`, `HeroModel`, `WallModel` |
 | `Projections/` | 2 | `RatGeneral_Stone`, `Skeleton_BoneArrow` |
 | `UI/` | 6 | `DisPlayUI`, `EnemyUI`, `SettingUI`, `StatusEffectUI`, `StatusEffectUIAtWorld`, `TraitUI` |
-| `Views/` | 13 | `ArrowView`, `CardView`, `CardViewInPile`, `CombatantViewBase`, `CoreView`, `EnemyFlagView`(적 코어), `EnemyView`, `HeroCaptainView`(아군 코어·용병대장), `HeroPreView`, `HeroView`, `PopUp_Text_View`, `ProjectionView`, `SkillView` |
+| `Views/` | 15 | `ArrowView`, `CardView`, `CardViewInPile`, `CombatantViewBase`, `CoreView`, `EnemyFlagView`(적 코어), `EnemyView`, `HeroCaptainView`(아군 코어·용병대장), `HeroPreView`, `HeroView`, `ObstacleView`(파괴 가능 장애물), `PopUp_Text_View`, `ProjectionView`, `SkillView`, `TerrainView`(발판 타일) |
 
 ## 5. `4_Medias/` — 스프라이트/이미지 (98개 png)
 

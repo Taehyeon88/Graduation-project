@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: EnemyFlag
   m_EditorClassIdentifier: Assembly-CSharp::EnemyFlagData
   <Id>k__BackingField: 9002
-  <Sprite>k__BackingField: {fileID: 21300000, guid: 92e41f1d7cdbdab48a1dc52728fcde93, type: 3}
+  <Sprite>k__BackingField: {fileID: 21300000, guid: 65544e009b9a6f142bdf2cff1e356c86, type: 3}

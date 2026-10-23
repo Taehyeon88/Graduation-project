@@ -92,7 +92,7 @@
 
 ## 7. 스코프
 
-- **포함**: 용병 모집·덱빌딩, 용병 카드 시스템(드로우/손패/버림 + AP 배치), 그리드 배치(AP), 속도순 자동 전투, 특성 시스템(용병당 최대 2개), 플레이어 스킬(AP 1, 턴당 1회, 전투당 횟수 제한 — 첫 스킬 '날카로운 단도', [feature-spec/07_player_skill.md](feature-spec/07_player_skill.md)), 다중 라운드·로그라이크 진행
+- **포함**: 용병 모집·덱빌딩, 용병 카드 시스템(드로우/손패/버림 + AP 배치), 그리드 배치(AP), 속도순 자동 전투, 특성 시스템(용병당 최대 2개), 플레이어 스킬(AP 1, 턴당 1회, 전투당 횟수 제한 — 첫 스킬 '날카로운 단도', [feature-spec/07_player_skill.md](feature-spec/07_player_skill.md)), 다중 라운드·로그라이크 진행, 그리드 지형(중립지대·파괴 가능 장애물 '돌격 화살통'·발판 '풀숲', [feature-spec/08_terrain_obstacle.md](feature-spec/08_terrain_obstacle.md))
 - **제외**: 원작 아트·연출 모방 (아트는 모작 대상이 아님)
 - **제거됨**: 영웅 수동 스킬 시스템(`SkillSystem` — 스킬 버튼 클릭→타겟팅 UI, [feature-spec/02_skill_system.md](feature-spec/02_skill_system.md), 역사 기록). 새로 도입한 **플레이어 스킬**(`PlayerSkillSystem`)은 이것과 별개다. `Effect` → `PerformEffectGA` → 구체 GA 체인, `TargetMode`/`RangeMode`, `Skill`/`SkillData` 데이터 모델은 유닛 행동 실행부로 남겼다(현재 호출 경로 없음).
 - **제거됨**: 몬스터 자율 행동 계층(`EnemySystem`, `Enemy`/`EnemyAction` 판단·행동 모델과 구현체, `AttackHeroGA`/`PlayEnemyEAGA`, [feature-spec/01_enemy_system.md](feature-spec/01_enemy_system.md), 역사 기록). 몬스터는 체력·스프라이트만 가진 수동적 토큰이며 적 턴은 빈 턴이다. 적의 유닛 배치·이동 AI는 새로 설계한다(원본은 git 이력).
@@ -110,6 +110,7 @@
 | AP | 전투 시작 시 AP 5, 턴 시작 시마다 AP 3 획득, 최대 AP 5, 카드 뽑기 1 AP | 원작 규칙과 일치 (`MaxAP = 5`, 전투 시작 5, 턴 시작 +3, 카드 뽑기 1 AP) |
 | 전투 판 | 4×4, 배치 구간은 `StageSO` 기준 | 그리드 구현은 있으나 배치 구간·코어 공격 규칙 미반영 |
 | 행동 수단 | 속도순 자동 행동 | 속도순 자동 전투(`AutoBattleSystem`) + 플레이어 스킬(`UseSkillUI` 드래그, AP 1, [07_player_skill](feature-spec/07_player_skill.md)). 영웅 수동 스킬(`SkillSystem`)은 제거됨. 수동 이동 모드(`MoveSystem`)는 남아 있으나 제거 예정 |
+| 그리드 지형 | 4×4 그리드 위에 영웅·몬스터 외에 파괴 가능 장애물, 올라갈 수 있는 발판, 중립지대(이동·배치 불가)가 놓임 | 3종 구현(`StageData`에 저장 → `MatchSetupSystem` 생성). 장애물은 돌격 화살통(0/4) 1종, 발판은 풀숲 1종(회피 부여만 — "공격받으면 제거·2라운드 후 재생성"은 미구현). 돌격 화살통의 추가 공격 피해량·적이 파괴했을 때의 동작·코어 포함 여부: (원작 확인 필요) |
 | 메타 | 용병 모집, 덱빌딩, 로그라이트 | 단일 전투 스테이지 (웨이브 생성까지 구현) |
 
 기존 `ActionSystem`(GameAction + PRE/POST 리액션) 파이프라인 위에 AP 배치·속도순 자동 행동·특성을 얹는 방향이다. 어떤 기존 시스템을 유지·교체할지는 챕터별 명세(`feature-spec/`)를 갱신할 때 결정한다.

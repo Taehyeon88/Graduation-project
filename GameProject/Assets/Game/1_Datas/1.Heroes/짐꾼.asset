@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: "\uC9D0\uAFBC"
   m_EditorClassIdentifier: Assembly-CSharp::HeroData
   <Id>k__BackingField: 1009
-  <Sprite>k__BackingField: {fileID: 21300000, guid: 91acd4714c9898a4db5d404365d02ba7, type: 3}
+  <Sprite>k__BackingField: {fileID: 21300000, guid: 3a7ab569ee3a58548adfe14b808d7b28, type: 3}
   <Health>k__BackingField: 1
   <Damage>k__BackingField: 1
   <Speed>k__BackingField: 3

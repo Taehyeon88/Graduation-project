@@ -22,6 +22,9 @@ public class TokenSetup : MonoBehaviour
     private IsoWorld IsoWorld => TokenSystem.Instance.IsoWorld;
     private List<Vector2Int> heroSetupPositions;
 
+    private readonly Dictionary<Vector2Int, TerrainView> terrains = new();   //발판은 토큰이 아니라 그리드에 등록하지 않고 따로 보관
+    public IEnumerable<TerrainView> Terrains => terrains.Values;
+
     private HeroPreview preview;
 
     private void Update()
@@ -65,6 +68,46 @@ public class TokenSetup : MonoBehaviour
     {
         grid.GenerateStage();
     }
+
+    //중립지대 칸 막기 (스테이지 맵 생성 후, 배치 위치 계산 전에 호출)
+    public void SetUpNeutralZones(Vector2Int[] neutrals)
+    {
+        if (neutrals == null) return;
+        foreach (Vector2Int pos in neutrals)
+            grid.SetBlockedCell(pos);
+    }
+
+    //파괴 가능 장애물 배치 (중립지대 설정 후, 몬스터 배치 전에 호출)
+    public void SetUpObstacles(ObstacleSpawn[] spawns)
+    {
+        if (spawns == null) return;
+        foreach (ObstacleSpawn spawn in spawns)
+        {
+            if (spawn.Data == null || !grid.CanSet(spawn.Position))
+            {
+                Debug.LogError($"장애물 배치 불가: {spawn.Position} (데이터 없음, 범위 밖 또는 이미 점유된 칸)");
+                continue;
+            }
+            TokenSystem.Instance.Main.AddToken(spawn.Data, TokenType.Obstacle, spawn.Position);
+        }
+    }
+
+    //발판 배치 (중립지대·장애물 설정 후, 배치 위치 계산 전에 호출)
+    public void SetUpTerrains(TerrainSpawn[] spawns)
+    {
+        if (spawns == null) return;
+        foreach (TerrainSpawn spawn in spawns)
+        {
+            if (spawn.Data == null || terrains.ContainsKey(spawn.Position) || !grid.CanSet(spawn.Position))
+            {
+                Debug.LogError($"발판 배치 불가: {spawn.Position} (데이터 없음, 범위 밖, 중복 또는 이미 점유된 칸)");
+                continue;
+            }
+            terrains.Add(spawn.Position, TokenCreator.Instance.CreateTerrain(spawn.Data, spawn.Position));
+        }
+    }
+
+    public bool TryGetTerrain(Vector2Int pos, out TerrainView terrain) => terrains.TryGetValue(pos, out terrain);
 
     //라인마다 기본 배치 칸(baseX)에서 장애물이 없는 첫 칸까지 step 방향으로 이동한 배치 위치 목록 (그리드 밖이면 해당 라인 제외)
     public List<Vector2Int> CalcSetupPoses(Vector2Int[] obstacles, int baseX, int step)

@@ -206,7 +206,7 @@ public class CombatantView : Token, IDamageable
         if(CurrentHealth <= 0)
         {
             hit_Tween.Pause();
-            KillGA killGA = new KillGA(this, hit_Tween);
+            KillGA killGA = new KillGA(this, hit_Tween, dealDamageGA.Caster);
             dealDamageGA.PostReactions.Add((killGA, null));
         }
     }

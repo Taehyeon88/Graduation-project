@@ -114,6 +114,6 @@ DealDamageGA → DamageSystem.DealDamageGAPerformer
 - `AttackCoreGA`(코어 공격)는 대상이 코어라 회피와 무관하다.
 - "MISS" 표시·회피 연출·사운드는 없다 (아트 제외).
 - 설명문의 "지속시간이 종료되면"은 구현되지 않았다. 지속시간을 두려면 용병 턴 종료 감소 훅이 필요하다 (영웅만 `HeroSystem`이 호출).
-- 부여 수단(카드·특성)은 아직 연결하지 않았다. Play 테스트는 하지 않았다.
+- 부여 수단: 발판 '풀숲'(`TerrainSystem`) — 용병이 풀숲에 들어오면 `AddStatusEffectGA(DODGE, 1)`, 떠나면 1 회수 (출처 구분 없음, [08_terrain_obstacle.md](../08_terrain_obstacle.md) §5). 카드·특성 부여는 아직 연결하지 않았다. 풀숲 진입·이탈·재진입 시 스택 증감은 Play 모드에서 확인했다.
 
 **에디터 설정**: 에셋 `EffectType`=`DODGE`(4), `Discription` 입력, `spriteImage`=`회피.png`. 씬 `StatusEffectSystem.effectDatas`에 등록 완료.

@@ -2,7 +2,25 @@
 
 > 특성 하나가 어떤 `TraitCondition` + `TraitEffect` + 타이밍으로 묶여 있는지 **특성 단위**로 정리한 문서. 구조·계약·로드 파이프라인은 [05_trait_system.md](../05_trait_system.md), 특성 제작 절차는 [trait_howto.md](../../howto/trait_howto.md), 재사용 가능한 조건·효과 목록은 [trait.md](./trait.md)를 본다.
 > 새 특성(`TraitData` 에셋)을 만들면 이 문서에 섹션을 추가한다. 원작에서 확인하지 못한 규칙은 `(원작 확인 필요)`로 표기한다.
-> **현재 수록: 8개** — 3001 불경한 빛, 3002 신속의 기도, 3003 요새화, 3004 빠른 발, 3005 맹공, 3006 저격, 3007 공격 신호, 3008 응수. `Assets/Game/1_Datas/3.Traits/`의 에셋 전부다.
+> **현재 수록: 9개** — 3001 불경한 빛, 3002 신속의 기도, 3003 요새화, 3004 빠른 발, 3005 맹공, 3006 저격, 3007 공격 신호, 3008 응수, 9001 돌격 화살통(장애물 전용). `Assets/Game/1_Datas/3.Traits/`의 에셋 전부다.
+
+## 9001 · 돌격 화살통 (장애물 전용)
+
+에셋: `Assets/Game/1_Datas/3.Traits/돌격 화살통.asset` — `ObstacleData` `돌격 화살통`의 Traits에 연결 ([08_terrain_obstacle.md](../08_terrain_obstacle.md))
+
+| 항목 | 값 |
+|---|---|
+| Id | 9001 |
+| 설명 (`Description`) | 이 장애물을 파괴한 용병이 모든 적 용병을 추가로 공격합니다. |
+| 조건 | `SelfDeathCondition` — 구독 `KillGA`, 판정 `KillGA.Token == owner` (owner = 장애물) |
+| 타이밍 | PRE (`reactionTiming: 0`) |
+| 효과 | `KillerAttackAllOpponentsEffect` |
+| 효과 동작 | `KillGA.Killer`가 영웅이면 `EnemyViews` 전체, 적이면 `HeroViews` 전체에 `Killer.BaseDamage`만큼 `DealDamageGA(Targets)` 예약. 코어는 공격하지 않음 |
+| 파생 GA | `DealDamageGA` |
+| 코드 | `Traits/Conditions/SelfDeathCondition.cs`, `Traits/KillerAttackAllOpponentsEffect.cs` |
+| 원작 확인 필요 | 피해량(처치자 공격력 가정), 적이 파괴했을 때의 동작, 코어 포함 여부 |
+
+**에디터 설정**: `Condition`=`SelfDeathCondition`(`reactionTiming`=PRE), `Effect`=`KillerAttackAllOpponentsEffect`. `ConditionName`/`EffectName`에 클래스명을 적어 둔다.
 
 ## 3003 · 요새화
 

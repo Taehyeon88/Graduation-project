@@ -111,6 +111,7 @@
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/MoveGA.cs`
 - **필드**: `CombatantView mover`, `Vector2Int movePosition`, `bool isKnockBack`(기본 false)
 - **Performer**: `MoveSystem.MoveGAPerformer` — `TokenSystem`으로 실제 토큰 이동 + 이동 사운드 재생
+- **POST 구독자**: `TerrainSystem.MoveGAPostReaction` — 모든 발판에서 `mover`의 기능 회수(`Exit`) 후, 도착 칸이 발판이면 `Enter` (파생 GA 없음). 같은 시스템이 `PlayCardGA` POST도 구독해 발판 위에 소환된 용병에게 `Enter` 적용
 - **트리거 지점**: `PerformMoveGA` Performer(경로 칸 수만큼), `KnockBackGA` Performer(밀려남 처리, `isKnockBack = true`)
 
 #### `PerformMoveGA`
@@ -140,7 +141,7 @@
 
 #### `KillGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/KillGA.cs`
-- **필드**: `Token Token`, `Tween Hit_Tween`
+- **필드**: `Token Token`, `Tween Hit_Tween`, `Token Killer`(처치한 토큰 — `CombatantView.Damage`가 `dealDamageGA.Caster`를 넘김, 스킬 등 시전자가 없으면 null. `KillerAttackAllOpponentsEffect`가 사용)
 - **Performer**: `DamageSystem.KillGAPerformer` — 피격 흔들림 연출(`Hit_Tween`) 완료 대기 → 비주얼 그리드 정리 → 토큰 제거 (승패 판정은 하지 않음 — 코어 HP 기준으로 `AttackCoreGA`가 담당)
 - **트리거 지점**: 전역 `Perform`/`AddReaction`이 아니라, `DealDamageGA` 처리 중 `CombatantView.Damage()`가 체력 ≤ 0일 때 그 `DealDamageGA` 인스턴스의 `PostReactions`에 직접 추가되어서만 실행됨
 - **관련 체인**: §3-2

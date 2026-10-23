@@ -23,10 +23,19 @@ public class MatchSetupSystem : MonoBehaviour
         TokenSystem.Instance.Setup.SetUpStageMap();
         //3.스테이지 기물 배치(잠깐 패스)
 
-        //3.5 진영별 라인 배치 위치 설정 (장애물이 기본 배치 칸에 있으면 한 칸 앞으로)
+        //3.2 중립지대 설정 (이동·배치 불가 칸)
         TokenSetup tokenSetup = TokenSystem.Instance.Setup;
-        HeroSystem.Instance.SetUp(tokenSetup.CalcSetupPoses(stageData.ObstaclePositions, 0, 1));
-        EnemySystem.Instance.SetUp(tokenSetup.CalcSetupPoses(stageData.ObstaclePositions, TokenSystem.Instance.gridWidth - 1, -1));
+        tokenSetup.SetUpNeutralZones(stageData.NeutralPositions);
+
+        //3.3 파괴 가능 장애물 배치
+        tokenSetup.SetUpObstacles(stageData.ObstacleSpawns);
+
+        //3.4 발판 배치
+        tokenSetup.SetUpTerrains(stageData.TerrainSpawns);
+
+        //3.5 진영별 라인 배치 위치 설정 (중립지대가 기본 배치 칸에 있으면 한 칸 앞으로)
+        HeroSystem.Instance.SetUp(tokenSetup.CalcSetupPoses(stageData.NeutralPositions, 0, 1));
+        EnemySystem.Instance.SetUp(tokenSetup.CalcSetupPoses(stageData.NeutralPositions, TokenSystem.Instance.gridWidth - 1, -1));
 
         //4.몬스터 및 웨이브 핵 배치
         WaveSystem.Instance.SetUp(

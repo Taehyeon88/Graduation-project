@@ -31,8 +31,8 @@ public void AddToken(TokenData tokenData, TokenType tokenType, Vector2Int gridPo
 - **반환값**: `void`
 - **코루틴 여부**: 아니오
 - **동작**: `TokenCreator.Instance.CreateToken(...)`으로 토큰을 생성 → `grid.SetToken(token, gridPosition)`으로 그리드에 등록 → 생성된 토큰이 `EnemyView`면 `EnemyViews`에도 추가
-- **사용 예시**: 확인된 외부 호출자 없음
-- **비고**: 게임 진행 중 토큰을 추가하는 용도로 만들어졌지만 현재 어떤 시스템도 호출하지 않는 예비 API다.
+- **사용 예시**: `CardSystem`(`PlayCardGAPerformer`, `TokenType.Hero`), `TokenMainAPI.AddEnemys`(웨이브 스폰, `TokenType.Enemy`), `TokenSetup.SetUpObstacles`(`TokenType.Obstacle`)
+- **비고**: 위 스니펫은 단순화한 것이다. 실제 본문은 `EnemyView`뿐 아니라 `HeroView`도 `HeroViews`에 추가한다. `ObstacleView`는 어느 목록에도 넣지 않고 그리드에만 등록한다.
 
 ### 2-2. 제거
 

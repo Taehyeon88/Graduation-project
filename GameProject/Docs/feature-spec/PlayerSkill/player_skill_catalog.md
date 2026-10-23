@@ -36,7 +36,7 @@
 | 설명 (`Description`) | 적 용병 또는 우두머리를 지정해 2의 피해를 줍니다. 회피를 무시하며, 장애물은 지정할 수 없습니다. |
 | 수치 | 피해 2 (`SharpDagger.damage`, 에셋 `data.damage`), 횟수 `MaxUses` = 2 |
 | 지정 가능한 대상 | `EnemyView`(적 용병), `EnemyFlagView`(우두머리 = 적 코어). 그 외(아군·빈 칸)는 `IsValidTarget`이 거부 |
-| 장애물 | 지정 불가 — 장애물은 토큰이 아니라 `StageData.ObstaclePositions` 좌표 배열이라 대상 조회에 잡히지 않는다 |
+| 장애물 | 지정 불가 — 파괴 가능 장애물(`ObstacleView`)은 토큰이지만 `IsValidTarget`이 `EnemyView`/`EnemyFlagView`만 허용하는 허용 목록 방식이라 지정되지 않는다. 중립지대는 토큰이 아니라 대상 조회에 잡히지 않는다 ([08_terrain_obstacle.md](../08_terrain_obstacle.md)) |
 | 실행 GA | 적 용병 → `DealDamageGA(2, target, null, false, false, ignoreDodge: true)` / 우두머리 → `AttackCoreGA(null, 2)` |
 | 회피 처리 | `DealDamageGA.IgnoreDodge`가 true라 `DamageSystem`이 회피 분기를 건너뜀 → **DODGE 스택을 소모하지 않고 피해만 적용** (원작 확인 필요) |
 | 피해 보정 | `Caster`가 null이라 힘(POWER)·약화는 적용되지 않고 대상의 취약만 적용 (원작 확인 필요) |

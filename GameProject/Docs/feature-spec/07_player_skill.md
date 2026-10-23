@@ -17,7 +17,7 @@
 - **회피 무시 시 대상의 DODGE 스택은 소모하지 않고** 피해만 적용한다. (원작 확인 필요)
 - 횟수 제한의 단위(전투당 / 런당)는 **전투당**으로 정했다. (원작 확인 필요)
 - 플레이어 스킬은 시전 용병이 없어 `Caster`가 null이다 → 힘(POWER)/약화는 적용되지 않고 대상의 취약만 적용된다. 이 처리가 원작과 같은지 (원작 확인 필요)
-- 장애물은 토큰이 아니라 `StageData.ObstaclePositions` 좌표 배열이라 대상 조회에 잡히지 않는다. 장애물을 토큰으로 도입하면 `IsValidTarget` 재검토가 필요하다.
+- 파괴 가능 장애물(`ObstacleView`)은 토큰이지만 `IsValidTarget`이 `EnemyView`/`EnemyFlagView`만 허용하는 허용 목록 방식이라 지정되지 않는다(중립지대는 토큰이 아님). 새 토큰 종류를 추가할 때도 이 허용 목록 방식을 유지한다 — [08_terrain_obstacle.md](08_terrain_obstacle.md).
 
 ## 구성
 

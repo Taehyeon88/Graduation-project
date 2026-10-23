@@ -17,6 +17,7 @@ public class TokenGrid : MonoBehaviour
     public int[,] simpleGrid { get; private set; }   //0 - 토큰 없음 | 1 - 토큰 있음 (토큰 존재여부 확인용)
 
     private List<Vector2Int> remainCells = new();
+    private IsoObject[,] floorTiles;   //바닥 타일 (중립지대 타일 숨김용)
 
     /// <summary>
     /// 스테이지 바닥 그리드 생성 및 초기화 함수
@@ -28,6 +29,7 @@ public class TokenGrid : MonoBehaviour
             Debug.LogError("gridTransform의 자식들에서 isoObject를 가지는 대상을 찾을 수 없습니다.");
 
         simpleGrid = new int[width, height];
+        floorTiles = new IsoObject[width, height];
         remainCells = new();
 
         int index = 0;
@@ -42,10 +44,20 @@ public class TokenGrid : MonoBehaviour
                 IsoObject gridTile = temp[index];
                 gridTile.gameObject.SetActive(true);
                 gridTile.position = new Vector3(x, y, 0);
+                floorTiles[x, y] = gridTile;
 
                 index++;
             }
         }
+    }
+
+    //중립지대 등록 (토큰 없이 칸만 막고 바닥 타일은 숨김)
+    public void SetBlockedCell(Vector2Int pos)
+    {
+        if (!IsBound(pos.x, pos.y)) return;
+        simpleGrid[pos.x, pos.y] = 1;
+        remainCells.Remove(pos);
+        floorTiles[pos.x, pos.y].gameObject.SetActive(false);
     }
 
     public void SetToken(Token token, Vector2Int pos)
@@ -128,6 +140,7 @@ public class TokenGrid : MonoBehaviour
         if (simpleGrid[x, y] == 1)
         {
             Token token = TokenSystem.Instance.API.GetTokenByPosition(pos);
+            if (token == null) return false;   //토큰 없이 막힌 칸(중립지대)
             if (!exceptEnemy && token is EnemyView) return false;
             if (!exceptHero && token is HeroView) return false;
         }

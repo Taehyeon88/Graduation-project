@@ -31,7 +31,7 @@
 | 적 용병 또는 우두머리에게 2 피해, 회피 무시 (날카로운 단도) | `EnemyView`, `EnemyFlagView` | 용병 → `DealDamageGA`, 우두머리 → `AttackCoreGA` | 회피 무시 (`DealDamageGA.IgnoreDodge`) |
 
 - 대상 용어 매핑: **적 용병 = `EnemyView`**, **우두머리 = 적 코어 = `EnemyFlagView`**(그리드 밖, `IDamageable` 아님 → 피해는 `AttackCoreGA`). 아군 용병 = `HeroView`, 아군 코어 = `HeroCaptainView`.
-- **장애물은 토큰이 아니라** `StageData.ObstaclePositions` 좌표 배열이다. 대상 조회에 잡히지 않으므로 "장애물 지정 불가"는 `IsValidTarget`이 `EnemyView`/`EnemyFlagView`만 허용하면 자동 충족된다. 장애물을 토큰으로 도입하는 변경이 생기면 재검토한다.
+- **파괴 가능 장애물(`ObstacleView`)은 토큰**이다(중립지대·발판은 토큰이 아님). "장애물 지정 불가"는 `IsValidTarget`이 `EnemyView`/`EnemyFlagView`**만** 허용하는 허용 목록 방식이어야 충족된다 — `is CombatantView` 같은 넓은 조건으로 바꾸면 장애물이 대상이 된다. 상세는 [08_terrain_obstacle.md](../feature-spec/08_terrain_obstacle.md).
 - 문장에 해당하는 GA가 없으면 **새 GA를 만들기 전에 사용자에게 알린다** (GA 추가는 `action_command.md` 갱신까지 이어진다). 같은 의미의 GA가 이미 있으면 재사용한다.
 - 원작 규칙을 모르는 항목(회피 스택 소모 여부, 횟수 제한 단위 등)은 단정하지 않고 `(원작 확인 필요)`로 두고, 임시 결정을 사용자에게 확인받는다.
 
