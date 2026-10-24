@@ -97,6 +97,7 @@
 | TooltipSystem | TooltipSystem | |
 | VisualEffectSystem | **(없음, Transform만)** | 대응 스크립트 없는 빈 GameObject — 3절 참고 |
 | RewardSystem | RewardSystem | |
+| RewardSelectSystem | RewardSelectSystem | 승리 후 보상 용병 선택 (`rewardPositions` 인스펙터 노출) |
 
 ### `--- INTERACTIONS ---`
 | GameObject | 컴포넌트 |

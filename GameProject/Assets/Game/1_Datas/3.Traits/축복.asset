@@ -19,14 +19,20 @@ MonoBehaviour:
     \uC808\uBC18 \uB9CC\uD07C \uC804\uC7A5\uC5D0 \uC788\uB294 \uB2E4\uB978 \uBAA8\uB4E0
     \uC544\uAD70 \uC601\uC6C5\uB4E4\uC758 \uACF5\uACA9\uB825\uC744 \uC99D\uAC00\uC2DC\uD0B5\uB2C8\uB2E4."
   <Condition>k__BackingField:
-    rid: -2
+    rid: 7851381082441646150
   <Effect>k__BackingField:
-    rid: -2
-  ConditionName: 
+    rid: 7851381082441646151
+  ConditionName: SelfDeathCondition
   timing: 0
-  EffectName: 
+  EffectName: ShareDamageWithAlliesEffect
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 7851381082441646150
+      type: {class: SelfDeathCondition, ns: , asm: Assembly-CSharp}
+      data:
+        reactionTiming: 0
+    - rid: 7851381082441646151
+      type: {class: ShareDamageWithAlliesEffect, ns: , asm: Assembly-CSharp}
+      data:
+        divisor: 2

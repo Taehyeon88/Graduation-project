@@ -88,7 +88,7 @@ Assets/Game/
 | `Isometrics/` | 4 | `Grid_Tile`, `Side_Tile`, `TestWorld_1`, `TileVisual` |
 | `Models/` | 3 | `EnemyModel`, `HeroModel`, `WallModel` |
 | `Projections/` | 2 | `RatGeneral_Stone`, `Skeleton_BoneArrow` |
-| `UI/` | 10 | `CaptainDetailsUI`(호버한 용병대장 정보 패널), `DisPlayUI`, `EnemyFlagDetailsUI`(호버한 적 세력 깃발 정보 패널), `EnemyUI`, `SettingUI`, `StatusEffectUI`, `StatusEffectUIAtWorld`, `TerrainDetailsUI`(호버한 지형지물·장애물 정보 패널), `TokenDetailsUI`(호버한 영웅·몬스터 정보 패널), `TraitUI` |
+| `UI/` | 11 | `CaptainDetailsUI`(호버한 용병대장 정보 패널), `DisPlayUI`, `GameClearUI`(승리 패널·확인/나가기 버튼), `EnemyFlagDetailsUI`(호버한 적 세력 깃발 정보 패널), `EnemyUI`, `SettingUI`, `StatusEffectUI`, `StatusEffectUIAtWorld`, `TerrainDetailsUI`(호버한 지형지물·장애물 정보 패널), `TokenDetailsUI`(호버한 영웅·몬스터 정보 패널), `TraitUI` |
 | `Views/` | 16 | `ArrowView`, `CardArrowView`(카드 → 마우스 화살), `CardView`, `CardViewInPile`, `CombatantViewBase`, `CoreView`, `EnemyFlagView`(적 코어), `EnemyView`, `HeroCaptainView`(아군 코어·용병대장), `HeroPreView`, `HeroView`, `ObstacleView`(파괴 가능 장애물), `PopUp_Text_View`, `ProjectionView`, `SkillView`, `TerrainView`(발판 타일) |
 
 ## 5. `4_Medias/` — 스프라이트/이미지 (98개 png)

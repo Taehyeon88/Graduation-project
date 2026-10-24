@@ -17,12 +17,13 @@
 | `DealDamageCondition` | `DealDamageGA` | 인스펙터 (사용 예: POST) | 항상 true — 소유자 필터(`Caster == owner`)만 적용 | 없음 | 1 피묻은 도끼 |
 | `TurnCondition` | `TurnGA` | 인스펙터 (사용 예: POST) | `TurnGA.Type == turnType` | `turnType` (`TurnType`: Enemy/Player/StartBattle/GameSetUp/AutoBattle) | 2 근육 트로피 (StartBattle) |
 | `AutoBattleTurnCondition` | `AutoBattleTurnGA` | 인스펙터 (사용 예: PRE) | 항상 true | 없음 | 3 용사의 갑옷, 3006 저격 (POST) |
-| `SelfDeathCondition` | `KillGA` | **PRE 필수** (POST는 구독 해제로 놓칠 수 있음) | `KillGA.Token == owner` | 없음 | 3001 불경한 빛, 9001 돌격 화살통 |
+| `SelfDeathCondition` | `KillGA` | **PRE 필수** (POST는 구독 해제로 놓칠 수 있음) | `KillGA.Token == owner` | 없음 | 3001 불경한 빛, 3009 축복, 9001 돌격 화살통 |
 | `SelfPlacedCondition` | `PlayCardGA` | POST | owner 위치 == `TargetPos` (손패 카드 배치만). `requireNoOpponentInFront`가 켜져 있으면 추가로 정면 1칸(`owner.FrontDirection`)이 상대 진영 유닛이 아닐 때만 충족 (빈칸·아군·범위 밖은 충족) | `requireNoOpponentInFront` (기본 false) | 3004 빠른 발 (true) |
 | `AllyPlacedNearbyCondition` | `PlayCardGA` | POST | owner가 영웅이고 `TargetPos`가 owner와 1~`range`칸(8방향, 자기 배치 제외) | `range` (기본 1) | 3003 요새화 |
 | `AttackedOpponentCondition` | `DealDamageGA` + `AttackCoreGA` | POST | 대상이 상대 진영이거나 코어 공격 | 없음 | 3005 맹공, 3007 공격 신호 |
 | `AuraTriggerCondition` | `PlayCardGA`(인스펙터 타이밍, 권장 POST) + `KillGA`(**PRE 고정**) | PlayCardGA만 인스펙터 | 배치: `TargetPos`의 토큰이 owner와 같은 진영(자신 포함). 사망: `KillGA.Token == owner`. owner가 파괴된 뷰면 false | 없음 | 3002 신속의 기도 |
 | `CoreAttackedCondition` | `AttackCoreGA` | 인스펙터 (사용 예: POST) | owner가 `HeroCaptainView`이고 `owner.CurrentHealth > 0`이며 `AttackCoreGA.Caster`가 `HeroView`가 아닐 때 (= 적이 아군 코어를 공격). 공격자가 Caster라서 **`FiltersByCaster` = false**로 `Trait.Reaction`의 소유자 필터를 끈다 | 없음 | 3008 응수 |
+| `SelfSurvivedDamageCondition` | `DealDamageGA` | 인스펙터 (사용 예: **POST** — 피해 적용 뒤라야 생존 여부를 앎) | owner가 `DealDamageGA.DamagedTargets`(피해가 실제 적용된 대상, 회피로 건너뛴 대상 제외)에 있고 `owner.CurrentHealth > 0`. 상대가 Caster라서 **`FiltersByCaster` = false** | 없음 | 3010 투지 |
 
 ## 3. 효과 (`TraitEffect`) — 위치 `Assets/Game/0_Scripts/Traits/` (조건과 달리 하위 폴더 없음)
 
@@ -30,13 +31,14 @@
 |---|---|---|---|---|
 | `HealOnDamageEffect` | `HealGA` | `addedAmount`(5), `healAmount`(5) | 확률 판정 통과 시 owner 위치에 `healAmount` 회복 | 1 피묻은 도끼 |
 | `AddStatusTraitEffect` | `AddStatusEffectGA` | `statusEffectType`, `amount`(1) | owner 자신에게 상태이상 `amount` 스택 부여 | 2 근육 트로피 (POWER 1) |
-| `ModifyStatTraitEffect` | `ModifyStatGA` | `modifiers` (목록: `statType`(`StatType`: HEALTH/DAMAGE/SPEED) + `amount`), `maxTriggers`(0 = 무제한, `ILimitedTrigger` 구현) | owner 자신의 스탯을 항목마다 `amount`만큼 증가, 항목당 `ModifyStatGA` 1개 예약 (HEALTH는 최대·현재 체력 함께) | 3003 요새화 ([HEALTH 2]), 3004 빠른 발 ([DAMAGE 1, SPEED 2]), 3005 맹공 ([DAMAGE 1], `maxTriggers` 4) |
+| `ModifyStatTraitEffect` | `ModifyStatGA` | `modifiers` (목록: `statType`(`StatType`: HEALTH/DAMAGE/SPEED) + `amount`), `maxTriggers`(0 = 무제한, `ILimitedTrigger` 구현) | owner 자신의 스탯을 항목마다 `amount`만큼 증가, 항목당 `ModifyStatGA` 1개 예약 (HEALTH는 최대·현재 체력 함께) | 3003 요새화 ([HEALTH 2]), 3004 빠른 발 ([DAMAGE 1, SPEED 2]), 3005 맹공 ([DAMAGE 1], `maxTriggers` 4), 3010 투지 ([DAMAGE 1]) |
 | `DamageAllOpponentsBySpeedEffect` | `DealDamageGA`(Targets) + `AttackCoreGA` | 없음 | owner 진영의 상대 전원과 상대 코어에 `owner.Speed`만큼 피해 | 3001 불경한 빛 |
 | `KillerAttackAllOpponentsEffect` | `DealDamageGA`(Targets) | 없음 | 구독 GA는 `KillGA`여야 한다. `KillGA.Killer`가 `CombatantView`일 때만 동작 — 처치자가 영웅이면 `EnemyViews` 전체, 적이면 `HeroViews` 전체에 `killer.BaseDamage`만큼 피해 (처치자 없음·상대 없음이면 무시, 코어는 공격하지 않음). 권장 조건 `SelfDeathCondition` (PRE) | 9001 돌격 화살통 (장애물 전용) |
 | `ExtraAttackEffect` | `ModifyStatGA`(SPEED, 음수) + `ExtraAttackGA` | `speedCost`(2) | `owner.Speed`가 `speedCost` 미만이면 무시. 아니면 `speedCost`만큼 속도를 영구 감소시키고 이동 없이 정면 공격을 한 번 더 예약 (추가 공격이 조건을 다시 충족하면 속도가 `speedCost` 미만이 될 때까지 반복). 권장 POST | 3007 공격 신호 |
 | `AllySpeedAuraEffect` | `ModifyStatGA`(SPEED, 부여는 양수·회수는 음수) | 없음 | `PlayCardGA`: owner가 배치되면 나머지 아군 전원, 다른 아군이 배치되면 그 유닛에게 `owner.Speed`만큼 SPEED 증가 (owner의 특성 중 같은 효과 클래스를 쓰는 특성을 가진 유닛·`owner.Speed <= 0`은 제외 — 그 특성 Id는 `CombatantView.TryGetTraitIdByEffect`로 첫 부여 때 조회해 캐시), 부여량을 효과 사본의 `speedGrants`에 기록. `KillGA`(owner 사망): 기록한 부여분을 살아 있는 대상에서 회수. 권장 조건 `AuraTriggerCondition` | 3002 신속의 기도 |
 | `SniperEffect` (`IBattleOverride` 구현) | `ModifyStatGA`(DAMAGE 음수) + `DealDamageGA`(Target, 기본 공격) / `AttackCoreGA` | `damageDecay`(1), `minDamage`(1) | `PerformReaction`: `Mathf.Min(damageDecay, owner.BaseDamage - minDamage)`가 0 이하면 무시, 아니면 공격력을 그만큼 감소. `TryBattle`(자동 전투 차례): 상대 진영 유닛 중 무작위 1명을 `owner.BaseDamage`로 공격, 상대가 없으면 상대 코어 공격 (둘 다 `IsRangedAttack`=true라 제자리에서 화살 발사 모션). 항상 true를 반환해 `CombatantView.Battle`의 기본 이동·정면 공격을 건너뜀. 권장 조건 `AutoBattleTurnCondition` (POST) | 3006 저격 |
 | `RetaliateEffect` | `DealDamageGA`(Target, 기본 공격) | 없음 | `AttackCoreGA.Caster`가 `IDamageable`이 아니면 무시. 아니면 코어를 공격한 그 상대에게 `owner.BaseDamage`로 `DealDamageGA(…, isBasicAttack: true)`를 예약 (owner가 `HeroCaptainView`면 `DamageSystem`이 그리드 밖 용병대장용 근접 모션을 재생). 권장 조건 `CoreAttackedCondition` (POST) | 3008 응수 |
+| `ShareDamageWithAlliesEffect` | `ModifyStatGA`(DAMAGE, 양수) | `divisor`(2) | `owner.BaseDamage / divisor`(내림, 원작 확인 필요)가 0 이하면 무시. 아니면 owner를 제외한 같은 진영 전원(owner가 `HeroView`면 `HeroViews`, 아니면 `EnemyViews`)의 공격력을 그만큼 영구 증가 (대상 없으면 무시, `ModifyStatGA` 1개). 권장 조건 `SelfDeathCondition` (PRE) | 3009 축복 |
 
 **발동 횟수 상한**: `TraitEffect` 베이스에는 상한 필드가 없다. 상한이 필요한 효과는 자기 클래스에 `maxTriggers` 데이터를 두고 `ILimitedTrigger`를 구현한다 (현재 `ModifyStatTraitEffect`만 구현). 카운트는 `Trait` 런타임 객체가 유닛별로 보유하고 리셋 없이 누적된다 (계약은 [05_trait_system.md](../05_trait_system.md) §2). 다른 효과에 "N번 발동"이 필요하면 그 효과에 같은 방식으로 추가한다.
 

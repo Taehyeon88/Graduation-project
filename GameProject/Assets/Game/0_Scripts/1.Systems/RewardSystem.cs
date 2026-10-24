@@ -1,53 +1,24 @@
 ﻿using System;
-using System.Linq;
 using UnityEngine;
 
 public class RewardSystem : Singleton<RewardSystem>
 {
-    [Header("딜링 카드")]
-    [SerializeField] private SkillData[] dealCardDatas;
+    [Header("1스테이지 보상 (임시)")]
+    [SerializeField] private HeroData blessing;       //축복자
+    [SerializeField] private HeroData shieldBearer;   //방패병
 
-    [Header("유틸/디버프 카드")]
-    [SerializeField] private SkillData[] utilCardDatas;
-
-    public Skill[] GetRewards(int count)
+    //스테이지 번호에 맞는 미리 정해 둔 보상 (임시, 확률 없음)
+    public HeroData[] GetRewards(int stageLevel)
     {
-        if (dealCardDatas.Length + utilCardDatas.Length < count)
-            Debug.LogError("보상 카드 종류 개수가 보상UI 필요 카드 개수보다 적음");
-
-        Skill[] cards = new Skill[count];
-        Skill card;
-
-        for (int i = 0; i < count; i++)
+        switch (stageLevel)
         {
-            float randomValue = UnityEngine.Random.value;
-            if (randomValue < 0.7f)
-            {
-                int randomInt = UnityEngine.Random.Range(0, dealCardDatas.Length);
-                card = new(dealCardDatas[randomInt]);
-            }
-            else
-            {
-                int randomInt = UnityEngine.Random.Range(0, utilCardDatas.Length);
-                card = new(utilCardDatas[randomInt]);
-            }
-
-            if (Array.Find(cards, c =>
-            {
-                if (c != null)
-                    if (c.Title == card.Title)
-                        return true;
-                return false;
-            }) != null)
-            {
-                i--;
-                continue;
-            }
-            else
-            {
-                cards[i] = card;
-            }
+            case 1: return GetStage1Rewards();
+            default: return Array.Empty<HeroData>();   //2스테이지 이후는 미정
         }
-        return cards;
+    }
+
+    private HeroData[] GetStage1Rewards()
+    {
+        return new[] { blessing, shieldBearer };
     }
 }

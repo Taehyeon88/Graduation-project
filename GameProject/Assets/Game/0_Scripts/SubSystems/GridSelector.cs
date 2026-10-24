@@ -13,6 +13,8 @@ public class GridSelector : MonoBehaviour
 
     private Vector2Int hoveredGrid = Vector2Int.down;
     private Token hoveredCore;   //마우스가 올라간 코어 (없으면 null)
+    private bool clearHandled;   //승리 후 토큰 정리에 맞춰 호버 갱신을 한 번 처리했는지
+    private bool selectingHandled;   //보상 선택 시작·종료에 맞춰 호버 갱신을 한 번 처리했는지
 
     private void OnEnable()
     {
@@ -24,6 +26,15 @@ public class GridSelector : MonoBehaviour
     }
     void Update()
     {
+        //승리로 그리드의 토큰이 바뀌면 호버 칸을 다시 판정 (사라진 토큰의 정보 패널 잔존 방지)
+        if (GameSystem.Instance.IsGameClear != clearHandled
+            || RewardSelectSystem.Instance.IsSelecting != selectingHandled)
+        {
+            clearHandled = GameSystem.Instance.IsGameClear;
+            selectingHandled = RewardSelectSystem.Instance.IsSelecting;
+            hoveredGrid = Vector2Int.down;
+        }
+
         //그리드 밖의 코어(용병대장·적 깃발)는 타일이 아니라 스프라이트 영역으로 호버 판정 (호버 중에는 타일 호버 처리 생략)
         Token core = FindHoveredCore();
         if (core != hoveredCore)
@@ -76,6 +87,12 @@ public class GridSelector : MonoBehaviour
 
         Token token = TokenSystem.Instance.API.GetTokenByPosition(pos);
 
+        //승리 후에는 보상 용병 선택만 처리 (영웅 이동 모드 진입 차단)
+        if (GameSystem.Instance.IsGameClear)
+        {
+            RewardSelectSystem.Instance.TrySelect(token);
+            return;
+        }
 
         //플레이어 이동모드 및 영웅 선택
         if(token != null && token is HeroView heroView)
@@ -165,11 +182,11 @@ public class GridSelector : MonoBehaviour
         TerrainView terrain = null;
         bool showTerrain = !cardMode && token == null && TokenSystem.Instance.Setup.TryGetTerrain(pos, out terrain);
 
-        //호버 테두리: 영웅은 노랑, 몬스터·장애물·지형지물은 흰색, 빈 칸·카드 타겟 모드는 없음
+        //호버 테두리: 영웅은 노랑(보상 선택 중에는 흰색), 몬스터·장애물·지형지물은 흰색, 빈 칸·카드 타겟 모드는 없음
         string hoverVG = null;
         if (!cardMode)
         {
-            if (token is HeroView) hoverVG = HoverYellowVG;
+            if (token is HeroView) hoverVG = RewardSelectSystem.Instance.IsSelecting ? HoverWhiteVG : HoverYellowVG;
             else if (token is EnemyView or ObstacleView || showTerrain) hoverVG = HoverWhiteVG;
         }
         SetHoverVisualGrid(pos, hoverVG);

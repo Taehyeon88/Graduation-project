@@ -54,6 +54,11 @@
      ├ 다른 카드 클릭 = 선택 카드 변경(화살 시작점·미리보기 교체), 같은 카드 재클릭/CancelUse = 취소
      └ 유효 타일 클릭 → PlayCardGA(card, tile)를 reservedCards 큐에 Enqueue
 
+[손패의 카드 드래그]  (CardView.OnBeginDrag / OnEndDrag — 클릭과 같은 가드·AP 체크, 시작 시 툴팁 숨김)
+ └ CardSystem.BeginCardDrag → 같은 CardTargetMode 코루틴 재사용 (화살·미리보기·VG 동일, 이미 타겟 모드면 드래그 방식으로 전환/카드 교체)
+ └ 확정 트리거만 다름: 버튼을 놓을 때(EndCardDrag → dropRequested). 배치 가능 타일 위이고 마우스가 그리드 UI 범위(Interactions.IsMouseInGridRange) 안이면 PlayCardGA 예약,
+   그 외 위치에 놓으면 사운드 22 + 타겟 모드 취소(카드는 손패에 유지). 드래그 중 CancelUse로 취소되면 이후 OnEndDrag는 무시
+
 [CardSystem.Update]  reservedCards가 있고 IsPerforming == false → ActionSystem.Perform(PlayCardGA)
 
 [PlayCardGAPerformer]

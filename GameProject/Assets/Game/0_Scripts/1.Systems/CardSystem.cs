@@ -29,6 +29,8 @@ public class CardSystem : Singleton<CardSystem>
     private CardView currentSelectedCard;
     private HeroPreview heroPreview;                          //배치 미리보기 (TokenGrid 미등록)
     private Vector2Int hoveredPos = Vector2Int.down;          //마지막으로 판정한 마우스 타일
+    private bool isDragMode;                                  //드래그로 배치 중 (놓을 때 확정)
+    private bool dropRequested;                               //드래그 종료(버튼 놓음) 감지
 
     public static event System.Action PilesReset;     //SetUp으로 더미가 재구성될 때 (더미 UI 갱신용)
 
@@ -96,15 +98,41 @@ public class CardSystem : Singleton<CardSystem>
         }
         else if (cardView != currentSelectedCard)   //타겟 모드 중, 카드 변경
         {
-            currentSelectedCard.SetSelected(false);
-            currentSelectedCard = cardView;
-            currentSelectedCard.SetSelected(true);
-            ShowTargetVisuals();                     //화살 시작점·미리보기를 새 카드 기준으로 교체
+            ChangeSelectedCard(cardView);
         }
         else                                         //같은 카드 재클릭 = 취소
         {
             ResetSelectMode();
         }
+    }
+
+    //카드 드래그 시작: 타겟 모드 진입(이미 진행 중이면 드래그 방식으로 전환), 놓는 위치에 배치
+    public void BeginCardDrag(CardView cardView)
+    {
+        if (Interactions.Instance.IsHeroMoveMode)
+            return;
+
+        isDragMode = true;
+        dropRequested = false;
+
+        if (!Interactions.Instance.IsCardTargetMode)
+        {
+            currentSelectedCard = cardView;
+            StartCoroutine(CardTargetMode());
+        }
+        else if (cardView != currentSelectedCard)
+        {
+            ChangeSelectedCard(cardView);
+        }
+    }
+
+    //카드 드래그 종료: 타겟 모드가 이미 끝났거나(우클릭 취소 등) 다른 카드면 무시
+    public void EndCardDrag(CardView cardView)
+    {
+        if (!isDragMode || cardView != currentSelectedCard)
+            return;
+
+        dropRequested = true;
     }
 
     //Privates
@@ -138,18 +166,19 @@ public class CardSystem : Singleton<CardSystem>
                 hoveredPos = pos;
             }
 
-            if (Interactions.Instance.GridSelected)
+            //확정 입력: 클릭 방식은 그리드 클릭, 드래그 방식은 버튼 놓기
+            bool confirmed = isDragMode ? dropRequested : Interactions.Instance.GridSelected;
+            if (confirmed)
             {
-                if (placeablePoses.Contains(pos))
+                if (placeablePoses.Contains(pos) && (!isDragMode || Interactions.Instance.IsMouseInGridRange))
                 {
                     PlayCardGA playCardGA = new(currentSelectedCard.Card, pos);
                     reservedCards.Enqueue(playCardGA);
                     break;
                 }
-                else
-                {
-                    SoundSystem.Instance.PlaySound(22);      //잘못된 타일 선택 사운드 재생
-                }
+
+                SoundSystem.Instance.PlaySound(22);          //잘못된 타일 선택 사운드 재생
+                if (isDragMode) break;                       //드래그는 잘못된 위치에 놓으면 취소
             }
 
             //카드 사용 준비 취소 인터렉션 감지 (카드 뷰가 파괴된 경우 포함)
@@ -187,6 +216,14 @@ public class CardSystem : Singleton<CardSystem>
         hoveredPos = Vector2Int.down;               //다음 프레임에 마우스 타일을 다시 판정
     }
 
+    private void ChangeSelectedCard(CardView cardView)
+    {
+        currentSelectedCard.SetSelected(false);
+        currentSelectedCard = cardView;
+        currentSelectedCard.SetSelected(true);
+        ShowTargetVisuals();                         //화살 시작점·미리보기를 새 카드 기준으로 교체
+    }
+
     private Vector3 GetCardWorldPosition(CardView cardView)
     {
         Vector3 screenPos = cardView.GetComponent<RectTransform>().position;   //Overlay 캔버스라 화면 좌표
@@ -205,6 +242,8 @@ public class CardSystem : Singleton<CardSystem>
         arrowView.gameObject.SetActive(false);
 
         currentSelectedCard = null;
+        isDragMode = false;
+        dropRequested = false;
         Interactions.Instance.IsCardTargetMode = false;
         VisualGridCreator.Instance.RemoveVisualGridById(gameObject.GetInstanceID());
     }

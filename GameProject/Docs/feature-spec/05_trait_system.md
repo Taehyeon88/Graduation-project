@@ -11,8 +11,8 @@
 | `Models/TraitEffect.cs` | 추상 모델 — 조건 통과 시 "무엇을 하는가"(후속 `GameAction` 생성) 계약 |
 | `Models/Trait.cs` | 런타임 래퍼 — `TraitData` 참조 + 소유자 + 구독/해제 + 소유자 필터 |
 | `5.Data/TraitData.cs` | SO — `Id`, `Image`, `Description`, `Condition`·`Effect`(각각 `[SerializeReference, SR]`) |
-| `Traits/DealDamageCondition.cs`, `TurnCondition.cs`, `AutoBattleTurnCondition.cs`, `SelfDeathCondition.cs`, `SelfPlacedCondition.cs`, `AllyPlacedNearbyCondition.cs`, `AttackedOpponentCondition.cs`, `AuraTriggerCondition.cs` | 구체 조건 (배치 계열은 손패 카드 배치 `PlayCardGA` 기준 — 초기 배치·웨이브 생성은 제외) |
-| `Traits/HealOnDamageEffect.cs`, `AddStatusTraitEffect.cs`, `ModifyStatTraitEffect.cs`, `ExtraAttackEffect.cs`, `AllySpeedAuraEffect.cs`, `SniperEffect.cs` | 구체 효과 |
+| `Traits/DealDamageCondition.cs`, `TurnCondition.cs`, `AutoBattleTurnCondition.cs`, `SelfDeathCondition.cs`, `SelfPlacedCondition.cs`, `AllyPlacedNearbyCondition.cs`, `AttackedOpponentCondition.cs`, `AuraTriggerCondition.cs`, `SelfSurvivedDamageCondition.cs` | 구체 조건 (배치 계열은 손패 카드 배치 `PlayCardGA` 기준 — 초기 배치·웨이브 생성은 제외) |
+| `Traits/HealOnDamageEffect.cs`, `AddStatusTraitEffect.cs`, `ModifyStatTraitEffect.cs`, `ExtraAttackEffect.cs`, `AllySpeedAuraEffect.cs`, `SniperEffect.cs`, `ShareDamageWithAlliesEffect.cs` | 구체 효과 |
 | `3.Views/CombatantView.cs` | 소유자(영웅·몬스터 공용) — `SetUpBase`에서 구독 시작, `OnDisable`에서 해제, 최대 `MaxTraitCount`(2) 가드 |
 | `5.Data/CombatantData.cs` | 영웅·몬스터 공용 SO 베이스 — `Health`/`Damage`/`Speed`/`Traits`(`List<TraitData>`). `HeroData`/`EnemyData`가 상속 |
 | `UI/TraitUI.cs`, `DisPlayUI.cs` | 특성 아이콘/툴팁 표시 |

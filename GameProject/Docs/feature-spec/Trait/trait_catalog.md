@@ -320,3 +320,72 @@ AttackCoreGA POST
 - `Image`가 비어 있다 (`<Image>`가 `fileID: 0`). Play 테스트는 아직 하지 않았다.
 
 **에디터 설정**: `Condition`=`CoreAttackedCondition`(`reactionTiming`=POST), `Effect`=`RetaliateEffect`(설정 값 없음). 영웅 `지그먼트`(`10.Cores/HeroCaptains/지그먼트.asset`)의 `Traits`에 연결되어 있다.
+
+## 3009 · 축복
+
+에셋: `Assets/Game/1_Datas/3.Traits/축복.asset`
+
+| 항목 | 값 |
+|---|---|
+| Id | 3009 |
+| 설명 (`Description`) | 사망 시, 자신의 공격력 절반 만큼 전장에 있는 다른 모든 아군 영웅들의 공격력을 증가시킵니다. |
+| 조건 | `SelfDeathCondition` — 구독 `KillGA`, 판정 `KillGA.Token == owner` |
+| 타이밍 | PRE (`reactionTiming: 0`) — 불경한 빛과 같은 이유로 POST에서는 놓칠 수 있고, PRE에는 owner가 살아 있어 `BaseDamage`를 읽을 수 있다 |
+| 효과 | `ShareDamageWithAlliesEffect` — `divisor`(2) |
+| 효과 동작 | `amount = owner.BaseDamage / divisor`(정수 내림). `amount <= 0`이거나 대상이 없으면 무시. 아니면 owner를 제외한 `HeroViews` 전원(owner가 적이면 `EnemyViews`)에 `ModifyStatGA(DAMAGE, amount, targets, owner)`를 1개 예약 |
+| 파생 GA | `ModifyStatGA` ([action_command.md](../action/action_command.md)) |
+| 코드 | `Traits/Conditions/SelfDeathCondition.cs`, `Traits/ShareDamageWithAlliesEffect.cs`, `1.Systems/StatSystem.cs` |
+
+**연결 흐름**
+
+```
+KillGA(owner) PRE
+ └ Trait.Reaction  (KillGA는 IHaveCaster 아님 → 소유자 필터 전원 통과)
+    └ SelfDeathCondition.SubConditionIsMat  (Token == owner 인 유닛만 통과)
+       └ ShareDamageWithAlliesEffect.PerformReaction
+          └ AddReaction(ModifyStatGA, DAMAGE +amount, 대상=owner 제외 아군 전원)
+ └ (이후) owner 사망 처리 (KillGA performer)
+```
+
+**주의·한계**
+- 공격력 "절반"의 반올림 규칙은 원작을 몰라 **내림**으로 가정했다 (원작 확인 필요). 공격력 1이면 증가 없음.
+- 증가는 영구이고 지속시간·회수 로직은 없다 (설명에 지속 언급 없음).
+- 효과가 예약하는 `ModifyStatGA`는 조건의 구독 대상(`KillGA`)이 아니므로 무한 루프는 없다.
+- `StatSystem`이 씬에 배치되어 있어야 동작한다. 영웅 `CombatantData.Traits`에 등록하는 에디터 작업은 아직 하지 않았다 (유닛당 최대 2개). Play 테스트는 아직 하지 않았다.
+
+**에디터 설정**: `Condition`=`SelfDeathCondition`(`reactionTiming`=PRE), `Effect`=`ShareDamageWithAlliesEffect`(`divisor`=2). `Image`는 연결되어 있다.
+
+## 3010 · 투지
+
+에셋: `Assets/Game/1_Datas/3.Traits/투지.asset`
+
+| 항목 | 값 |
+|---|---|
+| Id | 3010 |
+| 설명 (`Description`) | 피격 시 생존할 경우 공격력 +1을 얻습니다. |
+| 조건 | `SelfSurvivedDamageCondition` — 구독 `DealDamageGA`, 판정: `DamagedTargets.Contains(owner) && owner.CurrentHealth > 0`. `FiltersByCaster` = false |
+| 타이밍 | POST (`reactionTiming: 1`) — 피해 적용 뒤의 `CurrentHealth`로 생존을 판정한다. 사망 시 `KillGA`는 이 GA의 PostReactions에 들어가므로 조건 판정이 먼저 실행된다 |
+| 효과 | `ModifyStatTraitEffect` — `modifiers = [DAMAGE +1]`, `maxTriggers` 0(무제한) |
+| 효과 동작 | owner 자신에게 `ModifyStatGA(DAMAGE, 1)` 1개 예약 |
+| 파생 GA | `ModifyStatGA` ([action_command.md](../action/action_command.md)) |
+| 코드 | `Traits/Conditions/SelfSurvivedDamageCondition.cs`, `Traits/ModifyStatTraitEffect.cs`, `2.GameActions/DealDamageGA.cs`(`DamagedTargets`), `1.Systems/Skills/DamageSystem.cs`, `1.Systems/StatSystem.cs` |
+
+**연결 흐름**
+
+```
+DealDamageGA 수행: DamageSystem이 target.Damage() 후 DamagedTargets.Add(target)  (회피로 건너뛴 대상은 추가 안 함)
+DealDamageGA POST
+ └ Trait.Reaction  (FiltersByCaster == false → Caster != owner 필터 건너뜀)
+    └ SelfSurvivedDamageCondition.SubConditionIsMat  (owner가 DamagedTargets에 있고 체력 > 0)
+       └ ModifyStatTraitEffect.PerformReaction
+          └ AddReaction(ModifyStatGA, DAMAGE +1, 대상=owner)
+```
+
+**주의·한계**
+- 계약 변경: `DealDamageGA`에 `DamagedTargets`를 추가했다(가산적). 피해량이 0인 피격도 `Damage()`가 호출되면 기록된다 (원작에서 0 피해를 피격으로 보는지는 원작 확인 필요).
+- 코어(`AttackCoreGA`) 피격은 구독하지 않는다. 용병대장 소유로 쓰려면 별도 조건이 필요하다.
+- 효과가 예약하는 `ModifyStatGA`는 조건의 구독 대상(`DealDamageGA`)이 아니므로 무한 루프는 없다.
+- 증가는 영구이고 발동 횟수 상한이 없다 (설명에 상한 언급 없음).
+- `StatSystem`이 씬에 배치되어 있어야 동작한다. 영웅 `CombatantData.Traits`에 등록하는 에디터 작업은 아직 하지 않았다. Play 테스트는 아직 하지 않았다.
+
+**에디터 설정**: `Condition`=`SelfSurvivedDamageCondition`(`reactionTiming`=POST), `Effect`=`ModifyStatTraitEffect`(`modifiers`=[DAMAGE, 1], `maxTriggers`=0). `Image`는 연결되어 있다.

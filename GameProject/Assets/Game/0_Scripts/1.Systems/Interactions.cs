@@ -17,6 +17,7 @@ public class Interactions : Singleton<Interactions>
     //InputSystem 변수s
     public bool GridSelected { get; private set; } = false;
     public bool CancelUse { get; private set; } = false;
+    public bool IsMouseInGridRange => !IsPileViewOpen && IsInRange(Input.mousePosition);   //카드 드롭 판정용
 
     private static event Action SelectGridEvent;
     private InputAction selectGrid;

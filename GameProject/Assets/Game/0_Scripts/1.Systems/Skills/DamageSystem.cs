@@ -83,6 +83,7 @@ public class DamageSystem : Singleton<DamageSystem>
                     );
 
                 target.Damage(amountInt, dealDamageGA);
+                dealDamageGA.DamagedTargets.Add(target);
                 damaged = true;
             }
         }
@@ -111,6 +112,7 @@ public class DamageSystem : Singleton<DamageSystem>
                 );
 
             dealDamageGA.Target.Damage(amountInt, dealDamageGA);
+            dealDamageGA.DamagedTargets.Add(dealDamageGA.Target);
             damaged = true;
         }
 

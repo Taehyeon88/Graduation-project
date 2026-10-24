@@ -78,6 +78,11 @@ public class HeroHandDebugWindow : EditorWindow
             }
 
             EditorGUILayout.Space();
+            EditorGUILayout.LabelField("게임", EditorStyles.boldLabel);
+            if (GUILayout.Button("게임 강제 클리어"))
+                ActionSystem.Instance.Perform(new GameClearGA());
+
+            EditorGUILayout.Space();
             EditorGUILayout.LabelField("영웅 받기", EditorStyles.boldLabel);
             using (var view = new EditorGUILayout.ScrollViewScope(scroll))
             {

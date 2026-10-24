@@ -40,14 +40,15 @@ order가 클수록 위에 그려진다. 값은 `1_Datas/7.VisualGrids/*.asset`�
 
 | order | VG | 타입 | 사용처 | 용도 |
 |---|---|---|---|---|
-| **33** | `Hero_Move` | Symbol | `MoveSystem` | 영웅 이동 가능 칸 |
+| **34** | `Hero_Move_Start` | Symbol | `MoveSystem` | 이동 모드 중 영웅의 라운드 시작 위치(3×3 중앙). 이동 가능 칸이 있을 때만 `Hero_Move`와 함께 표시. 이 칸에는 `Hero_Move`를 그리지 않지만 클릭 이동(복귀)은 가능. 영웅이 `Zone_Hero`(30) 위에 있어도 가려지지 않게 `Hero_Move`보다 위 |
+| **33** | `Hero_Move` | Symbol | `MoveSystem` | 영웅 이동 가능 칸(영웅 배치 구역 칸 포함, 시작 위치 제외) |
 | **31** | `Selector_Hover_White` | Border | `GridSelector` | 호버한 몬스터·장애물·지형지물·적 깃발 (흰색 틴트) |
 | **31** | `Selector_Hover_Yellow` | Border | `GridSelector` | 호버한 영웅·용병대장 (노란색 틴트, 흰 `하이라이트_테두리.png`를 `Color`로 틴트) |
 | **30** | `Zone_Hero` | Symbol | `MatchSetupSystem` | 아군 배치 구역(전투 내내 유지) |
 | **30** | `Zone_Enemy` | Symbol | `MatchSetupSystem` | 적 배치 구역(전투 내내 유지) |
 | **20** | `Hero_SetUp_Highlight` | Border | `CardSystem` | 카드 배치 가능 칸 위 마우스 호버 |
 
-새 VG에 쓸 수 있는 빈 값: 1~19, 21~29, 32, 34 이상. (31은 호버 테두리 2종이 공유 — 같은 칸에 동시에 만들지 않음)
+새 VG에 쓸 수 있는 빈 값: 1~19, 21~29, 32, 35 이상. (31은 호버 테두리 2종이 공유 — 같은 칸에 동시에 만들지 않음)
 
 ## 4. 주의 / 알려진 한계
 

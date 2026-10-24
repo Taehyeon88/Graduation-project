@@ -53,10 +53,26 @@ public class GameSystem : Singleton<GameSystem>
     {
         IsGameClear = true;
 
-        Skill[] cards = RewardSystem.Instance.GetRewards(3);
+        //영웅·몬스터 배치 가능 구역 VG 제거
+        VisualGridCreator.Instance.RemoveVisualGrid(HeroSystem.Instance.gameObject.GetInstanceID(), "Zone_Hero");
+        VisualGridCreator.Instance.RemoveVisualGrid(EnemySystem.Instance.gameObject.GetInstanceID(), "Zone_Enemy");
+
+        //그리드 위 모든 토큰(영웅, 몬스터, 장애물)과 지형지물 제거
+        TokenSystem.Instance.Main.ClearAllTokens();
+        TokenSystem.Instance.Setup.ClearTerrains();
+
+        //현재 스테이지 보상 용병 수령 (생성은 승리 UI 확인 후)
+        HeroData[] rewards = RewardSystem.Instance.GetRewards(CurrentStageLevel);
+        RewardSelectSystem.Instance.SetRewards(rewards);
+
+        if (UISystem.Instance != null)
+        {
+            UISystem.Instance.OnGameClearUI();
+        }
 
         yield return null;
     }
+
     private IEnumerator GameOverGAPerformer(GameOverGA gameOverGA)
     {
         IsGameOver = true;
@@ -66,6 +82,13 @@ public class GameSystem : Singleton<GameSystem>
             UISystem.Instance.OnGameOverUI();
         }
         yield return null;
+    }
+
+    //보상으로 선택한 용병을 덱에 추가
+    public void AddHeroToDeck(HeroData heroData)
+    {
+        if (heroData != null)
+            Deck.Add(heroData);
     }
 
     public void GoToNextLevel()

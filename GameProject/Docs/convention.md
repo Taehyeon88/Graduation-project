@@ -235,7 +235,7 @@ public interface IHaveDamage { float Damage_Amount { get; } }
   AttackEnemyGA attackEnemyGA = new(targetpoes, amount, count, myView, animationType);
   ```
 - **의도적 예외:** 모든 플레이어 스킬이 공유하는 규칙 상수(AP 1)는 SO 필드가 아니라 이름 있는 `const`로 둔다 — `PlayerSkillSystem.APCost`. 스킬별 수치(피해량 등)는 스킬 클래스의 `[SerializeField]`(`SharpDagger.damage`)와 SO(`PlayerSkillData.MaxUses`)로 노출한다.
-- 현재 위반 사례(이번 작업에서 수정하지 않음, 11절 참고): `APSystem.MaxAP`(자동 프로퍼티 초기값 `= 5`), `KnockBackProcessor.crachDamage`(`const int` `= 1`), `RewardSystem`의 보상 등급 확률(`0.7f`). (`MPSystem`과 `SkillSystem`은 제거되어 목록에서 뺐다.)
+- 현재 위반 사례(이번 작업에서 수정하지 않음, 11절 참고): `APSystem.MaxAP`(자동 프로퍼티 초기값 `= 5`), `KnockBackProcessor.crachDamage`(`const int` `= 1`). (`MPSystem`과 `SkillSystem`은 제거되어 목록에서 뺐다.)
 
 <a id="sec-9"></a>
 ## 9. 시그니처(열거형)
@@ -289,7 +289,7 @@ public interface IHaveDamage { float Damage_Amount { get; } }
 
 | # | 규약 | 위반 파일:라인 |
 |---|---|---|
-| 1 | (8절) 밸런싱 수치는 SO/`[SerializeField]`로 노출, 리터럴 금지 | `APSystem.cs:9`(`MaxAP = 5`), `KnockBackProcessor.cs:8`(`crachDamage = 1`), `RewardSystem.cs:24`(`0.7f`) |
+| 1 | (8절) 밸런싱 수치는 SO/`[SerializeField]`로 노출, 리터럴 금지 | `APSystem.cs:9`(`MaxAP = 5`), `KnockBackProcessor.cs:8`(`crachDamage = 1`) |
 | 2 | (9절) 열거형은 접두사 없이 `~Type`/`~Mode`/`~State` 접미사 + PascalCase | `ETargetModeType`만 `E` 접두사 (나머지 17개엔 없음) |
 | 3 | (9절) 열거형 멤버는 전부 대문자(ALL_CAPS) | 멤버가 PascalCase인 기존 열거형(`TurnType` 등 ALL_CAPS가 아닌 것 전부) — 규칙 이전 코드, 아직 정리하지 않음 |
 | 4 | (9절) 열거형은 실제로 분기에 쓰여야 함(정리 후보) | `CardSubType`, `ETargetModeType`, `CardAbilityType`, `DamageFormulaType`, `AudioEditorType` — 소비하는 코드 없음 (`SEMachanicsType`은 삭제됨) |

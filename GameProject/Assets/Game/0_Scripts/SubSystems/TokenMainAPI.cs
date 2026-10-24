@@ -82,6 +82,18 @@ public class TokenMainAPI : MonoBehaviour
         Destroy(token.gameObject);
     }
 
+    //그리드 위 모든 토큰 즉시 제거 (승리 후 정리용, 코어는 그리드 밖이라 제외)
+    public void ClearAllTokens()
+    {
+        foreach (Token token in new List<Token>(grid.gridPosByToken.Keys))
+        {
+            if (token != null)
+                RemoveToken2(token);
+        }
+        TokenSystem.Instance.HeroViews.Clear();
+        EnemyViews.Clear();
+    }
+
     /// <summary>
     /// 토큰(영웅, 적, 건물) 이동 함수
     /// </summary>

@@ -67,6 +67,17 @@ public class TokenSetup : MonoBehaviour
 
     public bool TryGetTerrain(Vector2Int pos, out TerrainView terrain) => terrains.TryGetValue(pos, out terrain);
 
+    //발판 전체 제거 (승리 후 정리용)
+    public void ClearTerrains()
+    {
+        foreach (TerrainView terrain in terrains.Values)
+        {
+            if (terrain != null)
+                Destroy(terrain.gameObject);
+        }
+        terrains.Clear();
+    }
+
     //라인마다 기본 배치 칸(baseX)에서 장애물이 없는 첫 칸까지 step 방향으로 이동한 배치 위치 목록 (그리드 밖이면 해당 라인 제외)
     public List<Vector2Int> CalcSetupPoses(Vector2Int[] obstacles, int baseX, int step)
     {

@@ -77,6 +77,8 @@ public class TurnSystem : Singleton<TurnSystem>
     //자동 전투 턴 종료 후, 몬스터 턴 시작
     private void AutoBattleTurnGAPostReaction(AutoBattleTurnGA autoBattleTurnGA)
     {
+        if (GameSystem.Instance.IsGameClear) return;   //승리 시 턴 진행 중단 (보상 선택 단계)
+
         TurnGA enemyTurnGA = new(TurnType.Enemy);
         ActionSystem.Instance.AddReaction(enemyTurnGA);
     }

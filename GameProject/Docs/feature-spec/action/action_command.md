@@ -46,7 +46,7 @@
 #### `AutoBattleTurnGA` / `AutoBattleGA`
 - **파일**: `2.GameActions/AutoBattleTurnGA.cs`, `AutoBattleGA.cs` (필드 없음)
 - **Performer**: `TurnSystem.AutoBattleTurnGAPerformer`(팝업 → `AutoBattleSystem.CacheCombatants` → `AddReaction(AutoBattleGA)`), `AutoBattleSystem.AutoBattleGAPerformer`(큐 정리 → 동속 주사위 → `unit.Battle()` → 큐가 남으면 `AddReaction(AutoBattleGA)`)
-- **리액션**: `AutoBattleTurnGA` PRE — `TurnSystem`(`currentTurn` 선반영), `HeroSystem.AutoBattleTurnPreReaction`(영웅 "내 턴 종료" SE 감소). POST — `TurnSystem`이 `TurnGA(Enemy)` 체이닝, `HeroSystem.AutoBattleTurnPostReaction`(영웅마다 `HeroData.Critical`% 확률로 `AddStatusEffectGA(CRITICAL, 1)` 예약)
+- **리액션**: `AutoBattleTurnGA` PRE — `TurnSystem`(`currentTurn` 선반영), `HeroSystem.AutoBattleTurnPreReaction`(영웅 "내 턴 종료" SE 감소). POST — `TurnSystem`이 `TurnGA(Enemy)` 체이닝(단 `GameSystem.IsGameClear`이면 예약하지 않고 종료 — 승리 후 보상 선택 단계에서 턴 정지), `HeroSystem.AutoBattleTurnPostReaction`(영웅마다 `HeroData.Critical`% 확률로 `AddStatusEffectGA(CRITICAL, 1)` 예약)
 - **파생 액션**: `Battle()`이 판단은 모두 예약 시점에 끝내고 GA만 예약 — ① 이동 한계 전이고 정면이 비면 `MoveGA`(1칸, AP 소모 없음) ② 이동했다고 가정한 위치의 정면에 적이 있으면 `DealDamageGA(Amount, target, attacker, true)`(대상 확정), 이동 한계인데 정면이 비어 있으면 `AttackCoreGA`. 기본 공격 `DealDamageGA`는 `DamageSystem`이 기본 공격 모션 1(`Utility.GetBasicAttackTween`: 전진 → 타격 시점에 피해 → 복귀)을 재생. `AutoBattleSystem`은 `IsGameClear`/`IsGameOver`가 되면 큐를 비워 종료
 - **트리거 지점**: `TurnEndUI.TurnEnd`에서 `Perform(AutoBattleTurnGA)`
 
@@ -132,9 +132,9 @@
 
 #### `DealDamageGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/DealDamageGA.cs` (`IHaveCaster` 구현)
-- **필드**: `float Amount`, `List<IDamageable> Targets` / `IDamageable Target`(`{ get; set; }`), `Token Caster`, `bool IsBasicAttack`(자동 전투 기본 공격 — 공격 모션 재생), `bool IsRangedAttack`(기본 공격 모션을 근접 돌진 대신 화살 발사로 재생, 저격), `bool IgnoreDodge`(회피 스택 소모 없이 피해 적용, 날카로운 단도) (생성자 5개: 다중·단일·`(float amount, IDamageable target, Token caster, bool isBasicAttack)`·`(…, bool isBasicAttack, bool isRangedAttack)`·`(…, bool isRangedAttack, bool ignoreDodge)`). 플레이어 스킬은 `Caster`가 null이다
+- **필드**: `float Amount`, `List<IDamageable> Targets` / `IDamageable Target`(`{ get; set; }`), `Token Caster`, `bool IsBasicAttack`(자동 전투 기본 공격 — 공격 모션 재생), `bool IsRangedAttack`(기본 공격 모션을 근접 돌진 대신 화살 발사로 재생, 저격), `bool IgnoreDodge`(회피 스택 소모 없이 피해 적용, 날카로운 단도), `List<IDamageable> DamagedTargets`(Performer가 `target.Damage()` 직후 기록하는 피해 실제 적용 대상 — 회피로 건너뛴 대상 제외, `투지`의 `SelfSurvivedDamageCondition`이 사용) (생성자 5개: 다중·단일·`(float amount, IDamageable target, Token caster, bool isBasicAttack)`·`(…, bool isBasicAttack, bool isRangedAttack)`·`(…, bool isRangedAttack, bool ignoreDodge)`). 플레이어 스킬은 `Caster`가 null이다
 - **Performer**: `DamageSystem.DealDamagePerformer` — `IsBasicAttack && Target != null`이면(대상은 `Battle()`이 예약 시점에 확정) 기본 공격 모션 재생·타격 시점에 피해, 복귀까지 대기. `IsRangedAttack`이면 근접 모션 대신 `ProjectileSystem.PlayArrowShot`으로 제자리에서 화살을 쏘고 도착 시점에 피해(복귀 대기 없음). 대상이 `DODGE` 상태이상을 가졌고 `IgnoreDodge`가 아니면 스택 1을 소모하고 피해·피격 연출을 생략(다중 대상은 해당 대상만 건너뜀). 이후 `DamageCaculator.GetDamage()`로 최종 수치 계산 + 피격 VFX + `target.Damage()` 호출(체력 감소 처리, 체력 0 이하 시 `KillGA`를 이 액션의 `PostReactions`에 직접 추가)
-- **POST 구독자**: `피묻은 도끼` 특성 (`DealDamageCondition` POST + `HealOnDamageEffect`, 조건: `Trait.Reaction`이 `Caster == owner`인 GA만 통과) — 확률 조건 충족 시 `HealGA` 예약(자힐)
+- **POST 구독자**: `피묻은 도끼` 특성 (`DealDamageCondition` POST + `HealOnDamageEffect`, 조건: `Trait.Reaction`이 `Caster == owner`인 GA만 통과) — 확률 조건 충족 시 `HealGA` 예약(자힐). `투지` 특성 (`SelfSurvivedDamageCondition` POST + `ModifyStatTraitEffect`, `FiltersByCaster = false`) — 소유자가 `DamagedTargets`에 있고 생존(`CurrentHealth > 0`)이면 소유자 공격력 +1 `ModifyStatGA` 예약 (`maxTriggers` 0 = 제한 없음)
 - **파생 액션**: `CombatantView.Damage()` 내부에서 체력 ≤ 0이면 `dealDamageGA.PostReactions.Add((KillGA, null))` — 전역 체이닝이 아니라 **이 인스턴스에 직접 종속**
 - **트리거 지점**: 전투 계열 다수의 공통 최종 경로 — `CombatantView.Battle`(자동 전투, `isBasicAttack: true`), `AttackEnemyGAPerformer`, `SplashGAPerformer`, `KnockBackGAPerformer`(충돌 시) 등. `응수` 특성(`RetaliateEffect`, 용병대장이 코어 공격자에게 반격), 플레이어 스킬 `SharpDagger`(`PlayerSkillSystem.TryUse`가 `Perform`, `Caster` null·`IgnoreDodge` true)
 - **관련 체인**: §3-2, §3-3
@@ -181,7 +181,7 @@
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/ModifyStatGA.cs` (`IHaveCaster` 명시적 구현)
 - **필드**: `StatType StatType`(HEALTH/DAMAGE/SPEED), `int Amount`(증감량), `List<CombatantView> Targets`, `CombatantView Caster`
 - **Performer**: `StatSystem.ModifyStatGAPerformer` — 대상별 `CombatantView.ModifyStat` 호출 (HEALTH는 최대·현재 체력 함께 증가). 음수 증감 시 사망 처리는 구현되어 있지 않다
-- **트리거 지점**: `요새화` 특성(`PlayCardGA` POST, `AllyPlacedNearbyCondition` + `ModifyStatTraitEffect`, 소유자 자신의 체력 +2), `빠른 발` 특성(`PlayCardGA` POST, `SelfPlacedCondition`(정면에 적 없음) + `ModifyStatTraitEffect`, 소유자 자신의 공격력 +1·속도 +2 — 항목마다 `ModifyStatGA` 1개씩 예약), `맹공` 특성(`DealDamageGA`/`AttackCoreGA` POST, `AttackedOpponentCondition` + `ModifyStatTraitEffect`, 소유자 자신의 공격력 +1, `maxTriggers` 4로 유닛당 최대 4회)
+- **트리거 지점**: `요새화` 특성(`PlayCardGA` POST, `AllyPlacedNearbyCondition` + `ModifyStatTraitEffect`, 소유자 자신의 체력 +2), `빠른 발` 특성(`PlayCardGA` POST, `SelfPlacedCondition`(정면에 적 없음) + `ModifyStatTraitEffect`, 소유자 자신의 공격력 +1·속도 +2 — 항목마다 `ModifyStatGA` 1개씩 예약), `맹공` 특성(`DealDamageGA`/`AttackCoreGA` POST, `AttackedOpponentCondition` + `ModifyStatTraitEffect`, 소유자 자신의 공격력 +1, `maxTriggers` 4로 유닛당 최대 4회), `투지` 특성(`DealDamageGA` POST, `SelfSurvivedDamageCondition` + `ModifyStatTraitEffect`, 피격 후 생존 시 소유자 자신의 공격력 +1), `축복` 특성(`KillGA` PRE, `SelfDeathCondition` + `ShareDamageWithAlliesEffect`, 소유자 공격력 ÷ `divisor`(2, 내림)만큼 소유자를 제외한 같은 진영 전원의 공격력 영구 증가 — 대상이 없거나 증가량이 0이면 예약하지 않음)
 
 ### 2-6. 스킬 실행 파이프라인
 
@@ -221,7 +221,7 @@
 #### `GameClearGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/GameClearGA.cs`
 - **필드**: 없음
-- **Performer**: `GameSystem.GameClearPerformer` — `IsGameClear = true`, 보상 스킬 3장 산출(`RewardSystem`)
+- **Performer**: `GameSystem.GameClearPerformer` — `IsGameClear = true` → 영웅·몬스터 배치 가능 구역 VG(`Zone_Hero`/`Zone_Enemy`) 제거 → 그리드 위 모든 토큰·발판 즉시 제거(`TokenMainAPI.ClearAllTokens`, `TokenSetup.ClearTerrains`; 코어는 그리드 밖이라 유지) → 현재 스테이지 고정 보상 수령(`RewardSystem.GetRewards(CurrentStageLevel)`, 임시 — 1스테이지는 축복자·방패병 `HeroData`, 2스테이지 이후는 빈 배열) → 보상을 `RewardSelectSystem.SetRewards`로 보관(아직 생성 안 함) → `UISystem.OnGameClearUI()`로 `GameClearUI` 활성화. 확인 버튼(`GameClearUI`)이 패널을 닫고 나가기 버튼(동작 미연결)을 표시하며 `RewardSelectSystem.BeginSelect()`가 보상 용병을 (1,1),(1,2)에 생성하고 선택을 연다. 선택 중 보상 용병을 클릭(`GridSelector.SelectToken` → `TrySelect`)하면 `GameSystem.AddHeroToDeck`으로 덱에 추가하고, 획득한 용병은 연출 없이 즉시 제거(`RemoveToken2`), 선택하지 않은 용병은 스케일 연출로 제거한다. 승리 후에는 `TurnSystem`이 몬스터 턴을 예약하지 않아 턴이 진행되지 않는다
 - **트리거 지점**: `CoreSystem.AttackCoreGAPerformer`(적 코어 HP가 0이 될 때 `AddReaction`)
 
 #### `GameOverGA`
@@ -274,7 +274,7 @@ AutoBattleTurnGA                                             ← 플레이어가
      ├─ (PRE) TurnSystem: currentTurn = AutoBattle
      ├─ (PRE) HeroSystem.AutoBattleTurnPreReaction: 영웅 SE 감소
      ├─ (POST) HeroSystem.AutoBattleTurnPostReaction: 영웅별 치명타 확률 통과 시 AddReaction(AddStatusEffectGA(CRITICAL))
-     └─ (POST) TurnSystem.AutoBattleTurnGAPostReaction: AddReaction(TurnGA(Enemy))
+     └─ (POST) TurnSystem.AutoBattleTurnGAPostReaction: AddReaction(TurnGA(Enemy))   (IsGameClear면 예약 없이 종료)
 
 TurnGA(Enemy)
  └ TurnSystem.TurnGAPerformer: 턴 팝업 연출만 재생 (몬스터 행동 처리 없음)

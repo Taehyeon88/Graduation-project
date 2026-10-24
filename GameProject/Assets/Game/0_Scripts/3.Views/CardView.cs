@@ -3,7 +3,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class CardView : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+public class CardView : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler,
+    IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public Card Card { get; private set; }
 
@@ -75,5 +76,34 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
         {
             SoundSystem.Instance.PlaySound(3006);        //코스트 부족 사운드
         }
+    }
+
+    //드래그 배치: 누른 채 끌면 타겟 모드 시작, 놓는 위치에 배치
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        if (ActionSystem.Instance.IsPerforming
+            || Interactions.Instance.IsHeroMoveMode)
+            return;
+
+        if (!APSystem.Instance.HasEnoughAP(Card.APCost))
+        {
+            SoundSystem.Instance.PlaySound(3006);        //코스트 부족 사운드
+            return;
+        }
+
+        SoundSystem.Instance.PlaySound(3004);            //선택 사운드
+        if (isHovered)
+        {
+            isHovered = false;
+            TooltipSystem.Instance.Hide();               //드래그 중 툴팁 숨김
+        }
+        CardSystem.Instance.BeginCardDrag(this);
+    }
+
+    public void OnDrag(PointerEventData eventData) { }   //OnEndDrag 수신에 필요
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        CardSystem.Instance.EndCardDrag(this);
     }
 }
