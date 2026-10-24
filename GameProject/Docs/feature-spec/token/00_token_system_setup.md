@@ -10,7 +10,7 @@
 | 메서드 | 카테고리 | 반환값 | 한 줄 설명 |
 |---|---|---|---|
 | [`SetUpStageMap()`](#setupstagemap) | 맵 초기화 | `void` | 스테이지 바닥 타일 생성 및 그리드 배열 초기화 |
-| [`SetUpNeutralZones(Vector2Int[])`](#setupneutralzones) | 지형 | `void` | 중립지대 칸을 막고 바닥 타일을 숨김 |
+| [`SetUpNeutralZones(Vector2Int[])`](#setupneutralzones) | 지형 | `void` | 중립지대 칸을 막고 바닥 타일을 랜덤 중립 스프라이트로 교체(미할당 시 숨김) |
 | [`SetUpObstacles(ObstacleSpawn[])`](#setupobstacles) | 지형 | `void` | 파괴 가능 장애물 토큰 생성 + 그리드 등록 |
 | [`SetUPEnemys(EnemyData[], Vector2Int[])`](#setupenemys) | 몬스터 / 코어 배치 | `void` | 몬스터 토큰 일괄 생성 + 그리드 등록 |
 | [`SetUpWaveCore(WaveCoreData)`](#setupwavecore) | 몬스터 / 코어 배치 | `void` | 웨이브 코어 토큰 생성 + 그리드 등록 |
@@ -44,7 +44,7 @@ public void SetUpNeutralZones(Vector2Int[] neutrals)
 }
 ```
 - **파라미터**: `Vector2Int[] neutrals` (`StageData.NeutralPositions`, null 허용)
-- **동작**: 각 칸을 `TokenGrid.SetBlockedCell`로 막는다 — `simpleGrid`=1, `remainCells`에서 제거, 바닥 타일 비활성화. 토큰은 등록하지 않는다.
+- **동작**: 각 칸을 `TokenGrid.SetBlockedCell`로 막는다 — `simpleGrid`=1, `remainCells`에서 제거, 바닥 타일 스프라이트를 `neutralTileSprites` 중 랜덤 교체(미할당 시 비활성화). 토큰은 등록하지 않는다.
 - **사용 예시**: `1.Systems/MatchSetupSystem.cs` — `SetUpStageMap()` 직후
 - **비고**: `CalcSetupPoses`(배치 위치 계산) 전에 호출한다.
 

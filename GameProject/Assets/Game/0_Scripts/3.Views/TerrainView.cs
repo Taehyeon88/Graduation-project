@@ -8,8 +8,11 @@ public class TerrainView : MonoBehaviour
 
     private TerrainEffect effect;   //SO 공유를 피하려고 발판별 사본을 보유
 
+    public TerrainData Data { get; private set; }   //정보 패널 표시용
+
     public void SetUp(TerrainData data, Vector2Int gridPosition)
     {
+        Data = data;
         model.sprite = data.Sprite;
         isoObject.position = new Vector3(gridPosition.x, gridPosition.y, isoObject.position.z);   //높이는 프리팹 값 유지
         effect = data.Effect?.Clone();

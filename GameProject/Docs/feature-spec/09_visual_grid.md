@@ -8,7 +8,7 @@
 |---|---|
 | `Assets/Game/0_Scripts/5.Data/VisualGridData.cs` | `VisualGridData` SO(타입 목록) + 중첩 `VisualGridType`(`FillType`/`BorderType`/`SymbolType`) |
 | `Assets/Game/0_Scripts/4.Creators/VisualGridCreator.cs` | `Singleton` — **이름**으로 VG를 조회해 타일의 SpriteRenderer 슬롯에 적용/제거 |
-| `Assets/Game/1_Datas/7.VisualGrids/` | VG 에셋 6개 (아래 순서표) |
+| `Assets/Game/1_Datas/7.VisualGrids/` | VG 에셋 8개 (아래 순서표) |
 | `Assets/Game/3_Prefabs/Isometrics/TileVisual.prefab` | 타일 1개 = SpriteRenderer 슬롯 6개(`VG_None` 태그), Sorting Layer 2 |
 
 ## 1. 구조 요약
@@ -32,6 +32,8 @@
 | `ContainVisualGrid(tokenId, vgName)` | 표시 중인지 조회 |
 | `SetHideVisualGrid(tokenId)` / `SetReverseVisualGrid(tokenId)` | tokenId의 VG 숨김 / 복원 |
 
+**코어 슬롯**: 용병대장·적 깃발은 그리드 밖이라 타일이 없으므로 `VisualGridCreator.Initialize`가 풀의 남는 `IsoObject` 2개를 `heroCaptainIsoPosition`(기본 (-1, 1.5, 0.7))·`enemyFlagIsoPosition`(기본 (4, 1.5, 1.3))에 놓고 가상 키 `HeroCaptainSlot`(-1,-1)·`EnemyFlagSlot`(-2,-2)로 등록한다. 기존 API에 이 키를 `pos`로 넘기면 코어 위치에 VG가 생긴다(`GridSelector`의 코어 호버 테두리). 위치는 `VisualGridCreator` 인스펙터에서 조정.
+
 ## 3. ★ 현재 VG 레이어 순서표
 
 order가 클수록 위에 그려진다. 값은 `1_Datas/7.VisualGrids/*.asset`의 `sortingOrder` 실측치.
@@ -39,19 +41,19 @@ order가 클수록 위에 그려진다. 값은 `1_Datas/7.VisualGrids/*.asset`�
 | order | VG | 타입 | 사용처 | 용도 |
 |---|---|---|---|---|
 | **33** | `Hero_Move` | Symbol | `MoveSystem` | 영웅 이동 가능 칸 |
-| **30** | `Selector_Select` | Symbol | `GridSelector` | 선택된 영웅 위치 |
-| **30** | `Selector_Hover` | Symbol | `GridSelector` | 마우스 호버 칸 |
+| **31** | `Selector_Hover_White` | Border | `GridSelector` | 호버한 몬스터·장애물·지형지물·적 깃발 (흰색 틴트) |
+| **31** | `Selector_Hover_Yellow` | Border | `GridSelector` | 호버한 영웅·용병대장 (노란색 틴트, 흰 `하이라이트_테두리.png`를 `Color`로 틴트) |
 | **30** | `Zone_Hero` | Symbol | `MatchSetupSystem` | 아군 배치 구역(전투 내내 유지) |
 | **30** | `Zone_Enemy` | Symbol | `MatchSetupSystem` | 적 배치 구역(전투 내내 유지) |
 | **20** | `Hero_SetUp_Highlight` | Border | `CardSystem` | 카드 배치 가능 칸 위 마우스 호버 |
 
-새 VG에 쓸 수 있는 빈 값: 1~19, 21~29, 31~32, 34 이상.
+새 VG에 쓸 수 있는 빈 값: 1~19, 21~29, 32, 34 이상. (31은 호버 테두리 2종이 공유 — 같은 칸에 동시에 만들지 않음)
 
 ## 4. 주의 / 알려진 한계
 
-- **order 30 동점 4개** (`Selector_Select`·`Selector_Hover`·`Zone_Hero`·`Zone_Enemy`): 같은 타일에 겹치면 위아래가 코드로 정해지지 않는다. 순서 변경 전에도 전부 동점(layerDepth 0 + Symbol 30)이었으므로 새로 생긴 문제는 아니다. 겹침 우선순위가 필요하면 에셋의 `sortingOrder`를 다르게 줘야 한다 — **원하는 우선순위는 미정(확인 필요)**.
+- **order 30 동점 2개** (`Zone_Hero`·`Zone_Enemy`): 같은 타일에 겹치면 위아래가 코드로 정해지지 않는다. 순서 변경 전에도 전부 동점(layerDepth 0 + Symbol 30)이었으므로 새로 생긴 문제는 아니다. 겹침 우선순위가 필요하면 에셋의 `sortingOrder`를 다르게 줘야 한다 — **원하는 우선순위는 미정(확인 필요)**.
 - **`Hero_SetUp_Highlight`(20)는 Symbol(30) 아래**다. 배치 구역(`Zone_Hero`) 타일 위에서는 하이라이트 테두리가 Zone 심볼에 가려질 수 있다.
-- **이름 조회 실패는 조용히 무시된다.** `CreateVisualGrid`는 `visualGridDatas`에서 `v.name == vgName`을 못 찾으면 에러 없이 반환한다. 씬의 `VisualGridCreator.visualGridDatas`에 등록돼 있어야 동작한다 (`GameDemoScene` 6개 / `MapTestScene`은 `Hero_Move`·`Hero_SetUp_Highlight` 2개만 등록 — 이 씬에서는 Zone·Selector가 안 보인다).
+- **이름 조회 실패는 조용히 무시된다.** `CreateVisualGrid`는 `visualGridDatas`에서 `v.name == vgName`을 못 찾으면 에러 없이 반환한다. 씬의 `VisualGridCreator.visualGridDatas`에 등록돼 있어야 동작한다 (`GameDemoScene` 8개 / `MapTestScene`은 `Hero_Move`·`Hero_SetUp_Highlight` 2개만 등록 — 이 씬에서는 Zone·Selector가 안 보인다).
 - **타일당 슬롯 6개.** 한 타일에 VG 레이어가 6개를 넘으면 초과분은 표시되지 않는다.
 - `VisualGridData`의 `GetVGType*()`는 SO 안의 로직이라 [convention.md](../convention.md) 11절 위반 목록에 이미 기록돼 있다.
 

@@ -11,6 +11,14 @@ public class VisualGridCreator : Singleton<VisualGridCreator>
     [SerializeField] Transform gridVisualView;
     [SerializeField] VisualGridData[] visualGridDatas;
 
+    [Header("Core Slots (그리드 밖 코어 위치의 VG)")]
+    [SerializeField] private Vector3 heroCaptainIsoPosition = new(-1f, 1.5f, 0.7f);
+    [SerializeField] private Vector3 enemyFlagIsoPosition = new(4f, 1.5f, 1.3f);
+
+    //코어는 타일이 없어 그리드 좌표와 겹치지 않는 가상 키로 VG 슬롯을 등록
+    public static readonly Vector2Int HeroCaptainSlot = new(-1, -1);
+    public static readonly Vector2Int EnemyFlagSlot = new(-2, -2);
+
     private Dictionary<Vector2Int, IsoObject> vGByPosition = new();
     private Dictionary<(int, string), List<SpriteRenderer>> visualGridsById = new();
     private List<int> hideList = new();
@@ -21,7 +29,7 @@ public class VisualGridCreator : Singleton<VisualGridCreator>
     private void Initialize()
     {
         //새로운 방식
-        if (vGByPosition.Count == grid.width * grid.height) return;
+        if (vGByPosition.Count == grid.width * grid.height + 2) return;
 
         var temp2 = gridVisualView.GetComponentsInChildren<IsoObject>(true);
         int count = 0;
@@ -38,6 +46,17 @@ public class VisualGridCreator : Singleton<VisualGridCreator>
                 }
             }
         }
+
+        //풀의 남는 타일을 코어 슬롯으로 사용
+        if (count + 2 > temp2.Length)
+        {
+            Debug.LogError("VG 타일 풀이 부족해 코어 슬롯을 만들 수 없습니다. gridVisualView 아래 타일을 2개 이상 더 두세요.");
+            return;
+        }
+        vGByPosition.TryAdd(HeroCaptainSlot, temp2[count]);
+        temp2[count].position = heroCaptainIsoPosition;
+        vGByPosition.TryAdd(EnemyFlagSlot, temp2[count + 1]);
+        temp2[count + 1].position = enemyFlagIsoPosition;
     }
 
     public void ChangeVisualGrid(Vector2Int isoPosition, int tokenId, string beforeName, string afterName)

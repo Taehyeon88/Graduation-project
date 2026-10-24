@@ -25,6 +25,7 @@ public class DamageSystem : Singleton<DamageSystem>
     private IEnumerator DealDamageGAPerformer(DealDamageGA dealDamageGA)
     {
         Sequence attackSeq = null;
+        bool damaged = false;   //피해가 실제로 적용됐는지 (치명타 소모 판정용)
 
         //자동 전투 기본 공격: 대상은 Battle()이 예약 시점에 확정, 여기서는 모션만 재생
         if (dealDamageGA.IsBasicAttack && dealDamageGA.Target != null && dealDamageGA.Caster is HeroCaptainView captain)
@@ -59,7 +60,7 @@ public class DamageSystem : Singleton<DamageSystem>
         {
             foreach (var target in dealDamageGA.Targets)
             {
-                if (target == null) continue;
+                if (target == null || (target as Token) == null) continue;   //인터페이스 null 비교는 파괴된 오브젝트를 못 걸러서 구체 타입으로 검사
 
                 //회피 : 스택 1 소모하고 피해·피격 연출 생략 (회피 무시 시 건너뜀)
                 if (!dealDamageGA.IgnoreDodge && target is CombatantView dodger && dodger.CheckStatusEffectExist(StatusEffectType.DODGE))
@@ -82,7 +83,12 @@ public class DamageSystem : Singleton<DamageSystem>
                     );
 
                 target.Damage(amountInt, dealDamageGA);
+                damaged = true;
             }
+        }
+        else if (dealDamageGA.Target != null && (dealDamageGA.Target as Token) == null)
+        {
+            //실행 전에 이미 파괴된 대상: 피해·연출 생략
         }
         else if (!dealDamageGA.IgnoreDodge && dealDamageGA.Target is CombatantView singleDodger && singleDodger.CheckStatusEffectExist(StatusEffectType.DODGE))
         {
@@ -105,7 +111,12 @@ public class DamageSystem : Singleton<DamageSystem>
                 );
 
             dealDamageGA.Target.Damage(amountInt, dealDamageGA);
+            damaged = true;
         }
+
+        //치명타 : 피해가 적용된 공격 1회마다 스택 1 소모 (다중 대상은 전원 보너스를 받은 뒤 1회만)
+        if (damaged && dealDamageGA.Caster is CombatantView critCaster && critCaster.CheckStatusEffectExist(StatusEffectType.CRITICAL))
+            critCaster.RemoveStatusEffect(StatusEffectType.CRITICAL, 1);
 
         if (attackSeq != null && attackSeq.IsActive())
             yield return attackSeq.WaitForCompletion();   //복귀까지 대기

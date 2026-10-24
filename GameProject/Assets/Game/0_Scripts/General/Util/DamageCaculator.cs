@@ -2,6 +2,8 @@ using UnityEngine;
 
 public static class DamageCaculator
 {
+    private const float CriticalRatio = 0.5f;   //치명타 : 공격자 공격력 대비 추가 피해 비율
+
     public static int GetDamage(float baseDamage, CombatantView attacker, IDamageable target)
     {
         float damage = baseDamage;
@@ -9,6 +11,7 @@ public static class DamageCaculator
         if (attacker != null)
         {
             damage += GetPower(attacker);              //힘 연산
+            damage += GetCritical(attacker);           //치명타 연산
             damage = CalculateWeak(damage, attacker);  //취약 연산
         }
 
@@ -27,6 +30,11 @@ public static class DamageCaculator
     private static int GetPower(CombatantView attacker)
     {
         return attacker.GetStatusEffectStacks(StatusEffectType.POWER);
+    }
+
+    private static float GetCritical(CombatantView attacker)
+    {
+        return attacker.CheckStatusEffectExist(StatusEffectType.CRITICAL) ? attacker.BaseDamage * CriticalRatio : 0f;
     }
 
     private static float CalculateWeak(float damage, CombatantView attacker)

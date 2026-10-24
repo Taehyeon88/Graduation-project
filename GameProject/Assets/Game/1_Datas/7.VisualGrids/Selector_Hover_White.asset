@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9473ac8937d88c54b805a05b80f1aac1, type: 3}
-  m_Name: Selector_Hover
+  m_Name: Selector_Hover_White
   m_EditorClassIdentifier: Assembly-CSharp::VisualGridData
   <VisualGridTypes>k__BackingField:
-  - rid: 6342211153977147462
+  - rid: 7851381079593713736
   references:
     version: 2
     RefIds:
-    - rid: 6342211153977147462
-      type: {class: SymbolType, ns: , asm: Assembly-CSharp}
+    - rid: 7851381079593713736
+      type: {class: BorderType, ns: , asm: Assembly-CSharp}
       data:
-        sortingOrder: 30
+        sortingOrder: 31
         Color: {r: 1, g: 1, b: 1, a: 1}
-        sprite: {fileID: 21300000, guid: 339fd68f6c28d7d4eb0ed43062c42dfb, type: 3}
+        sprite: {fileID: 21300000, guid: f1d3ff587844d6f46af945b083740370, type: 3}

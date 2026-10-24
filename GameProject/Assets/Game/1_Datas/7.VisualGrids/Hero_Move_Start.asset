@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9473ac8937d88c54b805a05b80f1aac1, type: 3}
-  m_Name: Selector_Select
+  m_Name: Hero_Move_Start
   m_EditorClassIdentifier: Assembly-CSharp::VisualGridData
   <VisualGridTypes>k__BackingField:
   - rid: 6342211153977147462
@@ -20,6 +20,6 @@ MonoBehaviour:
     - rid: 6342211153977147462
       type: {class: SymbolType, ns: , asm: Assembly-CSharp}
       data:
-        sortingOrder: 30
+        sortingOrder: 34
         Color: {r: 1, g: 1, b: 1, a: 1}
         sprite: {fileID: 21300000, guid: 4effd1fb7efc7334d90679840a935a69, type: 3}

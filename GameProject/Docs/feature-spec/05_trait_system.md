@@ -16,6 +16,8 @@
 | `3.Views/CombatantView.cs` | 소유자(영웅·몬스터 공용) — `SetUpBase`에서 구독 시작, `OnDisable`에서 해제, 최대 `MaxTraitCount`(2) 가드 |
 | `5.Data/CombatantData.cs` | 영웅·몬스터 공용 SO 베이스 — `Health`/`Damage`/`Speed`/`Traits`(`List<TraitData>`). `HeroData`/`EnemyData`가 상속 |
 | `UI/TraitUI.cs`, `DisPlayUI.cs` | 특성 아이콘/툴팁 표시 |
+| `UI/TokenDetailsUI.cs` | 호버한 영웅·몬스터의 기본 스탯·특성(`Trait.Title`/`Description`/`Image`) 패널 — `GridSelector.UpdateHoveredToken`이 `Show`/`Hide` 호출, 특성 없는 슬롯은 `Null_Text`만 켬 |
+| `UI/CaptainDetailsUI.cs`, `UI/EnemyFlagDetailsUI.cs`, `UI/AbilitySlot.cs` | 호버한 용병대장·적 깃발 패널(적 깃발은 `CoreSystem.EnemyCoreHealth`/`EnemyCoreMaxHealth`를 `현재/최대`로 표시)(속도 칸은 `-`, 특성 1개) — 용병대장은 그리드 밖이라 `GridSelector`가 타일이 아니라 `Model.bounds`로 매 프레임 호버 판정. `AbilitySlot`은 `TokenDetailsUI`와 공유하는 특성 슬롯 |
 
 ## 1. 한 줄 개요
 

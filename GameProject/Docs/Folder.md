@@ -64,7 +64,7 @@ Assets/Game/
 | `3.Traits/` | 9 | `TraitData` | 공격 신호 / 맹공 / 불경한 빛 / 빠른 발 / 신속의 기도 / 요새화 / 저격 / 돌격 화살통(장애물 전용) + `Cores/응수`(용병대장 전용). 전부 조건·효과 설정됨 |
 | `4.Perks/`, `5.Items/` | 0 | — | 빈 폴더 |
 | `6.StatusEffects/` | 2 | `StatusEffectData` | Power, 회피 |
-| `7.VisualGrids/` | 19 | `VisualGridData` | 그리드 하이라이트 전부 |
+| `7.VisualGrids/` | 8 | `VisualGridData` | 그리드 하이라이트 전부 |
 | `8.Stages/` | 1 | `StageData` | TestStage |
 | `8.Stages/Waves/` | 1 | `WaveData` | Simple_Wave |
 | `10.Cores/` | 2 | `EnemyFlagData`, `HeroCaptainData` | `EnemyFlag`(적 코어) + `HeroCaptains/지그먼트`(용병대장) |
@@ -88,7 +88,7 @@ Assets/Game/
 | `Isometrics/` | 4 | `Grid_Tile`, `Side_Tile`, `TestWorld_1`, `TileVisual` |
 | `Models/` | 3 | `EnemyModel`, `HeroModel`, `WallModel` |
 | `Projections/` | 2 | `RatGeneral_Stone`, `Skeleton_BoneArrow` |
-| `UI/` | 6 | `DisPlayUI`, `EnemyUI`, `SettingUI`, `StatusEffectUI`, `StatusEffectUIAtWorld`, `TraitUI` |
+| `UI/` | 10 | `CaptainDetailsUI`(호버한 용병대장 정보 패널), `DisPlayUI`, `EnemyFlagDetailsUI`(호버한 적 세력 깃발 정보 패널), `EnemyUI`, `SettingUI`, `StatusEffectUI`, `StatusEffectUIAtWorld`, `TerrainDetailsUI`(호버한 지형지물·장애물 정보 패널), `TokenDetailsUI`(호버한 영웅·몬스터 정보 패널), `TraitUI` |
 | `Views/` | 16 | `ArrowView`, `CardArrowView`(카드 → 마우스 화살), `CardView`, `CardViewInPile`, `CombatantViewBase`, `CoreView`, `EnemyFlagView`(적 코어), `EnemyView`, `HeroCaptainView`(아군 코어·용병대장), `HeroPreView`, `HeroView`, `ObstacleView`(파괴 가능 장애물), `PopUp_Text_View`, `ProjectionView`, `SkillView`, `TerrainView`(발판 타일) |
 
 ## 5. `4_Medias/` — 스프라이트/이미지 (98개 png)

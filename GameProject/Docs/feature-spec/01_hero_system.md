@@ -64,7 +64,7 @@ public HeroView CurrentHero
 
 ```
 [플레이어 턴] TurnSystem.TurnGAPerformer가 TurnType.Player 분기 진입
- └ 1초 대기 → 턴 팝업 연출 대기 → yield return HeroSystem.Instance.PlayHeroTurnPerformer()
+ └ 0.5초 대기 → 턴 팝업 연출 대기 → yield return HeroSystem.Instance.PlayHeroTurnPerformer()
     1. 로그("플레이어 턴 시작")
     2. 모든 HeroView: ReduceSEWhenMyTurnStart()
     3. RefillAPGA를 AddReaction → APSystem.RefillAPGAPerformer: CurrentAP = MaxAP + UI

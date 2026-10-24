@@ -9,6 +9,7 @@ public class CoreSystem : Singleton<CoreSystem>
 
     public int PlayerCoreHealth => HeroCaptain != null ? HeroCaptain.CurrentHealth : 0;   //용병대장 체력
     public int EnemyCoreHealth { get; private set; }
+    public int EnemyCoreMaxHealth { get; private set; }   //정보 패널 표시용
 
     private void OnEnable()
     {
@@ -22,7 +23,8 @@ public class CoreSystem : Singleton<CoreSystem>
 
     public void SetUp(StageData stageData)
     {
-        EnemyCoreHealth = stageData.EnemyCoreHealth;   //플레이어 코어 체력은 HeroCaptainData에서 View가 보유
+        EnemyCoreHealth = stageData.EnemyCoreHealth;
+        EnemyCoreMaxHealth = stageData.EnemyCoreHealth;   //플레이어 코어 체력은 HeroCaptainData에서 View가 보유
     }
 
     //Performers
@@ -59,7 +61,11 @@ public class CoreSystem : Singleton<CoreSystem>
 
         if (!attackCoreGA.IsMissed)   //빗나감이면 모션만 재생하고 피해·승패 판정은 건너뜀
         {
-            int damage = attackCoreGA.Amount ?? (isSkillAttack ? 0 : attacker.BaseDamage);
+            int damage = DamageCaculator.GetDamage(
+                    attackCoreGA.Amount ?? (isSkillAttack ? 0 : attacker.BaseDamage),
+                    attacker,
+                    null   //코어는 IDamageable이 아니라 대상 쪽 보정은 없음
+                );
             if (isHeroAttack)
             {
                 EnemyCoreHealth = Mathf.Max(0, EnemyCoreHealth - damage);
@@ -71,6 +77,10 @@ public class CoreSystem : Singleton<CoreSystem>
                 HeroCaptain.ReceiveCoreDamage(damage);
                 HeroCaptain.PlayHitShake();
             }
+
+            //치명타 : 피해가 적용된 공격 1회마다 스택 1 소모
+            if (attacker != null && attacker.CheckStatusEffectExist(StatusEffectType.CRITICAL))
+                attacker.RemoveStatusEffect(StatusEffectType.CRITICAL, 1);
 
             //코어 체력 0: 적 코어면 승리, 플레이어 코어면 패배
             if (isHeroAttack && EnemyCoreHealth <= 0)

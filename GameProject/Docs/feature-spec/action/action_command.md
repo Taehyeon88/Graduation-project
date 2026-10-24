@@ -46,7 +46,7 @@
 #### `AutoBattleTurnGA` / `AutoBattleGA`
 - **파일**: `2.GameActions/AutoBattleTurnGA.cs`, `AutoBattleGA.cs` (필드 없음)
 - **Performer**: `TurnSystem.AutoBattleTurnGAPerformer`(팝업 → `AutoBattleSystem.CacheCombatants` → `AddReaction(AutoBattleGA)`), `AutoBattleSystem.AutoBattleGAPerformer`(큐 정리 → 동속 주사위 → `unit.Battle()` → 큐가 남으면 `AddReaction(AutoBattleGA)`)
-- **리액션**: `AutoBattleTurnGA` PRE — `TurnSystem`(`currentTurn` 선반영), `HeroSystem.AutoBattleTurnPreReaction`(영웅 "내 턴 종료" SE 감소). POST — `TurnSystem`이 `TurnGA(Enemy)` 체이닝
+- **리액션**: `AutoBattleTurnGA` PRE — `TurnSystem`(`currentTurn` 선반영), `HeroSystem.AutoBattleTurnPreReaction`(영웅 "내 턴 종료" SE 감소). POST — `TurnSystem`이 `TurnGA(Enemy)` 체이닝, `HeroSystem.AutoBattleTurnPostReaction`(영웅마다 `HeroData.Critical`% 확률로 `AddStatusEffectGA(CRITICAL, 1)` 예약)
 - **파생 액션**: `Battle()`이 판단은 모두 예약 시점에 끝내고 GA만 예약 — ① 이동 한계 전이고 정면이 비면 `MoveGA`(1칸, AP 소모 없음) ② 이동했다고 가정한 위치의 정면에 적이 있으면 `DealDamageGA(Amount, target, attacker, true)`(대상 확정), 이동 한계인데 정면이 비어 있으면 `AttackCoreGA`. 기본 공격 `DealDamageGA`는 `DamageSystem`이 기본 공격 모션 1(`Utility.GetBasicAttackTween`: 전진 → 타격 시점에 피해 → 복귀)을 재생. `AutoBattleSystem`은 `IsGameClear`/`IsGameOver`가 되면 큐를 비워 종료
 - **트리거 지점**: `TurnEndUI.TurnEnd`에서 `Perform(AutoBattleTurnGA)`
 
@@ -82,14 +82,14 @@
 - **Performer**: `APSystem.SpendAPPerformer` — `CurrentAP -= Amount`, `APUI` 갱신
 - **PRE/POST 구독자**: 없음
 - **파생 액션**: 없음
-- **트리거 지점**: `SkillSystem.PlaySkillPerformer`(스킬 사용 시 `AddReaction`), `PlayerSkillSystem.TryUse`(플레이어 스킬 — 스킬 GA의 `PreReactions`에 `SpendAPGA(APCost)`를 직접 종속)
+- **트리거 지점**: `SkillSystem.PlaySkillPerformer`(스킬 사용 시 `AddReaction`), `PlayerSkillSystem.TryUse`(플레이어 스킬 — 스킬 GA의 `PreReactions`에 `SpendAPGA(APCost)`를 직접 종속), `MoveSystem.TryApplyMoveAP`(영웅이 라운드 시작 위치를 떠나는 이동 — `PerformMoveGA.PreReactions`에 `SpendAPGA`를 직접 종속)
 - **관련 체인**: §3-2
 
 #### `RefillAPGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/RefillAPGA.cs`
 - **필드**: `int Amount` (획득할 AP, 최대 AP를 넘는 양은 획득되지 않음)
 - **Performer**: `APSystem.RefillAPGAPerformer` — `CurrentAP = Min(CurrentAP + Amount, MaxAP)`, `APUI` 갱신
-- **트리거 지점**: `APSystem.TurnGAPreReaction`(`TurnGA` PRE 구독 — 전투 시작 5, 플레이어 턴 시작 3). `HeroSystem.PlayHeroTurnPerformer`의 직접 예약은 제거됨
+- **트리거 지점**: `APSystem.TurnGAPreReaction`(`TurnGA` PRE 구독 — 전투 시작 5, 플레이어 턴 시작 3). `MoveSystem.TryApplyMoveAP`(AP를 내고 시작 위치를 떠났던 영웅이 시작 위치로 복귀 — `PerformMoveGA.PreReactions`에 `RefillAPGA(1)`을 직접 종속). `HeroSystem.PlayHeroTurnPerformer`의 직접 예약은 제거됨
 - **관련 체인**: §3-1
 
 #### `SpendMPGA`
@@ -175,7 +175,7 @@
 - **필드**: `StatusEffectType StatusEffectType`, `int StackCount`(set 가능), `List<CombatantView> Targets`, `CombatantView Caster`
 - **트리거 지점**: 아래 목록에 `AddStatusEffectEffect.cs`(버프/디버프 스킬의 Effect) 추가 — `SETargetMode`에 따라 자신/대상/전체에 상태이상 부여
 - **Performer**: `StatusEffectSystem.AddStatusEffectPerformer` — 대상별로 상태이상 스택 부여
-- **트리거 지점**: `근육 트로피` 특성(`TurnGA` POST, POWER) — `AddStatusTraitEffect`
+- **트리거 지점**: `근육 트로피` 특성(`TurnGA` POST, POWER) — `AddStatusTraitEffect`, `HeroSystem.AutoBattleTurnPostReaction`(`AutoBattleTurnGA` POST — 영웅 자신에게 CRITICAL 1스택, 확률은 `HeroData.Critical`%)
 
 #### `ModifyStatGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/ModifyStatGA.cs` (`IHaveCaster` 명시적 구현)
@@ -273,6 +273,7 @@ AutoBattleTurnGA                                             ← 플레이어가
  └ TurnSystem.AutoBattleTurnGAPerformer: 팝업 → AutoBattleSystem.CacheCombatants → AddReaction(AutoBattleGA)
      ├─ (PRE) TurnSystem: currentTurn = AutoBattle
      ├─ (PRE) HeroSystem.AutoBattleTurnPreReaction: 영웅 SE 감소
+     ├─ (POST) HeroSystem.AutoBattleTurnPostReaction: 영웅별 치명타 확률 통과 시 AddReaction(AddStatusEffectGA(CRITICAL))
      └─ (POST) TurnSystem.AutoBattleTurnGAPostReaction: AddReaction(TurnGA(Enemy))
 
 TurnGA(Enemy)

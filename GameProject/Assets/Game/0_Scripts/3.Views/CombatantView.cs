@@ -13,6 +13,7 @@ public class CombatantView : Token, IDamageable
     [SerializeField] private TMP_Text damageText;
     [SerializeField] private TMP_Text speedText;
     [SerializeField] private StatusEffectsUI statusEffectsUI;
+    [SerializeField] private TraitsUI traitsUI;   //특성 UI가 없는 프리팹(장애물 등)은 비워 둔다
 
     protected Dictionary<StatusEffectType, int> statusEffectUIs = new();
     public int MaxHealth
@@ -78,6 +79,7 @@ public class CombatantView : Token, IDamageable
         Speed = data.Speed;
         SetUpBaseBase(data);
         SetUpTraits(data);
+        if (traitsUI != null) traitsUI.SetUp(traits);
     }
 
     //특성 구독 시작 (최대 개수 초과 시 앞의 MaxTraitCount개만 사용)

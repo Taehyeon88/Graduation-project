@@ -8,8 +8,14 @@ public class TokenGrid : MonoBehaviour
     [Header("GridSettings")]
     [SerializeField] private Transform gridTransform;
     [SerializeField] private Transform gridTilePool;
+    [SerializeField] private IsoObject sideTilePrefab;
+    [SerializeField] private Vector3 heroSideTilePosition;
+    [SerializeField] private Vector3 enemySideTilePosition;
     [field: SerializeField] public int width { get; private set; }
     [field: SerializeField] public int height { get; private set; }
+
+    [Header("NeutralTile (비어 있으면 중립지대 타일을 숨김)")]
+    [SerializeField] private Sprite[] neutralTileSprites;
 
     //외부 접근용
     public Dictionary<Token, Vector2Int> gridPosByToken = new();
@@ -17,7 +23,8 @@ public class TokenGrid : MonoBehaviour
     public int[,] simpleGrid { get; private set; }   //0 - 토큰 없음 | 1 - 토큰 있음 (토큰 존재여부 확인용)
 
     private List<Vector2Int> remainCells = new();
-    private IsoObject[,] floorTiles;   //바닥 타일 (중립지대 타일 숨김용)
+    private IsoObject[,] floorTiles;   //바닥 타일 (중립지대 타일 교체·숨김용)
+    private readonly Dictionary<SpriteRenderer, Sprite> originalSprites = new();   //중립지대로 교체한 타일의 원래 스프라이트
 
     /// <summary>
     /// 스테이지 바닥 그리드 생성 및 초기화 함수
@@ -43,21 +50,50 @@ public class TokenGrid : MonoBehaviour
                 //gridTilePool에서 가져와서 배치
                 IsoObject gridTile = temp[index];
                 gridTile.gameObject.SetActive(true);
+                RestoreTileSprite(gridTile);
                 gridTile.position = new Vector3(x, y, 0);
                 floorTiles[x, y] = gridTile;
 
                 index++;
             }
         }
+
+        CreateSideTile(heroSideTilePosition);
+        CreateSideTile(enemySideTilePosition);
     }
 
-    //중립지대 등록 (토큰 없이 칸만 막고 바닥 타일은 숨김)
+    //그리드 양옆(아군/적 진영) 타일 생성
+    private void CreateSideTile(Vector3 isoPosition)
+    {
+        IsoObject sideTile = Instantiate(sideTilePrefab, TokenSystem.Instance.IsoWorld.transform);
+        sideTile.position = isoPosition;
+    }
+
+    //중립지대 등록 (토큰 없이 칸만 막고 바닥 타일은 랜덤 중립 스프라이트로 교체, 스프라이트 미할당 시 숨김)
     public void SetBlockedCell(Vector2Int pos)
     {
         if (!IsBound(pos.x, pos.y)) return;
         simpleGrid[pos.x, pos.y] = 1;
         remainCells.Remove(pos);
-        floorTiles[pos.x, pos.y].gameObject.SetActive(false);
+
+        IsoObject floorTile = floorTiles[pos.x, pos.y];
+        SpriteRenderer renderer = floorTile.GetComponentInChildren<SpriteRenderer>(true);
+        if (neutralTileSprites == null || neutralTileSprites.Length == 0 || renderer == null)
+        {
+            floorTile.gameObject.SetActive(false);
+            return;
+        }
+
+        originalSprites.TryAdd(renderer, renderer.sprite);
+        renderer.sprite = neutralTileSprites[Random.Range(0, neutralTileSprites.Length)];
+    }
+
+    //중립지대로 교체했던 타일을 원래 스프라이트로 복원 (스테이지 재생성 시)
+    private void RestoreTileSprite(IsoObject floorTile)
+    {
+        SpriteRenderer renderer = floorTile.GetComponentInChildren<SpriteRenderer>(true);
+        if (renderer != null && originalSprites.Remove(renderer, out Sprite original))
+            renderer.sprite = original;
     }
 
     public void SetToken(Token token, Vector2Int pos)

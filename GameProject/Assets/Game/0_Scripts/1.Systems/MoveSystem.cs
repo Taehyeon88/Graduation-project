@@ -107,6 +107,7 @@ public class MoveSystem : Singleton<MoveSystem>
         heroMovePaths = null;
         Interactions.Instance.IsHeroMoveMode = false;
         VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "Hero_Move");
+        VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "Hero_Move_Start");
     }
 
     private void UpdateMoveRange(HeroView heroView)
@@ -115,8 +116,16 @@ public class MoveSystem : Singleton<MoveSystem>
         heroMoveRange = heroMovePaths.Keys.ToList();
 
         VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "Hero_Move");
+        VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "Hero_Move_Start");
+        Vector2Int start = GetRoundStartPos(heroView);
         foreach (var pos in heroMoveRange)
+        {
+            if (pos == start) continue;   //시작 위치는 Hero_Move_Start가 표시 (클릭 이동은 그대로 가능)
             VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), pos, "Hero_Move");
+        }
+
+        if (heroMoveRange.Count > 0)   //이동VG와 함께만, 3x3 중앙(라운드 시작 위치) 표시
+            VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), start, "Hero_Move_Start");
     }
 
     //라운드 시작 위치 기준 3x3 안에서, 현재 위치로부터 이동 가능한 칸과 그 경로 (8방향 BFS, 범위 밖 우회 금지)
@@ -160,15 +169,14 @@ public class MoveSystem : Singleton<MoveSystem>
         return paths;
     }
 
-    //시작 위치 중심 3x3 안, 빈 칸, 배치 구간 제외 (시작 위치는 복귀 목적지라 배치 구간이어도 허용)
+    //시작 위치 중심 3x3 안, 빈 칸, 적 배치 구간 제외 (영웅 배치 구간은 이동 가능, 시작 위치는 복귀 목적지라 항상 허용)
     private bool CanMoveTo(Vector2Int pos, Vector2Int start)
     {
         if (Mathf.Abs(pos.x - start.x) > MoveRadius || Mathf.Abs(pos.y - start.y) > MoveRadius) return false;
         if (!TokenSystem.Instance.API.IsGridEmpty(pos)) return false;
         if (pos == start) return true;
 
-        return !HeroSystem.Instance.SetupPoses.Contains(pos)
-            && !EnemySystem.Instance.SetupPoses.Contains(pos);
+        return !EnemySystem.Instance.SetupPoses.Contains(pos);
     }
 
     private Vector2Int GetRoundStartPos(HeroView heroView)

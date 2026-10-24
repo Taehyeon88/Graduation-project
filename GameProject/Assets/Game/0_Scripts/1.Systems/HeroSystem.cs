@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class HeroSystem : Singleton<HeroSystem>
 {
+    private const int PercentMax = 100;
+
     public IReadOnlyList<HeroView> HeroViews => TokenSystem.Instance.HeroViews;
     public HeroCaptainView HeroCaptain { get; set; }   //용병대장 (TokenSetup만 설정)
     public HeroView CurrentHero
@@ -26,10 +28,12 @@ public class HeroSystem : Singleton<HeroSystem>
     private void OnEnable()
     {
         ActionSystem.SubscribeReaction<AutoBattleTurnGA>(AutoBattleTurnPreReaction, ReactionTiming.PRE);
+        ActionSystem.SubscribeReaction<AutoBattleTurnGA>(AutoBattleTurnPostReaction, ReactionTiming.POST);
     }
     private void OnDisable()
     {
         ActionSystem.UnsubscribeReaction<AutoBattleTurnGA>(AutoBattleTurnPreReaction, ReactionTiming.PRE);
+        ActionSystem.UnsubscribeReaction<AutoBattleTurnGA>(AutoBattleTurnPostReaction, ReactionTiming.POST);
     }
 
     //Publics
@@ -61,6 +65,18 @@ public class HeroSystem : Singleton<HeroSystem>
         foreach (var hero in HeroViews)
         {
             hero.ReduceSEWhenMyTurnEnd();  //공용 종료시, SE 제거
+        }
+    }
+
+    //자동 전투 종료 시, 영웅마다 치명타 확률(%)로 치명타 상태효과 획득
+    private void AutoBattleTurnPostReaction(AutoBattleTurnGA turnGA)
+    {
+        foreach (var hero in HeroViews)
+        {
+            if (hero == null || hero.TokenData is not HeroData data) continue;
+            if (Random.Range(0, PercentMax) >= data.Critical) continue;
+
+            ActionSystem.Instance.AddReaction(new AddStatusEffectGA(StatusEffectType.CRITICAL, 1, new() { hero }, hero));
         }
     }
 }

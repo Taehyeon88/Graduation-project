@@ -48,7 +48,7 @@ public class TurnSystem : Singleton<TurnSystem>
         }
         else if (turnGA.Type == TurnType.Player)
         {
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.5f);
 
             currentTurnNumber++;
             Tween direct = turnPopUpUI.GetTurnPopUpTween(TurnType.Player, currentTurnNumber);  //턴 팝업 연출

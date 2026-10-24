@@ -19,6 +19,7 @@
 | 취약 | `WEAK` | 공격자 디버프: 이 효과를 가진 공격자의 피해 ×0.75 | `DamageCaculator.CalculateWeak` | 영웅 턴 종료 시 1 감소 |
 | 약화 | `VULNERABLE` | 피격자 디버프: 이 효과를 가진 대상이 받는 피해 ×1.5 | `DamageCaculator.CalculateVulnerable` | 영웅 턴 종료 시 1 감소 |
 | 회피 | `DODGE` | 이 용병을 대상으로 하는 다음 1회의 모든 공격과 피해가 빗나감. 발동하면 해제 | `DamageSystem.DealDamageGAPerformer` | 발동 시 스택 1 소모, 지속시간 없음 |
+| 치명타 | `CRITICAL` | 자신의 공격력의 절반만큼 추가 공격력을 얻음 | `DamageCaculator.GetCritical`(가산), `DamageSystem`·`CoreSystem`(소모) | 피해가 적용된 공격 1회마다 스택 1 소모, 지속시간 없음 |
 
 ## POWER · 힘
 
@@ -61,3 +62,16 @@ DealDamageGA → DamageSystem.DealDamageGAPerformer
   - "MISS" 표시·회피 연출·사운드는 없다 (아트 제외).
   - 부여 수단: 발판 '풀숲' — `TerrainSystem`이 용병이 풀숲에 들어오면(`MoveGA`/`PlayCardGA` POST) `AddStatusEffectGA(DODGE, 1)`을 부여하고, 떠나면 1을 회수한다. 출처 구분은 없다 ([08_terrain_obstacle.md](08_terrain_obstacle.md) §5).
   - 에디터: 에셋의 `EffectType`=`DODGE`, `Discription` 입력, `spriteImage` 연결, `StatusEffectSystem.effectDatas`에 등록 필요. Play 테스트는 아직 하지 않았다.
+
+## CRITICAL · 치명타
+
+- 에셋: `치명타.asset` (아이콘 미연결 — `치명타.png` 없음). 상세는 [카탈로그 5 · 치명타](StatusEffect/status_effect_catalog.md) 참조.
+- 설명: 자신의 공격력의 절반만큼 추가 공격력을 얻습니다.
+- 스택 의미: 횟수. 피해가 적용되는 공격 1회마다 스택 1 소모, 지속시간 없음.
+- 판정: `DamageCaculator.GetDamage`가 공격자가 `CRITICAL`을 가졌으면 `공격자.BaseDamage × 0.5`를 힘과 같은 층에서 더한다 (취약·약화 곱 이전). 소모는 `DamageSystem.DealDamageGAPerformer`(GA당 1회, 다중 대상은 루프 후)와 `CoreSystem.AttackCoreGAPerformer`(`IsMissed`가 아닐 때)에서 한다.
+- 주의·한계:
+  - 코어 공격(`AttackCoreGA`)이 `DamageCaculator`를 거치도록 연결되어 **힘·약화도 코어 공격에 적용된다** (플레이어 스킬은 시전자가 없어 제외, 원작 확인 필요).
+  - 보너스는 `Amount`가 아니라 시전자 `BaseDamage` 기준이며, 피해 미리보기에는 반영되지만 스택은 소모하지 않는다.
+  - 한 특성이 `DealDamageGA`와 `AttackCoreGA`를 연달아 발행하면 첫 GA만 보너스를 받고 소모한다.
+  - 영웅 `HeroData.Critical`(확률 스탯, 표시 전용)과는 별개다. 부여 수단(카드·특성)은 연결하지 않았다. Play 테스트는 하지 않았다.
+  - 에디터: 에셋 `EffectType`=`CRITICAL`(5), `Discription` 입력 완료, `StatusEffectSystem.effectDatas` 등록 완료, `spriteImage`는 미연결.

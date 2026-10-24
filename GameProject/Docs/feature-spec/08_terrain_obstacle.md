@@ -24,7 +24,7 @@
 
 ## 3. 중립지대
 
-- `TokenGrid.SetBlockedCell(pos)`: `simpleGrid[pos]=1`, `remainCells`에서 제거, 바닥 타일(`floorTiles`)을 비활성화. 토큰은 등록하지 않는다.
+- `TokenGrid.SetBlockedCell(pos)`: `simpleGrid[pos]=1`, `remainCells`에서 제거, 바닥 타일(`floorTiles`)의 스프라이트를 `neutralTileSprites` 중 랜덤 1장으로 교체(미할당 시 비활성화, 스테이지 재생성 시 `GenerateStage`가 원래 스프라이트로 복원). 토큰은 등록하지 않는다.
 - 막힘 판정은 기존 `simpleGrid` 기반 호출부(`CanSet`/`IsGridEmpty`/BFS/넉백/웨이브 스폰/카드 배치)가 그대로 처리한다.
 - **주의**: `CanSetExceptionToken`은 `simpleGrid==1`인데 토큰이 없으면 false를 반환한다(토큰 없이 막힌 칸). 이 분기가 없으면 "적 예외" 옵션 호출부(`RangeMode` 등)가 중립 칸을 빈 칸으로 오판한다.
 
@@ -50,6 +50,7 @@
 - **생성**: `MatchSetupSystem` → `TokenSetup.SetUpTerrains(stageData.TerrainSpawns)` → `TokenCreator.CreateTerrain`(`TokenCreator.terrainPrefab`, 부모는 `isoWorld`). 데이터가 없거나 점유(`grid.CanSet` false)·중복이면 `LogError` 후 건너뛴다.
 - **토큰이 아니다**: `grid.SetToken`을 쓰면 칸을 점유해 이동이 막히므로, `TokenSetup`이 `Dictionary<Vector2Int, TerrainView>`로 따로 보관한다(`Terrains`, `TryGetTerrain`). `simpleGrid`는 건드리지 않아 이동은 가능하고, 토큰이 아니라서 공격 대상이 되지 않는다.
 - **기능 구조**: `TerrainData.Effect`(`[SerializeReference, SR]`)를 `TerrainView.SetUp`이 `Clone()`해 발판별 사본으로 보유한다. `TerrainView.Enter(unit)`/`Exit(unit)`이 `TerrainEffect.OnEnter`/`OnExit`에 위임한다. 새 발판 기능은 `TerrainEffect` 서브클래스를 만들어 SO에 지정한다.
+- **정보 패널**: `TerrainView.Data`(`TerrainData`)를 노출하고, 마우스가 발판·장애물 위에 오면 `GridSelector`가 `TerrainDetailsUI`(`3_Prefabs/UI/TerrainDetailsUI.prefab`)를 띄운다 — 발판은 `Terrain_BG`만, 장애물(`ObstacleView`)은 `Obstacle_BG`만(공격력·체력 포함) 활성화. 영웅·몬스터가 서 있는 칸은 `TokenDetailsUI`가 우선한다.
 - **발동 경로** (`TerrainSystem`, 모두 POST):
   - `MoveGA`: 모든 발판에 `Exit(mover)`(각 발판이 자기가 준 것만 회수), 도착 칸이 발판이면 `Enter(mover)`.
   - `PlayCardGA`: 소환된 칸이 발판이고 그 칸 토큰이 `CombatantView`이면 `Enter(unit)`.

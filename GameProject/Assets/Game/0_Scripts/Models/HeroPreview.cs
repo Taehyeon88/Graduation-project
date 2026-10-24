@@ -10,6 +10,8 @@ public class HeroPreview : Token
         Positive, Negative
     }
 
+    [SerializeField] private SpriteRenderer bottom;   //발판 (모델과 같은 알파로 함께 표시·숨김)
+
     public TokenPreViewState State { get; private set; } = TokenPreViewState.Negative;
     public void SetUp(TokenData data)
     {
@@ -27,5 +29,12 @@ public class HeroPreview : Token
         Color color = Model.color;
         color.a = newState == TokenPreViewState.Positive ? 0.8f : 0.0f;
         Model.color = color;
+
+        if (bottom != null)
+        {
+            Color bottomColor = bottom.color;
+            bottomColor.a = color.a;
+            bottom.color = bottomColor;
+        }
     }
 }

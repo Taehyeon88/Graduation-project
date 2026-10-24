@@ -20,3 +20,4 @@ MonoBehaviour:
   <Traits>k__BackingField:
   - {fileID: 11400000, guid: d8ee5e65ec4190449a0f7bb99954bc1f, type: 2}
   <APCost>k__BackingField: 2
+  <Critical>k__BackingField: 20
