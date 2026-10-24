@@ -12,6 +12,9 @@ public class CardSystem : Singleton<CardSystem>
     [SerializeField] private RectTransform drawPilePoint;
     [SerializeField] private RectTransform discardPilePoint;
 
+    [Header("Target Element")]
+    [SerializeField] private CardArrowView arrowView;   //카드 → 마우스 화살 (비활성 상태로 씬에 배치)
+
     [Header("Draw (임시 값 - 원작 확인 필요)")]
     [FormerlySerializedAs("drawAmount")]
     [SerializeField] private int startDrawAmount;   //전투 시작 시 드로우 장수
@@ -24,6 +27,8 @@ public class CardSystem : Singleton<CardSystem>
     private readonly List<Card> hand = new();
     private readonly Queue<PlayCardGA> reservedCards = new();
     private CardView currentSelectedCard;
+    private HeroPreview heroPreview;                          //배치 미리보기 (TokenGrid 미등록)
+    private Vector2Int hoveredPos = Vector2Int.down;          //마지막으로 판정한 마우스 타일
 
     public static event System.Action PilesReset;     //SetUp으로 더미가 재구성될 때 (더미 UI 갱신용)
 
@@ -94,6 +99,7 @@ public class CardSystem : Singleton<CardSystem>
             currentSelectedCard.SetSelected(false);
             currentSelectedCard = cardView;
             currentSelectedCard.SetSelected(true);
+            ShowTargetVisuals();                     //화살 시작점·미리보기를 새 카드 기준으로 교체
         }
         else                                         //같은 카드 재클릭 = 취소
         {
@@ -107,18 +113,33 @@ public class CardSystem : Singleton<CardSystem>
         Interactions.Instance.IsCardTargetMode = true;
         currentSelectedCard.SetSelected(true);
 
-        //배치 가능 타일 VG 생성
         List<Vector2Int> placeablePoses = GetPlaceablePoses();
-        foreach (var pos in placeablePoses)
-            VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), pos, "Hero_SetUp_True");
+        ShowTargetVisuals();
 
         while (true)
         {
+            Vector3 isoPos = TokenSystem.Instance.IsoWorld.MouseIsoTilePosition(1);
+            Vector2Int pos = Utility.IsoVectorToVector2Int(isoPos);
+
+            //마우스가 올라간 타일이 배치 가능할 때만 하이라이트 VG·영웅 미리보기 표시
+            if (pos != hoveredPos)
+            {
+                bool placeable = placeablePoses.Contains(pos);
+                if (placeable)
+                {
+                    VisualGridCreator.Instance.ChangeVisualGridPosition(gameObject.GetInstanceID(), pos, "Hero_SetUp_Highlight");
+                    heroPreview.TokenTransform.position = new Vector3(pos.x, pos.y, 1);
+                }
+                else
+                {
+                    VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "Hero_SetUp_Highlight");
+                }
+                heroPreview.ChangeState(placeable ? HeroPreview.TokenPreViewState.Positive : HeroPreview.TokenPreViewState.Negative);
+                hoveredPos = pos;
+            }
+
             if (Interactions.Instance.GridSelected)
             {
-                Vector3 isoPos = TokenSystem.Instance.IsoWorld.MouseIsoTilePosition(1);
-                Vector2Int pos = Utility.IsoVectorToVector2Int(isoPos);
-
                 if (placeablePoses.Contains(pos))
                 {
                     PlayCardGA playCardGA = new(currentSelectedCard.Card, pos);
@@ -153,10 +174,35 @@ public class CardSystem : Singleton<CardSystem>
         return result;
     }
 
+    //선택한 카드 기준으로 화살과 영웅 미리보기를 (재)생성 (카드 변경 시에도 호출)
+    private void ShowTargetVisuals()
+    {
+        if (heroPreview != null)
+            Destroy(heroPreview.gameObject);
+        heroPreview = TokenCreator.Instance.CreateTokenPreview(currentSelectedCard.Card.Unit);
+
+        arrowView.gameObject.SetActive(true);
+        arrowView.SetUp(GetCardWorldPosition(currentSelectedCard));
+
+        hoveredPos = Vector2Int.down;               //다음 프레임에 마우스 타일을 다시 판정
+    }
+
+    private Vector3 GetCardWorldPosition(CardView cardView)
+    {
+        Vector3 screenPos = cardView.GetComponent<RectTransform>().position;   //Overlay 캔버스라 화면 좌표
+        screenPos.z = Mathf.Abs(Camera.main.transform.position.z);             //월드 z=0 평면
+        return Camera.main.ScreenToWorldPoint(screenPos);
+    }
+
     private void ResetSelectMode()
     {
         if (currentSelectedCard != null)
             currentSelectedCard.SetSelected(false);
+
+        if (heroPreview != null)
+            Destroy(heroPreview.gameObject);
+        heroPreview = null;
+        arrowView.gameObject.SetActive(false);
 
         currentSelectedCard = null;
         Interactions.Instance.IsCardTargetMode = false;

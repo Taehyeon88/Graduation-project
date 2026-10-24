@@ -1,7 +1,10 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 public class PerkSystem : Singleton<PerkSystem>
 {
+    [SerializeField] private PerksUI perksUI;
+
     private readonly List<Perk> perks = new();   //유저가 소유한 유물 (전투 씬마다 GameSystem.Perks로 다시 구성)
 
     private void OnEnable()
@@ -24,6 +27,7 @@ public class PerkSystem : Singleton<PerkSystem>
             perk.OnAdd();
             perks.Add(perk);
         }
+        perksUI.SetUp(perks);
     }
 
     //Reactions

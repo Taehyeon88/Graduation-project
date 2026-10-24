@@ -9,9 +9,6 @@ public class TokenSetup : MonoBehaviour
     [Header("TokenGrid")]
     [field: SerializeField] private TokenGrid grid;
 
-    [Header("SetUpUI")]
-    [field: SerializeField] private SetUpUI setupUI;
-
     [Header("CoreViewPositions (그리드 밖 Iso 좌표)")]
     [SerializeField] private Vector3 heroCaptainIsoPosition;
     [SerializeField] private Vector3 enemyFlagIsoPosition;
@@ -20,48 +17,9 @@ public class TokenSetup : MonoBehaviour
     private List<HeroView> HeroViews => TokenSystem.Instance.HeroViews;
 
     private IsoWorld IsoWorld => TokenSystem.Instance.IsoWorld;
-    private List<Vector2Int> heroSetupPositions;
 
     private readonly Dictionary<Vector2Int, TerrainView> terrains = new();   //발판은 토큰이 아니라 그리드에 등록하지 않고 따로 보관
     public IEnumerable<TerrainView> Terrains => terrains.Values;
-
-    private HeroPreview preview;
-
-    private void Update()
-    {
-        if (!Interactions.Instance.IsSetUpHero) return;
-
-        Vector3 isoPosition = IsoWorld.MouseIsoTilePosition(1f);
-
-        if (preview != null)
-        {
-            if(setupUI.SelectedData == null)
-            {
-                preview.ChangeState(HeroPreview.TokenPreViewState.Negative);
-                return;
-            }
-
-            if (preview.TokenData.Id != setupUI.SelectedData.Id)
-                preview.SetUp(setupUI.SelectedData);
-
-            Vector2Int pos = Utility.IsoVectorToVector2Int(isoPosition);
-
-            if (heroSetupPositions.Contains(pos) && grid.CanSet(pos))
-            {
-                preview.ChangeState(HeroPreview.TokenPreViewState.Positive);
-                preview.TokenTransform.position = isoPosition;
-            }
-            else
-            {
-                preview.ChangeState(HeroPreview.TokenPreViewState.Negative);
-            }
-        }
-        else
-        {
-            if(setupUI.SelectedData != null)
-                preview = TokenCreator.Instance.CreateTokenPreview(setupUI.SelectedData);
-        }
-    }
 
     //스테이지 맵 타일 셋업
     public void SetUpStageMap()
@@ -167,63 +125,5 @@ public class TokenSetup : MonoBehaviour
 
             index++;
         }
-    }
-
-    /// <summary>
-    /// 전투 시작시, 영웅 배치를 위해서 실행되는 함수
-    /// </summary>
-    /// <param name="heroDatas"></param>
-    public void StartSetUpHero(HeroData[] heroDatas, List<Vector2Int> heroSetupPositions)
-    {
-        Interactions.Instance.IsSetUpHero = true;
-
-        HeroViews.Clear();
-
-        //영웅 셋업 VG 생성
-        this.heroSetupPositions = heroSetupPositions;
-        foreach (var gridPos in heroSetupPositions)
-            VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), gridPos, "Hero_SetUp_True");
-
-        setupUI.SetUp(heroDatas);        //SetupUI 활성화
-
-        Interactions.SetSelectGridEvent(SetHeroView, true);     //마우스 클릭 인터렉션 바인딩
-    }
-
-    private void SetHeroView()
-    {
-        if (setupUI.SelectedData == null) return;
-
-        Vector3 isoPosition = IsoWorld.MouseIsoTilePosition(1f);
-        Vector2Int pos = Utility.IsoVectorToVector2Int(isoPosition);
-
-        if (heroSetupPositions.Contains(pos) && grid.CanSet(pos))
-        {
-            //해당 위치 데이터 및 VG 제거
-            heroSetupPositions.Remove(pos);
-
-            VisualGridCreator.Instance.RemoveVisualGrid(gameObject.GetInstanceID(), "Hero_SetUp_True");
-            foreach (var p in heroSetupPositions)
-                VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), p, "Hero_SetUp_True");
-
-            //위치에 토큰 생성
-            Token token = TokenCreator.Instance.CreateToken(
-                setupUI.SelectedData,
-                TokenType.Hero,
-                isoPosition
-                );
-
-            grid.SetToken(token, pos);
-            HeroViews.Add(token as HeroView);
-
-            //SetUpUI에 Slot 삭제
-            setupUI.RemoveSlot();
-        }
-    }
-
-    private void EndSetUpHero()
-    {
-        Interactions.Instance.IsSetUpHero = false;
-        Interactions.SetSelectGridEvent(SetHeroView, false);     //마우스 클릭 인터렉션 바인딩 종료
-        Destroy(preview.gameObject);
     }
 }

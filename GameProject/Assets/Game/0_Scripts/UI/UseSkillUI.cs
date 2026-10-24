@@ -10,8 +10,7 @@ public class UseSkillUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
     {
         //다른 선택 모드 중이거나 사용 조건이 안 되면 드래그 무시
         Interactions interactions = Interactions.Instance;
-        isDragging = !interactions.IsSetUpHero
-            && !interactions.IsHeroMoveMode
+        isDragging = !interactions.IsHeroMoveMode
             && !interactions.IsCardTargetMode
             && !interactions.IsPileViewOpen
             && PlayerSkillSystem.Instance.CanUse();

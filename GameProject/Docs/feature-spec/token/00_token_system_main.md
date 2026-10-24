@@ -69,7 +69,7 @@ public void RemoveToken2(Token token)
 - **코루틴 여부**: 아니오
 - **동작**: `RemoveToken`과 동일하지만 연출 트윈 없이 `grid.RemoveToken` 직후 즉시 `Destroy`
 - **사용 예시**: 확인된 외부 호출자 없음
-- **비고**: 주석상 "임시 토큰 제거 함수(`CombatantView`가 아닌 것들의 제거)" 용도다. 그런데 실제로 연출 없이 즉시 제거되어야 할 대표 사례인 `HeroPreview`(배치 미리보기)조차 `TokenSetup.EndSetUpHero()`에서 `Destroy(preview.gameObject)`로 직접 파괴되고 `RemoveToken2`를 거치지 않는다 — 의도된 용도가 있음에도 현재는 아무도 호출하지 않는 상태다.
+- **비고**: 주석상 "임시 토큰 제거 함수(`CombatantView`가 아닌 것들의 제거)" 용도다. 그런데 실제로 연출 없이 즉시 제거되어야 할 대표 사례였던 `HeroPreview`(배치 미리보기)는 구 영웅 배치 흐름(`TokenSetup.StartSetUpHero`)과 함께 쓰이지 않게 됐다가, 카드 배치 미리보기(`CardSystem.CardTargetMode`)로 다시 쓰인다. 다만 `HeroPreview`는 `TokenGrid`에 등록되지 않으므로(`grid.RemoveToken`이 `KeyNotFoundException`) 이 함수가 아니라 `CardSystem`이 `Destroy`로 직접 제거한다. 이 함수 자체는 여전히 호출자가 없다.
 
 ### 2-3. 이동
 

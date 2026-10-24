@@ -37,7 +37,7 @@ public Vector2Int GetTokenPosition(Token token)
 - **파라미터**: `Token token`
 - **반환값**: 토큰의 그리드 좌표. `token`이 `null`이거나 그리드에 등록되지 않았으면 `Vector2Int.down`
 - **동작**: `gridPosByToken` 딕셔너리 조회
-- **사용 예시**: `1.Systems/Skills/Player/ShoulderBashProcessor.cs:18` — `Vector2Int currentPos = TokenSystem.Instance.API.GetTokenPosition(shoulderBashGA.Caster);`
+- **사용 예시**: `1.Systems/MoveSystem.cs:126` — `Vector2Int current = TokenSystem.Instance.API.GetTokenPosition(heroView);`
 - **비고**: `Vector2Int.down`은 "없음"을 나타내는 전용 sentinel이 아니라 실제 좌표값(0,-1)이다 — 호출부가 별도 null/범위 체크 없이 그대로 좌표로 쓰면 (0,-1) 위치와 혼동될 수 있다.
 
 #### `GetTokenByPosition`
@@ -76,7 +76,7 @@ public List<Vector2Int> GetCanMovePlace(Token token, int maxDistance)
 - **파라미터**: `Token token`, `int maxDistance`
 - **반환값**: 이동 가능한 모든 좌표 목록
 - **동작**: 토큰의 현재 좌표에서 `UtilityBFS.FindALLRoots(start, maxDistance)`에 위임
-- **사용 예시**: `1.Systems/MoveSystem.cs:101` — `heroMoveRange = TokenSystem.Instance.API.GetCanMovePlace(heroView, MPSystem.Instance.CurrentMP);`
+- **사용 예시**: 현재 호출처 없음 — 영웅 수동 이동은 라운드 시작 위치 기준 3×3 전용 BFS(`MoveSystem.CalcMovePaths`)로 대체됐다. 이 API는 코드에만 남아 있다.
 - **비고**: `token`이 그리드에 등록되지 않았으면 `gridPosByToken[token]` 인덱서가 `KeyNotFoundException`을 던진다(널 체크 없음). 또한 `UtilityBFS.FindALLRoots`가 내부적으로 `TokenSystem.Instance.API.IsBound`/`IsGridEmpty` 등을 다시 호출하는 순환 구조다(`00_token_system.md` 4절 참고).
 
 #### `GetAllAroundPlaces`
@@ -108,7 +108,7 @@ public List<Vector2Int> GetShortestPath(Token token, Vector2Int goal)
 - **파라미터**: `Token token`, `Vector2Int goal`
 - **반환값**: 최단 경로 좌표 리스트(경로가 없을 때의 반환값은 `UtilityBFS.FindShortestPath` 구현에 따름)
 - **동작**: `grid.GetSimpleGridCopied()`(원본 보호용 클론) 위에서 `UtilityBFS.FindShortestPath`를 실행
-- **사용 예시**: `1.Systems/MoveSystem.cs:68` — `var path = TokenSystem.Instance.API.GetShortestPath(currentHero, pos);`
+- **사용 예시**: 외부 호출처 없음 — 영웅 수동 이동이 `MoveSystem.CalcMovePaths`(3×3 전용 BFS)로 바뀌고 어깨치기 스킬이 제거되면서 사라졌다. 같은 클래스의 `GetMinDistance`가 내부에서만 호출한다.
 
 #### `GetMinDistance`
 ```csharp

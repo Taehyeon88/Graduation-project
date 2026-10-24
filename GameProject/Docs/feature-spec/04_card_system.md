@@ -36,8 +36,8 @@
 |---|---|---|
 | `CardData.Mana` | AP 비용 (`CardData`의 `int` 필드, SO로 노출) | 자원은 `APSystem` / `SpendAPGA` 재사용. 현재 `SpendAPGA`는 amount 인자(기본 1)를 지원 |
 | `CardData`의 `SelfEffects`/`GridTargetMode`/`CardType`/`CardSubType` | `HeroData`(영웅 SO) 참조 1개 | 카드가 "용병 1명"을 가리킨다. 효과/타겟 모드 필드는 쓰지 않음 |
-| `PlayCardGA` 효과(`PerformEffectGA`로 카드 효과 실행) | "선택한 타일에 해당 용병 토큰 배치" | 배치 창구 후보: `TokenMainAPI`의 토큰 추가 계열(웨이브 몬스터 런타임 생성에 쓰이는 경로, 구현 시 확인). 초기 일괄 배치용 `TokenSetup.StartSetUpHero`는 전투 시작용이라 그대로 재사용 불가 |
-| `PlayCardTargetingGA`의 타일 선택(공격 범위 VG) | `CardSystem` 코루틴(`CardTargetMode`)이 "배치 가능한 빈 타일" 선택 — **GA 없음** | (삭제된) `SkillSystem`과 같은 방식: 확정 시 `PlayCardGA`를 `reservedCards` 큐에 넣고 `Update`에서 `IsPerforming == false`일 때 `Perform`. 이전엔 `CardView`가 `ActionSystem.Perform`을 직접 호출했으나 `convention.md` 6절 위배라 바꿈. 배치 가능 타일 = `StageData.HeroSetupPoses` 중 `TokenServiceAPI.IsGridEmpty`인 곳(임시, 구역 제한은 (원작 확인 필요)) |
+| `PlayCardGA` 효과(`PerformEffectGA`로 카드 효과 실행) | "선택한 타일에 해당 용병 토큰 배치" | 배치 창구 후보: `TokenMainAPI`의 토큰 추가 계열(웨이브 몬스터 런타임 생성에 쓰이는 경로, 구현 시 확인). (구 초기 일괄 배치용 `TokenSetup.StartSetUpHero`는 제거됨) |
+| `PlayCardTargetingGA`의 타일 선택(공격 범위 VG) | `CardSystem` 코루틴(`CardTargetMode`)이 "배치 가능한 빈 타일" 선택 — **GA 없음** | (삭제된) `SkillSystem`과 같은 방식: 확정 시 `PlayCardGA`를 `reservedCards` 큐에 넣고 `Update`에서 `IsPerforming == false`일 때 `Perform`. 이전엔 `CardView`가 `ActionSystem.Perform`을 직접 호출했으나 `convention.md` 6절 위배라 바꿈. 배치 가능 타일 = `HeroSystem.SetupPoses`(`MatchSetupSystem`이 `TokenSetup.CalcSetupPoses`로 계산) 중 `TokenServiceAPI.IsGridEmpty`인 곳(임시, 구역 제한은 (원작 확인 필요)) |
 | `InteractionSystem.*` 입력 플래그 | 현재 코드의 `Interactions`(`GridSelected`, `CancelUse` 등) | 이전과 이름이 다름 — 구현 시 현재 클래스로 맞춘다 |
 
 `IsPart1`(카드 1회 사용을 두 단계 `PlayCardGA`로 나누는 이전 플래그)은 용병 배치에는 필요 없으므로 이식하지 않는다.
@@ -49,8 +49,9 @@
  └ ActionSystem 수행 중 / 이동 모드 중이면 무시
  └ APSystem.HasEnoughAP(card.APCost) 체크 — 부족하면 사운드만 재생하고 종료
  └ CardSystem.PlayCardTargetMode → CardTargetMode 코루틴
-     ├ Interactions.IsCardTargetMode = true, 배치 가능 타일에 VG(Hero_SetUp_True) 표시
-     ├ 다른 카드 클릭 = 선택 카드 변경, 같은 카드 재클릭/CancelUse = 취소
+     ├ Interactions.IsCardTargetMode = true, 마우스가 올라간 배치 가능 타일 1칸에 VG(Hero_SetUp_Highlight, 파란 테두리) 표시 (배치 구역 자체는 Zone_Hero/Zone_Enemy가 상시 표시)
+     ├ 선택한 카드에서 마우스까지 CardArrowView(LineRenderer + 화살촉)가 따라옴, 같은 타일에 HeroPreview(반투명 영웅, TokenGrid 미등록 — 종료 시 Destroy)를 표시
+     ├ 다른 카드 클릭 = 선택 카드 변경(화살 시작점·미리보기 교체), 같은 카드 재클릭/CancelUse = 취소
      └ 유효 타일 클릭 → PlayCardGA(card, tile)를 reservedCards 큐에 Enqueue
 
 [CardSystem.Update]  reservedCards가 있고 IsPerforming == false → ActionSystem.Perform(PlayCardGA)
@@ -69,8 +70,9 @@
 
 ## 4-1. 구현 범위 (2단계)
 
-- **구현됨**: `drawPile`/`discardPile`/`hand` 3더미 (덱이 모자라면 있는 만큼만 드로우 — 버린 더미 → 뽑을 더미 보충은 제거됨), `DrawCardsGA`/`PlayCardGA`, 클릭 선택 → 타일 선택 → 배치, AP 비용 체크·차감, 시작 영웅 일괄 배치(`SetUpUI`/`TokenSetup.StartSetUpHero`)를 대체(`MatchSetupSystem`이 `CardSystem.SetUp()` 호출).
+- **구현됨**: `drawPile`/`discardPile`/`hand` 3더미 (덱이 모자라면 있는 만큼만 드로우 — 버린 더미 → 뽑을 더미 보충은 제거됨), `DrawCardsGA`/`PlayCardGA`, 클릭 선택 → 타일 선택 → 배치, AP 비용 체크·차감, 시작 영웅 일괄 배치(`SetUpUI`/`TokenSetup.StartSetUpHero`, 둘 다 삭제됨)를 대체(`MatchSetupSystem`이 `CardSystem.SetUp()` 호출).
 - **더미 보기 UI 구현됨**: `PileofCardUI`(뽑을/버린 더미 버튼에 장수 표시 + 클릭 시 `CardViewInPile` 목록 패널, 뷰 풀 재사용). `DrawCardsGA`/`PlayCardGA` POST 리액션과 `CardSystem.PilesReset`(static 이벤트, `SetUp` 완료 시) 으로 장수 갱신. **일시정지는 쓰지 않으므로** 패널이 열린 동안 `Interactions.IsPileViewOpen`으로 그리드 입력을 막는다(카드 클릭은 패널 배경 raycast로 차단 — 에디터 설정). 목록은 열 때 1회 채우므로 열린 채 더미가 바뀌면 낡는다(닫았다 열면 갱신).
+- **CardView 표시**: 코스트는 TMP 텍스트 대신 `Manas` 하위 슬롯 중 코스트 개수만큼만 활성화(`CardView.manas`). 이름·설명은 카드 위에 없고, 호버 시 `TooltipSystem`(이름 + `Card.Description` = 스탯 + 특성 자동 조합, `HeroData`에 설명 필드 없음)으로 표시한다.
 - **이식하지 않음**: 호버 확대(`CardViewHoverSystem`), 드래그 사용, 덱 전체 확인 UI(`CheckDeckUI`), `DiscardCardGA`, `DrawCardFromDiscardPileGA`, 첫 드로우 잠금(`IsFirstDraw`), `LockDiscarding`.
 - **임시 값**: 덱(`CardSystem.startingDeck`), 드로우 수(`drawAmount`), 카드 AP 비용(`CardData.APCost`)은 인스펙터/SO 값이며 원작 수치가 아니다.
 - `CardData.Unit`은 `GameSystem.HeroDatas`에 등록된 `HeroData`여야 한다(`HeroView.SetUp`이 `heroData.Hero`를 쓰는데 `Hero`는 `GameSystem.InitializeHero`가 그 배열에 대해서만 만든다).
@@ -78,7 +80,7 @@
 
 ## 5. 기존 코드에 미치는 영향
 
-- **영웅이 "전투 시작 시 고정 배치"에서 "런타임 배치"로 바뀐다.** 현재 `HeroSystem.HeroViews`와 `MatchSetupSystem`/`TokenSetup.StartSetUpHero` 흐름은 영웅이 처음부터 존재한다는 전제다. 런타임에 영웅이 늘어나므로 `HeroViews`를 쓰는 곳(턴 시작 `ReduceSEWhenMyTurnStart` 등)과 `HeroSystem.CurrentHero` 선택 흐름을 점검해야 한다.
+- **영웅이 "전투 시작 시 고정 배치"에서 "런타임 배치"로 바뀐다.** (구) `HeroSystem.HeroViews`와 `MatchSetupSystem`/`TokenSetup.StartSetUpHero` 흐름은 영웅이 처음부터 존재한다는 전제였다(`StartSetUpHero`는 삭제됨). 런타임에 영웅이 늘어나므로 `HeroViews`를 쓰는 곳(턴 시작 `ReduceSEWhenMyTurnStart` 등)과 `HeroSystem.CurrentHero` 선택 흐름을 점검해야 한다.
 - 이전 카드 시스템은 **영웅 1명(`HeroSystem.Instance.HeroView`)** 을 전제로 작성되었다. 다영웅 구조에 맞게 시전자/기준 위치 참조를 쓰지 않는다(배치 카드는 시전자가 필요 없다).
 - `SkillSystem`은 제거되었다(카드 → 특성 → Skill 제거 순서로 완료). `Interactions.IsCardTargetMode`가 카드 타겟팅 중 `GridSelector`의 호버/영웅 선택과 `MoveSystem` 이동 모드 진입을 막는다.
 - `CardViewCreator`/`CardViewHoverSystem`/`HandView`는 UGUI 프리팹과 씬 배치가 필요하다 — 에디터 작업은 사용자 몫이며 구현 단계에서 클릭 순서를 안내한다.

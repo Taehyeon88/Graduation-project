@@ -33,7 +33,6 @@
 | [`PlaySkillGA`](#playskillga) | 스킬 | `SkillSystem` | 스킬 사용 시작(최상위 트리거) |
 | [`PerformEffectGA`](#performeffectga) | 스킬 | `EffectProcessor` | 스킬 내 Effect 1개 실행 |
 | [`SplashGA`](#splashga) | 콤보 | `SplashProcessor` | 범위(스플래시) 공격 |
-| [`ShoulderBashGA`](#shoulderbashga) | 콤보 | `ShoulderBashProcessor` | 돌진(이동+공격+넉백) 콤보 |
 | [`DOAnimationGA`](#doanimationga) | 연출 | `AnimationSystem` | DOTween Sequence/Tween 재생 대기 |
 | [`GameClearGA`](#gameclearga) | 종료 | `GameSystem` | 게임 클리어 |
 | [`GameOverGA`](#gameoverga) | 종료 | `GameSystem` | 게임 오버 |
@@ -117,15 +116,16 @@
 #### `PerformMoveGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/PerformMoveGA.cs`
 - **필드**: `CombatantView mover`, `List<Vector2Int> path`
-- **Performer**: `MoveSystem.PerformMoveGAPerformer` — `mover`가 `HeroView`면 `SpendMPGA(path.Count)` 체이닝 + 경로 칸마다 `MoveGA` 체이닝
-- **트리거 지점**: `MoveSystem.Update()`가 예약 큐(`reserved_hero_moves`)를 소비할 때 최초 `Perform()` 호출(플레이어 이동), `ShoulderBashProcessor.ShoulderBashGAPerformer`(돌진 이동 단계, `AddReaction`)
+- **Performer**: `MoveSystem.PerformMoveGAPerformer` — 경로 칸마다 `MoveGA` 체이닝 (AP 처리는 Performer가 아니라 아래 PRE 체이닝이 담당)
+- **PRE 체이닝(`PreReactions`)**: `MoveSystem.Update()`가 예약을 꺼낼 때 `TryApplyMoveAP`가 붙인다 — 라운드 시작 위치를 떠나는 첫 이동이면 `SpendAPGA`(1), 소모했던 영웅이 시작 위치로 돌아오면 `RefillAPGA(1)`, 그 외 이동은 없음. 규칙은 [combat-rules.md](../../Rule/combat-rules.md) §3-1
+- **트리거 지점**: `MoveSystem.Update()`가 예약 큐(`reservedHeroMoves`)를 소비할 때 최초 `Perform()` 호출(플레이어 이동). 이동 모드 진입은 `PlayPlayerMoveMode`가 막는다(AP 부족, 카드 타겟 모드, **카드로 배치된 라운드의 영웅**)
 - **관련 체인**: §3-3
 
 #### `KnockBackGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/KnockBackGA.cs` (`IHaveCaster` 명시적 구현)
 - **필드**: `CombatantView Caster`, `int Distance`, `Vector2Int TargetPos`, `Vector2Int Direction`
 - **Performer**: `KnockBackProcessor.KnockBackGAPerformer` — 충돌 판정 후 밀려난 만큼 `MoveGA(isKnockBack: true)` 체이닝, 벽/유닛에 충돌하면 고정 데미지(1) `DealDamageGA` 체이닝
-- **트리거 지점**: `ShoulderBashProcessor.ShoulderBashGAPerformer`(돌진 콤보의 마지막 단계)
+- **트리거 지점**: 현재 `Perform`/`AddReaction` 호출처 없음 — 유일한 호출처였던 `ShoulderBashProcessor`(어깨치기 스킬)가 제거됐다. `KnockBackProcessor` Performer는 그대로 남아 있다
 - **관련 체인**: §3-3
 
 ### 2-4. 전투 — 데미지 / 사망
@@ -136,7 +136,7 @@
 - **Performer**: `DamageSystem.DealDamagePerformer` — `IsBasicAttack && Target != null`이면(대상은 `Battle()`이 예약 시점에 확정) 기본 공격 모션 재생·타격 시점에 피해, 복귀까지 대기. `IsRangedAttack`이면 근접 모션 대신 `ProjectileSystem.PlayArrowShot`으로 제자리에서 화살을 쏘고 도착 시점에 피해(복귀 대기 없음). 대상이 `DODGE` 상태이상을 가졌고 `IgnoreDodge`가 아니면 스택 1을 소모하고 피해·피격 연출을 생략(다중 대상은 해당 대상만 건너뜀). 이후 `DamageCaculator.GetDamage()`로 최종 수치 계산 + 피격 VFX + `target.Damage()` 호출(체력 감소 처리, 체력 0 이하 시 `KillGA`를 이 액션의 `PostReactions`에 직접 추가)
 - **POST 구독자**: `피묻은 도끼` 특성 (`DealDamageCondition` POST + `HealOnDamageEffect`, 조건: `Trait.Reaction`이 `Caster == owner`인 GA만 통과) — 확률 조건 충족 시 `HealGA` 예약(자힐)
 - **파생 액션**: `CombatantView.Damage()` 내부에서 체력 ≤ 0이면 `dealDamageGA.PostReactions.Add((KillGA, null))` — 전역 체이닝이 아니라 **이 인스턴스에 직접 종속**
-- **트리거 지점**: 전투 계열 다수의 공통 최종 경로 — `CombatantView.Battle`(자동 전투, `isBasicAttack: true`), `AttackEnemyGAPerformer`, `ShoulderBashGAPerformer`, `SplashGAPerformer`, `KnockBackGAPerformer`(충돌 시) 등. `응수` 특성(`RetaliateEffect`, 용병대장이 코어 공격자에게 반격), 플레이어 스킬 `SharpDagger`(`PlayerSkillSystem.TryUse`가 `Perform`, `Caster` null·`IgnoreDodge` true)
+- **트리거 지점**: 전투 계열 다수의 공통 최종 경로 — `CombatantView.Battle`(자동 전투, `isBasicAttack: true`), `AttackEnemyGAPerformer`, `SplashGAPerformer`, `KnockBackGAPerformer`(충돌 시) 등. `응수` 특성(`RetaliateEffect`, 용병대장이 코어 공격자에게 반격), 플레이어 스킬 `SharpDagger`(`PlayerSkillSystem.TryUse`가 `Perform`, `Caster` null·`IgnoreDodge` true)
 - **관련 체인**: §3-2, §3-3
 
 #### `KillGA`
@@ -205,13 +205,6 @@
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/CardEffectRelative/SplashGA.cs` (`IHaveCaster` 명시적 구현)
 - **필드**: `CombatantView Caster`, `List<Vector2Int> TargetPoses`, `RangeMode GridRangeMode`, `bool IsPentration`, `int Distance`, `float Damage`, `float SplashDamage`
 - **Performer**: `SplashProcessor.SplashGAPerformer` — 대상별 직격 `DealDamageGA` 체이닝 + 주변 스플래시 대상 `DealDamageGA`를 직격 `DealDamageGA`의 `PostReactions`에 직접 종속
-- **트리거 지점**: `PerformEffectGA`(`Effect.GetGameAction()`)
-- **관련 체인**: §3-3
-
-#### `ShoulderBashGA`
-- **파일**: `Assets/Game/0_Scripts/2.GameActions/CardEffectRelative/ShoulderBashGA.cs` (`IHaveCaster` 명시적 구현)
-- **필드**: `int Distance`, `int AttackDistance`, `float Damage`, `List<Vector2Int> TargetPoses`, `HeroView Caster`
-- **Performer**: `ShoulderBashProcessor.ShoulderBashGAPerformer` — 경로 계산 후 `PerformMoveGA`(돌진 이동) → `DealDamageGA`(공격) → `KnockBackGA`(넉백) 순서로 형제 `AddReaction` 체이닝
 - **트리거 지점**: `PerformEffectGA`(`Effect.GetGameAction()`)
 - **관련 체인**: §3-3
 
@@ -303,17 +296,12 @@ TurnGA(Enemy)
                               └─ DamageSystem.KillGAPerformer (토큰 제거)
 ```
 
-### 3-3. 카드 콤보 체인 — 두 가지 후속 연결 패턴
+### 3-3. 카드 콤보 체인 — 후속 연결 패턴
+
+> 형제 리액션(`AddReaction`)으로 이어 붙이던 예시 `ShoulderBashGA`(돌진 → 공격 → 넉백)는 어깨치기 스킬 제거와 함께 삭제됐다.
 
 ```
-(A) 형제 리액션으로 큐잉 — ShoulderBashGA
-ShoulderBashProcessor.ShoulderBashGAPerformer
- ├─ AddReaction(PerformMoveGA)   [돌진 이동]
- ├─ AddReaction(DealDamageGA)    [공격]
- └─ AddReaction(KnockBackGA)     [넉백]
-   → 셋 다 "현재 진행 중인 단계"의 형제로 등록되어 순서대로 실행(서로 독립적인 형제 액션)
-
-(B) 특정 GA 인스턴스에 직접 종속 — SplashGA
+특정 GA 인스턴스에 직접 종속 — SplashGA
 SplashProcessor.SplashGAPerformer:
  ├─ AddReaction(DealDamageGA) → dealDamageGA(직격)
  └─ dealDamageGA.PostReactions.Add(DealDamageGA(스플래시))

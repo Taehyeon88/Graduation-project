@@ -69,7 +69,7 @@
 ### `--- PROCESSORS ---` (3개)
 | GameObject | 컴포넌트 |
 |---|---|
-| CardComboProcessors | `AttackEnemyProcessor`, `ShoulderBashProcessor`, `SplashProcessor` |
+| CardComboProcessors | `AttackEnemyProcessor`, `SplashProcessor` |
 | EffectProcessor | `EffectProcessor` |
 | KnockBackProcessor | `KnockBackProcessor` |
 
@@ -127,7 +127,7 @@
 
 | 이전 위치:이름 | 이동 후 이름 | 보유 컴포넌트 |
 |---|---|---|
-| `--- SYSTEMS ---/HerosSkillAbilitySystems` | `CardComboProcessors` | AttackEnemyProcessor, ShoulderBashProcessor, SplashProcessor |
+| `--- SYSTEMS ---/HerosSkillAbilitySystems` | `CardComboProcessors` | AttackEnemyProcessor, SplashProcessor |
 | `--- SYSTEMS ---/EffectSystem` | `EffectProcessor` | EffectProcessor |
 | `--- SYSTEMS ---/KnockBackSystem` | `KnockBackProcessor` | KnockBackProcessor |
 

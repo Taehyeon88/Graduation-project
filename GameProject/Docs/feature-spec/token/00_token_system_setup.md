@@ -14,7 +14,6 @@
 | [`SetUpObstacles(ObstacleSpawn[])`](#setupobstacles) | 지형 | `void` | 파괴 가능 장애물 토큰 생성 + 그리드 등록 |
 | [`SetUPEnemys(EnemyData[], Vector2Int[])`](#setupenemys) | 몬스터 / 코어 배치 | `void` | 몬스터 토큰 일괄 생성 + 그리드 등록 |
 | [`SetUpWaveCore(WaveCoreData)`](#setupwavecore) | 몬스터 / 코어 배치 | `void` | 웨이브 코어 토큰 생성 + 그리드 등록 |
-| [`StartSetUpHero(HeroData[], List<Vector2Int>)`](#startsetuphero) | 영웅 배치 | `void` | 클릭 기반 영웅 배치 시작(이벤트 기반, 비동기 완료) |
 
 ## 2. 카테고리별 상세
 
@@ -31,7 +30,7 @@ public void SetUpStageMap()
 - **반환값**: `void`
 - **동작**: `grid.GenerateStage()`에 위임 — 스테이지 바닥 타일 풀을 활성화/배치하고, `simpleGrid`/`remainCells`를 새로 할당해 초기화한다.
 - **사용 예시**: `1.Systems/MatchSetupSystem.cs:25` — `TokenSystem.Instance.Setup.SetUpStageMap();`
-- **비고**: `simpleGrid`/`remainCells`를 새로 할당하므로, 나머지 배치 메서드(`SetUpNeutralZones`/`SetUpObstacles`/`SetUPEnemys`/`SetUpWaveCore`/`StartSetUpHero`)보다 반드시 먼저 호출해야 한다 — 이 순서는 `TokenSetup`/`TokenGrid` 자신의 내부 로직 때문에 생기는 제약이며, 호출자가 임의로 정한 관례가 아니다.
+- **비고**: `simpleGrid`/`remainCells`를 새로 할당하므로, 나머지 배치 메서드(`SetUpNeutralZones`/`SetUpObstacles`/`SetUPEnemys`/`SetUpWaveCore`)보다 반드시 먼저 호출해야 한다 — 이 순서는 `TokenSetup`/`TokenGrid` 자신의 내부 로직 때문에 생기는 제약이며, 호출자가 임의로 정한 관례가 아니다.
 
 ### 2-1b. 지형 (상세: [`08_terrain_obstacle.md`](../08_terrain_obstacle.md))
 
@@ -107,27 +106,6 @@ public void SetUpWaveCore(WaveCoreData coreData)
 - **동작**: 웨이브 코어 토큰을 생성해 `coreData.CorePosition`으로 배치하고 `grid.SetToken`으로 그리드 등록
 - **사용 예시**: `1.Systems/WaveSystem.cs:35` — `TokenSystem.Instance.Setup.SetUpWaveCore(waveCoreData);`
 - **비고**: `SetUpStageMap()` 이후 호출한다는 전제가 있다.
-
-### 2-3. 영웅 배치
-
-#### `StartSetUpHero`
-```csharp
-public void StartSetUpHero(HeroData[] heroDatas, List<Vector2Int> heroSetupPositions)
-{
-    Interactions.Instance.IsSetUpHero = true;
-    HeroViews.Clear();
-    this.heroSetupPositions = heroSetupPositions;
-    foreach (var gridPos in heroSetupPositions)
-        VisualGridCreator.Instance.CreateVisualGrid(gameObject.GetInstanceID(), gridPos, "Hero_SetUp_True");
-    setupUI.SetUp(heroDatas);
-    Interactions.SetSelectGridEvent(SetHeroView, true);
-}
-```
-- **파라미터**: `HeroData[] heroDatas`, `List<Vector2Int> heroSetupPositions`(배치 가능 좌표 목록 — 내부에서 배치될 때마다 이 리스트 자체가 줄어든다)
-- **반환값**: `void` — 호출 즉시 배치가 끝나지 않는다(아래 비고 참고)
-- **동작**: `HeroViews` 초기화 → 배치 가능 좌표에 시각 그리드(`"Hero_SetUp_True"`) 표시 → 배치 UI(`setupUI`) 활성화 → 그리드 클릭 이벤트(`SetHeroView`)를 등록. 클릭할 때마다 내부 `heroCount`가 줄고 0이 되면 `EndSetUpHero()`가 호출되어 이벤트를 해제하고 배치 미리보기(`HeroPreview`)를 파괴한다.
-- **사용 예시**: `1.Systems/MatchSetupSystem.cs:40` — `TokenSystem.Instance.Setup.StartSetUpHero(heroDatas.ToArray(), stageData.HeroSetupPoses.ToList());`
-- **비고**: 이 메서드는 완료를 동기적으로 보장하지 않는 **이벤트 기반 메서드**다 — 호출자는 `Interactions.Instance.IsSetUpHero`가 `false`가 될 때까지 배치가 진행 중인 것으로 취급해야 한다. `SetUpStageMap()` 이후 호출한다는 전제가 있다.
 
 ## 3. 문서 유지보수 규칙
 

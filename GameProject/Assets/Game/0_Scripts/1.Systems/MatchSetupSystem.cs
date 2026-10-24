@@ -37,6 +37,12 @@ public class MatchSetupSystem : MonoBehaviour
         HeroSystem.Instance.SetUp(tokenSetup.CalcSetupPoses(stageData.NeutralPositions, 0, 1));
         EnemySystem.Instance.SetUp(tokenSetup.CalcSetupPoses(stageData.NeutralPositions, TokenSystem.Instance.gridWidth - 1, -1));
 
+        //3.6 진영별 배치 구역 상시 표시 (카드 선택 VG와 별개로 전투 내내 유지)
+        foreach (var pos in HeroSystem.Instance.SetupPoses)
+            VisualGridCreator.Instance.CreateVisualGrid(HeroSystem.Instance.gameObject.GetInstanceID(), pos, "Zone_Hero");
+        foreach (var pos in EnemySystem.Instance.SetupPoses)
+            VisualGridCreator.Instance.CreateVisualGrid(EnemySystem.Instance.gameObject.GetInstanceID(), pos, "Zone_Enemy");
+
         //4.몬스터 및 웨이브 핵 배치
         WaveSystem.Instance.SetUp(
             stageData.waveData.EnemyDatas.ToArray(),

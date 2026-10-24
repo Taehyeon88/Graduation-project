@@ -156,7 +156,7 @@ public class SharpDagger : PlayerSkill
 - **Caster null 파급**: §4-2. 새 GA·조건을 쓸 때 가장 먼저 확인한다.
 - 횟수·턴 플래그는 `Perform` 직전에 소모된다. 스킬 GA가 도중에 실패해도 소모된다 (현재 실패 경로는 없음).
 - 우두머리(깃발) 드롭 판정은 콜라이더가 아니라 `EnemyFlagView.Model.bounds`(SpriteRenderer) 안에 마우스 월드 좌표가 들어오는지로 한다. 스프라이트가 작거나 카메라가 원근이면 어긋날 수 있다.
-- `UseSkillUI`는 `Interactions`의 `IsSetUpHero`/`IsHeroMoveMode`/`IsCardTargetMode`/`IsPileViewOpen` 중 하나라도 켜져 있으면 드래그를 무시한다. 새 선택 모드(`Interactions`의 새 플래그)를 추가하면 이 조건에 넣을지 검토한다.
+- `UseSkillUI`는 `Interactions`의 `IsHeroMoveMode`/`IsCardTargetMode`/`IsPileViewOpen` 중 하나라도 켜져 있으면 드래그를 무시한다. 새 선택 모드(`Interactions`의 새 플래그)를 추가하면 이 조건에 넣을지 검토한다.
 - 드래그 중 대상 하이라이트, 남은 횟수 텍스트, 사용 불가 시 버튼 비활성 표시는 아직 없다 (요청되지 않아 만들지 않았다).
 - 원작 규칙을 모르는 항목은 임의로 단정하지 말고 `(원작 확인 필요)`로 표기하고, 임시값은 SO/`[SerializeField]`로 노출해 둔다.
 - 이 프로젝트는 구현을 단계마다 **사용자 허락을 받고** 진행한다. 계획 승인 뒤에도 스크립트 구현·수정은 한 단계씩 확인받는다.

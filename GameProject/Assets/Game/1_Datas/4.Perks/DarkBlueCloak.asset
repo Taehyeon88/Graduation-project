@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: DarkBlueCloak
   m_EditorClassIdentifier: Assembly-CSharp::PerkData
   <Id>k__BackingField: 1
-  <Image>k__BackingField: {fileID: 0}
+  <Image>k__BackingField: {fileID: 21300000, guid: ab2ed226fe7cb394e88bb9c0d137edf6, type: 3}
   <Description>k__BackingField: "\uC544\uAD70 \uAE43\uBC1C\uC5D0 \uB300\uD55C \uC801
     \uC6A9\uBCD1\uC758 \uACF5\uACA9\uC774 \uBE57\uB098\uAC11\uB2C8\uB2E4. \uC804\uD22C\uB2F9
     1\uBC88 \uBC1C\uB3D9\uB429\uB2C8\uB2E4."
@@ -31,4 +31,4 @@ MonoBehaviour:
         reactionTiming: 0
     - rid: 7851381000000000002
       type: {class: MissCoreAttackEffect, ns: , asm: Assembly-CSharp}
-      data:
+      data: 

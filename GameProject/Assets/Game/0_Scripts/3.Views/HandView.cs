@@ -5,10 +5,8 @@ using UnityEngine;
 
 public class HandView : MonoBehaviour
 {
-    [SerializeField] private float spreadAngle = 5f;        //카드 부채꼴 회전 각도
-    [SerializeField] private float curveAngle = 3f;         //카드 배치 곡선 각도
-    [Range(0f, 1f)]
-    [SerializeField] private float spacingRate = 0.35f;     //카드 간격 비율 (비율 * 카드 너비)
+    [Range(0f, 2f)]
+    [SerializeField] private float spacingRate = 1.15f;     //카드 간격 비율 (비율 * 카드 너비, 1 초과면 카드 사이에 여유)
     [SerializeField] private float layoutDuration = 0.15f;
 
     private readonly List<CardView> cards = new();
@@ -40,13 +38,10 @@ public class HandView : MonoBehaviour
         {
             RectTransform card = cards[i].GetComponent<RectTransform>();
 
-            float rotateAngle = (i - (cardCount - 1) / 2f) * spreadAngle;
-            float angle = (i - (cardCount - 1) / 2f) * curveAngle;
-            Vector2 moveDirection = Quaternion.Euler(0, 0, angle) * Vector2.right;
             float moveDistance = (i - (cardCount - 1) / 2f) * spacingRate * card.rect.width;
 
-            card.DOAnchorPos(Vector2.zero - moveDirection * moveDistance, duration);
-            card.DORotateQuaternion(Quaternion.Euler(0, 0, rotateAngle), duration);
+            card.DOAnchorPos(new Vector2(moveDistance, 0f), duration);
+            card.DORotateQuaternion(Quaternion.identity, duration);
         }
         yield return new WaitForSeconds(duration);
     }

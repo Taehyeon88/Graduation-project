@@ -10,7 +10,6 @@ public class Interactions : Singleton<Interactions>
     [SerializeField] private RectTransform select_Grid_UI_Range;
 
     //제약 변수s
-    public bool IsSetUpHero = false;
     public bool IsHeroMoveMode = false;
     public bool IsCardTargetMode = false;
     public bool IsPileViewOpen = false;

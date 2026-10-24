@@ -34,7 +34,6 @@ Assets/Game/
 ├─ 4.Creators/             # TokenCreator/ProjectionCreator 등 생성 담당
 ├─ 5.Data/                 # ScriptableObject 데이터 클래스 정의(~Data 접미사, 16개) — 실 자산은 1_Datas/(2절)
 ├─ Effects/                # Effect(Models/Effect.cs) 서브클래스 — SkillAbility.Effects에 담기는 데이터+로직 홀더
-│  └─ CloseRange_Attack/   #   분류용(ShoulderBashEffect 등)
 ├─ Enums/                  # 열거형 13개
 ├─ Extensions/             # 확장 메서드(ArrayExtenstion, ListExtension)
 ├─ General/
@@ -90,7 +89,7 @@ Assets/Game/
 | `Models/` | 3 | `EnemyModel`, `HeroModel`, `WallModel` |
 | `Projections/` | 2 | `RatGeneral_Stone`, `Skeleton_BoneArrow` |
 | `UI/` | 6 | `DisPlayUI`, `EnemyUI`, `SettingUI`, `StatusEffectUI`, `StatusEffectUIAtWorld`, `TraitUI` |
-| `Views/` | 15 | `ArrowView`, `CardView`, `CardViewInPile`, `CombatantViewBase`, `CoreView`, `EnemyFlagView`(적 코어), `EnemyView`, `HeroCaptainView`(아군 코어·용병대장), `HeroPreView`, `HeroView`, `ObstacleView`(파괴 가능 장애물), `PopUp_Text_View`, `ProjectionView`, `SkillView`, `TerrainView`(발판 타일) |
+| `Views/` | 16 | `ArrowView`, `CardArrowView`(카드 → 마우스 화살), `CardView`, `CardViewInPile`, `CombatantViewBase`, `CoreView`, `EnemyFlagView`(적 코어), `EnemyView`, `HeroCaptainView`(아군 코어·용병대장), `HeroPreView`, `HeroView`, `ObstacleView`(파괴 가능 장애물), `PopUp_Text_View`, `ProjectionView`, `SkillView`, `TerrainView`(발판 타일) |
 
 ## 5. `4_Medias/` — 스프라이트/이미지 (98개 png)
 

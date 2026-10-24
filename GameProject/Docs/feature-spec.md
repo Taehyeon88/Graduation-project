@@ -27,3 +27,4 @@
 | 07 | [player_skill_catalog.md](feature-spec/PlayerSkill/player_skill_catalog.md) | 플레이어 스킬 카탈로그 — 스킬별 이름·설명·대상·실행 GA·연결 흐름·한계 (현재 날카로운 단도 1개) |
 | 08 | [08_terrain_obstacle.md](feature-spec/08_terrain_obstacle.md) | 지형 — 중립지대(이동·배치 불가)·파괴 가능 장애물(돌격 화살통, 토큰)·발판(풀숲, 별도 레이어). `StageData`에 저장 → `MatchSetupSystem`에서 생성 |
 | 08 | [terrain_catalog.md](feature-spec/Terrain/terrain_catalog.md) | 지형 카탈로그 — 장애물·발판별 Id·수치·특성·연결 흐름·한계 (현재 장애물 돌격 화살통 1개, 발판 풀숲 1개) |
+| 09 | [09_visual_grid.md](feature-spec/09_visual_grid.md) | VisualGrid — 타일 하이라이트(이동 범위·배치 구역·선택/호버). `VisualGridData` SO + `VisualGridCreator` API, **현재 전체 VG 레이어 순서표(`sortingOrder`)**, 동점·가림 등 한계 |

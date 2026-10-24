@@ -33,7 +33,7 @@
 
 ## 흐름
 
-1. `UseSkillUI.OnBeginDrag` — `Interactions`의 `IsSetUpHero`/`IsHeroMoveMode`/`IsCardTargetMode`/`IsPileViewOpen`이 꺼져 있고 `PlayerSkillSystem.CanUse()`가 true일 때만 드래그를 인정.
+1. `UseSkillUI.OnBeginDrag` — `Interactions`의 `IsHeroMoveMode`/`IsCardTargetMode`/`IsPileViewOpen`이 꺼져 있고 `PlayerSkillSystem.CanUse()`가 true일 때만 드래그를 인정.
 2. `OnEndDrag` — 대상 판정: 먼저 `EnemySystem.Instance.EnemyFlag.Model.bounds`(그리드 밖이라 스프라이트 영역으로 판정), 아니면 `MouseIsoTilePosition(1)` → `IsBound` → `GetTokenByPosition`.
 3. `PlayerSkillSystem.TryUse(target)` — `CanUse()` && `Skill.IsValidTarget(target)` 실패 시 AP·횟수 미소모. 성공 시 `CreateAction` → `SpendAPGA` PreReaction 부착 → `RemainingUses--`, `usedThisTurn = true` → `Perform`.
 4. 리셋 — `TurnGA` PRE: `StartBattle`이면 `RemainingUses = MaxUses` + 턴 플래그 해제, `Player`이면 턴 플래그 해제.

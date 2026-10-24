@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VisualGridData
   <VisualGridTypes>k__BackingField:
   - rid: 6342211153977147462
-  layerDepth: 0
   references:
     version: 2
     RefIds:
     - rid: 6342211153977147462
       type: {class: SymbolType, ns: , asm: Assembly-CSharp}
       data:
+        sortingOrder: 30
         Color: {r: 1, g: 1, b: 1, a: 1}
         sprite: {fileID: 21300000, guid: 339fd68f6c28d7d4eb0ed43062c42dfb, type: 3}

@@ -63,7 +63,7 @@ public class VisualGridCreator : Singleton<VisualGridCreator>
         {
             Color color = vgType.GetVGTypeColor();
             Sprite sprite = vgType.GetVGTypeSprite();
-            int layerOrder = vgSO.GetVGLayerOrder(vgType);
+            int layerOrder = vgType.sortingOrder;
 
             if (vGByPosition.TryGetValue(isoPosition, out var vg))
             {
