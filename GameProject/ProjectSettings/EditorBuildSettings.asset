@@ -8,6 +8,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Game/2_Scenes/GameDemoScene.unity
     guid: 9c26329fcf664e943b9058481adee836
+  - enabled: 1
+    path: Assets/Game/2_Scenes/StageScene.unity
+    guid: dafe7ec4e2e2a534bb556c441c865d7d
+  - enabled: 1
+    path: Assets/Game/2_Scenes/Tavern.unity
+    guid: 6da8e90610426b948bdabdf849116c44
+  - enabled: 1
+    path: Assets/Game/2_Scenes/WitchsHut.unity
+    guid: bf0ef1dfb67f947488c9c233b03a42e8
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: a7c6f426d0d02004c825d49ed157c05b, type: 3}
   m_UseUCBPForAssetBundles: 0
