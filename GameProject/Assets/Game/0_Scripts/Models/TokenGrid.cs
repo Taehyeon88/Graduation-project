@@ -23,6 +23,7 @@ public class TokenGrid : MonoBehaviour
     public int[,] simpleGrid { get; private set; }   //0 - 토큰 없음 | 1 - 토큰 있음 (토큰 존재여부 확인용)
 
     private List<Vector2Int> remainCells = new();
+    private readonly HashSet<Vector2Int> neutralCells = new();   //중립지대 칸 (토큰이 올라갔다 떠나도 막힌 채로 유지)
     private IsoObject[,] floorTiles;   //바닥 타일 (중립지대 타일 교체·숨김용)
     private readonly Dictionary<SpriteRenderer, Sprite> originalSprites = new();   //중립지대로 교체한 타일의 원래 스프라이트
 
@@ -38,6 +39,7 @@ public class TokenGrid : MonoBehaviour
         simpleGrid = new int[width, height];
         floorTiles = new IsoObject[width, height];
         remainCells = new();
+        neutralCells.Clear();
 
         int index = 0;
         for (int x = 0; x < width; x++)
@@ -65,6 +67,8 @@ public class TokenGrid : MonoBehaviour
     //그리드 양옆(아군/적 진영) 타일 생성
     private void CreateSideTile(Vector3 isoPosition)
     {
+        if (sideTilePrefab == null) return;   //프리팹이 비어 있으면 사이드 타일 없이 생성 (주점 등)
+
         IsoObject sideTile = Instantiate(sideTilePrefab, TokenSystem.Instance.IsoWorld.transform);
         sideTile.position = isoPosition;
     }
@@ -75,6 +79,7 @@ public class TokenGrid : MonoBehaviour
         if (!IsBound(pos.x, pos.y)) return;
         simpleGrid[pos.x, pos.y] = 1;
         remainCells.Remove(pos);
+        neutralCells.Add(pos);
 
         IsoObject floorTile = floorTiles[pos.x, pos.y];
         SpriteRenderer renderer = floorTile.GetComponentInChildren<SpriteRenderer>(true);
@@ -109,14 +114,21 @@ public class TokenGrid : MonoBehaviour
 
         gridPosByToken.Remove(token);
         tokenByGridPos.Remove(pos);
+        FreeCell(pos);
+    }
+
+    //토큰이 떠난 칸 비우기 (중립지대는 막힌 채로 유지)
+    private void FreeCell(Vector2Int pos)
+    {
+        if (neutralCells.Contains(pos)) return;
+
         simpleGrid[pos.x, pos.y] = 0;
         remainCells.Add(pos);
     }
     public void ChangeTokenPos(Token token, Vector2Int targetPos)
     {
         Vector2Int pos = gridPosByToken[token];
-        remainCells.Add(pos);
-        simpleGrid[pos.x, pos.y] = 0;
+        FreeCell(pos);
         tokenByGridPos.Remove(pos);
 
         simpleGrid[targetPos.x, targetPos.y] = 1;

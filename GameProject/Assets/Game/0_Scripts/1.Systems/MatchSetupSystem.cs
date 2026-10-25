@@ -34,7 +34,9 @@ public class MatchSetupSystem : MonoBehaviour
         tokenSetup.SetUpTerrains(stageData.TerrainSpawns);
 
         //3.5 진영별 라인 배치 위치 설정 (중립지대가 기본 배치 칸에 있으면 한 칸 앞으로)
-        HeroSystem.Instance.SetUp(tokenSetup.CalcSetupPoses(stageData.NeutralPositions, 0, 1));
+        HeroSystem.Instance.SetUp(
+            tokenSetup.CalcSetupPoses(stageData.NeutralPositions, 0, 1),
+            tokenSetup.CalcNeutralSetupPoses(stageData.NeutralPositions, 0));
         EnemySystem.Instance.SetUp(tokenSetup.CalcSetupPoses(stageData.NeutralPositions, TokenSystem.Instance.gridWidth - 1, -1));
 
         //3.6 진영별 배치 구역 상시 표시 (카드 선택 VG와 별개로 전투 내내 유지)

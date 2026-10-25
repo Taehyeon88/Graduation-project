@@ -44,7 +44,7 @@ public class TokenCreator : Singleton<TokenCreator>
         {
             case TokenType.Hero: 
                 HeroView heroView = token as HeroView;
-                heroView.SetUp(data as HeroData);
+                heroView.SetUp(new Hero(data as HeroData));   //보상 후보 표시용 (임시 개체)
                 break;
             case TokenType.Enemy: 
                 EnemyView enemyView = token as EnemyView;
@@ -67,6 +67,15 @@ public class TokenCreator : Singleton<TokenCreator>
         token.TokenTransform.position = isoPosition;
 
         return token;
+    }
+
+    //덱의 영웅 개체로 영웅 토큰 생성 (보너스·획득 특성 반영)
+    public HeroView CreateHero(Hero hero, Vector3 isoPosition)
+    {
+        HeroView heroView = Instantiate(heroTokenPrefab, isoWorld) as HeroView;
+        heroView.SetUp(hero);
+        heroView.TokenTransform.position = isoPosition;
+        return heroView;
     }
 
     //발판은 토큰이 아니므로 그리드에 등록하지 않는다

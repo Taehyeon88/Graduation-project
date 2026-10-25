@@ -12,14 +12,12 @@ public class GameSystem : Singleton<GameSystem>
     public bool IsGameOver { get; private set; }                            //게임 오버
     public bool IsTutorial { get; set; } = false;                            //튜토리얼                               //카드 덱
 
-    [field: SerializeField] public List<HeroData> Deck { get; private set; } //덱 (씬 전환 후에도 유지)
+    [SerializeField] private List<HeroData> startingDeck;                    //초기 덱 (인스펙터 설정)
+    public List<Hero> Deck { get; private set; } = new();                    //덱 (씬 전환 후에도 유지, 영웅별 가변 상태 보유)
     [field: SerializeField] public List<PerkData> Perks { get; private set; } //유저 소유 유물 (씬 전환 후에도 유지)
 
-    public StageData CurrentStageData
-    {
-        get { return stageDatas[CurrentStageLevel - 1]; }
-    }
-    [SerializeField] private StageData[] stageDatas;           //스테이지 데이터 배열
+    public StructureData CurrentStructure { get; private set; }   //스테이지 선택 씬에서 고른 구조물
+    public StageData CurrentStageData => CurrentStructure.StageData;
 
     [field: SerializeField] public HeroCaptainData HeroCaptainData { get; private set; }   //용병대장(아군 코어) 초기 데이터
     [field: SerializeField] public EnemyFlagData EnemyFlagData { get; private set; }       //적 세력 깃발(적 코어) 데이터
@@ -88,7 +86,12 @@ public class GameSystem : Singleton<GameSystem>
     public void AddHeroToDeck(HeroData heroData)
     {
         if (heroData != null)
-            Deck.Add(heroData);
+            Deck.Add(new Hero(heroData));
+    }
+
+    public void SelectStructure(StructureData structure)
+    {
+        CurrentStructure = structure;
     }
 
     public void GoToNextLevel()
@@ -109,7 +112,9 @@ public class GameSystem : Singleton<GameSystem>
     public void InitializeGameData()
     {
         CurrentStageLevel = 1;
+        CurrentStructure = null;
         IsGameOver = false;
         IsGameClear = false;
+        Deck = startingDeck.Where(d => d != null).Select(d => new Hero(d)).ToList();
     }
 }

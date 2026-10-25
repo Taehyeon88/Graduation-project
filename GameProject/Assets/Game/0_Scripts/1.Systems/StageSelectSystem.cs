@@ -35,6 +35,7 @@ public class StageSelectSystem : Singleton<StageSelectSystem>
         StructureView selectable = GetSelectableStructure();
         if (selectable != null && selectable.IsMouseOver(mouseWorld))
         {
+            GameSystem.Instance.SelectStructure(selectable.Data);
             SceneManager.LoadScene(selectable.Data.SceneName);
         }
     }

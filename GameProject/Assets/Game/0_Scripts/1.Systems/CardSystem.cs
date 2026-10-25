@@ -27,6 +27,7 @@ public class CardSystem : Singleton<CardSystem>
     private readonly List<Card> hand = new();
     private readonly Queue<PlayCardGA> reservedCards = new();
     private CardView currentSelectedCard;
+    private List<Vector2Int> placeablePoses = new();          //선택한 카드의 배치 가능 타일 (카드 변경 시 재계산)
     private HeroPreview heroPreview;                          //배치 미리보기 (TokenGrid 미등록)
     private Vector2Int hoveredPos = Vector2Int.down;          //마지막으로 판정한 마우스 타일
     private bool isDragMode;                                  //드래그로 배치 중 (놓을 때 확정)
@@ -65,25 +66,42 @@ public class CardSystem : Singleton<CardSystem>
     //Publics
     public void SetUp()
     {
+        SetUp(GameSystem.Instance.Deck);
+    }
+
+    //지정한 영웅들로 드로우 더미 구성 (주점처럼 덱 일부만 쓸 때)
+    public void SetUp(IEnumerable<Hero> heroes)
+    {
         drawPile.Clear();
         discardPile.Clear();
         hand.Clear();
 
-        List<HeroData> deck = GameSystem.Instance.Deck;
-        if (deck != null && deck.Count > 0)
+        List<Hero> pool = heroes != null ? new List<Hero>(heroes) : null;
+        if (pool != null && pool.Count > 0)
         {
             //Shuffle은 입력 리스트를 비우므로 복사본 사용 (GameSystem.Deck은 보존)
-            foreach (var heroData in new List<HeroData>(deck).Shuffle())
-                drawPile.Add(new Card(heroData));
+            foreach (var hero in pool.Shuffle())
+                drawPile.Add(new Card(hero));
         }
 
         PilesReset?.Invoke();
     }
 
+    //AP 없이 카드를 배치하는 씬(주점) 여부
+    public bool FreePlacement { get; set; }
+
+    public bool CanPlay(Card card) => FreePlacement || APSystem.Instance.HasEnoughAP(card.APCost);
+
     //테스트용: 덱과 무관하게 지정한 영웅 카드를 손패에 추가 (에디터 윈도우에서 호출)
     public void AddHeroToHand(HeroData heroData)
     {
         StartCoroutine(AddHeroToHandRoutine(heroData));
+    }
+
+    //배치로 버린 더미에 간 카드를 손패로 되돌림 (주점 취소용)
+    public void ReturnCardToHand(Card card)
+    {
+        StartCoroutine(ReturnCardToHandRoutine(card));
     }
 
     public void PlayCardTargetMode(CardView cardView)
@@ -141,7 +159,7 @@ public class CardSystem : Singleton<CardSystem>
         Interactions.Instance.IsCardTargetMode = true;
         currentSelectedCard.SetSelected(true);
 
-        List<Vector2Int> placeablePoses = GetPlaceablePoses();
+        placeablePoses = GetPlaceablePoses(currentSelectedCard.Card);
         ShowTargetVisuals();
 
         while (true)
@@ -191,14 +209,23 @@ public class CardSystem : Singleton<CardSystem>
         ResetSelectMode();
     }
 
-    //배치 가능 타일 = 영웅 배치 구역 중 비어있는 타일
-    private List<Vector2Int> GetPlaceablePoses()
+    //배치 가능 타일 = 영웅 배치 구역 중 비어있는 타일 (중립 배치 소문이 있는 카드는 기본 배치 열의 비어있는 중립지대 포함)
+    private List<Vector2Int> GetPlaceablePoses(Card card)
     {
         List<Vector2Int> result = new(10);
         foreach (var pos in HeroSystem.Instance.SetupPoses)
         {
             if (TokenSystem.Instance.API.IsGridEmpty(pos))
                 result.Add(pos);
+        }
+
+        if (card.CanPlaceOnNeutral)
+        {
+            foreach (var pos in HeroSystem.Instance.NeutralSetupPoses)
+            {
+                if (TokenSystem.Instance.API.GetTokenByPosition(pos) == null)   //중립지대는 토큰이 없어도 막혀 있어 IsGridEmpty를 쓸 수 없음
+                    result.Add(pos);
+            }
         }
         return result;
     }
@@ -208,7 +235,7 @@ public class CardSystem : Singleton<CardSystem>
     {
         if (heroPreview != null)
             Destroy(heroPreview.gameObject);
-        heroPreview = TokenCreator.Instance.CreateTokenPreview(currentSelectedCard.Card.Unit);
+        heroPreview = TokenCreator.Instance.CreateTokenPreview(currentSelectedCard.Card.Unit.Data);
 
         arrowView.gameObject.SetActive(true);
         arrowView.SetUp(GetCardWorldPosition(currentSelectedCard));
@@ -221,6 +248,7 @@ public class CardSystem : Singleton<CardSystem>
         currentSelectedCard.SetSelected(false);
         currentSelectedCard = cardView;
         currentSelectedCard.SetSelected(true);
+        placeablePoses = GetPlaceablePoses(currentSelectedCard.Card);   //카드마다 배치 가능 타일이 다를 수 있음
         ShowTargetVisuals();                         //화살 시작점·미리보기를 새 카드 기준으로 교체
     }
 
@@ -258,9 +286,17 @@ public class CardSystem : Singleton<CardSystem>
 
     private IEnumerator AddHeroToHandRoutine(HeroData heroData)
     {
-        Card card = new(heroData);
+        Card card = new(new Hero(heroData));
         hand.Add(card);
         CardView cardView = CardViewCreator.Instance.CreateCardView(card, drawPilePoint, handTransform);
+        yield return handView.AddCard(cardView);
+    }
+
+    private IEnumerator ReturnCardToHandRoutine(Card card)
+    {
+        discardPile.Remove(card);
+        hand.Add(card);
+        CardView cardView = CardViewCreator.Instance.CreateCardView(card, discardPilePoint, handTransform);
         yield return handView.AddCard(cardView);
     }
 
@@ -291,11 +327,14 @@ public class CardSystem : Singleton<CardSystem>
         CardView cardView = handView.RemoveCard(card);
         yield return DiscardCard(card, cardView);
 
-        SpendAPGA spendAPGA = new(card.APCost);
-        ActionSystem.Instance.AddReaction(spendAPGA);
+        if (!FreePlacement)
+        {
+            SpendAPGA spendAPGA = new(card.APCost);
+            ActionSystem.Instance.AddReaction(spendAPGA);
+        }
 
         //선택 타일에 용병 배치
-        TokenSystem.Instance.Main.AddToken(card.Unit, TokenType.Hero, playCardGA.TargetPos);
+        TokenSystem.Instance.Main.AddHero(card.Unit, playCardGA.TargetPos);
 
         if (HeroSystem.Instance.CurrentHero == null)
             HeroSystem.Instance.CurrentHero = TokenSystem.Instance.API.GetTokenByPosition(playCardGA.TargetPos) as HeroView;

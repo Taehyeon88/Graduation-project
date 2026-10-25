@@ -3,10 +3,11 @@ using UnityEngine;
 
 public class Card
 {
-    public HeroData Unit => data;
-    public int APCost => data.APCost;
-    public string Title => data.Name;
-    public Sprite Image => data.Sprite;
+    public Hero Unit => hero;
+    public int APCost => Mathf.Max(0, hero.Data.APCost + (hero.Rumor?.Rumor is IAPCostModifier modifier ? modifier.APCostBonus : 0));
+    public bool CanPlaceOnNeutral => hero.Rumor?.Rumor is INeutralPlacement placement && placement.CanPlaceOnNeutral;
+    public string Title => hero.Data.Name;
+    public Sprite Image => hero.Data.Sprite;
 
     //스탯 + 특성 자동 조합 설명 (HeroData에 설명 필드가 없어 조합)
     public string Description
@@ -14,23 +15,21 @@ public class Card
         get
         {
             StringBuilder sb = new();
-            sb.Append($"HP {data.Health}  공격 {data.Damage}  속도 {data.Speed}");
-            if (data.Traits != null)
+            sb.Append($"HP {hero.MaxHealth}  공격 {hero.Damage}  속도 {hero.Speed}");
+            foreach (TraitData trait in hero.Traits)
             {
-                foreach (TraitData trait in data.Traits)
-                {
-                    if (trait == null) continue;
-                    sb.Append($"\n{trait.name}: {trait.Description}");
-                }
+                if (trait == null) continue;
+                sb.Append($"\n{trait.name}: {trait.Description}");
             }
+            if (hero.Rumor != null) sb.Append($"\n{hero.Rumor.Title}: {hero.Rumor.Description}");
             return sb.ToString();
         }
     }
 
-    public readonly HeroData data;
+    private readonly Hero hero;
 
-    public Card(HeroData data)
+    public Card(Hero hero)
     {
-        this.data = data;
+        this.hero = hero;
     }
 }

@@ -25,7 +25,7 @@ public class RewardSelectSystem : Singleton<RewardSelectSystem>
         int count = Mathf.Min(pendingRewards.Length, rewardPositions.Length);
         for (int i = 0; i < count; i++)
         {
-            TokenSystem.Instance.Main.AddToken(pendingRewards[i], TokenType.Hero, rewardPositions[i]);
+            TokenSystem.Instance.Main.AddHero(new Hero(pendingRewards[i]), rewardPositions[i]);
 
             HeroView hero = TokenSystem.Instance.API.GetTokenByPosition(rewardPositions[i]) as HeroView;
             if (hero != null)

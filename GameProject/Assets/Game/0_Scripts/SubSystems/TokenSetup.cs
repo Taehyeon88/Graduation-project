@@ -96,6 +96,19 @@ public class TokenSetup : MonoBehaviour
         return poses;
     }
 
+    //기본 배치 열(baseX)에 있는 중립지대 목록 (중립 배치 소문을 가진 영웅의 배치 후보)
+    public List<Vector2Int> CalcNeutralSetupPoses(Vector2Int[] neutrals, int baseX)
+    {
+        List<Vector2Int> poses = new();
+        if (neutrals == null) return poses;
+
+        foreach (Vector2Int pos in neutrals)
+        {
+            if (pos.x == baseX) poses.Add(pos);
+        }
+        return poses;
+    }
+
     //용병대장 생성 (그리드 밖, TokenGrid 미등록)
     public void SetUpHeroCaptain(HeroCaptainData heroCaptainData)
     {

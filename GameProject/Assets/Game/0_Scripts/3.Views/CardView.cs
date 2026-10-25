@@ -67,7 +67,7 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
             || Interactions.Instance.IsHeroMoveMode)
             return;
 
-        if (APSystem.Instance.HasEnoughAP(Card.APCost))
+        if (CardSystem.Instance.CanPlay(Card))
         {
             SoundSystem.Instance.PlaySound(3004);        //선택 사운드
             CardSystem.Instance.PlayCardTargetMode(this);
@@ -85,7 +85,7 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
             || Interactions.Instance.IsHeroMoveMode)
             return;
 
-        if (!APSystem.Instance.HasEnoughAP(Card.APCost))
+        if (!CardSystem.Instance.CanPlay(Card))
         {
             SoundSystem.Instance.PlaySound(3006);        //코스트 부족 사운드
             return;

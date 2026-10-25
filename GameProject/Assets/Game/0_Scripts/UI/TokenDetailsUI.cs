@@ -28,9 +28,9 @@ public class TokenDetailsUI : MonoBehaviour
         attack.text = view.BaseDamage.ToString();
         health.text = $"{view.CurrentHealth}/{view.MaxHealth}";
         speed.text = view.Speed.ToString();
-        HeroData heroData = view.TokenData as HeroData;
-        critical.transform.parent.gameObject.SetActive(heroData != null);   //몬스터는 치명타 데이터가 없어 슬롯 숨김
-        if (heroData != null) critical.text = $"{heroData.Critical}%";
+        Hero hero = (view as HeroView)?.Hero;
+        critical.transform.parent.gameObject.SetActive(hero != null);   //몬스터는 치명타 데이터가 없어 슬롯 숨김
+        if (hero != null) critical.text = $"{hero.Critical}%";
 
         IReadOnlyList<Trait> traits = view.Traits;
         for (int i = 0; i < traitSlots.Length; i++)
@@ -38,7 +38,8 @@ public class TokenDetailsUI : MonoBehaviour
             if (i < traits.Count) traitSlots[i].SetUp(traits[i].Title, traits[i].Description, traits[i].Image);
             else traitSlots[i].Clear();
         }
-        rumorSlot.Clear();   //소문 데이터가 아직 없음
+        if (hero?.Rumor != null) rumorSlot.SetUp(hero.Rumor.Title, hero.Rumor.Description, hero.Rumor.Image);
+        else rumorSlot.Clear();
 
         gameObject.SetActive(true);
     }

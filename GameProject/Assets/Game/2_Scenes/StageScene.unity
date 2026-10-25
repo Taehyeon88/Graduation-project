@@ -4147,6 +4147,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4558058857035119622, guid: 3ae40ca683237ae4e9b2e30f31a96f5f, type: 3}
+      propertyPath: startingDeck.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4558058857035119622, guid: 3ae40ca683237ae4e9b2e30f31a96f5f, type: 3}
+      propertyPath: 'startingDeck.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: f44363c53c3c72744ab2b0e123b19f81, type: 2}
+    - target: {fileID: 4558058857035119622, guid: 3ae40ca683237ae4e9b2e30f31a96f5f, type: 3}
+      propertyPath: 'startingDeck.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 5858be7c737f637468e5136ab9ac75c8, type: 2}
+    - target: {fileID: 4558058857035119622, guid: 3ae40ca683237ae4e9b2e30f31a96f5f, type: 3}
+      propertyPath: 'startingDeck.Array.data[2]'
+      value: 
+      objectReference: {fileID: 11400000, guid: c0097ad377d776c44ae42b4f58dba69f, type: 2}
+    - target: {fileID: 4558058857035119622, guid: 3ae40ca683237ae4e9b2e30f31a96f5f, type: 3}
+      propertyPath: 'startingDeck.Array.data[3]'
+      value: 
+      objectReference: {fileID: 11400000, guid: fef437ba6a9e88849aeb323c20009fbb, type: 2}
+    - target: {fileID: 4558058857035119622, guid: 3ae40ca683237ae4e9b2e30f31a96f5f, type: 3}
+      propertyPath: 'startingDeck.Array.data[4]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 25e21709632fae3468acc2dac4f97b40, type: 2}
     - target: {fileID: 4951540987746714205, guid: 3ae40ca683237ae4e9b2e30f31a96f5f, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

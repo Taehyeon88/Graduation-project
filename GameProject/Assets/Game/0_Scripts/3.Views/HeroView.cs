@@ -2,6 +2,7 @@ using UnityEngine;
 public class HeroView : CombatantView
 {
     public int Id => TokenData.Id;
+    public Hero Hero { get; private set; }   //덱의 영웅 개체 (보너스·획득 특성 보유)
 
     protected override Vector2Int Forward => Vector2Int.right;
     protected override bool IsTarget(Token token) => token is EnemyView || token is ObstacleView;
@@ -9,8 +10,20 @@ public class HeroView : CombatantView
     protected override int GetMoveLimitX(int line)
         => (EnemySystem.Instance.TryGetSetupX(line, out int x) ? x : TokenSystem.Instance.gridWidth - 1) - 1;
 
-    public void SetUp(HeroData heroData)
+    private Rumor rumor;   //유닛별 소문 사본
+
+    protected override void OnDisable()
     {
-        SetUpBase(heroData);
+        base.OnDisable();
+        rumor?.OnRemove();
+    }
+
+    public void SetUp(Hero hero)
+    {
+        Hero = hero;
+        SetUpBase(hero.Data, hero.MaxHealth, hero.Damage, hero.Speed, hero.Traits);
+
+        rumor = hero.Rumor?.Rumor?.Clone();
+        rumor?.OnAdd(this);
     }
 }

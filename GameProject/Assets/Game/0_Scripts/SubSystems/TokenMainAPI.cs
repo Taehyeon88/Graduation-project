@@ -23,7 +23,22 @@ public class TokenMainAPI : MonoBehaviour
                new(gridPosition.x, gridPosition.y, 1)
             );
 
-        //해당 타일에 토큰으로 등록처리 (TokenSystem, Gird)
+        RegisterToken(token, gridPosition);
+    }
+
+    /// <summary>
+    /// 덱의 영웅 개체로 영웅 토큰 추가 함수
+    /// </summary>
+    public void AddHero(Hero hero, Vector2Int gridPosition)
+    {
+        HeroView heroView = TokenCreator.Instance.CreateHero(hero, new(gridPosition.x, gridPosition.y, 1));
+
+        RegisterToken(heroView, gridPosition);
+    }
+
+    //해당 타일에 토큰으로 등록처리 (TokenSystem, Gird)
+    private void RegisterToken(Token token, Vector2Int gridPosition)
+    {
         grid.SetToken(token, gridPosition);
 
         if (token is EnemyView enemyView)

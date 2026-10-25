@@ -1051,9 +1051,33 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 109dc5195b5c9a0409f7fd4d53c61d24, type: 2}
     - target: {fileID: 1463536655479911621, guid: 9e2307c70aa00094daf8b9ec47a36965, type: 3}
+      propertyPath: startingDeck.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1463536655479911621, guid: 9e2307c70aa00094daf8b9ec47a36965, type: 3}
       propertyPath: 'stageDatas.Array.data[0]'
       value: 
       objectReference: {fileID: 11400000, guid: 17457a26932722d4c9f1469731fb84c1, type: 2}
+    - target: {fileID: 1463536655479911621, guid: 9e2307c70aa00094daf8b9ec47a36965, type: 3}
+      propertyPath: 'startingDeck.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: f44363c53c3c72744ab2b0e123b19f81, type: 2}
+    - target: {fileID: 1463536655479911621, guid: 9e2307c70aa00094daf8b9ec47a36965, type: 3}
+      propertyPath: 'startingDeck.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 5858be7c737f637468e5136ab9ac75c8, type: 2}
+    - target: {fileID: 1463536655479911621, guid: 9e2307c70aa00094daf8b9ec47a36965, type: 3}
+      propertyPath: 'startingDeck.Array.data[2]'
+      value: 
+      objectReference: {fileID: 11400000, guid: c0097ad377d776c44ae42b4f58dba69f, type: 2}
+    - target: {fileID: 1463536655479911621, guid: 9e2307c70aa00094daf8b9ec47a36965, type: 3}
+      propertyPath: 'startingDeck.Array.data[3]'
+      value: 
+      objectReference: {fileID: 11400000, guid: fef437ba6a9e88849aeb323c20009fbb, type: 2}
+    - target: {fileID: 1463536655479911621, guid: 9e2307c70aa00094daf8b9ec47a36965, type: 3}
+      propertyPath: 'startingDeck.Array.data[4]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 25e21709632fae3468acc2dac4f97b40, type: 2}
     - target: {fileID: 1463536655479911621, guid: 9e2307c70aa00094daf8b9ec47a36965, type: 3}
       propertyPath: <EnemyFlagData>k__BackingField
       value: 

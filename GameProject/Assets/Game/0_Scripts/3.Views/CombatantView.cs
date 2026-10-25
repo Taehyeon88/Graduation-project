@@ -62,8 +62,9 @@ public class CombatantView : Token, IDamageable
     private int baseDamage;
     private int speed;
     private readonly List<Trait> traits = new();
+    private readonly List<TraitData> activeTraitDatas = new();   //적용 중인 특성 데이터 (조회용)
 
-    private void OnDisable()
+    protected virtual void OnDisable()
     {
         foreach (var trait in traits)
         {
@@ -73,50 +74,58 @@ public class CombatantView : Token, IDamageable
 
     public void SetUpBase(CombatantData data)
     {
-        CurrentHealth = data.Health;
-        MaxHealth = data.Health;
-        BaseDamage = data.Damage;
-        Speed = data.Speed;
+        SetUpBase(data, data.Health, data.Damage, data.Speed, data.Traits);
+    }
+
+    //영웅처럼 데이터 값 대신 개체별 유효 스탯·특성을 쓸 때
+    public void SetUpBase(CombatantData data, int health, int damage, int speed, IReadOnlyList<TraitData> traitDatas)
+    {
+        MaxHealth = health;
+        CurrentHealth = health;
+        BaseDamage = damage;
+        Speed = speed;
         SetUpBaseBase(data);
-        SetUpTraits(data);
+        SetUpTraits(data, traitDatas);
         if (traitsUI != null) traitsUI.SetUp(traits);
     }
 
     //특성 구독 시작 (최대 개수 초과 시 앞의 MaxTraitCount개만 사용)
-    private void SetUpTraits(CombatantData data)
+    private void SetUpTraits(CombatantData data, IReadOnlyList<TraitData> traitDatas)
     {
         traits.Clear();
-        if (data.Traits == null) return;
+        activeTraitDatas.Clear();
+        if (traitDatas == null) return;
 
-        if (data.Traits.Count > MaxTraitCount)
-            Debug.LogError($"{data.name}: 특성은 최대 {MaxTraitCount}개까지 가능합니다. (현재 {data.Traits.Count}개) 앞의 {MaxTraitCount}개만 사용합니다.");
+        if (traitDatas.Count > MaxTraitCount)
+            Debug.LogError($"{data.name}: 특성은 최대 {MaxTraitCount}개까지 가능합니다. (현재 {traitDatas.Count}개) 앞의 {MaxTraitCount}개만 사용합니다.");
 
-        for (int i = 0; i < Mathf.Min(data.Traits.Count, MaxTraitCount); i++)
+        for (int i = 0; i < Mathf.Min(traitDatas.Count, MaxTraitCount); i++)
         {
-            if (data.Traits[i] == null) continue;
+            if (traitDatas[i] == null) continue;
 
-            if (data.Traits[i].Condition == null || data.Traits[i].Effect == null) continue;
+            activeTraitDatas.Add(traitDatas[i]);
 
-            Trait trait = new(data.Traits[i]);
+            if (traitDatas[i].Condition == null || traitDatas[i].Effect == null) continue;
+
+            Trait trait = new(traitDatas[i]);
             trait.SetOwner(this);
             trait.OnAdd();
             traits.Add(trait);
         }
     }
 
-    //데이터에 해당 Id의 특성이 있는지
+    //적용 중인 특성 중 해당 Id가 있는지 (획득 특성 포함)
     public bool HasTrait(int traitId)
     {
-        return TokenData is CombatantData data && data.Traits != null && data.Traits.Any(t => t != null && t.Id == traitId);
+        return activeTraitDatas.Any(t => t.Id == traitId);
     }
 
-    //데이터의 특성 중 해당 효과와 같은 클래스를 효과로 쓰는 특성의 Id (효과가 자기 특성을 찾을 때 사용)
+    //적용 중인 특성 중 해당 효과와 같은 클래스를 효과로 쓰는 특성의 Id (효과가 자기 특성을 찾을 때 사용)
     public bool TryGetTraitIdByEffect(TraitEffect effect, out int traitId)
     {
         traitId = 0;
-        if (TokenData is not CombatantData data || data.Traits == null) return false;
 
-        TraitData found = data.Traits.FirstOrDefault(t => t != null && t.Effect != null && t.Effect.GetType() == effect.GetType());
+        TraitData found = activeTraitDatas.FirstOrDefault(t => t.Effect != null && t.Effect.GetType() == effect.GetType());
         if (found == null) return false;
 
         traitId = found.Id;

@@ -22,8 +22,11 @@ public class HeroSystem : Singleton<HeroSystem>
 
     public IReadOnlyList<Vector2Int> SetupPoses => setupPoses;   //영웅 배치 가능 위치 (라인당 1개, 전투 중 불변)
 
+    public IReadOnlyList<Vector2Int> NeutralSetupPoses => neutralSetupPoses;   //중립 배치 소문을 가진 영웅만 쓸 수 있는 배치 위치 (기본 배치 열의 중립지대)
+
     private HeroView currentHero;
     private List<Vector2Int> setupPoses = new();
+    private List<Vector2Int> neutralSetupPoses = new();
 
     private void OnEnable()
     {
@@ -37,9 +40,10 @@ public class HeroSystem : Singleton<HeroSystem>
     }
 
     //Publics
-    public void SetUp(List<Vector2Int> poses)
+    public void SetUp(List<Vector2Int> poses, List<Vector2Int> neutralPoses = null)
     {
         setupPoses = poses;
+        neutralSetupPoses = neutralPoses ?? new();
     }
 
     //해당 라인의 배치 위치 x (없으면 false)
@@ -73,8 +77,8 @@ public class HeroSystem : Singleton<HeroSystem>
     {
         foreach (var hero in HeroViews)
         {
-            if (hero == null || hero.TokenData is not HeroData data) continue;
-            if (Random.Range(0, PercentMax) >= data.Critical) continue;
+            if (hero == null || hero.Hero == null) continue;
+            if (Random.Range(0, PercentMax) >= hero.Hero.Critical) continue;
 
             ActionSystem.Instance.AddReaction(new AddStatusEffectGA(StatusEffectType.CRITICAL, 1, new() { hero }, hero));
         }
