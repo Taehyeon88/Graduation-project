@@ -71,11 +71,13 @@ public class CoreSystem : Singleton<CoreSystem>
                 EnemyCoreHealth = Mathf.Max(0, EnemyCoreHealth - damage);
                 EnemyFlag.UpdateHealth(EnemyCoreHealth);
                 EnemyFlag.PlayHitShake();
+                if (FloatingTextSystem.Instance != null) FloatingTextSystem.Instance.ShowDamage(EnemyFlag, damage);
             }
             else
             {
                 HeroCaptain.ReceiveCoreDamage(damage);
                 HeroCaptain.PlayHitShake();
+                if (FloatingTextSystem.Instance != null) FloatingTextSystem.Instance.ShowDamage(HeroCaptain, damage);
             }
 
             //치명타 : 피해가 적용된 공격 1회마다 스택 1 소모
@@ -87,6 +89,11 @@ public class CoreSystem : Singleton<CoreSystem>
                 ActionSystem.Instance.AddReaction(new GameClearGA());
             else if (!isHeroAttack && PlayerCoreHealth <= 0)
                 ActionSystem.Instance.AddReaction(new GameOverGA());
+        }
+        else if (FloatingTextSystem.Instance != null)
+        {
+            Token coreTarget = isHeroAttack ? EnemyFlag : HeroCaptain;   //빗나간 공격의 대상 코어에 피해 면역 표시
+            FloatingTextSystem.Instance.ShowImmune(coreTarget, FloatingTextSystem.ImmuneLabel);
         }
 
         if (attackSeq != null && attackSeq.IsActive())

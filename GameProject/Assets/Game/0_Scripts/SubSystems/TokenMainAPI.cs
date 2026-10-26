@@ -26,9 +26,7 @@ public class TokenMainAPI : MonoBehaviour
         RegisterToken(token, gridPosition);
     }
 
-    /// <summary>
-    /// 덱의 영웅 개체로 영웅 토큰 추가 함수
-    /// </summary>
+    //덱의 영웅 개체로 영웅 토큰 추가 함수
     public void AddHero(Hero hero, Vector2Int gridPosition)
     {
         HeroView heroView = TokenCreator.Instance.CreateHero(hero, new(gridPosition.x, gridPosition.y, 1));

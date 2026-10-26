@@ -38,9 +38,9 @@
 - **파괴**: 기존 `CombatantView.Damage → KillGA → DamageSystem.KillGAPerformer → TokenMainAPI.RemoveToken`. 영웅·적 목록에는 들어가지 않는다(`AddToken`의 `EnemyView`/`HeroView` 분기에 걸리지 않음).
 - **처치 효과**:
   - `KillGA.Killer`(`Token`, 기본 null) — `CombatantView.Damage`가 `dealDamageGA.Caster`를 넘긴다.
-  - 특성 `9001 돌격 화살통` = `SelfDeathCondition`(PRE) + `KillerAttackAllOpponentsEffect`. 처치자가 영웅이면 `EnemyViews` 전체, 적이면 `HeroViews` 전체에 `DealDamageGA(killer.BaseDamage, targets, killer)`를 예약한다. 처치자가 없으면(스킬 등) 아무 일도 하지 않고 코어는 공격하지 않는다.
+  - 특성 `9001 돌격 화살통` = `SelfDeathCondition`(PRE) + `KillerAttackAllOpponentsEffect`. 처치자가 영웅이면 `EnemyViews` 전체, 적이면 `HeroViews` 전체에 `DealDamageGA(owner.BaseDamage, targets, owner)`(장애물의 공격력, Caster = 장애물)를 예약한다. 처치자가 없으면(스킬 등) 아무 일도 하지 않고 코어는 공격하지 않는다.
   - PRE인 이유: `KillGA` performer가 토큰을 파괴하면 `OnDisable`이 구독을 해제해 POST에서는 놓칠 수 있다.
-- **(원작 확인 필요)**: 추가 공격 피해량(처치자 공격력으로 가정), 적이 파괴했을 때도 같은 효과인지(현재는 "영웅·적 모두"로 구현), 추가 공격이 코어도 포함하는지(현재 미포함).
+- **(원작 확인 필요)**: 추가 공격 피해량(장애물 공격력으로 결정), 적이 파괴했을 때도 같은 효과인지(현재는 "영웅·적 모두"로 구현), 추가 공격이 코어도 포함하는지(현재 미포함).
 
 ## 5. 발판 — 풀숲
 
@@ -50,6 +50,7 @@
 - **생성**: `MatchSetupSystem` → `TokenSetup.SetUpTerrains(stageData.TerrainSpawns)` → `TokenCreator.CreateTerrain`(`TokenCreator.terrainPrefab`, 부모는 `isoWorld`). 데이터가 없거나 점유(`grid.CanSet` false)·중복이면 `LogError` 후 건너뛴다.
 - **토큰이 아니다**: `grid.SetToken`을 쓰면 칸을 점유해 이동이 막히므로, `TokenSetup`이 `Dictionary<Vector2Int, TerrainView>`로 따로 보관한다(`Terrains`, `TryGetTerrain`). `simpleGrid`는 건드리지 않아 이동은 가능하고, 토큰이 아니라서 공격 대상이 되지 않는다.
 - **기능 구조**: `TerrainData.Effect`(`[SerializeReference, SR]`)를 `TerrainView.SetUp`이 `Clone()`해 발판별 사본으로 보유한다. `TerrainView.Enter(unit)`/`Exit(unit)`이 `TerrainEffect.OnEnter`/`OnExit`에 위임한다. 새 발판 기능은 `TerrainEffect` 서브클래스를 만들어 SO에 지정한다.
+- **이동 범위 확장 발판(언덕)**: `TerrainEffect`(추상)에는 이동 관련 멤버를 두지 않고, 이동 범위를 넓히는 효과는 `Interfaces/IExtendedMoveTerrain`을 추가로 구현한다 (`HillEffect`). `MoveSystem.CalcMovePaths`가 영웅의 라운드 시작 위치 발판의 `Data.Effect`가 이 인터페이스인지 보고, 영웅이 아직 그 칸에 있으면 조건(`AllowsExtendedMove`)을 만족하는 빈 칸을 직접 이동 경로(목적지 1칸)로 추가한다. 상세는 [terrain_catalog.md](Terrain/terrain_catalog.md)의 언덕.
 - **정보 패널**: `TerrainView.Data`(`TerrainData`)를 노출하고, 마우스가 발판·장애물 위에 오면 `GridSelector`가 `TerrainDetailsUI`(`3_Prefabs/UI/TerrainDetailsUI.prefab`)를 띄운다 — 발판은 `Terrain_BG`만, 장애물(`ObstacleView`)은 `Obstacle_BG`만(공격력·체력 포함) 활성화. 영웅·몬스터가 서 있는 칸은 `TokenDetailsUI`가 우선한다.
 - **발동 경로** (`TerrainSystem`, 모두 POST):
   - `MoveGA`: 모든 발판에 `Exit(mover)`(각 발판이 자기가 준 것만 회수), 도착 칸이 발판이면 `Enter(mover)`.

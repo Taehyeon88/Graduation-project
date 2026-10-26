@@ -212,6 +212,7 @@ public class CombatantView : Token, IDamageable
         if (amount > 0)
         {
             CurrentHealth = Mathf.Max(CurrentHealth - amount, 0);
+            if (FloatingTextSystem.Instance != null) FloatingTextSystem.Instance.ShowDamage(this, amount);
         }
 
         if(CurrentHealth <= 0)

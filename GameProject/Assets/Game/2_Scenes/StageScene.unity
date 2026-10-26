@@ -2134,7 +2134,7 @@ MonoBehaviour:
   stageStructures:
   - {fileID: 11400000, guid: 230902f467adfbf41bd1a068ebcaaf4a, type: 2}
   - {fileID: 11400000, guid: 6509128f9ca256148ae313e7fce3e32f, type: 2}
-  - {fileID: 11400000, guid: 708737e9d95110a42b51250bd352289f, type: 2}
+  - {fileID: 11400000, guid: 2032a952a9dd01b41afdf92d369d3a1b, type: 2}
   structurePrefab: {fileID: 6779482291536447311, guid: b65f149ba6ac01f4482ef449a30f4a6c, type: 3}
   isoWorld: {fileID: 4607581643916897775}
   firstPosition: {x: 2, y: 0, z: 1}

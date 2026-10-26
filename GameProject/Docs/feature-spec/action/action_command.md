@@ -234,9 +234,9 @@
 
 #### `SpawnWaveGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/SpawnWaveGA.cs`
-- **필드**: 없음 — 트리거 전용 마커
-- **Performer**: `WaveSystem.SpawnWaveGAPerformer` — 다음 웨이브 몬스터를 `enemyDatas`에서 골라 `BuildSpawn`으로 생성 위치 결정(`SpawnLines`의 라인 + `EnemySystem.TryGetSetupX`의 적 배치 x, 배치 위치가 없거나 점유/중복이면 생성 생략) 후 `TokenMainAPI.AddEnemys`로 생성, `Remain_wave_count`/`nextWaveIndex`/`turnsUntilNextWave` 갱신
-- **PRE/POST 구독자**: 없음
+- **필드**: `SpawnedEnemies`(`List<EnemyView>`, Performer가 채움) — 이번 웨이브로 생성된 몬스터. POST 구독자가 새로 생긴 몬스터와 기존 몬스터를 구분할 때 쓴다
+- **Performer**: `WaveSystem.SpawnWaveGAPerformer` — 다음 웨이브 몬스터를 `enemyDatas`에서 골라 `BuildSpawn`으로 생성 위치 결정(`SpawnLines`의 라인 + `EnemySystem.TryGetSetupX`의 적 배치 x, 배치 위치가 없거나 점유/중복이면 생성 생략) 후 `TokenMainAPI.AddEnemys`로 생성(전후 `EnemyViews` 비교로 `SpawnedEnemies` 기록), `Remain_wave_count`/`nextWaveIndex`/`turnsUntilNextWave` 갱신
+- **PRE/POST 구독자**: POST — `SelfDeployedCondition`(특성 3012 집중 등, 몬스터가 owner일 때 `SpawnedEnemies`에 자신이 있으면 통과)
 - **파생 액션**: 없음
 - **트리거 지점**: `WaveSystem.TurnGAPreReaction`(`TurnGA` PRE 구독, 조건: `Type == Player`)에서 웨이브 카운트다운이 0 이하일 때 `AddReaction(new SpawnWaveGA())`
 

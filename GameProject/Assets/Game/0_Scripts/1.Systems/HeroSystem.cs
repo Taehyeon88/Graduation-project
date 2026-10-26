@@ -72,9 +72,14 @@ public class HeroSystem : Singleton<HeroSystem>
         }
     }
 
-    //자동 전투 종료 시, 영웅마다 치명타 확률(%)로 치명타 상태효과 획득
+    //자동 전투 종료 시, 영웅의 기절 1 감소 후 영웅마다 치명타 확률(%)로 치명타 상태효과 획득
     private void AutoBattleTurnPostReaction(AutoBattleTurnGA turnGA)
     {
+        foreach (var hero in HeroViews)
+        {
+            hero.RemoveStatusEffect(StatusEffectType.STUN, 1);
+        }
+
         foreach (var hero in HeroViews)
         {
             if (hero == null || hero.Hero == null) continue;

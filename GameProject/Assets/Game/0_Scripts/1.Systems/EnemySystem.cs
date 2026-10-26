@@ -8,6 +8,25 @@ public class EnemySystem : Singleton<EnemySystem>
 
     private List<Vector2Int> setupPoses = new();
 
+    private void OnEnable()
+    {
+        ActionSystem.SubscribeReaction<AutoBattleTurnGA>(AutoBattleTurnPostReaction, ReactionTiming.POST);
+    }
+
+    private void OnDisable()
+    {
+        ActionSystem.UnsubscribeReaction<AutoBattleTurnGA>(AutoBattleTurnPostReaction, ReactionTiming.POST);
+    }
+
+    //자동 전투 턴 종료 시, 몬스터의 기절 1 감소
+    private void AutoBattleTurnPostReaction(AutoBattleTurnGA turnGA)
+    {
+        foreach (var enemy in TokenSystem.Instance.EnemyViews)
+        {
+            if (enemy != null) enemy.RemoveStatusEffect(StatusEffectType.STUN, 1);
+        }
+    }
+
     public void SetUp(List<Vector2Int> poses)
     {
         setupPoses = poses;

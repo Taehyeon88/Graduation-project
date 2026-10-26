@@ -15,12 +15,46 @@
 | 조건 | `SelfDeathCondition` — 구독 `KillGA`, 판정 `KillGA.Token == owner` (owner = 장애물) |
 | 타이밍 | PRE (`reactionTiming: 0`) |
 | 효과 | `KillerAttackAllOpponentsEffect` |
-| 효과 동작 | `KillGA.Killer`가 영웅이면 `EnemyViews` 전체, 적이면 `HeroViews` 전체에 `Killer.BaseDamage`만큼 `DealDamageGA(Targets)` 예약. 코어는 공격하지 않음 |
+| 효과 동작 | `KillGA.Killer`가 영웅이면 `EnemyViews` 전체, 적이면 `HeroViews` 전체에 `owner.BaseDamage`(장애물의 공격력, Caster = owner)만큼 `DealDamageGA(Targets)` 예약. 처치자의 힘·치명타 보정 없음. 코어는 공격하지 않음 |
 | 파생 GA | `DealDamageGA` |
 | 코드 | `Traits/Conditions/SelfDeathCondition.cs`, `Traits/KillerAttackAllOpponentsEffect.cs` |
-| 원작 확인 필요 | 피해량(처치자 공격력 가정), 적이 파괴했을 때의 동작, 코어 포함 여부 |
+| 원작 확인 필요 | 피해량(장애물 공격력으로 결정, 원작 기준 미확인), 적이 파괴했을 때의 동작, 코어 포함 여부 |
 
 **에디터 설정**: `Condition`=`SelfDeathCondition`(`reactionTiming`=PRE), `Effect`=`KillerAttackAllOpponentsEffect`. `ConditionName`/`EffectName`에 클래스명을 적어 둔다.
+
+## 9002 · 야전 공구함 (장애물 전용)
+
+에셋: `Assets/Game/1_Datas/3.Traits/야전 공구함.asset` — `ObstacleData` `야전 공구함`(Id 3002)의 Traits에 연결 ([terrain_catalog.md](../Terrain/terrain_catalog.md))
+
+| 항목 | 값 |
+|---|---|
+| Id | 9002 (`OwnerType` 2) |
+| 설명 (`Description`) | 피해를 받을 때마다 공격한 영웅에게 공격력 +1, 체력 +1을 부여합니다. |
+| 조건 | `SelfDamagedCondition` — 구독 `DealDamageGA`, 판정 `DamagedTargets.Contains(owner)` (owner = 장애물, 생존 여부 무관). `FiltersByCaster` = false |
+| 타이밍 | POST (`reactionTiming: 1`) — 피해 적용 뒤 `DamagedTargets`가 채워진 상태, `KillGA` 수행(구독 해제) 전 |
+| 효과 | `ModifyStatAttackerEffect` — `modifiers = [DAMAGE +1, HEALTH +1]` |
+| 효과 동작 | `DealDamageGA.Caster`가 `CombatantView`면 그 유닛에게 `ModifyStatGA(DAMAGE, 1)`, `ModifyStatGA(HEALTH, 1)` 예약 |
+| 파생 GA | `ModifyStatGA` |
+| 코드 | `Traits/Conditions/SelfDamagedCondition.cs`, `Traits/ModifyStatAttackerEffect.cs`, `1.Systems/StatSystem.cs` |
+| 원작 확인 필요 | 공격한 적에게도 부여하는지 (설명은 "영웅", 현재는 적에게도 부여), 파괴 타격 포함 여부 |
+
+**연결 흐름**
+
+```
+DealDamageGA(Caster = 공격자, 대상 = 장애물) 수행: DamagedTargets.Add(장애물)
+DealDamageGA POST
+ └ Trait.Reaction  (FiltersByCaster == false → Caster != owner 필터 건너뜀)
+    └ SelfDamagedCondition.SubConditionIsMat  (owner가 DamagedTargets에 있음)
+       └ ModifyStatAttackerEffect.PerformReaction  (Caster가 CombatantView일 때만)
+          └ AddReaction(ModifyStatGA, DAMAGE +1 / HEALTH +1, 대상=공격자)
+```
+
+**주의·한계**
+- 효과가 예약하는 `ModifyStatGA`는 조건의 구독 대상(`DealDamageGA`)이 아니므로 무한 루프는 없다. 발동 횟수 상한은 없다.
+- 장애물이 소유자일 때 파괴 타격에서도 발동한다는 순서 가정(POST 판정 → `KillGA`)은 Play에서 확인하지 않았다.
+- `StatSystem`이 씬에 배치되어 있어야 동작한다. Play 테스트는 아직 하지 않았다.
+
+**에디터 설정**: `Condition`=`SelfDamagedCondition`(`reactionTiming`=POST), `Effect`=`ModifyStatAttackerEffect`(`modifiers`=[DAMAGE 1, HEALTH 1]). `Image`는 비어 있다(장애물 특성은 표시 UI 없음).
 
 ## 3003 · 요새화
 
@@ -291,7 +325,7 @@ DealDamageGA / AttackCoreGA  POST   (기본 공격 또는 추가 공격)
 |---|---|
 | Id | 3008 |
 | 설명 (`Description`) | 피격 시 반격해 자신에게 피해를 준 용병을 공격합니다. |
-| 조건 | `CoreAttackedCondition` — 구독 `AttackCoreGA`, 판정: owner가 `HeroCaptainView`이고 `owner.CurrentHealth > 0`이며 `AttackCoreGA.Caster`가 `HeroView`가 아닐 것. `FiltersByCaster` = false |
+| 조건 | `CoreAttackedCondition` — 구독 `AttackCoreGA`, 판정: owner가 `HeroCaptainView`이고 `owner.CurrentHealth > 0`이며 `AttackCoreGA.IsMissed`가 false(빗나가지 않아 피해가 들어감)이고 `AttackCoreGA.Caster`가 `HeroView`가 아닐 것. `FiltersByCaster` = false |
 | 타이밍 | POST (`reactionTiming: 1`) — `CoreSystem`이 용병대장 체력을 깎은 뒤 반응하므로 `CurrentHealth > 0` 검사가 피해 반영 후 값이다 |
 | 효과 | `RetaliateEffect` — 노출 수치 없음 |
 | 효과 동작 | `AttackCoreGA.Caster`가 `IDamageable`이면 그 공격자에게 `DealDamageGA(owner.BaseDamage, 공격자, owner, true)`(기본 공격)를 예약. `DamageSystem`이 `Caster is HeroCaptainView`이면 Iso 오른쪽 근접 모션을 재생한 뒤 타격 시점에 피해를 적용 |
@@ -304,7 +338,7 @@ DealDamageGA / AttackCoreGA  POST   (기본 공격 또는 추가 공격)
 AttackCoreGA(적 → 아군 코어) 수행: CoreSystem이 HeroCaptain.ReceiveCoreDamage
 AttackCoreGA POST
  └ Trait.Reaction  (FiltersByCaster == false → Caster != owner 필터 건너뜀)
-    └ CoreAttackedCondition.SubConditionIsMat  (owner는 HeroCaptainView, 체력 > 0, Caster가 HeroView 아님)
+    └ CoreAttackedCondition.SubConditionIsMat  (owner는 HeroCaptainView, 체력 > 0, 빗나간 공격 아님, Caster가 HeroView 아님)
        └ RetaliateEffect.PerformReaction  (Caster가 IDamageable일 때만)
           └ AddReaction(DealDamageGA, 대상=공격자, Caster=용병대장, 기본 공격)
              └ DamageSystem: HeroCaptainView 근접 모션 → 피해 적용
@@ -389,3 +423,77 @@ DealDamageGA POST
 - `StatSystem`이 씬에 배치되어 있어야 동작한다. 영웅 `CombatantData.Traits`에 등록하는 에디터 작업은 아직 하지 않았다. Play 테스트는 아직 하지 않았다.
 
 **에디터 설정**: `Condition`=`SelfSurvivedDamageCondition`(`reactionTiming`=POST), `Effect`=`ModifyStatTraitEffect`(`modifiers`=[DAMAGE, 1], `maxTriggers`=0). `Image`는 연결되어 있다.
+
+## 3011 · 의식 (몬스터용)
+
+에셋: `Assets/Game/1_Datas/3.Traits/의식.asset`
+
+| 항목 | 값 |
+|---|---|
+| Id | 3011 (`OwnerType` 1) |
+| 설명 (`Description`) | 1라운드 생존 시 의식 집행인에게 공격력 +1, 체력 +1을 부여합니다. |
+| 조건 | `TurnCondition` — 구독 `TurnGA`, `turnType` = Enemy (라운드 종료 = Enemy 턴 종료, `MasteredRumor`와 같은 기준). `TurnGA`는 `IHaveCaster`가 아니라 모든 소유자에게 통과 |
+| 타이밍 | POST (`reactionTiming: 1`) |
+| 효과 | `ModifyStatEnemyByIdEffect` — `targetEnemyId` 2004(개구리교 의식 집행관), `modifiers = [DAMAGE +1, HEALTH +1]` |
+| 효과 동작 | 살아 있는 `EnemyViews` 중 `Id == 2004`인 전원을 대상으로 `ModifyStatGA(DAMAGE, 1)`, `ModifyStatGA(HEALTH, 1)` 예약 (caster = owner) |
+| 파생 GA | `ModifyStatGA` ([action_command.md](../action/action_command.md)) |
+| 코드 | `Traits/Conditions/TurnCondition.cs`, `Traits/ModifyStatEnemyByIdEffect.cs`, `1.Systems/StatSystem.cs` |
+
+**연결 흐름**
+
+```
+TurnGA(Enemy) POST  (라운드 종료)
+ └ Trait.Reaction  (TurnGA는 IHaveCaster가 아님 → 소유자 필터 없음)
+    └ TurnCondition.SubConditionIsMat  (TurnGA.Type == Enemy)
+       └ ModifyStatEnemyByIdEffect.PerformReaction
+          └ AddReaction(ModifyStatGA, DAMAGE +1 / HEALTH +1, 대상=Id 2004 몬스터 전원)
+```
+
+**주의·한계**
+- "1라운드 생존 시"는 **매 라운드 종료마다** 발동하는 것으로 해석했다 (사용자 확인). 소유자가 죽으면 `CombatantView.OnDisable`이 구독을 해제하므로 "생존"은 자동으로 충족된다. 발동 횟수 상한은 없다.
+- 요청 문구의 "의식 집행인"은 에셋명 "개구리교 의식 집행관"(EnemyData Id 2004)과 표기가 다르다. Id로 연결했다.
+- 소유자가 집행관 자신이면 의미가 없다 — 집행관이 아닌 몬스터에 등록한다.
+- 효과가 예약하는 `ModifyStatGA`는 조건의 구독 대상(`TurnGA`)이 아니므로 무한 루프는 없다.
+- `StatSystem`이 씬에 배치되어 있어야 동작한다. 몬스터 `CombatantData.Traits`에 등록하는 에디터 작업은 아직 하지 않았다. Play 테스트는 아직 하지 않았다.
+
+**에디터 설정**: `Condition`=`TurnCondition`(`turnType`=Enemy, `reactionTiming`=POST), `Effect`=`ModifyStatEnemyByIdEffect`(`targetEnemyId`=2004, `modifiers`=[DAMAGE 1, HEALTH 1]). `Image`는 연결되어 있다.
+
+## 3012 · 집중 (영웅·몬스터 공용)
+
+에셋: `Assets/Game/1_Datas/3.Traits/집중.asset`
+
+| 항목 | 값 |
+|---|---|
+| Id | 3012 (`OwnerType` 1) |
+| 설명 (`Description`) | 배치 시 2라운드 동안 기절을 얻습니다. |
+| 조건 | `SelfDeployedCondition` — 구독 `PlayCardGA` + `SpawnWaveGA` + `TurnGA`. 영웅은 손패 카드 배치(owner 위치 == `TargetPos`), 몬스터는 웨이브 생성(`SpawnWaveGA.SpawnedEnemies`에 owner 포함) 또는 전투 시작 때 깔리는 초기 몬스터(`TurnGA.Type == StartBattle` && owner is `EnemyView`) |
+| 타이밍 | POST (`reactionTiming: 1`) — AddToken 이후라 위치 조회 가능, 새 몬스터는 `SpawnWaveGAPerformer` 안에서 이미 구독됨 |
+| 효과 | `AddStatusTraitEffect` — `statusEffectType` = STUN(6), `amount` = 2 |
+| 효과 동작 | owner 자신에게 `AddStatusEffectGA(STUN, 2)` 예약 |
+| 파생 GA | `AddStatusEffectGA` ([action_command.md](../action/action_command.md)) |
+| 코드 | `Traits/Conditions/SelfDeployedCondition.cs`, `Traits/AddStatusTraitEffect.cs`, `2.GameActions/SpawnWaveGA.cs`(`SpawnedEnemies`), `1.Systems/WaveSystem.cs` |
+
+**연결 흐름**
+
+```
+영웅: PlayCardGA POST ─┐
+몬스터: SpawnWaveGA POST ┤  (SpawnWaveGAPerformer가 AddEnemys 전후 EnemyViews 비교로 SpawnedEnemies 기록)
+초기 몬스터: TurnGA(StartBattle) POST ┤
+                        └ Trait.Reaction  (세 GA 모두 IHaveCaster 아님 → 소유자 필터 전원 통과)
+                           └ SelfDeployedCondition.SubConditionIsMat
+                              ├ PlayCardGA : GetTokenPosition(owner) == TargetPos
+                              ├ SpawnWaveGA: owner is EnemyView && SpawnedEnemies.Contains(owner)
+                              └ TurnGA     : Type == StartBattle && owner is EnemyView  (웨이브 몬스터는 이 시점 뒤에 생성되어 겹치지 않음)
+                                 └ AddStatusTraitEffect.PerformReaction
+                                    └ AddReaction(AddStatusEffectGA, STUN 2, 대상=owner)
+```
+
+**주의·한계**
+- "2라운드"는 **스택 2 = 자동 전투 턴 2회**로 해석했다 (사용자 확인). 기절은 `AutoBattleTurnGA` POST마다 몬스터(`EnemySystem`)·영웅(`HeroSystem`) 모두 −1 된다. 영웅 −1은 이 특성 때문에 추가했다.
+- 몬스터는 **생성될 때** 발동한다 (사용자 확정). 웨이브 몬스터는 `SpawnWaveGA`, 전투 시작 때 `TokenSetup`으로 깔리는 초기 몬스터는 GA를 거치지 않아 `TurnGA(StartBattle)` POST를 생성 직후의 **대리 시점**으로 쓴다 (생성된 그 프레임이 아니라 첫 플레이어 턴 연출 뒤, 첫 자동 전투 전). 처음에는 초기 몬스터를 제외했으나 집행관(2004)이 첫 웨이브에 있어 기절을 못 얻는 문제가 확인되어 포함했다. 보상 영웅 후보(`RewardSelectSystem.AddHero`)는 GA를 거치지 않아 여전히 제외.
+- 웨이브는 `TurnGA(Player)` PRE에서 생성되므로 기절은 플레이어 턴 시작 전에 부여되고, 이후 자동 전투 턴 2회 동안 행동하지 못한다.
+- 기절한 유닛은 반격 등 반응 특성은 막지 못한다 (STUN 한계 — [status_effect_catalog.md](../StatusEffect/status_effect_catalog.md)).
+- 씬 `StatusEffectSystem.effectDatas`에 기절이 등록되어 있어야 한다 (`GameDemoScene`만 등록됨).
+- `SpawnWaveGA`에 필드를 추가했다 (계약 변경, 사용자 승인) — `action_command.md` 갱신. 영웅 `CombatantData.Traits`에 등록하는 에디터 작업은 하지 않았다 (유닛당 최대 2개). Play 테스트는 하지 않았다.
+
+**에디터 설정**: `Condition`=`SelfDeployedCondition`(`reactionTiming`=POST), `Effect`=`AddStatusTraitEffect`(`statusEffectType`=STUN, `amount`=2). 코드로 반영 완료. `Image`·`Description`·`OwnerType`은 기존 값 유지. 몬스터는 `개구리교 의식 집행관.asset`(Id 2004)의 `Traits`에 등록했다.

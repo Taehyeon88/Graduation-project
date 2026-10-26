@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81ca9361e2a2ceb498a99fc6c8f70e8f, type: 3}
   m_Name: "\uAE30\uC808"
   m_EditorClassIdentifier: Assembly-CSharp::StatusEffectData
-  <EffectType>k__BackingField: 0
+  <EffectType>k__BackingField: 6
   <Discription>k__BackingField: "\uC544\uBB34 \uD589\uB3D9\uB3C4 \uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4."
   <spriteImage>k__BackingField: {fileID: 21300000, guid: 9d425859f5387de44b4c53610676a301, type: 3}

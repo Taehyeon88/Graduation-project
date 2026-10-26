@@ -2,7 +2,7 @@
 
 > 상태효과 하나가 어떤 `StatusEffectType`과 `StatusEffectData` 에셋으로 정의되고, 어디서 읽혀 적용되는지 **상태효과 단위**로 정리한 문서. 제작 절차는 [statuseffect_howto.md](../../howto/statuseffect_howto.md)를 본다.
 > 새 상태효과(`StatusEffectType` 값 + `StatusEffectData` 에셋)를 만들면 이 문서에 섹션을 추가한다. 원작에서 확인하지 못한 규칙은 `(원작 확인 필요)`로 표기한다.
-> **현재 수록: 5개** (힘, 취약, 약화, 회피, 치명타). 수록 에셋은 3개(Power, 회피, 치명타)이며 취약·약화는 에셋이 없다. 열거형 값 1번은 삭제된 방어(`ARMOR`)의 자리라 비어 있다.
+> **현재 수록: 6개** (힘, 취약, 약화, 회피, 치명타, 기절). 수록 에셋은 4개(Power, 회피, 치명타, 기절)이며 취약·약화는 에셋이 없다. 열거형 값 1번은 삭제된 방어(`ARMOR`)의 자리라 비어 있다.
 
 ## 요약
 
@@ -13,10 +13,11 @@
 | 3 | `VULNERABLE` | 약화 | (에셋 없음) 피격자 디버프 | 없음 | 영웅 턴 종료 시 −1 |
 | 4 | `DODGE` | 회피 | 이 용병을 대상으로 하는 다음 1회의 모든 공격과 피해가 빗나갑니다. 효과가 발동하거나 지속시간이 종료되면 이 상태가 해제됩니다. | `회피.asset` | 발동 시 −1 |
 | 5 | `CRITICAL` | 치명타 | 자신의 공격력의 절반만큼 추가 공격력을 얻습니다. | `치명타.asset` | 발동 시 −1 |
+| 6 | `STUN` | 기절 | 아무 행동도 할 수 없습니다. | `기절.asset` | 자동 전투 턴 종료 시 몬스터 −1 |
 
 - 에셋 위치: `Assets/Game/1_Datas/6.StatusEffects/`, 아이콘 위치: `Assets/Game/4_Medias/StatusEffects/`.
-- 열거형 값은 에셋에 정수로 직렬화되므로 새 타입은 `StatusEffectType.cs`의 **끝에** 추가하고, 기존 멤버는 값을 명시해 고정한다 (`POWER = 0, WEAK = 2, VULNERABLE = 3, DODGE = 4, CRITICAL = 5`). 멤버를 지울 때도 남은 멤버의 값이 밀리지 않게 한다.
-- 에셋은 씬의 `StatusEffectSystem.effectDatas`에 등록해야 부여할 수 있다 (현재 등록: Power, 회피, 치명타).
+- 열거형 값은 에셋에 정수로 직렬화되므로 새 타입은 `StatusEffectType.cs`의 **끝에** 추가하고, 기존 멤버는 값을 명시해 고정한다 (`POWER = 0, WEAK = 2, VULNERABLE = 3, DODGE = 4, CRITICAL = 5, STUN = 6`). 멤버를 지울 때도 남은 멤버의 값이 밀리지 않게 한다.
+- 에셋은 씬의 `StatusEffectSystem.effectDatas`에 등록해야 부여할 수 있다 (현재 등록: Power, 회피, 치명타 — 기절은 등록 대기).
 
 ## 0 · 힘 (POWER)
 
@@ -159,3 +160,35 @@ AttackCoreGA → CoreSystem.AttackCoreGAPerformer
 - 부여 수단은 연결하지 않았다: 카드 `AddStatusEffectEffect` / 특성 `AddStatusTraitEffect`에서 타입 `CRITICAL`을 선택하면 된다.
 
 **에디터 설정**: 에셋 `EffectType`=`CRITICAL`(5), `Discription` 입력 완료, `spriteImage` 비어 있음(미연결). 씬 `StatusEffectSystem.effectDatas`에 등록 완료.
+
+## 6 · 기절 (STUN)
+
+에셋: `Assets/Game/1_Datas/6.StatusEffects/기절.asset` (아이콘 연결됨, 기존 자리표시 에셋의 `EffectType`만 0→6으로 수정)
+
+| 항목 | 값 |
+|---|---|
+| 타입 | `STUN` (6) |
+| 설명 (`Discription`) | 아무 행동도 할 수 없습니다. |
+| 스택 의미 | 행동 불가 턴 수 |
+| 판정 위치 | `AutoBattleSystem.AutoBattleGAPerformer`(`Battle()` 건너뜀), `ExtraAttackGAPerformer`(추가 공격 차단) |
+| 효과 동작 | 기절한 유닛은 자기 자동 전투 차례에 이동·기본 공격·코어 공격·특성 Battle 대체를 모두 하지 않는다. 다음 유닛 차례는 그대로 이어진다 |
+| 지속·감소 | `AutoBattleTurnGA` POST에서 `EnemySystem.AutoBattleTurnPostReaction`이 몬스터 전원, `HeroSystem.AutoBattleTurnPostReaction`이 영웅 전원의 `STUN` −1. 차례를 건너뛸 때는 소모하지 않는다 (같은 턴 추가 공격이 풀리지 않게) |
+| 코드 | `1.Systems/AutoBattleSystem.cs`, `1.Systems/EnemySystem.cs` |
+
+**연결 흐름**
+
+```
+AutoBattleGA → AutoBattleSystem.AutoBattleGAPerformer
+ ├ 기절 보유: Battle() 생략 → 다음 AutoBattleGA 예약은 그대로
+ └ 미보유  : Battle()
+ExtraAttackGA → 기절 보유 시 yield break
+AutoBattleTurnGA POST → EnemySystem: 몬스터 STUN −1 / HeroSystem: 영웅 STUN −1
+```
+
+**주의·한계**
+- 영웅 감소는 특성 3012 집중 도입 때 추가했다 (처음엔 몬스터만 감소).
+- 반격 등 `DealDamageGA` 구독 반응 특성은 막지 않는다 (ActionSystem 취소 개념 필요).
+- 이미 행동한 몬스터에게 턴 중 걸면 그 턴 종료에 −1 되어 효과가 없다 (다음 턴까지 막으려면 스택 2 이상).
+- 부여 수단: 특성 3012 집중(`AddStatusTraitEffect`, 배치·웨이브 생성 시 STUN 2). 카드 `AddStatusEffectEffect`는 연결하지 않았다. 연출·사운드 없음. Play 테스트는 하지 않았다.
+
+**에디터 설정**: 에셋 `EffectType`=`STUN`(6), `Discription`·`spriteImage` 연결 완료. 씬 `StatusEffectSystem.effectDatas`는 `GameDemoScene`에 등록 완료 (다른 전투 씬은 미등록).

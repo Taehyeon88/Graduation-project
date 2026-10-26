@@ -18,14 +18,26 @@ MonoBehaviour:
   <Description>k__BackingField: "1\uB77C\uC6B4\uB4DC \uC0DD\uC874 \uC2DC \uC758\uC2DD
     \uC9D1\uD589\uC778\uC5D0\uAC8C \uACF5\uACA9\uB825 +1, \uCCB4\uB825 +1\uC744 \uBD80\uC5EC\uD569\uB2C8\uB2E4."
   <Condition>k__BackingField:
-    rid: -2
+    rid: 7851381116610543689
   <Effect>k__BackingField:
-    rid: -2
-  ConditionName: 
+    rid: 7851381116610543690
+  ConditionName: TurnCondition
   timing: 0
-  EffectName: 
+  EffectName: ModifyStatEnemyByIdEffect
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 7851381116610543689
+      type: {class: TurnCondition, ns: , asm: Assembly-CSharp}
+      data:
+        reactionTiming: 1
+        turnType: 0
+    - rid: 7851381116610543690
+      type: {class: ModifyStatEnemyByIdEffect, ns: , asm: Assembly-CSharp}
+      data:
+        targetEnemyId: 2004
+        modifiers:
+        - statType: 1
+          amount: 1
+        - statType: 0
+          amount: 1

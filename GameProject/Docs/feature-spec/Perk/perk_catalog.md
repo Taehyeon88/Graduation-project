@@ -65,7 +65,7 @@
 - **"전투당"은 `StartBattle` 기준**이다. 현재 `StartBattle`은 스테이지(씬) 시작당 1회라 사실상 스테이지당 1번이다 (원작 확인 필요).
 - 대상은 아군 깃발(용병대장 코어)뿐이다. 유닛 대상 `DealDamageGA`는 영향을 받지 않는다.
 - `Caster`가 null인 `AttackCoreGA`(플레이어 스킬)와 `HeroView`는 조건에서 제외된다. 이는 `convention.md` 7절의 "Caster가 항상 있는 전투 GA" 전제와 어긋나는 기존 예외(`PlayerSkill`)에 대응한 것이다.
-- `AttackCoreGA`에는 `CoreSystem` Performer 외에 `IsMissed`를 읽는 곳이 없다. 같은 GA를 구독하는 다른 반응(예: 용병대장 `응수`의 `CoreAttackedCondition`)은 POST에서 정상 발동한다 — 빗나가도 응수가 나간다 (의도 확인 필요).
+- `AttackCoreGA`의 `IsMissed`는 `CoreSystem` Performer와 용병대장 `응수`의 `CoreAttackedCondition`이 읽는다. 빗나간 공격에는 피해가 없으므로 응수도 나가지 않는다.
 - 에셋 `Reaction Timing`이 POST면 이미 피해가 적용된 뒤라 효과가 없다. 반드시 PRE(0)로 둔다.
 - `GameSystem.Perks`에 같은 에셋을 두 번 넣으면 두 번 구독된다 (중복 방지 없음).
 - **Play 테스트는 하지 않았다.** 컴파일·에셋 직렬화·`GameSystem.Perks` 반영만 확인했다. 확인 항목: 첫 적 공격은 피해 0·모션 재생, 두 번째부터 정상 피해, 영웅/플레이어 스킬의 적 깃발 공격은 영향 없음, `StartBattle` 이후 다시 1번 무효.

@@ -16,6 +16,9 @@ public class MoveSystem : Singleton<MoveSystem>
     private Dictionary<HeroView, Vector2Int> roundStartPos = new();   //영웅별 이번 라운드 시작 위치 (첫 조회 시 기록)
     private HashSet<HeroView> movePaid = new();                       //시작 위치를 떠나며 AP를 낸 영웅 (복귀 시 환급 대상)
     private HashSet<HeroView> placedThisRound = new();                //이번 라운드에 카드로 배치된 영웅 (이동 불가)
+    private HashSet<Vector2Int> extendedDests = new();                //마지막 이동 범위 계산에서 발판 효과로만 갈 수 있는 칸
+    private Dictionary<PerformMoveGA, IExtendedMoveTerrain> extendedMoves = new();   //예약된 확장 범위 이동과 그 발판 효과
+    private HashSet<HeroView> extendedBonusUsed = new();              //이번 라운드에 확장 이동 보너스를 받은 영웅 (라운드당 1회)
     private void OnEnable()
     {
         ActionSystem.AttachPerformer<PerformMoveGA>(PerformMoveGAPerformer);
@@ -41,7 +44,17 @@ public class MoveSystem : Singleton<MoveSystem>
             return;
 
         var performMoveGA = reservedHeroMoves.Dequeue();
-        if (performMoveGA.mover is HeroView hero && !TryApplyMoveAP(hero, performMoveGA)) return;   //예약 후 AP가 부족해졌으면 이동 취소
+        bool isExtendedMove = extendedMoves.Remove(performMoveGA, out IExtendedMoveTerrain extendedTerrain);
+        if (performMoveGA.mover is HeroView hero)
+        {
+            if (!TryApplyMoveAP(hero, performMoveGA)) return;   //예약 후 AP가 부족해졌으면 이동 취소
+
+            if (isExtendedMove && extendedBonusUsed.Add(hero))   //확장 범위 이동 보너스는 영웅당 라운드 1회, 이동이 끝난 뒤 적용
+            {
+                foreach (GameAction reaction in extendedTerrain.GetExtendedMoveReactions(hero))
+                    performMoveGA.PostReactions.Add((reaction, null));
+            }
+        }
 
         ActionSystem.Instance.Perform(performMoveGA);
     }
@@ -83,6 +96,8 @@ public class MoveSystem : Singleton<MoveSystem>
                 if (heroMovePaths.TryGetValue(pos, out var path))
                 {
                     PerformMoveGA performMoveGA = new(currentHero, path);
+                    if (extendedDests.Contains(pos) && TryGetExtendedMoveTerrain(GetRoundStartPos(currentHero), out IExtendedMoveTerrain extendedTerrain))
+                        extendedMoves[performMoveGA] = extendedTerrain;
                     reservedHeroMoves.Enqueue(performMoveGA);
                     break;
                 }
@@ -166,7 +181,36 @@ public class MoveSystem : Singleton<MoveSystem>
             path.Reverse();
             paths.Add(dest, path);
         }
+
+        //이동 기준칸이 확장 이동 발판이고 아직 그 칸에 있으면, 기본 범위 밖의 조건을 만족하는 빈 칸으로 직접 이동 가능
+        extendedDests.Clear();
+        if (current == start && TryGetExtendedMoveTerrain(start, out IExtendedMoveTerrain extendedTerrain))
+        {
+            for (int x = 0; x < TokenSystem.Instance.gridWidth; x++)
+            {
+                for (int y = 0; y < TokenSystem.Instance.gridHeight; y++)
+                {
+                    Vector2Int pos = new(x, y);
+                    if (pos == current || paths.ContainsKey(pos)) continue;
+                    if (!TokenSystem.Instance.API.IsGridEmpty(pos) || EnemySystem.Instance.SetupPoses.Contains(pos)) continue;
+                    if (!extendedTerrain.AllowsExtendedMove(heroView, start, pos)) continue;
+
+                    paths.Add(pos, new List<Vector2Int> { pos });
+                    extendedDests.Add(pos);
+                }
+            }
+        }
         return paths;
+    }
+
+    //기준칸에 확장 이동 효과를 가진 발판이 있으면 그 효과 (효과 템플릿은 상태가 없어 사본이 아니라 데이터에서 조회)
+    private bool TryGetExtendedMoveTerrain(Vector2Int pos, out IExtendedMoveTerrain extendedTerrain)
+    {
+        extendedTerrain = null;
+        if (!TokenSystem.Instance.Setup.TryGetTerrain(pos, out TerrainView terrain)) return false;
+
+        extendedTerrain = terrain.Data.Effect as IExtendedMoveTerrain;
+        return extendedTerrain != null;
     }
 
     //시작 위치 중심 3x3 안, 빈 칸, 적 배치 구간 제외 (영웅 배치 구간은 이동 가능, 시작 위치는 복귀 목적지라 항상 허용)
@@ -223,6 +267,7 @@ public class MoveSystem : Singleton<MoveSystem>
         roundStartPos.Clear();   //새 라운드: 시작 위치 / AP 지불 / 배치 기록 초기화
         movePaid.Clear();
         placedThisRound.Clear();
+        extendedBonusUsed.Clear();
     }
 
     //카드로 배치된 영웅은 해당 라운드 동안 이동 불가 (전투 전 초기 배치는 PlayCardGA를 거치지 않아 제외)

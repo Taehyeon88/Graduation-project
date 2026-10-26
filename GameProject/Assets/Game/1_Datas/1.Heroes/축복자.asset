@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HeroData
   <Id>k__BackingField: 1011
   <Sprite>k__BackingField: {fileID: 21300000, guid: d3e28876011e5b44280640bdbc459870, type: 3}
-  <Health>k__BackingField: 2
-  <Damage>k__BackingField: 1
+  <Damage>k__BackingField: 2
+  <Health>k__BackingField: 1
   <Speed>k__BackingField: 2
   <Traits>k__BackingField: []
   <APCost>k__BackingField: 2

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 880c622939e1d6a47961ec0f0c85aa6b, type: 3}
-  m_Name: Simple_Wave
+  m_Name: "\uC77C\uBC18\uC804\uD22C_\uC6E8\uC774\uBE0C"
   m_EditorClassIdentifier: Assembly-CSharp::WaveData
   <Id>k__BackingField: 8001
   <EnemyDatas>k__BackingField:

@@ -20,6 +20,7 @@
 | 약화 | `VULNERABLE` | 피격자 디버프: 이 효과를 가진 대상이 받는 피해 ×1.5 | `DamageCaculator.CalculateVulnerable` | 영웅 턴 종료 시 1 감소 |
 | 회피 | `DODGE` | 이 용병을 대상으로 하는 다음 1회의 모든 공격과 피해가 빗나감. 발동하면 해제 | `DamageSystem.DealDamageGAPerformer` | 발동 시 스택 1 소모, 지속시간 없음 |
 | 치명타 | `CRITICAL` | 자신의 공격력의 절반만큼 추가 공격력을 얻음 | `DamageCaculator.GetCritical`(가산), `DamageSystem`·`CoreSystem`(소모) | 피해가 적용된 공격 1회마다 스택 1 소모, 지속시간 없음 |
+| 기절 | `STUN` | 아무 행동도 할 수 없음 | `AutoBattleSystem`(행동 차단) | 자동 전투 턴 종료 시 몬스터 스택 1 감소 |
 
 ## POWER · 힘
 
@@ -75,3 +76,15 @@ DealDamageGA → DamageSystem.DealDamageGAPerformer
   - 한 특성이 `DealDamageGA`와 `AttackCoreGA`를 연달아 발행하면 첫 GA만 보너스를 받고 소모한다.
   - 영웅 `HeroData.Critical`(확률 스탯, 표시 전용)과는 별개다. 부여 수단(카드·특성)은 연결하지 않았다. Play 테스트는 하지 않았다.
   - 에디터: 에셋 `EffectType`=`CRITICAL`(5), `Discription` 입력 완료, `StatusEffectSystem.effectDatas` 등록 완료, `spriteImage`는 미연결.
+
+## STUN · 기절
+
+- 에셋: `기절.asset` (아이콘 연결됨). 상세는 [카탈로그 6 · 기절](StatusEffect/status_effect_catalog.md) 참조.
+- 설명: 아무 행동도 할 수 없습니다.
+- 스택 의미: 행동 불가 턴 수. 자동 전투 턴 종료마다 몬스터·영웅 전원이 스택 1 감소.
+- 판정: `AutoBattleSystem.AutoBattleGAPerformer`가 기절한 유닛의 `Battle()`(이동·기본 공격·코어 공격·특성 Battle 대체)을 건너뛰고, `ExtraAttackGAPerformer`가 추가 공격을 막는다. 감소는 `EnemySystem.AutoBattleTurnPostReaction`(몬스터)·`HeroSystem.AutoBattleTurnPostReaction`(영웅), 둘 다 `AutoBattleTurnGA` POST.
+- 주의·한계:
+  - 영웅 감소는 특성 3012 집중 도입 때 추가했다 (처음엔 몬스터만 감소).
+  - 반격 등 `DealDamageGA` 구독 반응 특성은 막지 않는다 (ActionSystem 취소 개념 필요). 이미 행동한 몬스터에게 턴 중 걸면 그 턴 종료에 −1 되어 효과가 없다.
+  - 부여 수단: 특성 3012 집중(배치·웨이브 생성 시 STUN 2). 카드는 연결하지 않았다. Play 테스트는 하지 않았다.
+  - 에디터: 에셋 `EffectType`=`STUN`(6), `GameDemoScene`의 `StatusEffectSystem.effectDatas` 등록 완료.

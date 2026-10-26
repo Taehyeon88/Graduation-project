@@ -22,6 +22,9 @@ public class GameSystem : Singleton<GameSystem>
     [field: SerializeField] public HeroCaptainData HeroCaptainData { get; private set; }   //용병대장(아군 코어) 초기 데이터
     [field: SerializeField] public EnemyFlagData EnemyFlagData { get; private set; }       //적 세력 깃발(적 코어) 데이터
 
+    public int HeroCaptainHealth { get; private set; }      //다음 전투로 이어지는 용병대장 현재 체력 (런 단위)
+    public int HeroCaptainMaxHealth { get; private set; }   //다음 전투로 이어지는 용병대장 최대 체력 (런 단위)
+
 
     protected override void Awake()
     {
@@ -50,6 +53,14 @@ public class GameSystem : Singleton<GameSystem>
     private IEnumerator GameClearGAPerformer(GameClearGA gameClearGA)
     {
         IsGameClear = true;
+
+        //용병대장 체력을 다음 스테이지로 이어감
+        HeroCaptainView captain = HeroSystem.Instance.HeroCaptain;
+        if (captain != null)
+        {
+            HeroCaptainHealth = captain.CurrentHealth;
+            HeroCaptainMaxHealth = captain.MaxHealth;
+        }
 
         //영웅·몬스터 배치 가능 구역 VG 제거
         VisualGridCreator.Instance.RemoveVisualGrid(HeroSystem.Instance.gameObject.GetInstanceID(), "Zone_Hero");
@@ -116,5 +127,7 @@ public class GameSystem : Singleton<GameSystem>
         IsGameOver = false;
         IsGameClear = false;
         Deck = startingDeck.Where(d => d != null).Select(d => new Hero(d)).ToList();
+        HeroCaptainHealth = HeroCaptainData.Health;
+        HeroCaptainMaxHealth = HeroCaptainData.Health;
     }
 }

@@ -32,7 +32,7 @@ Assets/Game/
 │  └─ CardEffectRelative/  #   분류용
 ├─ 3.Views/                # CombatantView/HeroView/EnemyView 등 토큰의 뷰 레이어
 ├─ 4.Creators/             # TokenCreator/ProjectionCreator 등 생성 담당
-├─ 5.Data/                 # ScriptableObject 데이터 클래스 정의(~Data 접미사, 16개) — 실 자산은 1_Datas/(2절)
+├─ 5.Data/                 # ScriptableObject 데이터 클래스 정의(~Data 접미사, 17개) — 실 자산은 1_Datas/(2절)
 ├─ Effects/                # Effect(Models/Effect.cs) 서브클래스 — SkillAbility.Effects에 담기는 데이터+로직 홀더
 ├─ Enums/                  # 열거형 13개
 ├─ Extensions/             # 확장 메서드(ArrayExtenstion, ListExtension)
@@ -42,14 +42,15 @@ Assets/Game/
 │  ├─ Attributes/          # 커스텀 인스펙터 속성(ShowIfAttribute.cs, ShowIfDrawer.cs)
 │  ├─ Util/                # 정적 헬퍼(Utility, UtilityBFS, DamageCaculator, GridLayoutImageResizer)
 │  └─ DontDestroyedObject.cs
-├─ Interfaces/             # I 접두사 인터페이스 7개: IHaveCaster, IDamageable, IHaveDamage, IHaveDistance, IUseCondition, IUseCustomRangeVG, IUseCustomTargetVG
-├─ Models/                 # 도메인 모델(SO 아닌 순수 C# 클래스): Token/TokenGrid, Hero/HeroPreview, Skill/SkillAbility/Effect(추상 베이스), Trait/TraitCondition/TraitEffect(추상), TerrainEffect(추상), Card
+├─ Interfaces/             # I 접두사 인터페이스 11개: IHaveCaster, IDamageable, IHaveDamage, IHaveDistance, IUseCondition, IUseCustomRangeVG, IUseCustomTargetVG, IAPCostModifier, INeutralPlacement, IBattleOverride, ILimitedTrigger
+├─ Models/                 # 도메인 모델(SO 아닌 순수 C# 클래스): Token/TokenGrid, Hero/HeroPreview, Rumor(추상), Skill/SkillAbility/Effect(추상 베이스), Trait/TraitCondition/TraitEffect(추상), TerrainEffect(추상), Card
 │  └─ Modes/               #   범위·타겟 선정 전략(RangeMode/TargetMode)
 ├─ Traits/                 # TraitCondition/TraitEffect(Models/) 서브클래스 — TraitData가 [SerializeReference]로 조립: AutoBattleTurnCondition, DealDamageCondition, TurnCondition / AddStatusTraitEffect, HealOnDamageEffect
+├─ Rumors/                 # Rumor(Models/) 서브클래스 — RumorData가 [SerializeReference]로 조립: PowerfulRumor, FlexibleRumor, MasteredRumor
 ├─ Terrains/               # TerrainEffect(Models/) 서브클래스 — TerrainData가 [SerializeReference]로 조립: BushEffect
 ├─ PlayerSkills/           # PlayerSkill(Models/) 서브클래스 — PlayerSkillData가 [SerializeReference]로 조립: SharpDagger
 ├─ SubSystems/             # Singleton 파사드가 위임하는 실행 컴포넌트(TokenMainAPI/TokenServiceAPI/TokenSetup, GridSelector, TooltipTrigger)
-├─ UI/                     # 화면별 UI 컴포넌트(~UI 접미사, SkillsUI/StatusEffectsUI/TurnPopUpUI 등) + AudioMixerController
+├─ UI/                     # 화면별 UI 컴포넌트(~UI 접미사, SkillsUI/StatusEffectsUI/TurnPopUpUI/TavernUI/RumorSelectUI/RumorSlotUI/DeckViewUI 등) + AudioMixerController
 └─ GameSystem.cs           # 메타 상태(골드/스테이지/영웅 로스터) 전담 Singleton(상세는 convention.md 6절)
 ```
 
@@ -80,7 +81,7 @@ Assets/Game/
 - **실제 씬**(루트): `GameDemoScene.unity`, `StartScene.unity`
 - **개발·테스트용**(`DevelopScene/`, 4개): `MapTestScene.unity`, `New Scene.unity`, `SpriteTestScene.unity`, `UIScene.unity`
 
-## 4. `3_Prefabs/` — 프리팹 (37개)
+## 4. `3_Prefabs/` — 프리팹 (38개)
 
 | 폴더 | 개수 | 파일 |
 |---|---|---|
@@ -88,7 +89,7 @@ Assets/Game/
 | `Isometrics/` | 4 | `Grid_Tile`, `Side_Tile`, `TestWorld_1`, `TileVisual` |
 | `Models/` | 3 | `EnemyModel`, `HeroModel`, `WallModel` |
 | `Projections/` | 2 | `RatGeneral_Stone`, `Skeleton_BoneArrow` |
-| `UI/` | 11 | `CaptainDetailsUI`(호버한 용병대장 정보 패널), `DisPlayUI`, `GameClearUI`(승리 패널·확인/나가기 버튼), `EnemyFlagDetailsUI`(호버한 적 세력 깃발 정보 패널), `EnemyUI`, `SettingUI`, `StatusEffectUI`, `StatusEffectUIAtWorld`, `TerrainDetailsUI`(호버한 지형지물·장애물 정보 패널), `TokenDetailsUI`(호버한 영웅·몬스터 정보 패널), `TraitUI` |
+| `UI/` | 12 | `CaptainDetailsUI`(호버한 용병대장 정보 패널), `DisPlayUI`, `FloatingText`(피해 수치 등 월드 공간 3D TMP, `FloatingTextSystem`이 풀링), `GameClearUI`(승리 패널·확인/나가기 버튼), `EnemyFlagDetailsUI`(호버한 적 세력 깃발 정보 패널), `EnemyUI`, `SettingUI`, `StatusEffectUI`, `StatusEffectUIAtWorld`, `TerrainDetailsUI`(호버한 지형지물·장애물 정보 패널), `TokenDetailsUI`(호버한 영웅·몬스터 정보 패널), `TraitUI` |
 | `Views/` | 16 | `ArrowView`, `CardArrowView`(카드 → 마우스 화살), `CardView`, `CardViewInPile`, `CombatantViewBase`, `CoreView`, `EnemyFlagView`(적 코어), `EnemyView`, `HeroCaptainView`(아군 코어·용병대장), `HeroPreView`, `HeroView`, `ObstacleView`(파괴 가능 장애물), `PopUp_Text_View`, `ProjectionView`, `SkillView`, `TerrainView`(발판 타일) |
 
 ## 5. `4_Medias/` — 스프라이트/이미지 (98개 png)

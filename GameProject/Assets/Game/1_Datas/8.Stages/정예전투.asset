@@ -10,18 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5e590785f16a7254fac52abcb776de1d, type: 3}
-  m_Name: TestStage
+  m_Name: "\uC815\uC608\uC804\uD22C"
   m_EditorClassIdentifier: Assembly-CSharp::StageData
-  <waveData>k__BackingField: {fileID: 11400000, guid: bf15f18d7a5abbf4a8990cabc320c74c, type: 2}
+  <waveData>k__BackingField: {fileID: 11400000, guid: 46b916778ba917447a375ac35713f6c7, type: 2}
   <NeutralPositions>k__BackingField:
   - {x: 0, y: 2}
-  - {x: 3, y: 0}
+  - {x: 3, y: 1}
   <ObstacleSpawns>k__BackingField:
-  - Position: {x: 1, y: 1}
-    Data: {fileID: 11400000, guid: 6f945b1bb495a764481a80faf8e6385b, type: 2}
+  - Position: {x: 1, y: 0}
+    Data: {fileID: 11400000, guid: c7133e1c98c8a8940a5e927237b15563, type: 2}
   <TerrainSpawns>k__BackingField:
-  - Position: {x: 2, y: 2}
-    Data: {fileID: 11400000, guid: a050102c7ac557542825e348d901a016, type: 2}
-  <PlayerCoreHealth>k__BackingField: 10
-  <EnemyCoreHealth>k__BackingField: 10
+  - Position: {x: 2, y: 3}
+    Data: {fileID: 11400000, guid: 9cd8fdab07124aa4fbf0b44608047009, type: 2}
+  <EnemyCoreHealth>k__BackingField: 16
   <StageBGMId>k__BackingField: 132

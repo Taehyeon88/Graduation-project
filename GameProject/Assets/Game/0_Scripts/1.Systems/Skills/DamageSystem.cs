@@ -66,6 +66,7 @@ public class DamageSystem : Singleton<DamageSystem>
                 if (!dealDamageGA.IgnoreDodge && target is CombatantView dodger && dodger.CheckStatusEffectExist(StatusEffectType.DODGE))
                 {
                     dodger.RemoveStatusEffect(StatusEffectType.DODGE, 1);
+                    if (FloatingTextSystem.Instance != null) FloatingTextSystem.Instance.ShowImmune(dodger, FloatingTextSystem.DodgeLabel);
                     continue;
                 }
 
@@ -95,6 +96,7 @@ public class DamageSystem : Singleton<DamageSystem>
         {
             //회피 : 스택 1 소모하고 피해·피격 연출 생략
             singleDodger.RemoveStatusEffect(StatusEffectType.DODGE, 1);
+            if (FloatingTextSystem.Instance != null) FloatingTextSystem.Instance.ShowImmune(singleDodger, FloatingTextSystem.DodgeLabel);
         }
         else if (dealDamageGA.Target != null)
         {

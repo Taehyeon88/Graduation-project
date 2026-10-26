@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   <Id>k__BackingField: 2003
   <Sprite>k__BackingField: {fileID: 21300000, guid: 4fcf0387d82c96145beb3c2ef79d9fac, type: 3}
-  <Health>k__BackingField: 2
-  <Damage>k__BackingField: 3
+  <Damage>k__BackingField: 2
+  <Health>k__BackingField: 3
   <Speed>k__BackingField: 1
-  <Traits>k__BackingField: []
+  <Traits>k__BackingField:
+  - {fileID: 11400000, guid: 6fef8a66b901f9441a96640aa1855e12, type: 2}

@@ -20,9 +20,12 @@ MonoBehaviour:
     +1, \uC774\uB3D9\uB825 +1\uC744 \uC5BB\uC2B5\uB2C8\uB2E4."
   <Sprite>k__BackingField: {fileID: 21300000, guid: 132b227c1eddf0843913efce8c85b330, type: 3}
   <Effect>k__BackingField:
-    rid: -2
+    rid: 7851381116610543695
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 7851381116610543695
+      type: {class: HillEffect, ns: , asm: Assembly-CSharp}
+      data:
+        damageBonus: 1
+        speedBonus: 1

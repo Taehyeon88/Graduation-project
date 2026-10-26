@@ -43,7 +43,9 @@ public class AutoBattleSystem : Singleton<AutoBattleSystem>
         CombatantView unit = PickNext();
         battleQueue.Remove(unit);
 
-        yield return unit.Battle();   //행동(MoveGA, DealDamageGA 등) 예약
+        //기절 : 이번 턴 행동 불가 (스택은 턴 종료 시 감소)
+        if (!unit.CheckStatusEffectExist(StatusEffectType.STUN))
+            yield return unit.Battle();   //행동(MoveGA, DealDamageGA 등) 예약
 
         //남은 유닛이 있으면, 예약한 행동 뒤에 다음 자동 전투 실행
         if (battleQueue.Count > 0)
@@ -56,6 +58,7 @@ public class AutoBattleSystem : Singleton<AutoBattleSystem>
         CombatantView caster = extraAttackGA.Caster;
         if (caster == null || !TokenSystem.Instance.API.IsTokenExist(caster)) yield break;
         if (GameSystem.Instance.IsGameClear || GameSystem.Instance.IsGameOver) yield break;
+        if (caster.CheckStatusEffectExist(StatusEffectType.STUN)) yield break;   //기절 : 추가 공격도 불가
 
         caster.ReserveAttack(TokenSystem.Instance.API.GetTokenPosition(caster));
     }

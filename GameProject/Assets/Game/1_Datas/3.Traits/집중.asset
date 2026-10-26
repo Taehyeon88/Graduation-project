@@ -18,14 +18,21 @@ MonoBehaviour:
   <Description>k__BackingField: "\uBC30\uCE58 \uC2DC 2\uB77C\uC6B4\uB4DC \uB3D9\uC548
     \uAE30\uC808\uC744 \uC5BB\uC2B5\uB2C8\uB2E4."
   <Condition>k__BackingField:
-    rid: -2
+    rid: 7851381116610543693
   <Effect>k__BackingField:
-    rid: -2
-  ConditionName: 
+    rid: 7851381116610543694
+  ConditionName: SelfDeployedCondition
   timing: 0
-  EffectName: 
+  EffectName: AddStatusTraitEffect
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 7851381116610543693
+      type: {class: SelfDeployedCondition, ns: , asm: Assembly-CSharp}
+      data:
+        reactionTiming: 1
+    - rid: 7851381116610543694
+      type: {class: AddStatusTraitEffect, ns: , asm: Assembly-CSharp}
+      data:
+        statusEffectType: 6
+        amount: 2

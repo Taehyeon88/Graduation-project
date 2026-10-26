@@ -65,6 +65,7 @@
 | StatSystem | StatSystem | |
 | PlayerSkillSystem | PlayerSkillSystem | `skillData`에 `SharpDagger.asset` 연결 |
 | TerrainSystem | TerrainSystem | 리액션 전용, 인스펙터 연결 없음 (발판 프리팹은 `TokenCreator.terrainPrefab`) |
+| FloatingTextSystem | FloatingTextSystem | 피해 수치·피해면역·회피 플로팅 텍스트. `textPrefab`에 `UI/FloatingText.prefab` 연결, 색·높이·시간 값은 인스펙터 |
 
 ### `--- PROCESSORS ---` (3개)
 | GameObject | 컴포넌트 |

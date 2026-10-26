@@ -79,7 +79,9 @@ public class WaveSystem : Singleton<WaveSystem>
             offset += wavePerEnemyCount[i];
 
         BuildSpawn(offset, count, out List<EnemyData> targets, out List<Vector2Int> positions);
+        List<EnemyView> existingEnemies = new(TokenSystem.Instance.EnemyViews);
         TokenSystem.Instance.Main.AddEnemys(targets.ToArray(), positions.ToArray());   //몬스터 생성
+        spawnWaveGA.SpawnedEnemies = TokenSystem.Instance.EnemyViews.Where(e => !existingEnemies.Contains(e)).ToList();
 
         Remain_wave_count--;
         nextWaveIndex++;
