@@ -94,7 +94,6 @@
 | TokenSystem | TokenSystem, TokenSetup, TokenMainAPI, TokenServiceAPI, TokenGrid | 5개 컴포넌트 번들 |
 | UISystem | UISystem | |
 | PauseSystem | PauseSystem | |
-| SoundSystem | SoundSystem | 자식 3개(BGM/SFX/Interaction용 Transform으로 추정, 미확인) |
 | TooltipSystem | TooltipSystem | |
 | VisualEffectSystem | **(없음, Transform만)** | 대응 스크립트 없는 빈 GameObject — 3절 참고 |
 | RewardSystem | RewardSystem | |
@@ -111,6 +110,11 @@
 | GameObject | 컴포넌트 |
 |---|---|
 | GameSystem | GameSystem |
+| PerkSystem | PerkSystem (`perksUI` = 같은 프리팹의 `Top Canvas/PerksUI`) |
+| SoundSystem | SoundSystem (자식 BGM/SFX/INTERACTION Transform 3개 — 오디오 소스 풀) |
+| FadeSystem | FadeSystem, Canvas(Overlay, sortingOrder 32767), CanvasGroup (`overlay`) — 자식 `Black`(전체 스트레치 검은 Image) |
+
+`PerkSystem`/`PerksUI`/`SoundSystem`/`FadeSystem`은 영속이라 씬(`--- SYSTEMS ---`/`--- MANAGERS ---`)에 따로 두지 않는다 — 씬에 두면 복제본이 `Singleton`에 파괴돼 유물 UI가 비어 보이거나 씬 쪽 설정이 무시된다. (SoundSystem은 StageScene에서도 이동 효과음이 필요해 `--- MANAGERS ---`(GameDemoScene/Tavern)에서 이곳으로 옮김.)
 
 ## 3. 발견한 이슈
 

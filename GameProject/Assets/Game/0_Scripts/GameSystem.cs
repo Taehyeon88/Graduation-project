@@ -110,13 +110,13 @@ public class GameSystem : Singleton<GameSystem>
         CurrentStageLevel++;
         IsGameClear = false;
 
-        SceneManager.LoadScene("StageScene");
+        FadeSystem.Instance.LoadSceneWithFade("StageScene");
     }
 
     public void StartFromScratch()
     {
         InitializeGameData();
-        SceneManager.LoadScene("StageScene");
+        FadeSystem.Instance.LoadSceneWithFade("StageScene");
     }
 
     //게임 내, 저장된 모든 데이터 초기화

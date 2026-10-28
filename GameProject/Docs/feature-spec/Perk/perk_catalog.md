@@ -12,14 +12,14 @@
 | 런타임 | `Models/Perk.cs` | 조건·효과를 `Clone()`해 보유, `OnAdd`/`OnRemove`로 구독 관리, 전투당 발동 횟수 카운트 |
 | 조건 | `Models/PerkCondition.cs` | `SubscribeCondition`/`UnsubscribeCondition`/`SubConditionIsMat(action)` — owner·Caster 필터 없음 |
 | 효과 | `Models/PerkEffect.cs` | `PerformReaction(action)` |
-| 시스템 | `1.Systems/PerkSystem.cs` | `Singleton`. `SetUp()`에서 `GameSystem.Perks`로 `Perk` 생성, `StartBattle` PRE에서 카운트 리셋, `OnDisable`에서 전부 해제 |
+| 시스템 | `1.Systems/PerkSystem.cs` | `Singleton`. `SetUp()`에서 `GameSystem.Perks`로 `Perk` 생성, `StartBattle` PRE에서 카운트 리셋. 영속(`--- GAMEMASTER ---` 하위)이라 `SetUp()`은 기존 `Perk`를 먼저 해제하고, 씬이 로드될 때마다(`sceneLoaded`) 구독 해제 후 보유 유물을 표시 전용으로 재구성 |
 | 소유 목록 | `GameSystem.Perks` (`List<PerkData>`) | 씬 전환 후에도 유지 |
 | 호출 | `MatchSetupSystem.StartSetting` | `StartBattle` 직전에 `PerkSystem.Instance.SetUp()` |
 
 - 에셋 위치: `Assets/Game/1_Datas/4.Perks/`. 조건 코드 `0_Scripts/Perks/Conditions/`, 효과 코드 `0_Scripts/Perks/Effects/`.
 - `Perk.Reaction` 순서: 조건 판정 → `MaxTriggersPerBattle` 검사(0이면 무제한) → 발동 횟수 증가 → 효과 실행.
 - 표시: `UI/PerkUI.cs`가 `Perk.OnCountChanged`를 구독해, 상한이 있는 유물은 아이콘 우하단(`CountText`)에 남은 횟수를 보이고 소진(`IsExhausted`)되면 아이콘을 `exhaustedColor`로 어둡게 한다. 상한 0(무제한)은 횟수 표시 묶음(`countRoot` = 프리팹의 `Text_BG`, 배경+숫자) 전체를 숨기고 항상 밝음.
-- 씬에는 `PerkSystem` GameObject가 `--- SYSTEMS ---` 아래에 1개 있어야 한다 (`GameDemoScene`에 배치됨).
+- `PerkSystem`은 `--- GAMEMASTER ---` 프리팹 아래에 1개 있다 (`perksUI`는 같은 프리팹의 `PerksUI`). 비전투 씬(StageScene·Tavern 등)에서도 보유 유물은 표시되며, 이때 횟수는 소모 상태가 아닌 초기값이다.
 
 ## 요약
 
@@ -71,4 +71,4 @@
 - `GameSystem.Perks`에 같은 에셋을 두 번 넣으면 두 번 구독된다 (중복 방지 없음).
 - **Play 테스트는 하지 않았다.** 컴파일·에셋 직렬화·`GameSystem.Perks` 반영만 확인했다. 확인 항목: 첫 적 공격은 피해 0·모션 재생, 두 번째부터 정상 피해, 영웅/플레이어 스킬의 적 깃발 공격은 영향 없음, `StartBattle` 이후 다시 1번 무효.
 
-**에디터 설정**: 에셋 `Id`=1, `Max Triggers Per Battle`=1, `Condition`=`AllyCoreAttackedByEnemyCondition`(`Reaction Timing`=`PRE`), `Effect`=`MissCoreAttackEffect`. `GameSystem.Perks`에 등록 완료, 씬 `PerkSystem` 배치 완료.
+**에디터 설정**: 에셋 `Id`=1, `Max Triggers Per Battle`=1, `Condition`=`AllyCoreAttackedByEnemyCondition`(`Reaction Timing`=`PRE`), `Effect`=`MissCoreAttackEffect`. `GameSystem.Perks`에 등록 완료, `PerkSystem`은 `--- GAMEMASTER ---` 프리팹에 배치 완료.

@@ -35,9 +35,9 @@ GameSystem.Perks (List<PerkData>, 씬 전환 후에도 유지)
   → Perk 생성(조건·효과 Clone) → Perk.OnAdd() = 조건이 GA 구독
   → GA 발생 → Perk.Reaction: 조건 판정 → MaxTriggersPerBattle 검사 → triggerCount++ → 효과
   → TurnGA(StartBattle) PRE: PerkSystem이 모든 Perk.ResetBattleCount()
-  → 씬 재로드: PerkSystem.OnDisable이 모든 Perk.OnRemove()
+  → 씬 로드: PerkSystem.OnSceneLoaded가 이전 구독을 OnRemove() 후, 보유 유물을 구독 없이 표시만 함 (전투 씬은 위 SetUp이 덮어씀)
 ```
-`PerkSystem` GameObject는 `--- SYSTEMS ---` 아래에 이미 배치되어 있다 (유물마다 새로 둘 필요 없음).
+`PerkSystem` GameObject는 영속 오브젝트 `--- GAMEMASTER ---` 프리팹 아래에 이미 배치되어 있다 (유물마다 새로 둘 필요 없음, 씬에는 두지 않는다).
 
 ## 5. 조건 단계 (`PerkCondition`)
 
@@ -178,7 +178,7 @@ public class MissCoreAttackEffect : PerkEffect
 - 발동 횟수는 **조건을 통과한 경우에만** 증가한다 (`Perk.Reaction`: 조건 → 상한 검사 → 증가 → 효과).
 - `Caster == null`인 GA가 있다 (플레이어 스킬의 `AttackCoreGA`/`DealDamageGA`). 이는 `convention.md` 7절의 "Caster가 항상 있는 전투 GA" 전제와 어긋나는 예외다. 조건에서 반드시 null을 처리한다.
 - 무효화형은 **공격 모션이 먼저 재생**된다. 모션 전에 막으려면 Performer 구조를 바꿔야 하므로 별도 협의가 필요하다.
-- `PerkSystem`이 씬에 없으면 `MatchSetupSystem`에서 `NullReference`가 난다.
+- `PerkSystem`이 `--- GAMEMASTER ---` 프리팹에 없으면 `MatchSetupSystem`에서 `NullReference`가 난다.
 - `GameSystem.Perks`에 같은 에셋을 두 번 넣으면 두 번 구독된다 (중복 방지 없음).
 - 에셋 `Image`는 임시 에셋 사용 (아트는 범위 제외). 검푸른 망토는 비어 있다.
 - 원작 규칙을 모르는 항목은 임의로 단정하지 말고 `(원작 확인 필요)`로 표기하고 임시값을 SO로 노출해 둔다.
