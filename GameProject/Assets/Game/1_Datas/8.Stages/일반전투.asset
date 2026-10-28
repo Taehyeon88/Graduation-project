@@ -22,6 +22,5 @@ MonoBehaviour:
   <TerrainSpawns>k__BackingField:
   - Position: {x: 2, y: 2}
     Data: {fileID: 11400000, guid: a050102c7ac557542825e348d901a016, type: 2}
-  <PlayerCoreHealth>k__BackingField: 10
   <EnemyCoreHealth>k__BackingField: 10
-  <StageBGMId>k__BackingField: 132
+  <StageBGMId>k__BackingField: 5002

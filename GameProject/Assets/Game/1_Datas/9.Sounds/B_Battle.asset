@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ad5f4cd64fd1ea9498c76a4d8d89ee0f, type: 3}
-  m_Name: SoundData 1
+  m_Name: B_Battle
   m_EditorClassIdentifier: Assembly-CSharp::SoundData
-  <SoundId>k__BackingField: 5001
+  <SoundId>k__BackingField: 5002
   <AudioType>k__BackingField: 0
-  <Clip>k__BackingField: {fileID: 0}
-  <Volume>k__BackingField: 1
-  <Loop>k__BackingField: 0
+  <Clip>k__BackingField: {fileID: 8300000, guid: b6b5c372fc126134690f33426603bdef, type: 3}
+  <Volume>k__BackingField: 0.5
+  <Loop>k__BackingField: 1
   editorType: 0

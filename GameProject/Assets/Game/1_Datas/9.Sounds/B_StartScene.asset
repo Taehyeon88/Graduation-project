@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ad5f4cd64fd1ea9498c76a4d8d89ee0f, type: 3}
-  m_Name: SoundData
+  m_Name: B_StartScene
   m_EditorClassIdentifier: Assembly-CSharp::SoundData
-  <SoundId>k__BackingField: 4040
-  <AudioType>k__BackingField: 1
-  <Clip>k__BackingField: {fileID: 0}
-  <Volume>k__BackingField: 1
-  <Loop>k__BackingField: 0
-  editorType: 2
+  <SoundId>k__BackingField: 5001
+  <AudioType>k__BackingField: 0
+  <Clip>k__BackingField: {fileID: 8300000, guid: 447973c5f2308b04eb7114fbe0a3e8d3, type: 3}
+  <Volume>k__BackingField: 0.5
+  <Loop>k__BackingField: 1
+  editorType: 0

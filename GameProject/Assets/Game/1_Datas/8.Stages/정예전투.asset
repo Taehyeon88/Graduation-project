@@ -23,4 +23,4 @@ MonoBehaviour:
   - Position: {x: 2, y: 3}
     Data: {fileID: 11400000, guid: 9cd8fdab07124aa4fbf0b44608047009, type: 2}
   <EnemyCoreHealth>k__BackingField: 16
-  <StageBGMId>k__BackingField: 132
+  <StageBGMId>k__BackingField: 5002

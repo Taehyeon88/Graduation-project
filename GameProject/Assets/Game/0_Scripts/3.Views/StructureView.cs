@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class StructureView : MonoBehaviour
 {
+    private const int HoverSoundId = 3001;   //전투씬 호버 대상 진입음(GridSelector)과 동일
+
     [SerializeField] private SpriteRenderer model;
     [SerializeField] private IsoObject isoObject;
     [SerializeField] private SpriteRenderer highlight;   //호버 시 표시하는 흰색 테두리
@@ -47,6 +49,7 @@ public class StructureView : MonoBehaviour
         if (isHovered) return;
         isHovered = true;
         highlight.enabled = true;
+        SoundSystem.Instance.PlaySound(HoverSoundId);
         anchor.position = Camera.main.WorldToScreenPoint(WorldCenter);   //구조물 위치 기준으로 SetMode가 pivot·간격을 정함
         TooltipSystem.Instance.Show(anchor, Data.Description, Data.name);
     }

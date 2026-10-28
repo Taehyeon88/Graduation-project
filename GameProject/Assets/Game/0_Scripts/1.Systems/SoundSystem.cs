@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 
 public class SoundSystem : Singleton<SoundSystem>     //씬을 넘나들면서 사용할 시스템
 {
@@ -27,6 +28,28 @@ public class SoundSystem : Singleton<SoundSystem>     //씬을 넘나들면서 �
     private List<AudioSource> interactionSources = new(20);
 
     private List<AudioSource> playingSounds;
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    //씬이 바뀌면 이어지던 브금 종료 (새 씬이 Start에서 자기 브금 재생)
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (Instance != this || playingSounds == null) return;
+
+        foreach (var source in bgmSources)
+        {
+            source.Stop();
+            playingSounds.Remove(source);
+        }
+    }
 
     private void Initialize()
     {
@@ -69,6 +92,25 @@ public class SoundSystem : Singleton<SoundSystem>     //씬을 넘나들면서 �
 
             interactionSources.Add(source);
         }
+    }
+
+    private static readonly string[] VolumeKeys = { "Master", "BGM", "SFX" };   //PlayerPrefs 키 = 믹서 노출 파라미터명
+
+    //저장된 볼륨을 믹서에 적용 (설정 UI가 없는 씬에서도 유지되도록 영속 시스템이 담당)
+    private void Start()
+    {
+        if (Instance != this) return;
+
+        foreach (string key in VolumeKeys)
+        {
+            SetVolume(key, PlayerPrefs.GetFloat(key, 1f));
+        }
+    }
+
+    //볼륨(0~)을 dB로 변환해 믹서 노출 파라미터에 적용
+    public void SetVolume(string parameterName, float volume)
+    {
+        bgmMixerGroup.audioMixer.SetFloat(parameterName, Mathf.Log10(Mathf.Max(volume, 0.0001f)) * 20);
     }
 
     private void Update()

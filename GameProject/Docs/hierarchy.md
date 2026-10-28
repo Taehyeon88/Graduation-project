@@ -106,15 +106,17 @@
 | GridSelector | GridSelector |
 
 ### `--- GAMEMASTER ---`
-루트 자체에 `DontDestroyedObject` 컴포넌트가 붙어 있음.
+루트 자체에 `DontDestroyedObject`와 `ButtonClickSound`(모든 UGUI 버튼 클릭 시 3005 재생) 컴포넌트가 붙어 있음.
 | GameObject | 컴포넌트 |
 |---|---|
 | GameSystem | GameSystem |
 | PerkSystem | PerkSystem (`perksUI` = 같은 프리팹의 `Top Canvas/PerksUI`) |
 | SoundSystem | SoundSystem (자식 BGM/SFX/INTERACTION Transform 3개 — 오디오 소스 풀) |
 | FadeSystem | FadeSystem, Canvas(Overlay, sortingOrder 32767), CanvasGroup (`overlay`) — 자식 `Black`(전체 스트레치 검은 Image) |
+| CheatSystem | CheatSystem(C 키 치트 토글, 치트 중 전투 시작 드로우 고정), Canvas(Overlay, sortingOrder 900), CanvasScaler — 자식 `Popup`(우하단 알림, CanvasGroup+TMP) |
+| SettingUI | SettingUI(`Singleton`), AudioMixerController, Canvas(Overlay, sortingOrder 1000), CanvasScaler, GraphicRaycaster — 자식 `UI`(패널, 기본 비활성) |
 
-`PerkSystem`/`PerksUI`/`SoundSystem`/`FadeSystem`은 영속이라 씬(`--- SYSTEMS ---`/`--- MANAGERS ---`)에 따로 두지 않는다 — 씬에 두면 복제본이 `Singleton`에 파괴돼 유물 UI가 비어 보이거나 씬 쪽 설정이 무시된다. (SoundSystem은 StageScene에서도 이동 효과음이 필요해 `--- MANAGERS ---`(GameDemoScene/Tavern)에서 이곳으로 옮김.)
+`PerkSystem`/`PerksUI`/`SoundSystem`/`FadeSystem`/`SettingUI`는 영속이라 씬(`--- SYSTEMS ---`/`--- MANAGERS ---`)에 따로 두지 않는다 — 씬에 두면 복제본이 `Singleton`에 파괴돼 유물 UI가 비어 보이거나 씬 쪽 설정이 무시된다. (SoundSystem은 StageScene에서도 이동 효과음이 필요해 `--- MANAGERS ---`(GameDemoScene/Tavern)에서 이곳으로 옮김.)
 
 ## 3. 발견한 이슈
 

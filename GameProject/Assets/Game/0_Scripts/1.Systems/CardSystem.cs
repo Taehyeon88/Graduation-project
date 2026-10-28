@@ -6,6 +6,9 @@ using UnityEngine.Serialization;
 
 public class CardSystem : Singleton<CardSystem>
 {
+    private const int DrawSoundId = 3003;   //카드 드로우 사운드 (장당 1회)
+    private static readonly string[] CheatDrawNames = { "겹습기사", "기병", "매복자", "축복자" };   //치트 고정 드로우 (견습기사 = 에셋명 겹습기사)
+
     [Header("Card Element")]
     [SerializeField] private HandView handView;
     [SerializeField] private RectTransform handTransform;
@@ -281,6 +284,7 @@ public class CardSystem : Singleton<CardSystem>
         Card card = drawPile.Draw();
         hand.Add(card);
         CardView cardView = CardViewCreator.Instance.CreateCardView(card, drawPilePoint, handTransform);
+        SoundSystem.Instance.PlaySound(DrawSoundId);
         yield return handView.AddCard(cardView);
     }
 
@@ -340,13 +344,33 @@ public class CardSystem : Singleton<CardSystem>
             HeroSystem.Instance.CurrentHero = TokenSystem.Instance.API.GetTokenByPosition(playCardGA.TargetPos) as HeroView;
     }
 
+    //치트 모드: 지정 카드를 드로우 더미 맨 위로 (덱에 없으면 무시, 나머지는 기존 셔플 순서 = 랜덤). 올린 카드 수를 반환
+    private int MoveCheatCardsToTop()
+    {
+        int insertIndex = 0;
+        foreach (string name in CheatDrawNames)
+        {
+            int index = drawPile.FindIndex(c => c.Title == name);
+            if (index < 0) continue;
+
+            Card card = drawPile[index];
+            drawPile.RemoveAt(index);
+            drawPile.Insert(insertIndex++, card);
+        }
+        return insertIndex;
+    }
+
     //Reactions
     //전투 시작 시에만 드로우 (턴 시작 드로우 없음, 이후 드로우는 카드 뽑기 버튼)
     private void StartBattlePreReaction(TurnGA turnGA)
     {
         if (turnGA.Type != TurnType.StartBattle) return;
 
-        DrawCardsGA drawCardsGA = new(startDrawAmount);
+        int drawAmount = startDrawAmount;
+        if (CheatSystem.Instance != null && CheatSystem.Instance.IsCheatMode)
+            drawAmount = Mathf.Max(startDrawAmount, MoveCheatCardsToTop());   //고정 카드는 드로우 장수를 넘어도 전부 포함
+
+        DrawCardsGA drawCardsGA = new(drawAmount);
         ActionSystem.Instance.AddReaction(drawCardsGA);
     }
 }
