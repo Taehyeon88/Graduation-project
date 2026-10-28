@@ -8,4 +8,5 @@ public class StatusEffectData : ScriptableObject
     [field: SerializeField] public StatusEffectType EffectType { get; private set; }
     [field: SerializeField] public string Discription { get; private set; }
     [field: SerializeField] public Sprite spriteImage { get; private set; }
+    [field: SerializeField] public Color Color { get; private set; } = Color.white;
 }

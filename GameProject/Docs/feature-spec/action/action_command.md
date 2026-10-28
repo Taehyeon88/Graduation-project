@@ -46,7 +46,7 @@
 #### `AutoBattleTurnGA` / `AutoBattleGA`
 - **파일**: `2.GameActions/AutoBattleTurnGA.cs`, `AutoBattleGA.cs` (필드 없음)
 - **Performer**: `TurnSystem.AutoBattleTurnGAPerformer`(팝업 → `AutoBattleSystem.CacheCombatants` → `AddReaction(AutoBattleGA)`), `AutoBattleSystem.AutoBattleGAPerformer`(큐 정리 → 동속 주사위 → `unit.Battle()` → 큐가 남으면 `AddReaction(AutoBattleGA)`)
-- **리액션**: `AutoBattleTurnGA` PRE — `TurnSystem`(`currentTurn` 선반영), `HeroSystem.AutoBattleTurnPreReaction`(영웅 "내 턴 종료" SE 감소). POST — `TurnSystem`이 `TurnGA(Enemy)` 체이닝(단 `GameSystem.IsGameClear`이면 예약하지 않고 종료 — 승리 후 보상 선택 단계에서 턴 정지), `HeroSystem.AutoBattleTurnPostReaction`(영웅마다 `HeroData.Critical`% 확률로 `AddStatusEffectGA(CRITICAL, 1)` 예약)
+- **리액션**: `AutoBattleTurnGA` PRE — `TurnSystem`(`currentTurn` 선반영), `HeroSystem.AutoBattleTurnPreReaction`(영웅 "내 턴 종료" SE 감소). POST — `TurnSystem`이 `TurnGA(Enemy)` 체이닝(단 `GameSystem.IsGameClear`이면 예약하지 않고 종료 — 승리 후 보상 선택 단계에서 턴 정지), `HeroSystem.AutoBattleTurnPostReaction`(영웅의 `STUN` 1 감소 후, 영웅마다 `HeroData.Critical`% 확률로 `AddStatusEffectGA(CRITICAL, 1)` 예약), `EnemySystem.AutoBattleTurnPostReaction`(몬스터의 `STUN` 1 감소)
 - **파생 액션**: `Battle()`이 판단은 모두 예약 시점에 끝내고 GA만 예약 — ① 이동 한계 전이고 정면이 비면 `MoveGA`(1칸, AP 소모 없음) ② 이동했다고 가정한 위치의 정면에 적이 있으면 `DealDamageGA(Amount, target, attacker, true)`(대상 확정), 이동 한계인데 정면이 비어 있으면 `AttackCoreGA`. 기본 공격 `DealDamageGA`는 `DamageSystem`이 기본 공격 모션 1(`Utility.GetBasicAttackTween`: 전진 → 타격 시점에 피해 → 복귀)을 재생. `AutoBattleSystem`은 `IsGameClear`/`IsGameOver`가 되면 큐를 비워 종료
 - **트리거 지점**: `TurnEndUI.TurnEnd`에서 `Perform(AutoBattleTurnGA)`
 
@@ -118,6 +118,7 @@
 - **필드**: `CombatantView mover`, `List<Vector2Int> path`
 - **Performer**: `MoveSystem.PerformMoveGAPerformer` — 경로 칸마다 `MoveGA` 체이닝 (AP 처리는 Performer가 아니라 아래 PRE 체이닝이 담당)
 - **PRE 체이닝(`PreReactions`)**: `MoveSystem.Update()`가 예약을 꺼낼 때 `TryApplyMoveAP`가 붙인다 — 라운드 시작 위치를 떠나는 첫 이동이면 `SpendAPGA`(1), 소모했던 영웅이 시작 위치로 돌아오면 `RefillAPGA(1)`, 그 외 이동은 없음. 규칙은 [combat-rules.md](../../Rule/combat-rules.md) §3-1
+- **파생 액션(POST)**: 이동 기준칸이 확장 이동 발판(`IExtendedMoveTerrain`, 예: `HillEffect`)이고 그 발판 효과로만 갈 수 있는 칸으로 이동한 영웅이면(영웅당 라운드 1회), `MoveSystem.PerformMoveGAPerformer`가 `extendedTerrain.GetExtendedMoveReactions(hero)`의 GA(`HillEffect`는 `ModifyStatGA` DAMAGE·SPEED)를 `performMoveGA.PostReactions.Add`로 종속 연결 — AP 처리 직후, 이동이 끝난 뒤 실행
 - **트리거 지점**: `MoveSystem.Update()`가 예약 큐(`reservedHeroMoves`)를 소비할 때 최초 `Perform()` 호출(플레이어 이동). 이동 모드 진입은 `PlayPlayerMoveMode`가 막는다(AP 부족, 카드 타겟 모드, **카드로 배치된 라운드의 영웅**)
 - **관련 체인**: §3-3
 
@@ -136,12 +137,12 @@
 - **Performer**: `DamageSystem.DealDamagePerformer` — `IsBasicAttack && Target != null`이면(대상은 `Battle()`이 예약 시점에 확정) 기본 공격 모션 재생·타격 시점에 피해, 복귀까지 대기. `IsRangedAttack`이면 근접 모션 대신 `ProjectileSystem.PlayArrowShot`으로 제자리에서 화살을 쏘고 도착 시점에 피해(복귀 대기 없음). 대상이 `DODGE` 상태이상을 가졌고 `IgnoreDodge`가 아니면 스택 1을 소모하고 피해·피격 연출을 생략(다중 대상은 해당 대상만 건너뜀). 이후 `DamageCaculator.GetDamage()`로 최종 수치 계산 + 피격 VFX + `target.Damage()` 호출(체력 감소 처리, 체력 0 이하 시 `KillGA`를 이 액션의 `PostReactions`에 직접 추가)
 - **POST 구독자**: `피묻은 도끼` 특성 (`DealDamageCondition` POST + `HealOnDamageEffect`, 조건: `Trait.Reaction`이 `Caster == owner`인 GA만 통과) — 확률 조건 충족 시 `HealGA` 예약(자힐). `투지` 특성 (`SelfSurvivedDamageCondition` POST + `ModifyStatTraitEffect`, `FiltersByCaster = false`) — 소유자가 `DamagedTargets`에 있고 생존(`CurrentHealth > 0`)이면 소유자 공격력 +1 `ModifyStatGA` 예약 (`maxTriggers` 0 = 제한 없음)
 - **파생 액션**: `CombatantView.Damage()` 내부에서 체력 ≤ 0이면 `dealDamageGA.PostReactions.Add((KillGA, null))` — 전역 체이닝이 아니라 **이 인스턴스에 직접 종속**
-- **트리거 지점**: 전투 계열 다수의 공통 최종 경로 — `CombatantView.Battle`(자동 전투, `isBasicAttack: true`), `AttackEnemyGAPerformer`, `SplashGAPerformer`, `KnockBackGAPerformer`(충돌 시) 등. `응수` 특성(`RetaliateEffect`, 용병대장이 코어 공격자에게 반격), 플레이어 스킬 `SharpDagger`(`PlayerSkillSystem.TryUse`가 `Perform`, `Caster` null·`IgnoreDodge` true)
+- **트리거 지점**: 전투 계열 다수의 공통 최종 경로 — `CombatantView.Battle`(자동 전투, `isBasicAttack: true`), `AttackEnemyGAPerformer`, `SplashGAPerformer`, `KnockBackGAPerformer`(충돌 시) 등. `응수` 특성(`RetaliateEffect`, 용병대장이 코어 공격자에게 반격), `돌격 화살통` 특성(`KillerAttackAllOpponentsEffect`, `SelfDeathCondition` PRE — 장애물 파괴 시 처치자 진영의 상대 전원에게 `Amount = killer.BaseDamage`, `Caster = killer`로 다중 대상 예약, 코어는 제외), 플레이어 스킬 `SharpDagger`(`PlayerSkillSystem.TryUse`가 `Perform`, `Caster` null·`IgnoreDodge` true)
 - **관련 체인**: §3-2, §3-3
 
 #### `KillGA`
 - **파일**: `Assets/Game/0_Scripts/2.GameActions/KillGA.cs`
-- **필드**: `Token Token`, `Tween Hit_Tween`, `Token Killer`(처치한 토큰 — `CombatantView.Damage`가 `dealDamageGA.Caster`를 넘김, 스킬 등 시전자가 없으면 null. `KillerAttackAllOpponentsEffect`가 사용)
+- **필드**: `Token Token`, `Tween Hit_Tween`, `Token Killer`(처치한 토큰 — `CombatantView.Damage`가 `dealDamageGA.Caster`를 넘김, 스킬 등 시전자가 없으면 null. `KillerAttackAllOpponentsEffect`가 처치자의 `BaseDamage`·진영을 얻는 데 사용)
 - **Performer**: `DamageSystem.KillGAPerformer` — 피격 흔들림 연출(`Hit_Tween`) 완료 대기 → 비주얼 그리드 정리 → 토큰 제거 (승패 판정은 하지 않음 — 코어 HP 기준으로 `AttackCoreGA`가 담당)
 - **트리거 지점**: 전역 `Perform`/`AddReaction`이 아니라, `DealDamageGA` 처리 중 `CombatantView.Damage()`가 체력 ≤ 0일 때 그 `DealDamageGA` 인스턴스의 `PostReactions`에 직접 추가되어서만 실행됨
 - **관련 체인**: §3-2

@@ -23,11 +23,11 @@ public class TokenDetailsUI : MonoBehaviour
     public void Show(CombatantView view)
     {
         portrait.sprite = view.TokenData.Sprite;
-        title.text = view.TokenData.Name;
+        title.text = RichTextFormatter.Format(view.TokenData.Name);
 
         attack.text = view.BaseDamage.ToString();
         health.text = $"{view.CurrentHealth}/{view.MaxHealth}";
-        speed.text = view.Speed.ToString();
+        speed.text = view.IsImmobile ? "-" : view.Speed.ToString();
         Hero hero = (view as HeroView)?.Hero;
         critical.transform.parent.gameObject.SetActive(hero != null);   //몬스터는 치명타 데이터가 없어 슬롯 숨김
         if (hero != null) critical.text = $"{hero.Critical}%";

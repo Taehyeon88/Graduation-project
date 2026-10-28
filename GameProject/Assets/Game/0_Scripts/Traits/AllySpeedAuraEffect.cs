@@ -51,6 +51,7 @@ public class AllySpeedAuraEffect : TraitEffect
 
         foreach (var target in targets)
         {
+            if (target.IsImmobile) continue;   //이동 불가는 속도 증감 대상 아님
             if (ownTraitResolved && target.HasTrait(ownTraitId)) continue;
 
             speedGrants.TryGetValue(target, out int granted);

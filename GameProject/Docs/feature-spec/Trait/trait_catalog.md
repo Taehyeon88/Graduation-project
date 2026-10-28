@@ -15,10 +15,10 @@
 | 조건 | `SelfDeathCondition` — 구독 `KillGA`, 판정 `KillGA.Token == owner` (owner = 장애물) |
 | 타이밍 | PRE (`reactionTiming: 0`) |
 | 효과 | `KillerAttackAllOpponentsEffect` |
-| 효과 동작 | `KillGA.Killer`가 영웅이면 `EnemyViews` 전체, 적이면 `HeroViews` 전체에 `owner.BaseDamage`(장애물의 공격력, Caster = owner)만큼 `DealDamageGA(Targets)` 예약. 처치자의 힘·치명타 보정 없음. 코어는 공격하지 않음 |
+| 효과 동작 | `KillGA.Killer`가 영웅이면 `EnemyViews` 전체, 적이면 `HeroViews` 전체에 `Killer.BaseDamage`만큼 `DealDamageGA(Targets)` 예약. 코어는 공격하지 않음 |
 | 파생 GA | `DealDamageGA` |
 | 코드 | `Traits/Conditions/SelfDeathCondition.cs`, `Traits/KillerAttackAllOpponentsEffect.cs` |
-| 원작 확인 필요 | 피해량(장애물 공격력으로 결정, 원작 기준 미확인), 적이 파괴했을 때의 동작, 코어 포함 여부 |
+| 원작 확인 필요 | 피해량(처치자 공격력 가정), 적이 파괴했을 때의 동작, 코어 포함 여부 |
 
 **에디터 설정**: `Condition`=`SelfDeathCondition`(`reactionTiming`=PRE), `Effect`=`KillerAttackAllOpponentsEffect`. `ConditionName`/`EffectName`에 클래스명을 적어 둔다.
 

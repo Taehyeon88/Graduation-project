@@ -18,6 +18,7 @@
 
 - 에셋 위치: `Assets/Game/1_Datas/4.Perks/`. 조건 코드 `0_Scripts/Perks/Conditions/`, 효과 코드 `0_Scripts/Perks/Effects/`.
 - `Perk.Reaction` 순서: 조건 판정 → `MaxTriggersPerBattle` 검사(0이면 무제한) → 발동 횟수 증가 → 효과 실행.
+- 표시: `UI/PerkUI.cs`가 `Perk.OnCountChanged`를 구독해, 상한이 있는 유물은 아이콘 우하단(`CountText`)에 남은 횟수를 보이고 소진(`IsExhausted`)되면 아이콘을 `exhaustedColor`로 어둡게 한다. 상한 0(무제한)은 횟수 표시 묶음(`countRoot` = 프리팹의 `Text_BG`, 배경+숫자) 전체를 숨기고 항상 밝음.
 - 씬에는 `PerkSystem` GameObject가 `--- SYSTEMS ---` 아래에 1개 있어야 한다 (`GameDemoScene`에 배치됨).
 
 ## 요약

@@ -42,16 +42,22 @@ public class CombatantView : Token, IDamageable
         get { return baseDamage; }
         private set
         {
-            baseDamage = Mathf.Max(1, value);
+            baseDamage = Mathf.Max(MinBaseDamage, value);
             UpdateDamageUI();
         }
     }
+    protected virtual int MinBaseDamage => 0;   //공격력이 내려갈 수 있는 하한 (영웅·몬스터는 오버라이드해서 1)
+
+    public const int ImmobileSpeed = -1;   //데이터 속도가 이 값이면 이동 불가 (전투 큐 제외, UI는 "-")
+
+    public bool IsImmobile { get; private set; }
+
     public int Speed
     {
         get { return speed; }
         private set
         {
-            speed = Mathf.Max(0, value);
+            speed = IsImmobile ? ImmobileSpeed : Mathf.Max(0, value);
             UpdateSpeedUI();
         }
     }
@@ -83,6 +89,7 @@ public class CombatantView : Token, IDamageable
         MaxHealth = health;
         CurrentHealth = health;
         BaseDamage = damage;
+        IsImmobile = speed < 0;
         Speed = speed;
         SetUpBaseBase(data);
         SetUpTraits(data, traitDatas);
@@ -144,7 +151,7 @@ public class CombatantView : Token, IDamageable
     //1) 이동 한계 전이고 정면이 비어 있으면 1칸 이동 예약 2) 이동했다고 가정한 위치의 정면에 적이 있으면 공격, 이동 한계인데 정면이 비어 있으면 상대 코어 공격
     public virtual IEnumerator Battle()
     {
-        if (Forward == Vector2Int.zero) yield break;
+        if (Forward == Vector2Int.zero || IsImmobile) yield break;
 
         //특성이 행동을 대체하면 기본 이동·공격은 하지 않음
         foreach (var trait in traits)
@@ -195,7 +202,7 @@ public class CombatantView : Token, IDamageable
     private void UpdateSpeedUI()
     {
         if (speedText != null)
-            speedText.SetText(Speed.ToString());
+            speedText.SetText(IsImmobile ? "-" : Speed.ToString());
     }
 
     public virtual void Damage(int amount, DealDamageGA dealDamageGA)
@@ -239,7 +246,7 @@ public class CombatantView : Token, IDamageable
                 BaseDamage += amount;
                 break;
             case StatType.SPEED:
-                Speed += amount;
+                if (!IsImmobile) Speed += amount;   //이동 불가는 속도 증감 무시
                 break;
         }
     }

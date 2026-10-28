@@ -11,9 +11,9 @@ public class VisualGridCreator : Singleton<VisualGridCreator>
     [SerializeField] Transform gridVisualView;
     [SerializeField] VisualGridData[] visualGridDatas;
 
-    [Header("Core Slots (그리드 밖 코어 위치의 VG)")]
-    [SerializeField] private Vector3 heroCaptainIsoPosition = new(-1f, 1.5f, 0.7f);
-    [SerializeField] private Vector3 enemyFlagIsoPosition = new(4f, 1.5f, 1.3f);
+    //코어 호버 테두리(VG) 고정 위치 (그리드 밖 Iso 좌표)
+    private static readonly Vector3 HeroCaptainVGPosition = new(-1.1f, 1.5f, 0.7f);
+    private static readonly Vector3 EnemyFlagVGPosition = new(4.1f, 1.5f, 1.3f);
 
     //코어는 타일이 없어 그리드 좌표와 겹치지 않는 가상 키로 VG 슬롯을 등록
     public static readonly Vector2Int HeroCaptainSlot = new(-1, -1);
@@ -54,9 +54,9 @@ public class VisualGridCreator : Singleton<VisualGridCreator>
             return;
         }
         vGByPosition.TryAdd(HeroCaptainSlot, temp2[count]);
-        temp2[count].position = heroCaptainIsoPosition;
+        temp2[count].position = HeroCaptainVGPosition;
         vGByPosition.TryAdd(EnemyFlagSlot, temp2[count + 1]);
-        temp2[count + 1].position = enemyFlagIsoPosition;
+        temp2[count + 1].position = EnemyFlagVGPosition;
     }
 
     public void ChangeVisualGrid(Vector2Int isoPosition, int tokenId, string beforeName, string afterName)

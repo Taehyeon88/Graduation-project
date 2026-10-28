@@ -32,15 +32,15 @@
 
 > 이 장애물을 파괴한 용병이 모든 적 용병을 추가로 공격합니다.
 
-- **구성**: `ObstacleView`(`Forward`가 zero라 `Battle()`이 즉시 끝남 → 스스로 행동하지 않음) + `ObstacleData`(체력·공격력·속도·특성). 에셋 `1_Datas/11.Obstacles/돌격 화살통.asset`(체력 4, 공격력 0, 속도 0). 프리팹 `3_Prefabs/Views/ObstacleView.prefab`. `CombatantView.BaseDamage`는 최소 1로 보정되지만 공격하지 않으므로 영향 없음.
+- **구성**: `ObstacleView`(`Forward`가 zero이고 속도 -1(`CombatantView.IsImmobile`)이라 전투 큐에서 제외되고 `Battle()`도 즉시 끝남 → 스스로 행동하지 않음, UI 속도는 `-`) + `ObstacleData`(체력·공격력·속도·특성). 에셋 `1_Datas/11.Obstacles/돌격 화살통.asset`(체력 4, 공격력 0, 속도 -1). 프리팹 `3_Prefabs/Views/ObstacleView.prefab`. `CombatantView.BaseDamage`는 최소 1로 보정되지만 공격하지 않으므로 영향 없음.
 - **공격 대상화**: `HeroView.IsTarget`/`EnemyView.IsTarget`에 `ObstacleView`를 포함. 기존 `ReserveAttack`이 정면 토큰이 장애물이면 `DealDamageGA`를 예약한다. 즉 장애물에 막힌 영웅·적은 정면 장애물을 공격한다.
 - **플레이어 스킬 제외**: `SharpDagger.IsValidTarget`은 `EnemyView`/`EnemyFlagView`만 허용하는 **허용 목록** 방식이라 변경 없이 장애물을 지정할 수 없다. 이 방식을 유지할 것.
 - **파괴**: 기존 `CombatantView.Damage → KillGA → DamageSystem.KillGAPerformer → TokenMainAPI.RemoveToken`. 영웅·적 목록에는 들어가지 않는다(`AddToken`의 `EnemyView`/`HeroView` 분기에 걸리지 않음).
 - **처치 효과**:
   - `KillGA.Killer`(`Token`, 기본 null) — `CombatantView.Damage`가 `dealDamageGA.Caster`를 넘긴다.
-  - 특성 `9001 돌격 화살통` = `SelfDeathCondition`(PRE) + `KillerAttackAllOpponentsEffect`. 처치자가 영웅이면 `EnemyViews` 전체, 적이면 `HeroViews` 전체에 `DealDamageGA(owner.BaseDamage, targets, owner)`(장애물의 공격력, Caster = 장애물)를 예약한다. 처치자가 없으면(스킬 등) 아무 일도 하지 않고 코어는 공격하지 않는다.
+  - 특성 `9001 돌격 화살통` = `SelfDeathCondition`(PRE) + `KillerAttackAllOpponentsEffect`. 처치자가 영웅이면 `EnemyViews` 전체, 적이면 `HeroViews` 전체에 `DealDamageGA(killer.BaseDamage, targets, killer)`를 예약한다. 처치자가 없으면(스킬 등) 아무 일도 하지 않고 코어는 공격하지 않는다.
   - PRE인 이유: `KillGA` performer가 토큰을 파괴하면 `OnDisable`이 구독을 해제해 POST에서는 놓칠 수 있다.
-- **(원작 확인 필요)**: 추가 공격 피해량(장애물 공격력으로 결정), 적이 파괴했을 때도 같은 효과인지(현재는 "영웅·적 모두"로 구현), 추가 공격이 코어도 포함하는지(현재 미포함).
+- **(원작 확인 필요)**: 추가 공격 피해량(처치자 공격력으로 가정), 적이 파괴했을 때도 같은 효과인지(현재는 "영웅·적 모두"로 구현), 추가 공격이 코어도 포함하는지(현재 미포함).
 
 ## 5. 발판 — 풀숲
 

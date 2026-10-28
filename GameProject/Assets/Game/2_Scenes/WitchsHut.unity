@@ -20216,9 +20216,9 @@ MonoBehaviour:
   enemy_Turn_Text: {fileID: 828841083}
   autoBattle_PopUp_UI: {fileID: 1311085944}
   autoBattle_Turn_Text: {fileID: 2003384320}
-  fade_in_duration: 0.9
-  fade_out_duration: 0.35
-  wait_duration: 1.85
+  fade_in_duration: 0.3
+  fade_out_duration: 0.3
+  wait_duration: 0.9
 --- !u!222 &2038626662
 CanvasRenderer:
   m_ObjectHideFlags: 0

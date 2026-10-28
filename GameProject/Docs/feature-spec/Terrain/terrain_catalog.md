@@ -54,7 +54,7 @@
 | 특성 | `Traits[0]` = `3.Traits/돌격 화살통.asset` (Id 9001) |
 | 조건 | `SelfDeathCondition` — 소유자 사망 시 통과 (`Traits/Conditions/SelfDeathCondition.cs`) |
 | 타이밍 | PRE (`reactionTiming: 0`) — `KillGA` Performer가 토큰을 파괴하면 `OnDisable`이 구독을 해제해 POST에서는 놓칠 수 있다 |
-| 효과 | `KillerAttackAllOpponentsEffect` — 처치자 진영의 상대 전원에 `DealDamageGA(owner.BaseDamage, targets, owner)` 예약 (피해량·Caster = 장애물) |
+| 효과 | `KillerAttackAllOpponentsEffect` — 처치자 진영의 상대 전원에 `DealDamageGA(killer.BaseDamage, targets, killer)` 예약 |
 | 스프라이트 | `Sprite` 지정됨 (임시 에셋) |
 | 배치 예시 | `TestStage.ObstacleSpawns` — (1, 1) |
 | 공격 대상 | 영웅·적 모두 (`HeroView.IsTarget`/`EnemyView.IsTarget`에 `ObstacleView` 포함) |
@@ -74,18 +74,17 @@
              │   └ KillerAttackAllOpponentsEffect
              │       ├ killer가 HeroView → EnemyViews 전체
              │       ├ killer가 EnemyView → HeroViews 전체
-             │       └ DealDamageGA(owner.BaseDamage, targets, owner) 예약 (대상이 없거나 Killer가 null/비 Combatant면 아무 일도 안 함)
+             │       └ DealDamageGA(killer.BaseDamage, targets, killer) 예약 (대상이 없거나 Killer가 null/비 Combatant면 아무 일도 안 함)
              └ DamageSystem.KillGAPerformer → TokenMainAPI.RemoveToken
 ```
 
 **주의·한계**
 - **계약 변경**: `KillGA`에 `Killer`(`Token`, 기본 null)를 추가했다. 생성자 `KillGA(token, hit_Tween, killer = null)`의 세 번째 인자는 선택이라 기존 호출부는 그대로 유효하다.
 - 처치자가 없는 경우(플레이어 스킬 등)에는 효과가 아무 일도 하지 않으며, 코어는 공격하지 않는다.
-- 추가 피해량은 **장애물 자신의 `BaseDamage`**(`ObstacleData.Damage`, 최소 1 보정이라 현재 1)이고 `Caster`도 장애물이라 처치자의 힘·치명타·취약 보정이 섞이지 않는다 (사용자 결정). 처음에는 처치자의 `BaseDamage`와 `Caster = 처치자`로 구현했으나, 처치자 공격력이 2 이상이면 체력 2 몬스터가 죽는 문제가 확인되어 바꿨다 **(원작 확인 필요)**. 처치자는 어느 진영을 칠지 정하는 데만 쓴다.
-- 부작용: 추가 공격의 `Caster`가 장애물이라 처치자의 공격 관련 특성(`Caster == owner` 조건)은 추가 공격에 발동하지 않고, 추가 공격으로 죽은 몬스터의 `KillGA.Killer`도 장애물이다. 피해자의 취약(×1.5, 올림)과 회피는 그대로 적용된다.
+- 추가 피해량은 처치자의 `BaseDamage`(공격력)로 가정했다 **(원작 확인 필요)**. 장애물 공격력 기준으로 한 번 바꿨다가 사용자 요청으로 되돌렸다. `Caster`는 처치자라 처치자의 힘·치명타·취약 보정이 합산되므로, 처치자 공격력이 2 이상이면 체력 2 몬스터가 죽을 수 있다 (설계대로의 동작).
 - 적이 파괴했을 때도 같은 효과(영웅 전원 추가 공격)가 나가도록 구현했다 **(원작 확인 필요)**.
 - 추가 공격에 코어(깃발)는 포함하지 않았다 **(원작 확인 필요)**.
-- 장애물의 공격력이 0이어도 `CombatantView.BaseDamage`가 최소 1로 보정되지만, 공격하지 않으므로 영향 없다.
+- 공격력 최소 1 보정은 영웅·몬스터 한정이다 (`CombatantView.MinBaseDamage` 기본 0, `HeroView`/`EnemyView`가 1로 오버라이드). 장애물은 하한이 0이라 `ObstacleData.Damage`=0이 월드 텍스트(`damageText`)와 상세 패널(`TerrainDetailsUI`)에 그대로 0으로 표시된다. 용병대장도 하한 0이다 (지그먼트 `Damage`=3이라 표시·응수 피해는 그대로).
 - `AddToken`의 `EnemyView`/`HeroView` 분기에 걸리지 않아 `EnemyViews`/`HeroViews` 목록에는 들어가지 않는다 — 추가 공격 대상에도 포함되지 않는다.
 - 에셋 특성의 `Reaction Timing`이 POST면 효과가 나가지 않을 수 있다. 반드시 PRE(0)로 둔다.
 - **Play 테스트는 하지 않았다.** 확인 항목: 영웅/적이 정면 장애물을 공격하는지, 파괴 시 처치자가 상대 전원을 추가 공격하는지, 날카로운 단도로 지정되지 않는지, 장애물이 스스로 움직이거나 공격하지 않는지.

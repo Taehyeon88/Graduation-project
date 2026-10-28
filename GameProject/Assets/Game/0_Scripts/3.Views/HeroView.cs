@@ -4,6 +4,7 @@ public class HeroView : CombatantView
     public int Id => TokenData.Id;
     public Hero Hero { get; private set; }   //덱의 영웅 개체 (보너스·획득 특성 보유)
 
+    protected override int MinBaseDamage => 1;
     protected override Vector2Int Forward => Vector2Int.right;
     protected override bool IsTarget(Token token) => token is EnemyView || token is ObstacleView;
     //적 배치 위치 직전 (배치 위치가 없는 라인은 마지막 열을 적 배치 열로 간주)

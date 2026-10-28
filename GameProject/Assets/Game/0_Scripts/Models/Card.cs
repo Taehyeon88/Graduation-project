@@ -15,7 +15,7 @@ public class Card
         get
         {
             StringBuilder sb = new();
-            sb.Append($"HP {hero.MaxHealth}  공격 {hero.Damage}  속도 {hero.Speed}");
+            sb.Append($"공격력 {hero.Damage}  체력 {hero.MaxHealth}  속도 {hero.Speed}");
             foreach (TraitData trait in hero.Traits)
             {
                 if (trait == null) continue;

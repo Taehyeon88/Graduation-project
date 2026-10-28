@@ -34,13 +34,13 @@ public class TooltipUI : MonoBehaviour
         else
         {
             title_Text.gameObject.SetActive(true);
-            title_Text.SetText(title);
+            title_Text.SetText(RichTextFormatter.Format(title));
         }
 
-        description_Text.SetText(description);
+        description_Text.SetText(RichTextFormatter.Format(description));
 
-        int titleLength = title_Text.text.Length;
-        int descriptionLength = description_Text.text.Length;
+        int titleLength = title?.Length ?? 0; //태그가 붙기 전 원문 기준
+        int descriptionLength = description?.Length ?? 0; //태그가 붙기 전 원문 기준
 
         layoutElement.enabled =
             (titleLength > characterWrapLimit || descriptionLength > characterWrapLimit)

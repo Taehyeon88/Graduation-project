@@ -22,6 +22,10 @@ public class StatusEffectSystem : Singleton<StatusEffectSystem>
         ActionSystem.DetachPerformer<AddStatusEffectGA>();
     }
 
+    //Publics
+    public StatusEffectData GetData(StatusEffectType type) => effectDataByType[type];
+    public IEnumerable<StatusEffectData> AllData => effectDataByType.Values;
+
     //Performers
     private IEnumerator AddStatusEffectGAPerformer(AddStatusEffectGA addStatusEffectGA)
     {

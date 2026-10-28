@@ -70,7 +70,7 @@ Assets/Game/
 | `8.Stages/Waves/` | 1 | `WaveData` | Simple_Wave |
 | `10.Cores/` | 2 | `EnemyFlagData`, `HeroCaptainData` | `EnemyFlag`(적 코어) + `HeroCaptains/지그먼트`(용병대장) |
 | `10.PlayerSkills/` | 1 | `PlayerSkillData` | SharpDagger(날카로운 단도) |
-| `11.Obstacles/` | 1 | `ObstacleData` | 돌격 화살통 (체력 4, 공격력 0, 속도 0, 특성 9001) |
+| `11.Obstacles/` | 1 | `ObstacleData` | 돌격 화살통 (체력 4, 공격력 0, 속도 -1, 특성 9001) |
 | `12.Terrains/` | 1 | `TerrainData` | 풀숲 (임시 스프라이트) |
 | `9.Sounds/` | 18 | `SoundData` | `SoundData.asset`/`SoundData 1.asset`은 이름 정리가 안 된 기본값으로 보임 |
 
@@ -90,7 +90,7 @@ Assets/Game/
 | `Models/` | 3 | `EnemyModel`, `HeroModel`, `WallModel` |
 | `Projections/` | 2 | `RatGeneral_Stone`, `Skeleton_BoneArrow` |
 | `UI/` | 12 | `CaptainDetailsUI`(호버한 용병대장 정보 패널), `DisPlayUI`, `FloatingText`(피해 수치 등 월드 공간 3D TMP, `FloatingTextSystem`이 풀링), `GameClearUI`(승리 패널·확인/나가기 버튼), `EnemyFlagDetailsUI`(호버한 적 세력 깃발 정보 패널), `EnemyUI`, `SettingUI`, `StatusEffectUI`, `StatusEffectUIAtWorld`, `TerrainDetailsUI`(호버한 지형지물·장애물 정보 패널), `TokenDetailsUI`(호버한 영웅·몬스터 정보 패널), `TraitUI` |
-| `Views/` | 16 | `ArrowView`, `CardArrowView`(카드 → 마우스 화살), `CardView`, `CardViewInPile`, `CombatantViewBase`, `CoreView`, `EnemyFlagView`(적 코어), `EnemyView`, `HeroCaptainView`(아군 코어·용병대장), `HeroPreView`, `HeroView`, `ObstacleView`(파괴 가능 장애물), `PopUp_Text_View`, `ProjectionView`, `SkillView`, `TerrainView`(발판 타일) |
+| `Views/` | 15 | `ArrowView`, `CardArrowView`(카드 → 마우스 화살), `CardView`, `CardViewInPile`, `CombatantViewBase`, `EnemyFlagView`(적 코어), `EnemyView`, `HeroCaptainView`(아군 코어·용병대장), `HeroPreView`, `HeroView`, `ObstacleView`(파괴 가능 장애물), `PopUp_Text_View`, `ProjectionView`, `SkillView`, `TerrainView`(발판 타일) |
 
 ## 5. `4_Medias/` — 스프라이트/이미지 (98개 png)
 

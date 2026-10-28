@@ -22,8 +22,8 @@ public class AbilitySlot   //정보 패널의 특성·소문 공용 슬롯 (비�
         nameText.gameObject.SetActive(true);
         description.gameObject.SetActive(true);
         nullText.gameObject.SetActive(false);
-        nameText.text = name;
-        description.text = desc;
+        nameText.text = RichTextFormatter.Format(name);
+        description.text = RichTextFormatter.Format(desc);
     }
 
     public void Clear()

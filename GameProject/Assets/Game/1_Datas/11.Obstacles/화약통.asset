@@ -16,7 +16,7 @@ MonoBehaviour:
   <Sprite>k__BackingField: {fileID: 21300000, guid: e26a8f5cade5f5247a616bada165358f, type: 3}
   <Health>k__BackingField: 4
   <Damage>k__BackingField: 2
-  <Speed>k__BackingField: 0
+  <Speed>k__BackingField: -1
   <Traits>k__BackingField: []
   <Description>k__BackingField: "\uD589\uB3D9\uB825\uC744 \uC18C\uBAA8\uD574 \uB2E4\uB978
     \uC911\uB9BD \uD0C0\uC77C\uB85C \uC774\uB3D9\uC2DC\uD0AC \uC218 \uC788\uC2B5\uB2C8\uB2E4.

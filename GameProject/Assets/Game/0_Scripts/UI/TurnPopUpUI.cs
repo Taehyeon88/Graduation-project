@@ -17,9 +17,9 @@ public class TurnPopUpUI : MonoBehaviour
     [SerializeField] private TMP_Text autoBattle_Turn_Text;
 
     [Header("Direct Element")]
-    [SerializeField] private float fade_in_duration = 3.4f;
-    [SerializeField] private float fade_out_duration = 3.4f;
-    [SerializeField] private float wait_duration = 0.5f;
+    [SerializeField] private float fade_in_duration = 0.3f;
+    [SerializeField] private float fade_out_duration = 0.3f;
+    [SerializeField] private float wait_duration = 0.9f;
 
     private Sequence playerFadeSqu;
     private Sequence enemyFadeSqu;
@@ -45,7 +45,6 @@ public class TurnPopUpUI : MonoBehaviour
         }
         else if (turnType == TurnType.Enemy)
         {
-            SoundSystem.Instance.PlaySound(4001);
             Initialize();
             enemy_PopUp_UI.gameObject.SetActive(true);
 
@@ -53,6 +52,7 @@ public class TurnPopUpUI : MonoBehaviour
         }
         else if (turnType == TurnType.AutoBattle)
         {
+            SoundSystem.Instance.PlaySound(4001);
             Initialize();
             autoBattle_PopUp_UI.gameObject.SetActive(true);
 

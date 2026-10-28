@@ -17,8 +17,8 @@ public class TerrainDetailsUI : MonoBehaviour
         {
             background.SetActive(true);
             portrait.sprite = sprite;
-            title.text = name;
-            description.text = desc;
+            title.text = RichTextFormatter.Format(name);
+            description.text = RichTextFormatter.Format(desc);
         }
 
         public void Hide() => background.SetActive(false);

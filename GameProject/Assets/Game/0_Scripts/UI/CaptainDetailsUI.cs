@@ -20,7 +20,7 @@ public class CaptainDetailsUI : MonoBehaviour
     public void Show(HeroCaptainView view)
     {
         portrait.sprite = view.TokenData.Sprite;
-        title.text = view.TokenData.Name;
+        title.text = RichTextFormatter.Format(view.TokenData.Name);
 
         attack.text = view.BaseDamage.ToString();
         health.text = $"{view.CurrentHealth}/{view.MaxHealth}";

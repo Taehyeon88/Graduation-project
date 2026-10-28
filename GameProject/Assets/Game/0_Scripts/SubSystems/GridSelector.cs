@@ -5,11 +5,13 @@ public class GridSelector : MonoBehaviour
 {
     [SerializeField] private TokenDetailsUI tokenDetailsUI;   //호버한 영웅·몬스터 정보 패널
     [SerializeField] private TerrainDetailsUI terrainDetailsUI;   //호버한 지형지물·장애물 정보 패널
+    [SerializeField] private StatusEffectDetailsListUI statusEffectDetailsUI;   //호버한 영웅·몬스터의 상태효과 목록
     [SerializeField] private CaptainDetailsUI captainDetailsUI;   //호버한 용병대장 정보 패널
     [SerializeField] private EnemyFlagDetailsUI enemyFlagDetailsUI;   //호버한 적 세력 깃발 정보 패널
 
     private const string HoverWhiteVG = "Selector_Hover_White";    //몬스터·장애물·지형지물·적 깃발
     private const string HoverYellowVG = "Selector_Hover_Yellow";  //영웅·용병대장
+    private const int HoverSoundId = 3001;   //호버 대상(영웅·몬스터·장애물·지형지물·용병대장·적 깃발) 진입 사운드
 
     private Vector2Int hoveredGrid = Vector2Int.down;
     private Token hoveredCore;   //마우스가 올라간 코어 (없으면 null)
@@ -65,8 +67,6 @@ public class GridSelector : MonoBehaviour
 
         if (hoveredGrid != pos)
         {
-            if (!Interactions.Instance.IsCardTargetMode)
-                SoundSystem.Instance.PlaySound(3001);
             hoveredGrid = pos;
 
             Token token = TokenSystem.Instance.API.GetTokenByPosition(pos);
@@ -142,8 +142,10 @@ public class GridSelector : MonoBehaviour
     {
         if (core == null) return;
 
+        SoundSystem.Instance.PlaySound(HoverSoundId);
         if (tokenDetailsUI != null) tokenDetailsUI.Hide();
         if (terrainDetailsUI != null) terrainDetailsUI.Hide();
+        if (statusEffectDetailsUI != null) statusEffectDetailsUI.Hide();
         if (core is HeroCaptainView captain)
         {
             captainDetailsUI.Show(captain);
@@ -190,6 +192,7 @@ public class GridSelector : MonoBehaviour
             else if (token is EnemyView or ObstacleView || showTerrain) hoverVG = HoverWhiteVG;
         }
         SetHoverVisualGrid(pos, hoverVG);
+        if (hoverVG != null) SoundSystem.Instance.PlaySound(HoverSoundId);   //호버 대상이 있는 칸으로 옮겼을 때만 재생
 
         if (tokenDetailsUI != null)
         {
@@ -203,6 +206,11 @@ public class GridSelector : MonoBehaviour
             else if (showTerrain) terrainDetailsUI.ShowTerrain(terrain.Data);
             else terrainDetailsUI.Hide();
         }
-        //Combat일 경우, 상태효과 페이지
+
+        if (statusEffectDetailsUI != null)
+        {
+            if (showToken) statusEffectDetailsUI.Show((CombatantView)token);
+            else statusEffectDetailsUI.Hide();
+        }
     }
 }

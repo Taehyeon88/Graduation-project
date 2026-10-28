@@ -28,7 +28,7 @@
 
 ### 3-1. 문장을 분해한다
 "이 장애물을 파괴한 용병이 ~한다" 같은 문장이면 **체력(`Health`) + 특성(`Traits`)** 으로 쪼갠다. 장애물은 `CombatantData`를 상속하므로 `Health`/`Damage`/`Speed`/`Traits`를 그대로 쓴다.
-- 공격력·속도는 0으로 둔다. `ObstacleView`는 `Forward`가 zero라 스스로 행동하지 않는다.
+- 공격력은 0, 속도는 -1(이동 불가)로 둔다. 속도 -1은 자동 전투 큐에서 제외되고 UI에 `-`로 표시된다. `ObstacleView`는 `Forward`가 zero라 스스로 행동하지 않는다.
 - 특성이 필요 없으면 `Traits`를 비운다 (단순 벽 역할).
 
 ### 3-2. 새 코드가 필요한 경우 (처치 효과)
@@ -42,7 +42,7 @@
 ### 3-3. 에셋 (`ObstacleData`)
 1. 생성: Project 우클릭 → `Create > Data > Token > Obstacle`.
 2. 위치: `Assets/Game/1_Datas/11.Obstacles/<이름>.asset`.
-3. 필드: `Id`(3001번대에서 이어서), `Description`(사용자가 준 설명 문장), `Sprite`(임시 에셋 OK — 아트 제외), `Health`, `Damage`=0, `Speed`=0, `Traits`(특성 에셋 연결).
+3. 필드: `Id`(3001번대에서 이어서), `Description`(사용자가 준 설명 문장), `Sprite`(임시 에셋 OK — 아트 제외), `Health`, `Damage`=0, `Speed`=-1, `Traits`(특성 에셋 연결).
 4. 특성 에셋은 `1_Datas/3.Traits/`에 둔다. 조건 `Reaction Timing`=**PRE(0)**.
 
 ### 3-4. 뷰·프리팹

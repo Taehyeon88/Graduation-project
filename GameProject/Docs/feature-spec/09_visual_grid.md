@@ -32,7 +32,7 @@
 | `ContainVisualGrid(tokenId, vgName)` | 표시 중인지 조회 |
 | `SetHideVisualGrid(tokenId)` / `SetReverseVisualGrid(tokenId)` | tokenId의 VG 숨김 / 복원 |
 
-**코어 슬롯**: 용병대장·적 깃발은 그리드 밖이라 타일이 없으므로 `VisualGridCreator.Initialize`가 풀의 남는 `IsoObject` 2개를 `heroCaptainIsoPosition`(기본 (-1, 1.5, 0.7))·`enemyFlagIsoPosition`(기본 (4, 1.5, 1.3))에 놓고 가상 키 `HeroCaptainSlot`(-1,-1)·`EnemyFlagSlot`(-2,-2)로 등록한다. 기존 API에 이 키를 `pos`로 넘기면 코어 위치에 VG가 생긴다(`GridSelector`의 코어 호버 테두리). 위치는 `VisualGridCreator` 인스펙터에서 조정.
+**코어 슬롯**: 용병대장·적 깃발은 그리드 밖이라 타일이 없으므로 `VisualGridCreator.Initialize`가 풀의 남는 `IsoObject` 2개를 `HeroCaptainVGPosition`(-1.1, 1.5, 0.7)·`EnemyFlagVGPosition`(4.1, 1.5, 1.3) 고정 상수에 놓고 가상 키 `HeroCaptainSlot`(-1,-1)·`EnemyFlagSlot`(-2,-2)로 등록한다. 기존 API에 이 키를 `pos`로 넘기면 코어 위치에 VG가 생긴다(`GridSelector`의 코어 호버 테두리). 위치는 다른 컴포넌트 값을 따르지 않고 `VisualGridCreator`의 상수로 고정(변경은 코드 수정).
 
 ## 3. ★ 현재 VG 레이어 순서표
 
