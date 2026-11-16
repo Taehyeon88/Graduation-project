@@ -26,6 +26,8 @@
 | `SelfSurvivedDamageCondition` | `DealDamageGA` | 인스펙터 (사용 예: **POST** — 피해 적용 뒤라야 생존 여부를 앎) | owner가 `DealDamageGA.DamagedTargets`(피해가 실제 적용된 대상, 회피로 건너뛴 대상 제외)에 있고 `owner.CurrentHealth > 0`. 상대가 Caster라서 **`FiltersByCaster` = false** | 없음 | 3010 투지 |
 | `SelfDeployedCondition` | `PlayCardGA` + `SpawnWaveGA` + `TurnGA` (같은 `reactionTiming`) | 인스펙터 (권장 POST — AddToken 이후라 위치 조회 가능, 새 몬스터는 Performer 안에서 이미 구독됨) | `PlayCardGA`: owner 위치 == `TargetPos` (영웅 손패 카드 배치). `SpawnWaveGA`: owner가 `EnemyView`이고 `SpawnedEnemies`에 포함 (웨이브 생성 몬스터). `TurnGA`: `Type == StartBattle`이고 owner가 `EnemyView` (전투 시작 때 깔리는 초기 몬스터 — GA를 거치지 않는 초기 생성의 대리 시점, 웨이브 몬스터는 그 뒤에 만들어져 겹치지 않음). 보상 영웅 배치는 GA를 거치지 않아 제외. owner가 파괴된 뷰면 false | 없음 | 3012 집중 |
 | `SelfDamagedCondition` | `DealDamageGA` | 인스펙터 (사용 예: **POST** — `DamagedTargets`가 채워진 뒤, `KillGA` 수행 전) | owner가 `DealDamageGA.DamagedTargets`에 있음 (생존 여부 무관, 파괴 타격 포함). 상대가 Caster라서 **`FiltersByCaster` = false** | 없음 | 9002 야전 공구함 |
+| `ExtraAttackCondition` | `ExtraAttackGA` | 인스펙터 (사용 예: POST) | 항상 true(owner가 파괴된 뷰면 false) — 소유자 필터(`ExtraAttackGA.Caster == owner`)만 적용 | 없음 | 3018 진군 나팔, 3025 진군 나팔+ |
+| `KilledOpponentCondition` | `KillGA` | 인스펙터 (사용 예: **PRE** — 토큰 제거 전) | `KillGA.Killer == owner`이고 처치된 토큰이 상대 진영 용병(owner가 영웅이면 `EnemyView`, 아니면 `HeroView`). 장애물·코어 처치 제외. `KillGA`는 Caster가 없어 처치자 판정을 여기서 직접 함 | 없음 | 3019 기세, 3027 기세+ |
 
 ## 3. 효과 (`TraitEffect`) — 위치 `Assets/Game/0_Scripts/Traits/` (조건과 달리 하위 폴더 없음)
 
@@ -43,6 +45,7 @@
 | `ShareDamageWithAlliesEffect` | `ModifyStatGA`(DAMAGE, 양수) | `divisor`(2) | `owner.BaseDamage / divisor`(내림, 원작 확인 필요)가 0 이하면 무시. 아니면 owner를 제외한 같은 진영 전원(owner가 `HeroView`면 `HeroViews`, 아니면 `EnemyViews`)의 공격력을 그만큼 영구 증가 (대상 없으면 무시, `ModifyStatGA` 1개). 권장 조건 `SelfDeathCondition` (PRE) | 3009 축복 |
 | `ModifyStatEnemyByIdEffect` | `ModifyStatGA` | `targetEnemyId`, `modifiers` (목록: `statType` + `amount`) | 살아 있는 `EnemyViews` 중 `EnemyView.Id == targetEnemyId`인 전원의 스탯을 항목마다 `amount`만큼 증가, 항목당 `ModifyStatGA` 1개 예약 (대상 없으면 무시, 발동 횟수 상한 없음). 권장 조건 `TurnCondition` (Enemy, POST — 라운드 종료) | 3011 의식 (targetEnemyId 2004, [DAMAGE 1, HEALTH 1]) |
 | `ModifyStatAttackerEffect` | `ModifyStatGA` | `modifiers` (목록: `statType` + `amount`) | 구독 GA는 `DealDamageGA`여야 한다. `DealDamageGA.Caster`가 `CombatantView`일 때만 동작 — 그 공격자의 스탯을 항목마다 `amount`만큼 증가, 항목당 `ModifyStatGA` 1개 예약 (공격자 없음·비 Combatant면 무시, 발동 횟수 상한 없음). 권장 조건 `SelfDamagedCondition` (POST) | 9002 야전 공구함 (장애물 전용, [DAMAGE 1, HEALTH 1]) |
+| `AddStatusNearbyAlliesEffect` | `AddStatusEffectGA`(Targets) | `statusEffectType`, `amount`(1, 대상당 스택), `targetCount`(1), `range`(1, 8방향 칸 수) | owner 주변 `range`칸 안의 같은 진영 아군(owner 제외) 중 무작위 `targetCount`명에게 상태효과 부여 (대상이 적으면 있는 만큼, 없으면 무시) | 3018 진군 나팔 (POWER 1, 1명), 3025 진군 나팔+ (2명) |
 
 **발동 횟수 상한**: `TraitEffect` 베이스에는 상한 필드가 없다. 상한이 필요한 효과는 자기 클래스에 `maxTriggers` 데이터를 두고 `ILimitedTrigger`를 구현한다 (현재 `ModifyStatTraitEffect`만 구현). 카운트는 `Trait` 런타임 객체가 유닛별로 보유하고 리셋 없이 누적된다 (계약은 [05_trait_system.md](../05_trait_system.md) §2). 다른 효과에 "N번 발동"이 필요하면 그 효과에 같은 방식으로 추가한다.
 

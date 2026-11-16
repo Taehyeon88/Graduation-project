@@ -22,6 +22,7 @@ MonoBehaviour:
     rid: 7851380889414795332
   <Effect>k__BackingField:
     rid: 7851380973974323271
+  <Enhanced>k__BackingField: {fileID: 11400000, guid: 71a40163341f0d440851886b7991b1fa, type: 2}
   ConditionName: AttackedOpponentCondition
   timing: 1
   EffectName: ModifyStatTraitEffect

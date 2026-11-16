@@ -216,13 +216,14 @@ public class CombatantView : Token, IDamageable
                 90f
             );
 
+        bool wasAlive = CurrentHealth > 0;   //이미 0인 유닛(처치 처리 대기 중)이 다시 맞아도 KillGA를 중복 생성하지 않음
         if (amount > 0)
         {
             CurrentHealth = Mathf.Max(CurrentHealth - amount, 0);
             if (FloatingTextSystem.Instance != null) FloatingTextSystem.Instance.ShowDamage(this, amount);
         }
 
-        if(CurrentHealth <= 0)
+        if(wasAlive && CurrentHealth <= 0)
         {
             hit_Tween.Pause();
             KillGA killGA = new KillGA(this, hit_Tween, dealDamageGA.Caster);

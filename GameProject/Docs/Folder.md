@@ -43,15 +43,15 @@ Assets/Game/
 │  ├─ Util/                # 정적 헬퍼(Utility, UtilityBFS, DamageCaculator, GridLayoutImageResizer)
 │  └─ DontDestroyedObject.cs
 ├─ Interfaces/             # I 접두사 인터페이스 11개: IHaveCaster, IDamageable, IHaveDamage, IHaveDistance, IUseCondition, IUseCustomRangeVG, IUseCustomTargetVG, IAPCostModifier, INeutralPlacement, IBattleOverride, ILimitedTrigger
-├─ Models/                 # 도메인 모델(SO 아닌 순수 C# 클래스): Token/TokenGrid, Hero/HeroPreview, Rumor(추상), Skill/SkillAbility/Effect(추상 베이스), Trait/TraitCondition/TraitEffect(추상), TerrainEffect(추상), Card
+├─ Models/                 # 도메인 모델(SO 아닌 순수 C# 클래스): Token/TokenGrid, Hero/HeroPreview, Rumor(추상), Skill/SkillAbility/Effect(추상 베이스), Trait/TraitCondition/TraitEffect(추상), TerrainEffect(추상), Card, HeroPromotion/PromotionOption(영웅 승급 상태·선택지)
 │  └─ Modes/               #   범위·타겟 선정 전략(RangeMode/TargetMode)
-├─ Traits/                 # TraitCondition/TraitEffect(Models/) 서브클래스 — TraitData가 [SerializeReference]로 조립: AutoBattleTurnCondition, DealDamageCondition, TurnCondition / AddStatusTraitEffect, HealOnDamageEffect
+├─ Traits/                 # TraitCondition/TraitEffect(Models/) 서브클래스 — TraitData가 [SerializeReference]로 조립: AutoBattleTurnCondition, DealDamageCondition, TurnCondition / AddStatusTraitEffect, HealOnDamageEffect (승급 특성용 ExtraAttackCondition·KilledOpponentCondition / AddStatusNearbyAlliesEffect 추가 — 전체 목록은 feature-spec/Trait/trait.md)
 ├─ Rumors/                 # Rumor(Models/) 서브클래스 — RumorData가 [SerializeReference]로 조립: PowerfulRumor, FlexibleRumor, MasteredRumor
 ├─ Terrains/               # TerrainEffect(Models/) 서브클래스 — TerrainData가 [SerializeReference]로 조립: BushEffect
 ├─ PlayerSkills/           # PlayerSkill(Models/) 서브클래스 — PlayerSkillData가 [SerializeReference]로 조립: SharpDagger
 ├─ StarConditions/         # StarCondition(Models/) 서브클래스 — StageData.SpecialStarCondition(★3)이 [SerializeReference]로 조립: RoundLimit / WithoutHero / BaseHeroesOnly / KillEnemy (~StarCondition)
 ├─ SubSystems/             # Singleton 파사드가 위임하는 실행 컴포넌트(TokenMainAPI/TokenServiceAPI/TokenSetup, GridSelector, TooltipTrigger)
-├─ UI/                     # 화면별 UI 컴포넌트(~UI 접미사, SkillsUI/StatusEffectsUI/TurnPopUpUI/TavernUI/RumorSelectUI/RumorSlotUI/DeckViewUI 등) + AudioMixerController
+├─ UI/                     # 화면별 UI 컴포넌트(~UI 접미사, SkillsUI/StatusEffectsUI/TurnPopUpUI/TavernUI/RumorSelectUI/RumorSlotUI/DeckViewUI/PromotionUI 등) + AudioMixerController
 └─ GameSystem.cs           # 메타 상태(골드/스테이지/영웅 로스터) 전담 Singleton(상세는 convention.md 6절)
 ```
 
@@ -63,7 +63,7 @@ Assets/Game/
 |---|---|---|---|
 | `1.Heroes/` | 10 | `HeroData` | Hero1~3 + 감시탑 경비병 / 기병 / 나팔수 / 매복자 / 사제 / 수문장 / 전도 |
 | `2.Enemies/` | 3 | `EnemyData` | 허수아비 / Larva / ArchorSkeleton |
-| `3.Traits/` | 9 | `TraitData` | 공격 신호 / 맹공 / 불경한 빛 / 빠른 발 / 신속의 기도 / 요새화 / 저격 / 돌격 화살통(장애물 전용) + `Cores/응수`(용병대장 전용). 전부 조건·효과 설정됨 |
+| `3.Traits/` | 9 | `TraitData` | 공격 신호 / 맹공 / 불경한 빛 / 빠른 발 / 신속의 기도 / 요새화 / 저격 / 돌격 화살통(장애물 전용) + `Cores/응수`(용병대장 전용). 전부 조건·효과 설정됨. 승급 특성·강화형 12개(Id 3016~3027, 이름 끝 `+` = 강화형) 추가 — 목록은 feature-spec/13_growth.md §5-3 |
 | `4.Perks/`, `5.Items/` | 0 | — | 빈 폴더 |
 | `6.StatusEffects/` | 2 | `StatusEffectData` | Power, 회피 |
 | `7.VisualGrids/` | 8 | `VisualGridData` | 그리드 하이라이트 전부 |

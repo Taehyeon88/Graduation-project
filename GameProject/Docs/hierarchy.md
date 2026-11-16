@@ -147,3 +147,4 @@
 
 - 이 문서는 스냅샷이다. Hierarchy 구조가 바뀌거나(카테고리 추가/이동) 이슈가 해결되면 즉시 갱신한다.
 - 다른 씬 메모 (이 문서 조사 범위 밖): StageScene `--- UI ---`에 `StageInfo Canvas`(스테이지 정보 팝업, `StageInfoPopupUI`) 추가 — 상세는 `feature-spec/11_stage_progress.md` 3-1.
+- StageScene 영웅 승급 (2026-11-16): `--- SYSTEMS ---/PromotionSystem`(`PromotionSystem`), `--- UI ---/Promotion Canvas`(`PromotionUI`, Canvas sortingOrder 90 — StageInfo Canvas(100) 아래. 자식: 좌하단 `OpenButton`("영웅 관리"), `Panel`(기본 비활성) 아래 `Window`·`HeroButtonTemplate`·`ChoicePanel`(+`OptionTemplate`)·`ConfirmPanel`). `StageSelectSystem.promotionUI`에 연결 — 상세는 `feature-spec/13_growth.md` §5.

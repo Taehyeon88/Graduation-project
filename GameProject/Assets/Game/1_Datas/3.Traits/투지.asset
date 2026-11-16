@@ -21,6 +21,7 @@ MonoBehaviour:
     rid: 7851381082441646152
   <Effect>k__BackingField:
     rid: 7851381082441646153
+  <Enhanced>k__BackingField: {fileID: 11400000, guid: fe6624c73f1c36f448d47196ccb0635d, type: 2}
   ConditionName: SelfSurvivedDamageCondition
   timing: 0
   EffectName: ModifyStatTraitEffect

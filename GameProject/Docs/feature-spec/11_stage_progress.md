@@ -45,6 +45,7 @@
 
 ### 1-5. 용병대장 체력 ("플레이어 체력")
 - 스테이지별 고정값(`StageData`). 매 전투 그 값으로 시작한다. 스테이지 간 이월 없음.
+- 상단 표시줄의 체력 칸(`PlayerHealthUI`)은 제거 (2026-11-16) — 전투 밖에서 지난 값이 남아 보였음. 전투 중엔 용병대장 토큰 체력·호버 정보 패널, 진입 전엔 정보 팝업으로 확인.
 
 ## 2. 화면
 
@@ -103,6 +104,7 @@
 - GameDemoScene `--- SYSTEMS ---/StarSystem` (인스펙터 연결 없음)
 - StageScene `--- UI ---/StageInfo Canvas` (sortingOrder 100, 1920×1080) — `StageInfoPopupUI` 필드 전부 연결, `StageSelectSystem.stageInfoPopup` 연결. 배치·색은 임시
 - `StructureView.prefab`: `Lock`, `Stars/Star1~3` 자식 + 임시 스프라이트 `4_Medias/2.HUDUI/Temp_StarFilled·Temp_StarEmpty·Temp_Lock.png`
+- 스테이지 구성(`StageSelectSystem.stageStructures`): `일반 전투 1~4` → `정예 전투` (총 5). 주점은 목록에서 제외(에셋·Tavern 씬은 유지). 일반 전투 1~4는 진행 기록이 `StructureData` 키라 에셋을 4개로 분리했고, 같은 `StageData`(일반전투)를 공유한다
 - 스테이지 에셋 값: 일반전투·정예전투 모두 용병대장 체력 20, 덱 크기 5, 기본 제공 카드 없음, 휘장 1, ★2 체력 10 이상. ★3 = 일반전투 5라운드 / 정예전투 7라운드 안에 승리
 
 ## 4. 구현 전 코드 상태 (기록, 2026-11-16)

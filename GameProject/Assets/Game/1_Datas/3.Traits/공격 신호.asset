@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: "\uACF5\uACA9 \uC2E0\uD638"
   m_EditorClassIdentifier: Assembly-CSharp::TraitData
   <Id>k__BackingField: 3007
+  <OwnerType>k__BackingField: 0
   <Image>k__BackingField: {fileID: 21300000, guid: d0d1a44912156334c8ab5c968f7de60c, type: 3}
   <Description>k__BackingField: "\uC801 \uC6A9\uBCD1 \uB610\uB294 \uC6B0\uB450\uBA38\uB9AC\uB97C
     \uACF5\uACA9\uD55C \uB4A4, \uCD94\uAC00 \uACF5\uACA9 \uCC28\uB840\uB97C \uC5BB\uACE0
@@ -23,6 +24,7 @@ MonoBehaviour:
     rid: 7851380889414795331
   <Effect>k__BackingField:
     rid: 7851380973974323273
+  <Enhanced>k__BackingField: {fileID: 11400000, guid: be3ff5ed9ac930a48bc93c864e372eeb, type: 2}
   ConditionName: AttackedOpponentCondition
   timing: 1
   EffectName: ExtraAttackEffect

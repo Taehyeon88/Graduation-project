@@ -36,6 +36,7 @@ public class GameSystem : Singleton<GameSystem>
 
     private readonly List<Hero> baseHeroes = new();
     private readonly Dictionary<StructureData, StageProgress> progresses = new();   //구조물별 진행 기록
+    private readonly Dictionary<HeroData, HeroPromotion> promotions = new();        //영웅 종류별 승급 상태 (보유 영웅만)
 
 
     protected override void Awake()
@@ -104,7 +105,26 @@ public class GameSystem : Singleton<GameSystem>
     public void AddHeroToDeck(HeroData heroData)
     {
         if (heroData != null)
-            Deck.Add(new Hero(heroData));
+            Deck.Add(new Hero(heroData, GetPromotion(heroData)));
+    }
+
+    //영웅 종류의 승급 상태 (없으면 새로 만듦) — 같은 종류의 보유 카드는 모두 이 상태를 공유
+    public HeroPromotion GetPromotion(HeroData heroData)
+    {
+        if (!promotions.TryGetValue(heroData, out HeroPromotion promotion))
+        {
+            promotion = new HeroPromotion(heroData);
+            promotions.Add(heroData, promotion);
+        }
+        return promotion;
+    }
+
+    //휘장 사용 (부족하면 쓰지 않고 false)
+    public bool TrySpendInsignias(int amount)
+    {
+        if (amount < 0 || Insignias < amount) return false;
+        Insignias -= amount;
+        return true;
     }
 
     public StageProgress GetProgress(StructureData structure)
@@ -192,7 +212,8 @@ public class GameSystem : Singleton<GameSystem>
         CurrentStructure = null;
         IsGameOver = false;
         IsGameClear = false;
-        Deck = startingDeck.Where(d => d != null).Select(d => new Hero(d)).ToList();
+        promotions.Clear();
+        Deck = startingDeck.Where(d => d != null).Select(d => new Hero(d, GetPromotion(d))).ToList();
         BattleDeck.Clear();
         baseHeroes.Clear();
         progresses.Clear();

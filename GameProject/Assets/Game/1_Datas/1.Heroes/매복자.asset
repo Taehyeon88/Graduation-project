@@ -21,3 +21,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4341546b1a64beb48826c655658cfc62, type: 2}
   <APCost>k__BackingField: 2
   <Critical>k__BackingField: 20
+  <PromotionTraits>k__BackingField:
+  - {fileID: 11400000, guid: b7be4d810332b5443bdf83a7a869b4cb, type: 2}
