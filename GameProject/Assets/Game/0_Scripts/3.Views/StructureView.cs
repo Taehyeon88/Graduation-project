@@ -11,6 +11,12 @@ public class StructureView : MonoBehaviour
     [SerializeField] private Color selectableColor = Color.white;
     [SerializeField] private Color lockedColor = new Color(0.4f, 0.4f, 0.4f, 1f);
 
+    [Header("상태 표시 (잠김 / 선택 가능 / 클리어)")]
+    [SerializeField] private SpriteRenderer lockIcon;      //잠김일 때만 표시
+    [SerializeField] private SpriteRenderer[] starIcons;   //별 3칸 — 해금된 전투 구조물만 표시 (비전투 구조물은 숨김)
+    [SerializeField] private Sprite filledStarSprite;
+    [SerializeField] private Sprite emptyStarSprite;
+
     public StructureData Data { get; private set; }
     public int StageNumber { get; private set; }   //스테이지 번호 (캐싱 키)
     public Vector3 IsoPosition => isoObject.position;   //노드의 Iso 위치 (영웅 이동 목표)
@@ -29,12 +35,21 @@ public class StructureView : MonoBehaviour
         StageNumber = stageNumber;
         model.sprite = data.Sprite;
         isoObject.position = isoPosition;
-        SetSelectable(false);
+        SetState(false, null);
     }
 
-    public void SetSelectable(bool selectable)
+    //잠김: 어둡게 + 자물쇠 / 선택 가능: 빈 별 3개 / 클리어: 획득한 별만 채움
+    public void SetState(bool unlocked, StageProgress progress)
     {
-        model.color = selectable ? selectableColor : lockedColor;
+        model.color = unlocked ? selectableColor : lockedColor;
+        lockIcon.enabled = !unlocked;
+
+        bool showStars = unlocked && Data.StageData != null;
+        for (int i = 0; i < starIcons.Length; i++)
+        {
+            starIcons[i].enabled = showStars;
+            starIcons[i].sprite = progress != null && progress.HasStar(i) ? filledStarSprite : emptyStarSprite;
+        }
     }
 
     public bool IsMouseOver(Vector3 mouseWorld)

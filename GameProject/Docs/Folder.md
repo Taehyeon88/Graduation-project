@@ -49,6 +49,7 @@ Assets/Game/
 ├─ Rumors/                 # Rumor(Models/) 서브클래스 — RumorData가 [SerializeReference]로 조립: PowerfulRumor, FlexibleRumor, MasteredRumor
 ├─ Terrains/               # TerrainEffect(Models/) 서브클래스 — TerrainData가 [SerializeReference]로 조립: BushEffect
 ├─ PlayerSkills/           # PlayerSkill(Models/) 서브클래스 — PlayerSkillData가 [SerializeReference]로 조립: SharpDagger
+├─ StarConditions/         # StarCondition(Models/) 서브클래스 — StageData.SpecialStarCondition(★3)이 [SerializeReference]로 조립: RoundLimit / WithoutHero / BaseHeroesOnly / KillEnemy (~StarCondition)
 ├─ SubSystems/             # Singleton 파사드가 위임하는 실행 컴포넌트(TokenMainAPI/TokenServiceAPI/TokenSetup, GridSelector, TooltipTrigger)
 ├─ UI/                     # 화면별 UI 컴포넌트(~UI 접미사, SkillsUI/StatusEffectsUI/TurnPopUpUI/TavernUI/RumorSelectUI/RumorSlotUI/DeckViewUI 등) + AudioMixerController
 └─ GameSystem.cs           # 메타 상태(골드/스테이지/영웅 로스터) 전담 Singleton(상세는 convention.md 6절)
@@ -89,7 +90,7 @@ Assets/Game/
 | `Isometrics/` | 4 | `Grid_Tile`, `Side_Tile`, `TestWorld_1`, `TileVisual` |
 | `Models/` | 3 | `EnemyModel`, `HeroModel`, `WallModel` |
 | `Projections/` | 2 | `RatGeneral_Stone`, `Skeleton_BoneArrow` |
-| `UI/` | 12 | `CaptainDetailsUI`(호버한 용병대장 정보 패널), `DisPlayUI`, `FloatingText`(피해 수치 등 월드 공간 3D TMP, `FloatingTextSystem`이 풀링), `GameClearUI`(승리 패널·확인/나가기 버튼), `EnemyFlagDetailsUI`(호버한 적 세력 깃발 정보 패널), `EnemyUI`, `SettingUI`, `StatusEffectUI`, `StatusEffectUIAtWorld`, `TerrainDetailsUI`(호버한 지형지물·장애물 정보 패널), `TokenDetailsUI`(호버한 영웅·몬스터 정보 패널), `TraitUI` |
+| `UI/` | 12 | `CaptainDetailsUI`(호버한 용병대장 정보 패널), `DisPlayUI`, `FloatingText`(피해 수치 등 월드 공간 3D TMP, `FloatingTextSystem`이 풀링), `GameClearUI`(승리 패널·별 결과·확인 → 스테이지 선택), `CurrencyUI`(상단 별·휘장 표시), `StageInfoPopupUI`·`HeroCardSlotUI`(스테이지 정보 팝업·영웅 카드 선택), `EnemyFlagDetailsUI`(호버한 적 세력 깃발 정보 패널), `EnemyUI`, `SettingUI`, `StatusEffectUI`, `StatusEffectUIAtWorld`, `TerrainDetailsUI`(호버한 지형지물·장애물 정보 패널), `TokenDetailsUI`(호버한 영웅·몬스터 정보 패널), `TraitUI` |
 | `Views/` | 15 | `ArrowView`, `CardArrowView`(카드 → 마우스 화살), `CardView`, `CardViewInPile`, `CombatantViewBase`, `EnemyFlagView`(적 코어), `EnemyView`, `HeroCaptainView`(아군 코어·용병대장), `HeroPreView`, `HeroView`, `ObstacleView`(파괴 가능 장애물), `PopUp_Text_View`, `ProjectionView`, `SkillView`, `TerrainView`(발판 타일) |
 
 ## 5. `4_Medias/` — 스프라이트/이미지 (98개 png)

@@ -18,13 +18,13 @@ public class GameOverUI : MonoBehaviour
         endGameButton.onClick.RemoveListener(EndGame);
     }
 
-    private void RestartGame()  //첫 스테이지부터 시작
+    private void RestartGame()  //같은 스테이지·같은 선택으로 재도전
     {
-        GameSystem.Instance.StartFromScratch();
+        GameSystem.Instance.RetryStage();
     }
 
-    private void EndGame()  //시작 화면으로 돌아가기
+    private void EndGame()  //스테이지 선택 화면으로 돌아가기
     {
-        SceneManager.LoadScene("StartScene");
+        GameSystem.Instance.ReturnToStageSelect();
     }
 }

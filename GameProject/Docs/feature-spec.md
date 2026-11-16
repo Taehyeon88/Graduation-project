@@ -1,4 +1,4 @@
-# 뱀서류 토이프로젝트 — 기능명세서 (목차)
+# 기능명세서 (목차)
 
 > 시스템별 구체 동작·수치 정의. 게임 기획서의 후속.
 > 챕터별 구현 시 Claude에 **해당 섹션 파일**을 input으로 던진다.
@@ -14,7 +14,7 @@
 | 00 | [00_token_system_setup.md](feature-spec/token/00_token_system_setup.md) | TokenSystem API — TokenSetup(초기 배치 메서드) 카탈로그 |
 | 00 | [00_token_system_api.md](feature-spec/token/00_token_system_api.md) | TokenSystem API — TokenServiceAPI(조회 메서드 16개) 카탈로그 |
 | 01 | [01_enemy_system.md](feature-spec/01_enemy_system.md) | **(제거됨, 역사 기록)** EnemySystem 아키텍처 — 몬스터 턴 판단·실행 흐름 |
-| 01 | [enemy_action_howto.md](feature-spec/enemy_action_howto.md) | 새 EnemyAction 추가 실전 가이드 — FireArrowEA 사례 |
+| 01 | ~~enemy_action_howto.md~~ | **(제거됨, 파일 없음)** 새 EnemyAction 추가 실전 가이드 — EnemyAction 계층과 함께 제거 |
 | 01 | [01_hero_system.md](feature-spec/01_hero_system.md) | HeroSystem 아키텍처 — 플레이어 턴 시작 훅 + 선택된 영웅 상태 관리 |
 | 02 | [02_skill_system.md](feature-spec/02_skill_system.md) | **(제거됨, 역사 기록)** SkillSystem 아키텍처 — 스킬 카드 클릭→타겟팅→효과 GameAction 위임 흐름. `Effect` 체인 설명은 참고용으로 유효 |
 | 03 | [03_wave_system.md](feature-spec/03_wave_system.md) | WaveSystem 아키텍처 — 몬스터 턴마다 카운트다운, n턴마다 웨이브 추가 생성 + 신규 몬스터 행동 자동 연산 |
@@ -30,3 +30,9 @@
 | 08 | [08_terrain_obstacle.md](feature-spec/08_terrain_obstacle.md) | 지형 — 중립지대(이동·배치 불가)·파괴 가능 장애물(돌격 화살통, 토큰)·발판(풀숲, 별도 레이어). `StageData`에 저장 → `MatchSetupSystem`에서 생성 |
 | 08 | [terrain_catalog.md](feature-spec/Terrain/terrain_catalog.md) | 지형 카탈로그 — 장애물·발판별 Id·수치·특성·연결 흐름·한계 (현재 장애물 돌격 화살통 1개, 발판 풀숲 1개) |
 | 09 | [09_visual_grid.md](feature-spec/09_visual_grid.md) | VisualGrid — 타일 하이라이트(이동 범위·배치 구역·선택/호버). `VisualGridData` SO + `VisualGridCreator` API, **현재 전체 VG 레이어 순서표(`sortingOrder`)**, 동점·가림 등 한계 |
+| 10 | [10_cheat_mode.md](feature-spec/10_cheat_mode.md) | 치트 모드 (임시 — 제거 예정) — C 키 토글, 전투 시작 고정 드로우. 관련 코드·에셋 위치와 제거 체크리스트 |
+| 11 | [11_stage_progress.md](feature-spec/11_stage_progress.md) | **(명세 확정, 미구현)** 스테이지 진행·스테이지 선택 시스템(B안) — 해금·클리어·재도전, 별 3조건·휘장, 정보 팝업·영웅 카드 선택(기본+선택 5~8장), 선택 씬 아이콘 3상태 |
+| 12 | [12_enemy_placement_ai.md](feature-spec/12_enemy_placement_ai.md) | **(뼈대, 미구현)** 적 AI 배치 — "순서는 디자이너, 위치는 AI", 역할 프로필·칸 점수·난이도·히트맵 디버그 |
+| 13 | [13_growth.md](feature-spec/13_growth.md) | **(뼈대, 미구현)** 성장 — 영웅 승급(휘장)·공용 트리(별)·키워드 연계·교체형 소문 |
+
+> 구현 작업 목록(T-xx)은 [task-list.md](task-list.md). 기획 원본은 Claude Docs — [game-design.md](game-design.md) 헤더 참고.

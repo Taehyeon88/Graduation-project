@@ -39,9 +39,10 @@ public class TavernSystem : Singleton<TavernSystem>   //주점 흐름: 영웅 �
         tavernUI.ShowExit();
     }
 
-    public void Exit()
+    public void Exit()   //주점을 마치면 클리어 처리(다음 해금) 후 스테이지 선택으로
     {
-        GameSystem.Instance.GoToNextLevel();
+        GameSystem.Instance.MarkCurrentCleared();
+        GameSystem.Instance.ReturnToStageSelect();
     }
 
     //Reactions

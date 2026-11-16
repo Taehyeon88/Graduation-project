@@ -69,7 +69,7 @@ public class CardSystem : Singleton<CardSystem>
     //Publics
     public void SetUp()
     {
-        SetUp(GameSystem.Instance.Deck);
+        SetUp(GameSystem.Instance.BattleDeck);   //기본 제공 카드 + 선택 카드
     }
 
     //지정한 영웅들로 드로우 더미 구성 (주점처럼 덱 일부만 쓸 때)

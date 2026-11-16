@@ -1,35 +1,45 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class GameClearUI : MonoBehaviour
 {
-    [SerializeField] private GameObject panel;        //승리 결과 패널 (확인 후 닫힘, 입력 차단막은 유지)
-    [SerializeField] private Button confirmButton;
-    [SerializeField] private GameObject exitButton;   //보상 선택 단계에서만 표시, 누르면 다음 스테이지 선택(StageScene)으로 이동
+    [SerializeField] private GameObject panel;        //승리 결과 패널
+    [SerializeField] private Button confirmButton;    //누르면 스테이지 선택(StageScene)으로 이동
+
+    [Header("별 결과")]
+    [SerializeField] private TMP_Text gainedStarText;          //이번 판 새로 얻은 별 수
+    [SerializeField] private TMP_Text[] starConditionTexts;    //★1~★3 조건 문구
+    [SerializeField] private Color metColor = new(1f, 0.82f, 0.1f, 1f);     //충족한 조건
+    [SerializeField] private Color unmetColor = new(0.6f, 0.6f, 0.6f, 1f);  //충족하지 못한 조건
 
     private void OnEnable()
     {
         panel.SetActive(true);
-        exitButton.SetActive(false);
+        ShowStarResult();
         confirmButton.onClick.AddListener(Confirm);
-        exitButton.GetComponent<Button>().onClick.AddListener(Exit);
     }
 
     private void OnDisable()
     {
         confirmButton.onClick.RemoveListener(Confirm);
-        exitButton.GetComponent<Button>().onClick.RemoveListener(Exit);
     }
 
-    private void Exit()   //다음 스테이지로 진행하고 스테이지 선택 씬으로 이동
+    //Privates
+    private void ShowStarResult()
     {
-        GameSystem.Instance.GoToNextLevel();
+        GameSystem game = GameSystem.Instance;
+        gainedStarText.SetText($"획득한 별 +{game.LastGainedStars}");
+
+        for (int i = 0; i < starConditionTexts.Length && i < game.LastAchievedStars.Count; i++)
+        {
+            starConditionTexts[i].SetText($"{i + 1}. {StarSystem.GetStarDescription(game.CurrentStageData, i)}");
+            starConditionTexts[i].color = game.LastAchievedStars[i] ? metColor : unmetColor;
+        }
     }
 
-    private void Confirm()   //결과 패널을 닫고 보상 용병 선택 시작
+    private void Confirm()   //스테이지 선택 씬으로 이동 (해금·별·휘장은 승리 시 이미 기록됨)
     {
-        panel.SetActive(false);
-        exitButton.SetActive(true);
-        RewardSelectSystem.Instance.BeginSelect();
+        GameSystem.Instance.ReturnToStageSelect();
     }
 }

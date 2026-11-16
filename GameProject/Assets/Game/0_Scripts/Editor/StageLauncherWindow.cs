@@ -4,7 +4,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-//스테이지 선택 흐름(CurrentStageLevel 제약)을 무시하고 원하는 구조물을 바로 실행하는 디버그 창
+//스테이지 선택 흐름(해금 제약)을 무시하고 원하는 구조물을 바로 실행하는 디버그 창
 //플레이 중: 현재 런 상태를 유지한 채 이동 / 에디터 모드: StageScene에서 Play를 시작한 뒤 새 런 상태로 이동
 [InitializeOnLoad]
 public class StageLauncherWindow : EditorWindow
@@ -70,7 +70,7 @@ public class StageLauncherWindow : EditorWindow
         }
         else
         {
-            string mode = playing ? "플레이 중: 현재 런 상태(덱·체력·층)를 유지한 채 이동합니다." : "에디터 모드: StageScene에서 Play를 시작해 새 런 상태로 이동합니다.";
+            string mode = playing ? "플레이 중: 현재 진행 상태(보유 덱·클리어 기록)를 유지한 채 이동합니다." : "에디터 모드: StageScene에서 Play를 시작해 새 진행 상태로 이동합니다.";
             EditorGUILayout.HelpBox(mode, MessageType.None);
         }
 
@@ -96,22 +96,13 @@ public class StageLauncherWindow : EditorWindow
             LaunchFromEditor(data);
     }
 
-    //플레이 중: StageSelectSystem.Update와 같은 호출 (구조물 선택 → 씬 이동)
+    //플레이 중: StageSelectSystem.Update와 같은 호출 (구조물 진입 → 씬 이동). 해금 제약은 무시, 영웅 카드는 자동 선택
+    //EnterStage가 클리어/오버 상태도 되돌린다. 스테이지 번호는 현재 값을 유지(보상 테이블 기준)
     private static void LaunchInPlay(StructureData data)
     {
         GameSystem game = GameSystem.Instance;
-
-        //이전 전투의 클리어/오버 상태가 남으면 새 전투가 바로 멈추므로 되돌림 (private set이라 리플렉션)
-        SetResultFlag(game, nameof(GameSystem.IsGameClear));
-        SetResultFlag(game, nameof(GameSystem.IsGameOver));
-
-        game.SelectStructure(data);
+        game.EnterStage(data, game.CurrentStageLevel, game.GetAutoSelection(data));
         SceneManager.LoadScene(data.SceneName);
-    }
-
-    private static void SetResultFlag(GameSystem game, string propertyName)
-    {
-        typeof(GameSystem).GetProperty(propertyName).SetValue(game, false);
     }
 
     //에디터 모드: GAMEMASTER가 있는 StageScene에서 Play를 시작하고, 진입 후 구조물을 실행

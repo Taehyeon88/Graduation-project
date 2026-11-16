@@ -24,3 +24,17 @@ MonoBehaviour:
     Data: {fileID: 11400000, guid: 9cd8fdab07124aa4fbf0b44608047009, type: 2}
   <EnemyCoreHealth>k__BackingField: 16
   <StageBGMId>k__BackingField: 5002
+  <HeroCaptainHealth>k__BackingField: 20
+  <DeckSize>k__BackingField: 5
+  <BaseHeroes>k__BackingField: []
+  <InsigniaReward>k__BackingField: 1
+  <CaptainHealthStarThreshold>k__BackingField: 10
+  <SpecialStarCondition>k__BackingField:
+    rid: 8294627021859848266
+  references:
+    version: 2
+    RefIds:
+    - rid: 8294627021859848266
+      type: {class: RoundLimitStarCondition, ns: , asm: Assembly-CSharp}
+      data:
+        maxRounds: 7

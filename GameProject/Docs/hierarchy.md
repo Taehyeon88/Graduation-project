@@ -10,7 +10,7 @@
 | `--- SETUP ---` | 4 | 씬 기본 설정(조명·카메라·이벤트 시스템) |
 | `--- UI ---` | 6 | Canvas 전체 |
 | `--- VIEWS ---` | 2 | 토큰 월드 뷰 · VFX |
-| `--- SYSTEMS ---` | 16 | 전투/스킬 처리 Singleton System |
+| `--- SYSTEMS ---` | 18 | 전투/스킬 처리 Singleton System |
 | `--- PROCESSORS ---` | 3 | 상태 없이 GA만 처리하는 `~Processor` |
 | `--- CREATORS ---` | 3 | 생성 담당(`4.Creators/`와 1:1 대응) |
 | `--- MANAGERS ---` | 10 | 그 외 전역 매니저 |
@@ -46,7 +46,7 @@
 | IsoGridWorldView | 5 | IsoWorld |
 | VFX | 1 | (Transform만) |
 
-### `--- SYSTEMS ---` (16개)
+### `--- SYSTEMS ---` (18개)
 | GameObject | 컴포넌트 | 비고 |
 |---|---|---|
 | DamageSystem | DamageSystem | |
@@ -66,6 +66,7 @@
 | PlayerSkillSystem | PlayerSkillSystem | `skillData`에 `SharpDagger.asset` 연결 |
 | TerrainSystem | TerrainSystem | 리액션 전용, 인스펙터 연결 없음 (발판 프리팹은 `TokenCreator.terrainPrefab`) |
 | FloatingTextSystem | FloatingTextSystem | 피해 수치·피해면역·회피 플로팅 텍스트. `textPrefab`에 `UI/FloatingText.prefab` 연결, 색·높이·시간 값은 인스펙터 |
+| StarSystem | StarSystem | 별 조건 판정용 기록(몬스터 처치·카드 배치), 승리 시 ★1~★3 판정. 인스펙터 연결 없음 |
 
 ### `--- PROCESSORS ---` (3개)
 | GameObject | 컴포넌트 |
@@ -145,3 +146,4 @@
 ## 5. 문서 유지보수
 
 - 이 문서는 스냅샷이다. Hierarchy 구조가 바뀌거나(카테고리 추가/이동) 이슈가 해결되면 즉시 갱신한다.
+- 다른 씬 메모 (이 문서 조사 범위 밖): StageScene `--- UI ---`에 `StageInfo Canvas`(스테이지 정보 팝업, `StageInfoPopupUI`) 추가 — 상세는 `feature-spec/11_stage_progress.md` 3-1.
