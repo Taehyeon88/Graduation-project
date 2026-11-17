@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 public class HeroView : CombatantView
 {
     public int Id => TokenData.Id;
@@ -22,7 +22,11 @@ public class HeroView : CombatantView
     public void SetUp(Hero hero)
     {
         Hero = hero;
-        SetUpBase(hero.Data, hero.MaxHealth, hero.Damage, hero.Speed, hero.Traits);
+        GameSystem game = GameSystem.Instance;   //공용 트리 신병 훈련·정예 훈련 (영웅은 모두 카드 배치로 생성)
+        SetUpBase(hero.Data,
+            hero.MaxHealth + game.GetGrowthBonus(GrowthNodeType.PLACED_HERO_HEALTH),
+            hero.Damage + game.GetGrowthBonus(GrowthNodeType.HERO_DAMAGE),
+            hero.Speed, hero.Traits);
 
         rumor = hero.Rumor?.Rumor?.Clone();
         rumor?.OnAdd(this);

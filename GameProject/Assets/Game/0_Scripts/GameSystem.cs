@@ -37,6 +37,7 @@ public class GameSystem : Singleton<GameSystem>
     private readonly List<Hero> baseHeroes = new();
     private readonly Dictionary<StructureData, StageProgress> progresses = new();   //구조물별 진행 기록
     private readonly Dictionary<HeroData, HeroPromotion> promotions = new();        //영웅 종류별 승급 상태 (보유 영웅만)
+    private readonly Dictionary<GrowthNodeData, int> nodeLevels = new();            //공용 트리 노드별 구매 레벨 (1레벨 이상만)
 
 
     protected override void Awake()
@@ -127,6 +128,27 @@ public class GameSystem : Singleton<GameSystem>
         return true;
     }
 
+    //공용 트리 노드 구매 레벨 (규칙 판단은 GrowthNodeSystem)
+    public int GetNodeLevel(GrowthNodeData node)
+        => node != null && nodeLevels.TryGetValue(node, out int level) ? level : 0;
+
+    public void AddNodeLevel(GrowthNodeData node)
+    {
+        nodeLevels[node] = GetNodeLevel(node) + 1;
+    }
+
+    public void ClearNodeLevels()
+    {
+        nodeLevels.Clear();
+    }
+
+    //구매한 전체 레벨 합 (= 쓴 별, 1레벨 = 별 1)
+    public int TotalNodeLevels => nodeLevels.Values.Sum();
+
+    //해당 효과를 가진 노드들의 레벨 × 레벨당 효과량 합 (전투 시작 시 각 적용 지점이 조회)
+    public int GetGrowthBonus(GrowthNodeType type)
+        => nodeLevels.Where(pair => pair.Key.Type == type).Sum(pair => pair.Value * pair.Key.AmountPerLevel);
+
     public StageProgress GetProgress(StructureData structure)
     {
         if (!progresses.TryGetValue(structure, out StageProgress progress))
@@ -137,9 +159,9 @@ public class GameSystem : Singleton<GameSystem>
         return progress;
     }
 
-    //선택 슬롯 수 = 스테이지 덱 크기 - 기본 제공 카드 수
+    //선택 슬롯 수 = 스테이지 덱 크기 - 기본 제공 카드 수 + 공용 트리 덱 슬롯 (상한은 미정)
     public int GetSelectSlotCount(StageData stage)
-        => Mathf.Max(0, stage.DeckSize - (stage.BaseHeroes?.Length ?? 0));
+        => Mathf.Max(0, stage.DeckSize - (stage.BaseHeroes?.Length ?? 0)) + GetGrowthBonus(GrowthNodeType.DECK_SLOT);
 
     //기본 제공 카드와 같은 영웅은 중복 선택 불가
     public bool CanSelect(StageData stage, Hero hero)
@@ -217,6 +239,7 @@ public class GameSystem : Singleton<GameSystem>
         BattleDeck.Clear();
         baseHeroes.Clear();
         progresses.Clear();
+        nodeLevels.Clear();
         Stars = 0;
         Insignias = 0;
     }

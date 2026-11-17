@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerSkillSystem : Singleton<PlayerSkillSystem>
 {
@@ -47,7 +47,7 @@ public class PlayerSkillSystem : Singleton<PlayerSkillSystem>
     {
         if (turnGA.Type == TurnType.StartBattle)
         {
-            RemainingUses = skillData.MaxUses;
+            RemainingUses = skillData.MaxUses + GameSystem.Instance.GetGrowthBonus(GrowthNodeType.DAGGER_USES);   //공용 트리 단도 보급
             usedThisTurn = false;
         }
         else if (turnGA.Type == TurnType.Player)

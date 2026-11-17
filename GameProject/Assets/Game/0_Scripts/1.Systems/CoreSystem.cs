@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using DG.Tweening;
 using UnityEngine;
 
@@ -10,6 +10,8 @@ public class CoreSystem : Singleton<CoreSystem>
     public int PlayerCoreHealth => HeroCaptain != null ? HeroCaptain.CurrentHealth : 0;   //용병대장 체력
     public int EnemyCoreHealth { get; private set; }
     public int EnemyCoreMaxHealth { get; private set; }   //정보 패널 표시용
+
+    private int flagBonusLeft;   //공용 트리 깃발 공략: 이번 전투에 남은 영웅의 깃발 피해 +1 횟수
 
     private void OnEnable()
     {
@@ -25,6 +27,7 @@ public class CoreSystem : Singleton<CoreSystem>
     {
         EnemyCoreHealth = stageData.EnemyCoreHealth;
         EnemyCoreMaxHealth = stageData.EnemyCoreHealth;   //플레이어 코어 체력은 HeroCaptainData에서 View가 보유
+        flagBonusLeft = GameSystem.Instance.GetGrowthBonus(GrowthNodeType.FLAG_DAMAGE);
     }
 
     //Performers
@@ -68,6 +71,11 @@ public class CoreSystem : Singleton<CoreSystem>
                 );
             if (isHeroAttack)
             {
+                if (attacker is HeroView && flagBonusLeft > 0)   //깃발 공략은 영웅의 공격만 (단도 제외)
+                {
+                    damage++;
+                    flagBonusLeft--;
+                }
                 EnemyCoreHealth = Mathf.Max(0, EnemyCoreHealth - damage);
                 EnemyFlag.UpdateHealth(EnemyCoreHealth);
                 EnemyFlag.PlayHitShake();

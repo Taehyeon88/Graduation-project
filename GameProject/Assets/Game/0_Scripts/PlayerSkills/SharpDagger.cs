@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 //날카로운 단도 : 적 용병 또는 우두머리를 지정해 피해를 준다 (회피 무시, 장애물 지정 불가)
 public class SharpDagger : PlayerSkill
@@ -12,6 +12,8 @@ public class SharpDagger : PlayerSkill
 
     public override GameAction CreateAction(Token target)
     {
+        int damage = this.damage + GameSystem.Instance.GetGrowthBonus(GrowthNodeType.DAGGER_DAMAGE);   //공용 트리 단도 연마
+
         if (target is EnemyFlagView)
             return new AttackCoreGA(null, damage);
 

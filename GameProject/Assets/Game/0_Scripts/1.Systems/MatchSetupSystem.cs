@@ -56,7 +56,10 @@ public class MatchSetupSystem : MonoBehaviour
 
         //4.2 용병대장/적 세력 깃발 View 생성 (그리드 밖)
         tokenSetup.SetUpHeroCaptain(GameSystem.Instance.HeroCaptainData);
-        HeroSystem.Instance.HeroCaptain.RestoreHealth(stageData.HeroCaptainHealth, stageData.HeroCaptainHealth);   //용병대장 체력은 스테이지마다 고정값으로 시작
+        int captainHealth = stageData.HeroCaptainHealth + GameSystem.Instance.GetGrowthBonus(GrowthNodeType.CAPTAIN_HEALTH);   //스테이지 고정값 + 공용 트리
+        HeroSystem.Instance.HeroCaptain.RestoreHealth(captainHealth, captainHealth);   //용병대장 체력은 스테이지마다 고정값으로 시작
+        int retaliateBonus = GameSystem.Instance.GetGrowthBonus(GrowthNodeType.RETALIATE_DAMAGE);   //용병대장은 응수로만 피해를 주므로 공격력으로 반영
+        if (retaliateBonus > 0) HeroSystem.Instance.HeroCaptain.ModifyStat(StatType.DAMAGE, retaliateBonus);
         tokenSetup.SetUpEnemyFlag(GameSystem.Instance.EnemyFlagData, stageData.EnemyCoreHealth);
 
         //4.4 플레이어/적 코어 체력 설정

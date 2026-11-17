@@ -1,8 +1,9 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public static class DamageCaculator
 {
     private const float CriticalRatio = 0.5f;   //치명타 : 공격자 공격력 대비 추가 피해 비율
+    private const float PercentToRatio = 0.01f;   //공용 트리 노련함 보너스(%p) → 비율
 
     public static int GetDamage(float baseDamage, CombatantView attacker, IDamageable target)
     {
@@ -34,7 +35,12 @@ public static class DamageCaculator
 
     private static float GetCritical(CombatantView attacker)
     {
-        return attacker.CheckStatusEffectExist(StatusEffectType.CRITICAL) ? attacker.BaseDamage * CriticalRatio : 0f;
+        if (!attacker.CheckStatusEffectExist(StatusEffectType.CRITICAL)) return 0f;
+
+        float ratio = CriticalRatio;
+        if (attacker is HeroView)   //노련함은 영웅 공통 노드
+            ratio += GameSystem.Instance.GetGrowthBonus(GrowthNodeType.CRITICAL_DAMAGE) * PercentToRatio;
+        return attacker.BaseDamage * ratio;
     }
 
     private static float CalculateWeak(float damage, CombatantView attacker)

@@ -17,6 +17,7 @@ public class StageSelectSystem : Singleton<StageSelectSystem>
     [SerializeField] private RectTransform tooltipAnchor;       //구조물 툴팁 위치 기준점 (호버 시 StructureView가 구조물 화면 좌표로 옮김)
     [SerializeField] private StageInfoPopupUI stageInfoPopup;   //전투 구조물 클릭 시 여는 정보 팝업 (영웅 카드 선택 → 진입)
     [SerializeField] private PromotionUI promotionUI;           //영웅 승급 화면 (열려 있으면 월드 입력 잠금)
+    [SerializeField] private GrowthNodeUI growthNodeUI;         //공용 트리 화면 (〃)
 
     private readonly Dictionary<int, StructureView> structureCache = new();   //스테이지 번호(1부터) → 구조물
     private bool isMoving;                                      //영웅 이동·Fade 중 입력 잠금
@@ -52,7 +53,7 @@ public class StageSelectSystem : Singleton<StageSelectSystem>
 
     private void Update()
     {
-        if (isMoving || stageInfoPopup.IsOpen || promotionUI.IsOpen)   //이동 중이거나 정보 팝업·승급 화면이 열려 있으면 월드 입력 잠금
+        if (isMoving || stageInfoPopup.IsOpen || promotionUI.IsOpen || growthNodeUI.IsOpen)   //이동 중이거나 정보 팝업·승급·공용 트리 화면이 열려 있으면 월드 입력 잠금
         {
             UpdateHover(null);
             return;

@@ -1,4 +1,4 @@
-using DG.Tweening;
+﻿using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -35,6 +35,8 @@ public class CardSystem : Singleton<CardSystem>
     private Vector2Int hoveredPos = Vector2Int.down;          //마지막으로 판정한 마우스 타일
     private bool isDragMode;                                  //드래그로 배치 중 (놓을 때 확정)
     private bool dropRequested;                               //드래그 종료(버튼 놓음) 감지
+    private int discountsLeft;                                //공용 트리 절약: 이번 전투에 남은 배치 AP −1 횟수
+    private int speedBoostsLeft;                              //공용 트리 속도 훈련: 이번 전투에 남은 배치 시 속도 +1 횟수
 
     public static event System.Action PilesReset;     //SetUp으로 더미가 재구성될 때 (더미 UI 갱신용)
 
@@ -93,7 +95,11 @@ public class CardSystem : Singleton<CardSystem>
     //AP 없이 카드를 배치하는 씬(주점) 여부
     public bool FreePlacement { get; set; }
 
-    public bool CanPlay(Card card) => FreePlacement || APSystem.Instance.HasEnoughAP(card.APCost);
+    public bool CanPlay(Card card) => FreePlacement || APSystem.Instance.HasEnoughAP(GetPlayCost(card));
+
+    //실제 배치 AP — 절약 횟수가 남았으면 −1 (최소 1, 이미 1 이하면 할인하지 않음). 카드에 표시하는 비용은 원래 값
+    private int GetPlayCost(Card card)
+        => discountsLeft > 0 && card.APCost > 1 ? card.APCost - 1 : card.APCost;
 
     //테스트용: 덱과 무관하게 지정한 영웅 카드를 손패에 추가 (에디터 윈도우에서 호출)
     public void AddHeroToHand(HeroData heroData)
@@ -333,12 +339,21 @@ public class CardSystem : Singleton<CardSystem>
 
         if (!FreePlacement)
         {
-            SpendAPGA spendAPGA = new(card.APCost);
+            int cost = GetPlayCost(card);
+            if (cost < card.APCost) discountsLeft--;
+            SpendAPGA spendAPGA = new(cost);
             ActionSystem.Instance.AddReaction(spendAPGA);
         }
 
         //선택 타일에 용병 배치
         TokenSystem.Instance.Main.AddHero(card.Unit, playCardGA.TargetPos);
+
+        //공용 트리 속도 훈련: 남은 횟수만큼 배치되는 영웅 속도 +1 (자동 전투 전이라 이번 라운드부터 반영)
+        if (speedBoostsLeft > 0 && TokenSystem.Instance.API.GetTokenByPosition(playCardGA.TargetPos) is HeroView placedHero)
+        {
+            placedHero.ModifyStat(StatType.SPEED, 1);
+            speedBoostsLeft--;
+        }
 
         if (HeroSystem.Instance.CurrentHero == null)
             HeroSystem.Instance.CurrentHero = TokenSystem.Instance.API.GetTokenByPosition(playCardGA.TargetPos) as HeroView;
@@ -366,9 +381,13 @@ public class CardSystem : Singleton<CardSystem>
     {
         if (turnGA.Type != TurnType.StartBattle) return;
 
-        int drawAmount = startDrawAmount;
+        GameSystem game = GameSystem.Instance;
+        discountsLeft = game.GetGrowthBonus(GrowthNodeType.PLACEMENT_DISCOUNT);
+        speedBoostsLeft = game.GetGrowthBonus(GrowthNodeType.PLACED_HERO_SPEED);
+
+        int drawAmount = startDrawAmount + game.GetGrowthBonus(GrowthNodeType.START_DRAW);   //공용 트리 준비된 손
         if (CheatSystem.Instance != null && CheatSystem.Instance.IsCheatMode)
-            drawAmount = Mathf.Max(startDrawAmount, MoveCheatCardsToTop());   //고정 카드는 드로우 장수를 넘어도 전부 포함
+            drawAmount = Mathf.Max(drawAmount, MoveCheatCardsToTop());   //고정 카드는 드로우 장수를 넘어도 전부 포함
 
         DrawCardsGA drawCardsGA = new(drawAmount);
         ActionSystem.Instance.AddReaction(drawCardsGA);

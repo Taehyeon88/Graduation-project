@@ -6,6 +6,7 @@ public class APSystem : Singleton<APSystem>
     [SerializeField] private APUI apUI;
     [SerializeField] private int startBattleAP = 5;   //전투 시작 시 획득 AP
     [SerializeField] private int turnStartAP = 3;     //플레이어 턴 시작마다 획득 AP
+    [SerializeField] private int baseMaxAP = 5;       //공용 트리 보너스 전 최대 AP
     public int MaxAP { get; private set; } = 5;
     public int CurrentAP { get; private set; }
 
@@ -44,7 +45,10 @@ public class APSystem : Singleton<APSystem>
     private void TurnGAPreReaction(TurnGA turnGA)
     {
         if (turnGA.Type == TurnType.StartBattle)
+        {
+            MaxAP = baseMaxAP + GameSystem.Instance.GetGrowthBonus(GrowthNodeType.MAX_AP);   //공용 트리 확장 보급 (전투 중 불변)
             ActionSystem.Instance.AddReaction(new RefillAPGA(startBattleAP));
+        }
         else if (turnGA.Type == TurnType.Player)
             ActionSystem.Instance.AddReaction(new RefillAPGA(turnStartAP));
     }

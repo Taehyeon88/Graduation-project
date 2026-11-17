@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92694d8659716aa47bb5a12fdb5586c7, type: 3}
+  m_Name: "X1_\uC9C0\uD718 \uC624\uB77C"
+  m_EditorClassIdentifier: Assembly-CSharp::GrowthNodeData
+  <Code>k__BackingField: X1
+  <Branch>k__BackingField: 4
+  <MaxLevel>k__BackingField: 2
+  <Type>k__BackingField: 0
+  <AmountPerLevel>k__BackingField: 1
+  <EffectFormat>k__BackingField: "\uC751\uC218\uAC00 \uBC1C\uB3D9\uD558\uBA74 \uAC19\uC740
+    \uB77C\uC778 \uC601\uC6C5\uC5D0\uAC8C \uD798 +{0}"
+  <Prerequisites>k__BackingField:
+  - Node: {fileID: 11400000, guid: ee2320cbb3245684c8ccc2489965a3f6, type: 2}
+    Level: 1
+  - Node: {fileID: 11400000, guid: 7306d2d194a0cef499a4b42d87363075, type: 2}
+    Level: 1

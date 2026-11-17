@@ -32,9 +32,9 @@ Assets/Game/
 │  └─ CardEffectRelative/  #   분류용
 ├─ 3.Views/                # CombatantView/HeroView/EnemyView 등 토큰의 뷰 레이어
 ├─ 4.Creators/             # TokenCreator/ProjectionCreator 등 생성 담당
-├─ 5.Data/                 # ScriptableObject 데이터 클래스 정의(~Data 접미사, 17개) — 실 자산은 1_Datas/(2절)
+├─ 5.Data/                 # ScriptableObject 데이터 클래스 정의(~Data 접미사, 17개 + 공용 트리 GrowthNodeData·GrowthNodePrerequisite) — 실 자산은 1_Datas/(2절)
 ├─ Effects/                # Effect(Models/Effect.cs) 서브클래스 — SkillAbility.Effects에 담기는 데이터+로직 홀더
-├─ Enums/                  # 열거형 13개
+├─ Enums/                  # 열거형 13개 + 공용 트리 GrowthNodeType·GrowthBranchType·GrowthNodeState
 ├─ Extensions/             # 확장 메서드(ArrayExtenstion, ListExtension)
 ├─ General/
 │  ├─ Singleton.cs         # 제공 인프라 — 상속만, 수정 금지
@@ -51,7 +51,7 @@ Assets/Game/
 ├─ PlayerSkills/           # PlayerSkill(Models/) 서브클래스 — PlayerSkillData가 [SerializeReference]로 조립: SharpDagger
 ├─ StarConditions/         # StarCondition(Models/) 서브클래스 — StageData.SpecialStarCondition(★3)이 [SerializeReference]로 조립: RoundLimit / WithoutHero / BaseHeroesOnly / KillEnemy (~StarCondition)
 ├─ SubSystems/             # Singleton 파사드가 위임하는 실행 컴포넌트(TokenMainAPI/TokenServiceAPI/TokenSetup, GridSelector, TooltipTrigger)
-├─ UI/                     # 화면별 UI 컴포넌트(~UI 접미사, SkillsUI/StatusEffectsUI/TurnPopUpUI/TavernUI/RumorSelectUI/RumorSlotUI/DeckViewUI/PromotionUI 등) + AudioMixerController
+├─ UI/                     # 화면별 UI 컴포넌트(~UI 접미사, SkillsUI/StatusEffectsUI/TurnPopUpUI/TavernUI/RumorSelectUI/RumorSlotUI/DeckViewUI/PromotionUI/GrowthNodeUI·GrowthNodeSlotUI 등) + AudioMixerController
 └─ GameSystem.cs           # 메타 상태(골드/스테이지/영웅 로스터) 전담 Singleton(상세는 convention.md 6절)
 ```
 
@@ -73,6 +73,7 @@ Assets/Game/
 | `10.PlayerSkills/` | 1 | `PlayerSkillData` | SharpDagger(날카로운 단도) |
 | `11.Obstacles/` | 1 | `ObstacleData` | 돌격 화살통 (체력 4, 공격력 0, 속도 -1, 특성 9001) |
 | `12.Terrains/` | 1 | `TerrainData` | 풀숲 (임시 스프라이트) |
+| `15.GrowthNodes/` | 27 | `GrowthNodeData` | 공용 트리 노드 `코드_이름`(예: `C1_대장의 체력`) — 목록·효과는 feature-spec/13_growth.md §6-3 |
 | `9.Sounds/` | 18 | `SoundData` | `SoundData.asset`/`SoundData 1.asset`은 이름 정리가 안 된 기본값으로 보임 |
 
 **관찰(기록만, 수정 대상 아님):** `SkillData` 클래스는 남아 있지만 `.asset` 인스턴스는 없다(`2.Skills/` 삭제). `0_Scripts/5.Data`의 클래스 16개와 폴더가 1:1로 대응하지는 않는다(`TokenData`/`CombatantData`는 추상 베이스라 자산이 없다).

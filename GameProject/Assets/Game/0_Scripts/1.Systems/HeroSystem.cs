@@ -80,10 +80,11 @@ public class HeroSystem : Singleton<HeroSystem>
             hero.RemoveStatusEffect(StatusEffectType.STUN, 1);
         }
 
+        int criticalBonus = GameSystem.Instance.GetGrowthBonus(GrowthNodeType.HERO_CRITICAL);   //공용 트리 치명타 훈련 (덱 영웅에 저장하지 않고 판정에만 더함)
         foreach (var hero in HeroViews)
         {
             if (hero == null || hero.Hero == null) continue;
-            if (Random.Range(0, PercentMax) >= hero.Hero.Critical) continue;
+            if (Random.Range(0, PercentMax) >= hero.Hero.Critical + criticalBonus) continue;
 
             ActionSystem.Instance.AddReaction(new AddStatusEffectGA(StatusEffectType.CRITICAL, 1, new() { hero }, hero));
         }

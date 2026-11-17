@@ -86,7 +86,7 @@ public class StageInfoPopupUI : MonoBehaviour
         entered = onEnter;
 
         titleText.SetText(structure.name);
-        captainHealthText.SetText($"용병대장 체력 {stage.HeroCaptainHealth}");
+        captainHealthText.SetText($"용병대장 체력 {stage.HeroCaptainHealth + GameSystem.Instance.GetGrowthBonus(GrowthNodeType.CAPTAIN_HEALTH)}");   //공용 트리 보너스 포함
         flagHealthText.SetText($"적 깃발 체력 {stage.EnemyCoreHealth}");
 
         FillMonsters(stage);

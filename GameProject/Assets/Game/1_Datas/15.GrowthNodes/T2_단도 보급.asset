@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92694d8659716aa47bb5a12fdb5586c7, type: 3}
+  m_Name: "T2_\uB2E8\uB3C4 \uBCF4\uAE09"
+  m_EditorClassIdentifier: Assembly-CSharp::GrowthNodeData
+  <Code>k__BackingField: T2
+  <Branch>k__BackingField: 3
+  <MaxLevel>k__BackingField: 2
+  <Type>k__BackingField: 13
+  <AmountPerLevel>k__BackingField: 1
+  <EffectFormat>k__BackingField: "\uB0A0\uCE74\uB85C\uC6B4 \uB2E8\uB3C4 \uC804\uD22C\uB2F9
+    \uD69F\uC218 +{0}"
+  <Prerequisites>k__BackingField:
+  - Node: {fileID: 11400000, guid: 078b78835c4a7f44797819a21c06a5b0, type: 2}
+    Level: 1

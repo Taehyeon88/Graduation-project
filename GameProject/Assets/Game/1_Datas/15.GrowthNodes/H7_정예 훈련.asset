@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92694d8659716aa47bb5a12fdb5586c7, type: 3}
+  m_Name: "H7_\uC815\uC608 \uD6C8\uB828"
+  m_EditorClassIdentifier: Assembly-CSharp::GrowthNodeData
+  <Code>k__BackingField: H7
+  <Branch>k__BackingField: 2
+  <MaxLevel>k__BackingField: 1
+  <Type>k__BackingField: 11
+  <AmountPerLevel>k__BackingField: 1
+  <EffectFormat>k__BackingField: "\uBAA8\uB4E0 \uC601\uC6C5 \uACF5\uACA9\uB825 +{0}"
+  <Prerequisites>k__BackingField:
+  - Node: {fileID: 11400000, guid: 8083f53b2dea61646b431ba59905b446, type: 2}
+    Level: 2
+  - Node: {fileID: 11400000, guid: 473378202975cb44791611e9db7f7e6b, type: 2}
+    Level: 5

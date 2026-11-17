@@ -42,8 +42,8 @@ public class PromotionUI : MonoBehaviour
 
     public bool IsOpen => panel.activeSelf;
 
-    private readonly List<GameObject> heroButtons = new();
-    private readonly List<GameObject> optionButtons = new();
+    private readonly List<Button> heroButtons = new();     //복제한 영웅 버튼 (리스너는 ClearSpawned에서 해제)
+    private readonly List<Button> optionButtons = new();   //복제한 선택지 버튼 (〃)
     private HeroData selectedHero;
     private PromotionOption pendingOption;
 
@@ -224,18 +224,22 @@ public class PromotionUI : MonoBehaviour
     private static string DescribeOption(PromotionOption option)
         => $"{GetOptionTitle(option)}\n\n<size=85%>{option.After.Description}</size>";
 
-    private T Spawn<T>(T template, RectTransform parent, List<GameObject> spawned) where T : Component
+    private Button Spawn(Button template, RectTransform parent, List<Button> spawned)
     {
-        T instance = Instantiate(template, parent);
+        Button instance = Instantiate(template, parent);
         instance.gameObject.SetActive(true);
-        spawned.Add(instance.gameObject);
+        spawned.Add(instance);
         return instance;
     }
 
-    private static void ClearSpawned(List<GameObject> spawned)
+    //Spawn 후 붙인 onClick 리스너를 해제하고 제거 (등록·해제 대칭)
+    private static void ClearSpawned(List<Button> spawned)
     {
-        foreach (GameObject go in spawned)
-            Destroy(go);
+        foreach (Button button in spawned)
+        {
+            button.onClick.RemoveAllListeners();
+            Destroy(button.gameObject);
+        }
         spawned.Clear();
     }
 }

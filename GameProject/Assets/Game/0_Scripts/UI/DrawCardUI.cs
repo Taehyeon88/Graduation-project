@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class DrawCardUI : MonoBehaviour
@@ -7,6 +7,7 @@ public class DrawCardUI : MonoBehaviour
     [SerializeField] private int drawAPCost = 1;   //버튼 1회당 AP 소모
 
     private Button button;
+    private int freeDrawsLeft;   //공용 트리 보급 상자: 이번 전투에 남은 무료 뽑기 (씬이 전투마다 새로 로드돼 전투당 초기화)
 
     private void OnEnable()
     {
@@ -15,6 +16,11 @@ public class DrawCardUI : MonoBehaviour
         {
             button.onClick.AddListener(DrawCard);
         }
+    }
+
+    private void Start()
+    {
+        freeDrawsLeft = GameSystem.Instance.GetGrowthBonus(GrowthNodeType.FREE_DRAW);
     }
 
     private void OnDisable()
@@ -29,11 +35,13 @@ public class DrawCardUI : MonoBehaviour
     {
         //플레이어 턴에 AP가 있고 뽑을 카드가 남아 있을 때만 (카드를 못 뽑으면 AP도 쓰지 않음)
         if (TurnSystem.Instance.CurrentTurn != TurnType.Player) return;
-        if (!APSystem.Instance.HasEnoughAP(drawAPCost)) return;
+        bool isFree = freeDrawsLeft > 0;
+        if (!isFree && !APSystem.Instance.HasEnoughAP(drawAPCost)) return;
         if (CardSystem.Instance.DrawPileCount <= 0) return;
 
         DrawCardsGA drawCardsGA = new(drawAmount);
-        drawCardsGA.PreReactions.Add((new SpendAPGA(drawAPCost), null));
+        if (isFree) freeDrawsLeft--;
+        else drawCardsGA.PreReactions.Add((new SpendAPGA(drawAPCost), null));
         ActionSystem.Instance.Perform(drawCardsGA);
     }
 }

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92694d8659716aa47bb5a12fdb5586c7, type: 3}
+  m_Name: "T4_\uB371 \uC2AC\uB86F"
+  m_EditorClassIdentifier: Assembly-CSharp::GrowthNodeData
+  <Code>k__BackingField: T4
+  <Branch>k__BackingField: 3
+  <MaxLevel>k__BackingField: 2
+  <Type>k__BackingField: 15
+  <AmountPerLevel>k__BackingField: 1
+  <EffectFormat>k__BackingField: "\uB371 \uC120\uD0DD \uC2AC\uB86F +{0}"
+  <Prerequisites>k__BackingField:
+  - Node: {fileID: 11400000, guid: acde68cf240a7544ab719f7740c8d548, type: 2}
+    Level: 2
