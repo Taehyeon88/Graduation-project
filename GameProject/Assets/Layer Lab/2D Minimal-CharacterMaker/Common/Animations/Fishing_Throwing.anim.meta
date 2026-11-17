@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 72becb875d1de1a41acc115c49de7b1c
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 363620
+  packageName: 2D Minimal - Character Maker
+  packageVersion: 1.0.8
+  assetPath: Assets/Layer Lab/2D Minimal-CharacterMaker/Common/Animations/Fishing_Throwing.anim
+  uploadId: 1046450

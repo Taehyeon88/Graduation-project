@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5802fa0dc1c6be34f9fa2e4cc3f0957c
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 363620
+  packageName: 2D Minimal - Character Maker
+  packageVersion: 1.0.8
+  assetPath: Assets/Layer Lab/2D Minimal-CharacterMaker/Common/Animations/Fishing_Idle.anim
+  uploadId: 1046450
