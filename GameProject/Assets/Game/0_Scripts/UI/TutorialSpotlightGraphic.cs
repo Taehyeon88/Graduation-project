@@ -14,6 +14,9 @@ public class TutorialSpotlightGraphic : RawImage, ICanvasRaycastFilter, IPointer
     private static readonly int SizeId = Shader.PropertyToID("_Size");
     private static readonly int DimAmountId = Shader.PropertyToID("_DimAmount");
     private static readonly int PulseId = Shader.PropertyToID("_Pulse");
+    private static readonly int RimMaskId = Shader.PropertyToID("_RimMask");
+
+    private const float RimMaskMargin = 8f;   //안내 상자 가장자리 바깥으로 테두리 빛을 더 지울 여유 (화면 px)
 
     private readonly List<Rect> screenHoles = new();
     private readonly Vector4[] shaderHoles = new Vector4[MaxHoles];
@@ -30,15 +33,17 @@ public class TutorialSpotlightGraphic : RawImage, ICanvasRaycastFilter, IPointer
         material = runtimeMaterial;
     }
 
-    //targets: 빛나는 대상 구멍 (화면 좌표)
-    public void Apply(List<Rect> targets, float dimAmount, float pulse)
+    //interactive: 눌러야 하는 대상 구멍(테두리 빛 적용), plain: 설명용 구멍(테두리 없음), rimMask: 테두리 빛을 그리지 않을 영역(안내 상자). 모두 화면 좌표
+    public void Apply(List<Rect> interactive, List<Rect> plain, Rect rimMask, float dimAmount, float pulse)
     {
         if (runtimeMaterial == null) return;
 
         screenHoles.Clear();
-        int rimCount = Mathf.Min(targets.Count, MaxHoles);
+        int rimCount = Mathf.Min(interactive.Count, MaxHoles);   //테두리 대상이 앞에 오도록 배치
         for (int i = 0; i < rimCount; i++)
-            screenHoles.Add(targets[i]);
+            screenHoles.Add(interactive[i]);
+        for (int i = 0; i < plain.Count && screenHoles.Count < MaxHoles; i++)
+            screenHoles.Add(plain[i]);
 
         Rect canvasRect = rectTransform.rect;
         for (int i = 0; i < screenHoles.Count; i++)
@@ -51,6 +56,7 @@ public class TutorialSpotlightGraphic : RawImage, ICanvasRaycastFilter, IPointer
         runtimeMaterial.SetVectorArray(HolesId, shaderHoles);
         runtimeMaterial.SetFloat(HoleCountId, screenHoles.Count);
         runtimeMaterial.SetFloat(RimCountId, rimCount);
+        runtimeMaterial.SetVector(RimMaskId, GetRimMask(rimMask, canvasRect));
         runtimeMaterial.SetVector(SizeId, canvasRect.size);
         runtimeMaterial.SetFloat(DimAmountId, dimAmount);
         runtimeMaterial.SetFloat(PulseId, pulse);
@@ -72,6 +78,20 @@ public class TutorialSpotlightGraphic : RawImage, ICanvasRaycastFilter, IPointer
     {
         if (TutorialSystem.Instance != null)
             TutorialSystem.Instance.Next();
+    }
+
+    //빈 사각형이면 (0,0,0,0) = 지우는 영역 없음
+    private Vector4 GetRimMask(Rect screenRect, Rect canvasRect)
+    {
+        if (screenRect.width <= 0f || screenRect.height <= 0f) return Vector4.zero;
+
+        screenRect.xMin -= RimMaskMargin;
+        screenRect.yMin -= RimMaskMargin;
+        screenRect.xMax += RimMaskMargin;
+        screenRect.yMax += RimMaskMargin;
+        Vector2 min = ScreenToCanvas(screenRect.min, canvasRect);
+        Vector2 max = ScreenToCanvas(screenRect.max, canvasRect);
+        return new Vector4(min.x, min.y, max.x, max.y);
     }
 
     private Vector2 ScreenToCanvas(Vector2 screenPoint, Rect canvasRect)

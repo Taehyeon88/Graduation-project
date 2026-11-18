@@ -152,7 +152,7 @@ public class StageInfoPopupUI : MonoBehaviour
 
     private void FillCards(GameSystem game, StageData stage, StageProgress progress)
     {
-        slotCount = game.GetSelectSlotCount(stage);
+        slotCount = game.GetEffectiveSlotCount(stage);
 
         if (stage.BaseHeroes != null)
         {
@@ -164,6 +164,7 @@ public class StageInfoPopupUI : MonoBehaviour
         {
             HeroCardSlotUI slot = Spawn(cardSlotTemplate, ownedCardContent);
             slot.SetUp(hero, !game.CanSelect(stage, hero), ToggleSelect);
+            slot.gameObject.AddComponent<TutorialTarget>().Configure($"stage_hero_{hero.Data.Id}", false);   //튜토리얼이 특정 영웅 카드를 지목할 수 있게 (Open마다 재생성)
             ownedSlots.Add(slot);
         }
 
@@ -195,15 +196,15 @@ public class StageInfoPopupUI : MonoBehaviour
         slotText.SetText($"선택 {selection.Count} / {slotCount}");
 
         int emptySlots = slotCount - selection.Count;
-        warningText.gameObject.SetActive(selection.Count > 0 && emptySlots > 0);
-        warningText.SetText($"빈 슬롯이 {emptySlots}개 있습니다");
+        warningText.gameObject.SetActive(emptySlots > 0);
+        warningText.SetText($"슬롯을 모두 채워야 진입할 수 있습니다 (빈 슬롯 {emptySlots}개)");
 
-        enterButton.interactable = selection.Count > 0;   //최소 1장 선택해야 진입
+        enterButton.interactable = emptySlots <= 0;   //슬롯을 모두 채워야 진입
     }
 
     private void Enter()
     {
-        if (selection.Count == 0) return;
+        if (selection.Count < slotCount) return;
 
         Action<List<Hero>> onEnter = entered;
         List<Hero> chosen = new(selection);

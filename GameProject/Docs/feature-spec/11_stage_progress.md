@@ -39,7 +39,7 @@
 ### 1-4. 영웅 카드 선택 (덱)
 - 시작 덱 = 스테이지 **기본 제공 영웅 카드**(고정, 빼거나 바꿀 수 없음) + 플레이어가 고른 카드.
 - 선택 슬롯 = 스테이지 덱 크기(5~8) − 기본 카드 수. 공용 트리 "덱 슬롯 +1"은 T-12에서 반영.
-- 최소 1장 골라야 진입 가능. 빈 슬롯이 있으면 경고만 표시.
+- 선택 슬롯을 모두 채워야 진입 가능. 빈 슬롯이 하나라도 있으면 진입 불가(경고 표시). 선택 가능한 보유 카드가 슬롯보다 적으면 그 보유 수가 유효 슬롯(`min`, 임시 안전장치 — §5 "보유 수 대비 슬롯 기준" 확정 전까지).
 - 기본 카드와 같은 영웅은 중복 선택 불가.
 - 재진입·재도전 시 지난 선택을 미리 채운다.
 
@@ -51,7 +51,7 @@
 
 ### 2-1. 흐름
 1. 선택 씬에서 해금된 스테이지를 클릭 → 정보 팝업.
-2. 팝업에서 영웅 카드 선택 → 진입(1장 이상 선택 시 활성) → 영웅 이동 연출 → 전투 씬.
+2. 팝업에서 영웅 카드 선택 → 진입(슬롯을 모두 채우면 활성) → 영웅 이동 연출 → 전투 씬.
 3. 승리 → 별·휘장 지급, 다음 해금 → 승리 UI(획득한 별 +N, 별 조건 3줄 — 이번 판 충족한 조건만 노란색) → 확인 → 선택 씬 복귀.
 4. 패배 → "재도전"(같은 스테이지·같은 선택) / "스테이지 선택으로". 패배 화면 디자인은 기획서 미정 — 기존 `GameOverUI` 버튼만 바꾼다.
 - 팝업 닫기 → 선택 씬 그대로.
@@ -67,7 +67,7 @@
 | 스테이지 정보 | 맵 미리보기(4×4, 중립지대·장애물·발판) | `StageData` |
 | 영웅 카드 선택 | 기본 제공 카드(고정) | `StageData` |
 | 영웅 카드 선택 | 보유 카드 목록과 선택 슬롯 | `GameSystem.Deck` |
-| 버튼 | 진입(선택 시 활성), 닫기 | — |
+| 버튼 | 진입(슬롯을 모두 채우면 활성), 닫기 | — |
 
 - 전투 준비 바로가기(소문 교체·공용 트리)는 해당 기능이 생길 때(T-12·T-13) 추가.
 
@@ -89,7 +89,7 @@
 | 모델 | `Models/StarCondition`(추상) + `StarConditions/` 4종 | `Description`, `IsMet(StageResult)` — `RoundLimit`·`WithoutHero`·`BaseHeroesOnly`·`KillEnemy` |
 | 모델 | `Models/StageResult` | 승리 라운드 수, 용병대장 남은 체력, 기본 제공 카드, 시작 덱, 배치한 영웅, 몬스터별 처치 수 |
 | 모델 | `Models/StageProgress` | 클리어 여부, 별 3칸 달성, 휘장 지급 여부, 지난 선택. `RecordStars`는 새로 달성한 수 반환 |
-| 시스템 | `GameSystem` | 구조물별 `StageProgress`, 총 `Stars`·`Insignias`, 보유 `Deck` + 시작 `BattleDeck`, `EnterStage`/`RetryStage`/`ReturnToStageSelect`/`MarkCurrentCleared`/`GetSelectSlotCount`/`CanSelect`/`GetAutoSelection`(디버그 진입용). 클리어 기록은 `GameClearGA` Performer 안에서(첫 클리어 판정 → 별·휘장 지급 → 보상 용병은 첫 클리어만) |
+| 시스템 | `GameSystem` | 구조물별 `StageProgress`, 총 `Stars`·`Insignias`, 보유 `Deck` + 시작 `BattleDeck`, `EnterStage`/`RetryStage`/`ReturnToStageSelect`/`MarkCurrentCleared`/`GetSelectSlotCount`/`GetEffectiveSlotCount`/`CanSelect`/`GetAutoSelection`(디버그 진입용). 클리어 기록은 `GameClearGA` Performer 안에서(첫 클리어 판정 → 별·휘장 지급 → 보상 용병은 첫 클리어만) |
 | 시스템 | `StarSystem`(GameDemoScene `--- SYSTEMS ---`) | `KillGA` **PRE**로 몬스터별 처치 집계(토큰 제거 전), `PlayCardGA` POST로 배치 영웅 기록, `EvaluateStars()`를 `GameClearGA` Performer가 토큰 정리 전에 호출 |
 | 시스템 | `StageSelectSystem` | `IsUnlocked`(이전 스테이지 클리어) 기준 선택, 전투 구조물 클릭 → 팝업 / 비전투 구조물 → 바로 진입, 팝업 열림 중 월드 입력 잠금 |
 | 뷰 | `StructureView` | `SetState(unlocked, progress)` — 잠김(어둡게+자물쇠) / 선택 가능(빈 별 3) / 클리어(획득 별 채움), 비전투는 별 숨김 |
@@ -122,5 +122,5 @@
 ## 5. 결정 필요 · 보류
 - 세이브/로드: 진행 기록은 `GameSystem`(DontDestroy) 메모리에만 둔다. 저장 범위 포함 여부 (결정 필요)
 - 패배 화면 디자인 (기획서 미정)
-- 영웅 보유 수 대비 덱 슬롯 기준 (보류 — 참고: 초반 보유 수 ≈ 슬롯, 중반 이후 보유 수 ≥ 선택 슬롯 × 2)
+- 영웅 보유 수 대비 덱 슬롯 기준 (보류 — 참고: 초반 보유 수 ≈ 슬롯, 중반 이후 보유 수 ≥ 선택 슬롯 × 2). "슬롯을 모두 채워야 진입" 규칙이라 보유가 모자라면 `GetEffectiveSlotCount`(min)로 임시 대응 중
 - 기존 주점·엘리트 스테이지의 장기 존속 (결정 필요 — 이번엔 유지)

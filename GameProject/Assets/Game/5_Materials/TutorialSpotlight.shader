@@ -37,6 +37,7 @@ Shader "UI/TutorialSpotlight"
             float4 _Holes[8];   // xy = 최소점, zw = 최대점 (캔버스 좌하단 기준 px)
             float _HoleCount;
             float _RimCount;    // 앞에서부터 이 개수만큼만 테두리를 빛냄
+            float4 _RimMask;    // 이 사각형(캔버스 px, 안내 상자) 안에서는 테두리를 그리지 않음 (0이면 없음)
 
             v2f vert(appdata v)
             {
@@ -69,6 +70,8 @@ Shader "UI/TutorialSpotlight"
                 fixed4 col = fixed4(_DimColor.rgb, dim);
 
                 float rim = (1.0 - smoothstep(0.0, _RimWidth, abs(rimDist))) * _Pulse * _DimAmount;
+                if (p.x > _RimMask.x && p.x < _RimMask.z && p.y > _RimMask.y && p.y < _RimMask.w)
+                    rim = 0.0;
                 col.rgb = lerp(col.rgb, _RimColor.rgb, rim);
                 col.a = max(col.a, rim * _RimColor.a);
                 return col;

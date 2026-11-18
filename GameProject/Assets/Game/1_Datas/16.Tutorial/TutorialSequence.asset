@@ -566,9 +566,11 @@ MonoBehaviour:
     <ResumeOnComplete>k__BackingField: 0
   - <Id>k__BackingField: result_01
     <Screen>k__BackingField: 1
-    <Message>k__BackingField: "\uBCC4\uC740 \uC870\uAC74\uB9C8\uB2E4 \uD558\uB098\uC529
-      \uBC1B\uB294\uB2E4\n\u26051 \u2192 \u26052 \u2192 \u26053 \uC21C\uC11C\uB85C
-      \uD655\uC778\uB41C\uB2E4"
+    <Message>k__BackingField: "\uC2B9\uB9AC\uD560 \uACBD\uC6B0, \uB2EC\uC131\uD55C
+      \uBCC4 \uC870\uAC74\uB9CC\uD07C \uBCC4\uC744 \uD68D\uB4DD\uD558\uAC8C \uB41C\uB2E4.
+      \uBCC4\uC740 \uC2B9\uB9AC, \uC601\uC6C5\uB300\uC7A5 \uCCB4\uB825, \uC2A4\uD14C\uC774\uC9C0
+      \uD2B9\uC218 \uC870\uAC74 \uC21C\uC73C\uB85C \uD310\uC815\uD55C\uB2E4. (\u26051
+      \u2192 \u26052 \u2192 \u26053 \uCCB4\uD06C \uC5F0\uCD9C)"
     <TargetIds>k__BackingField:
     - result_star_1
     - result_star_2
@@ -589,8 +591,8 @@ MonoBehaviour:
     <ResumeOnComplete>k__BackingField: 0
   - <Id>k__BackingField: result_02
     <Screen>k__BackingField: 1
-    <Message>k__BackingField: "\uCC98\uC74C \uC774\uAE34 \uC2A4\uD14C\uC774\uC9C0\uB294
-      \uD718\uC7A5\uC744 \uC900\uB2E4"
+    <Message>k__BackingField: "\uC2A4\uD14C\uC774\uC9C0\uB97C \uCC98\uC74C \uD074\uB9AC\uC5B4\uD560
+      \uACBD\uC6B0, \uD718\uC7A5 1\uAC1C\uB97C \uD68D\uB4DD\uD558\uAC8C \uB41C\uB2E4."
     <TargetIds>k__BackingField:
     - result_insignia
     <CardHero>k__BackingField: {fileID: 0}
@@ -629,9 +631,9 @@ MonoBehaviour:
     <ResumeOnComplete>k__BackingField: 0
   - <Id>k__BackingField: stage_01
     <Screen>k__BackingField: 2
-    <Message>k__BackingField: "\uBCC4\uC744 \uD558\uB098\uB77C\uB3C4 \uBC1B\uC73C\uBA74
-      \uB2E4\uC74C \uC2A4\uD14C\uC774\uC9C0\uAC00 \uC5F4\uB9B0\uB2E4\n\uD29C\uD1A0\uB9AC\uC5BC
-      \uC804\uD22C\uB294 \uB2E4\uC2DC \uB4E4\uC5B4\uAC08 \uC218 \uC5C6\uB2E4"
+    <Message>k__BackingField: "\uBCC4\uC744 1\uAC1C \uC774\uC0C1 \uD68D\uB4DD\uD560
+      \uACBD\uC6B0, \uC2A4\uD14C\uC774\uC9C0\uAC00 \uD074\uB9AC\uC5B4\uB418\uACE0
+      \uB2E4\uC74C \uC2A4\uD14C\uC774\uC9C0\uAC00 \uD574\uAE08\uB41C\uB2E4."
     <TargetIds>k__BackingField:
     - '@stage1'
     - '@stage2'
@@ -651,8 +653,9 @@ MonoBehaviour:
     <ResumeOnComplete>k__BackingField: 0
   - <Id>k__BackingField: stage_02
     <Screen>k__BackingField: 2
-    <Message>k__BackingField: "\uBCC4\uC740 \uACF5\uC6A9 \uD2B8\uB9AC\uC5D0\uC11C
-      \uC4F4\uB2E4"
+    <Message>k__BackingField: "\uD68D\uB4DD\uD55C \uBCC4\uC740 \uACF5\uC6A9 \uD2B8\uB9AC\uC5D0\uC11C
+      \uC0AC\uC6A9\uD560 \uC218 \uC788\uB2E4. \uACF5\uC6A9 \uD2B8\uB9AC \uBC84\uD2BC\uC744
+      \uD074\uB9AD\uD558\uC138\uC694."
     <TargetIds>k__BackingField:
     - growth_open
     <CardHero>k__BackingField: {fileID: 0}
@@ -672,8 +675,9 @@ MonoBehaviour:
     <ResumeOnComplete>k__BackingField: 0
   - <Id>k__BackingField: growth_01
     <Screen>k__BackingField: 3
-    <Message>k__BackingField: "\uBAA8\uB4E0 \uB178\uB4DC\uAC00 \uCC98\uC74C\uBD80\uD130
-      \uBCF4\uC778\uB2E4"
+    <Message>k__BackingField: "\uACF5\uC6A9 \uD2B8\uB9AC\uC758 \uBAA8\uB4E0 \uB178\uB4DC\uB294
+      \uCC98\uC74C\uBD80\uD130 \uD655\uC778\uD560 \uC218 \uC788\uACE0, 4\uAC1C\uC758
+      \uAC00\uC9C0\uB85C \uB098\uB258\uC5B4 \uC788\uB2E4."
     <TargetIds>k__BackingField:
     - growth_tree
     <CardHero>k__BackingField: {fileID: 0}
@@ -692,8 +696,10 @@ MonoBehaviour:
     <ResumeOnComplete>k__BackingField: 0
   - <Id>k__BackingField: growth_02
     <Screen>k__BackingField: 3
-    <Message>k__BackingField: "\uB178\uB4DC\uB97C \uB204\uB97C \uB54C\uB9C8\uB2E4
-      \uBCC4 \uD558\uB098\uB85C \uD55C \uB808\uBCA8 \uC624\uB978\uB2E4"
+    <Message>k__BackingField: "\uB178\uB4DC\uB97C \uD074\uB9AD\uD560 \uB54C\uB9C8\uB2E4
+      \uBCC4 1\uAC1C\uB97C \uC18C\uBAA8\uD574\uC11C \uB178\uB4DC\uC758 \uB808\uBCA8\uC774
+      1 \uC624\uB974\uAC8C \uB41C\uB2E4. \uB300\uC7A5\uC758 \uCCB4\uB825 \uB178\uB4DC\uB97C
+      \uD074\uB9AD\uD558\uC138\uC694."
     <TargetIds>k__BackingField:
     - growth_node_c1
     - growth_stars
@@ -713,9 +719,10 @@ MonoBehaviour:
     <ResumeOnComplete>k__BackingField: 0
   - <Id>k__BackingField: growth_03
     <Screen>k__BackingField: 3
-    <Message>k__BackingField: "\uC5B4\uB5A4 \uB178\uB4DC\uB294 \uC55E \uB178\uB4DC\uB97C
-      \uCC0D\uC5B4\uC57C \uC5F4\uB9B0\uB2E4\n\uB300\uC7A5\uC758 \uCCB4\uB825\uC744
-      \uCC0D\uC5B4\uC11C \uC751\uC218 \uAC15\uD654\uAC00 \uC5F4\uB838\uB2E4"
+    <Message>k__BackingField: "\uC77C\uBD80 \uB178\uB4DC\uB294 \uC774\uC804 \uB178\uB4DC\uB97C
+      \uD574\uAE08\uD574\uC57C \uC5F4\uB9AC\uAC8C \uB41C\uB2E4. \uC751\uC218 \uAC15\uD654
+      \uB178\uB4DC\uAC00 \uD574\uAE08\uB41C \uAC83\uC744 \uD655\uC778\uD560 \uC218
+      \uC788\uB2E4."
     <TargetIds>k__BackingField:
     - growth_node_c2
     <CardHero>k__BackingField: {fileID: 0}
@@ -734,8 +741,9 @@ MonoBehaviour:
     <ResumeOnComplete>k__BackingField: 0
   - <Id>k__BackingField: growth_04
     <Screen>k__BackingField: 3
-    <Message>k__BackingField: "\uBCC4\uC740 \uC5B8\uC81C\uB4E0 \uACF5\uC9DC\uB85C
-      \uC804\uBD80 \uB418\uB3CC\uB9B4 \uC218 \uC788\uB2E4"
+    <Message>k__BackingField: "\uC0AC\uC6A9\uD55C \uBCC4\uC740 \uCD08\uAE30\uD654\uB97C
+      \uD1B5\uD574 \uC5B8\uC81C\uB4E0\uC9C0 \uBB34\uB8CC\uB85C \uC804\uBD80 \uB3CC\uB824\uBC1B\uC744
+      \uC218 \uC788\uB2E4. \uCD08\uAE30\uD654 \uBC84\uD2BC\uC744 \uD074\uB9AD\uD558\uC138\uC694."
     <TargetIds>k__BackingField:
     - growth_reset
     - growth_stars
@@ -775,7 +783,10 @@ MonoBehaviour:
     <ResumeOnComplete>k__BackingField: 0
   - <Id>k__BackingField: growth_06
     <Screen>k__BackingField: 3
-    <Message>k__BackingField: "\uB2E4\uC2DC \uCC0D\uC5B4 \uBCF4\uB77C"
+    <Message>k__BackingField: "\uC0AC\uC6A9\uD55C \uBCC4\uC774 \uC804\uBD80 \uB3CC\uC544\uC628
+      \uAC83\uC744 \uD655\uC778\uD560 \uC218 \uC788\uB2E4. \uB300\uC7A5\uC758 \uCCB4\uB825
+      \uB178\uB4DC\uB97C \uB2E4\uC2DC \uD074\uB9AD\uD558\uC138\uC694. \uB0A8\uC740
+      \uBCC4\uC740 \uC790\uC720\uB86D\uAC8C \uC0AC\uC6A9\uD560 \uC218 \uC788\uB2E4."
     <TargetIds>k__BackingField:
     - growth_node_c1
     - growth_stars
@@ -816,7 +827,8 @@ MonoBehaviour:
   - <Id>k__BackingField: stage_03
     <Screen>k__BackingField: 2
     <Message>k__BackingField: "\uD718\uC7A5\uC740 \uC601\uC6C5 \uAD00\uB9AC\uC5D0\uC11C
-      \uC4F4\uB2E4"
+      \uC0AC\uC6A9\uD560 \uC218 \uC788\uB2E4. \uC601\uC6C5 \uAD00\uB9AC \uBC84\uD2BC\uC744
+      \uD074\uB9AD\uD558\uC138\uC694."
     <TargetIds>k__BackingField:
     - promotion_open
     <CardHero>k__BackingField: {fileID: 0}
@@ -836,8 +848,10 @@ MonoBehaviour:
     <ResumeOnComplete>k__BackingField: 0
   - <Id>k__BackingField: hero_01
     <Screen>k__BackingField: 4
-    <Message>k__BackingField: "\uC2B9\uAE09\uC2DC\uD0AC \uC601\uC6C5\uC744 \uACE0\uB974\uC790\n\uB9E4\uBCF5\uC790\uB97C
-      \uB20C\uB7EC\uB77C"
+    <Message>k__BackingField: "\uD718\uC7A5\uC744 \uC18C\uBAA8\uD574\uC11C \uC601\uC6C5\uC744
+      \uC2B9\uAE09\uD560 \uC218 \uC788\uACE0, \uCCAB \uC2B9\uAE09\uC5D0\uB294 \uD718\uC7A5
+      1\uAC1C\uAC00 \uD544\uC694\uD558\uB2E4. \uB9E4\uBCF5\uC790\uB97C \uC120\uD0DD\uD558\uACE0
+      \uC2B9\uAE09 \uBC84\uD2BC\uC744 \uD074\uB9AD\uD558\uC138\uC694."
     <TargetIds>k__BackingField:
     - hero_1004
     <CardHero>k__BackingField: {fileID: 0}
@@ -877,8 +891,9 @@ MonoBehaviour:
     <ResumeOnComplete>k__BackingField: 0
   - <Id>k__BackingField: hero_03
     <Screen>k__BackingField: 4
-    <Message>k__BackingField: "\uC0C8 \uD2B9\uC131\uC744 \uC5BB\uAC70\uB098, \uAC00\uC9C4
-      \uD2B9\uC131\uC744 \uAC15\uD654\uD55C\uB2E4\n\uD558\uB098\uB97C \uACE8\uB77C\uB77C"
+    <Message>k__BackingField: "\uC2B9\uAE09 \uC2DC, \uC0C8\uB85C\uC6B4 \uD2B9\uC131\uC744
+      \uD68D\uB4DD\uD558\uAC70\uB098 \uBCF4\uC720\uD55C \uD2B9\uC131\uC744 \uAC15\uD654\uD560
+      \uC218 \uC788\uB2E4. \uC6D0\uD558\uB294 \uCABD\uC744 \uC120\uD0DD\uD558\uC138\uC694."
     <TargetIds>k__BackingField:
     - promotion_options
     <CardHero>k__BackingField: {fileID: 0}
@@ -897,8 +912,9 @@ MonoBehaviour:
     <ResumeOnComplete>k__BackingField: 0
   - <Id>k__BackingField: hero_04
     <Screen>k__BackingField: 4
-    <Message>k__BackingField: "\uD718\uC7A5\uC73C\uB85C \uD55C \uC2B9\uAE09\uC740
-      \uB418\uB3CC\uB9B4 \uC218 \uC5C6\uB2E4\n\uD655\uC815\uD558\uB77C"
+    <Message>k__BackingField: "\uD718\uC7A5\uC73C\uB85C \uC9C4\uD589\uD55C \uC2B9\uAE09\uC740
+      \uD655\uC815\uD560 \uACBD\uC6B0, \uB418\uB3CC\uB9B4 \uC218 \uC5C6\uB2E4. \uD655\uC815
+      \uBC84\uD2BC\uC744 \uD074\uB9AD\uD558\uC138\uC694."
     <TargetIds>k__BackingField:
     - promotion_confirm_button
     <CardHero>k__BackingField: {fileID: 0}
@@ -935,10 +951,11 @@ MonoBehaviour:
     <ShowGhost>k__BackingField: 0
     <ResumeOnStart>k__BackingField: 0
     <ResumeOnComplete>k__BackingField: 0
-  - <Id>k__BackingField: end_02
+  - <Id>k__BackingField: stagein_01
     <Screen>k__BackingField: 2
-    <Message>k__BackingField: "\uC774\uC81C \uC9C0\uD718\uB294 \uB124 \uBAAB\uC774\uB2E4\n\uC2A4\uD14C\uC774\uC9C0
-      2\uB85C \uAC00\uB77C"
+    <Message>k__BackingField: "\uC2A4\uD14C\uC774\uC9C0\uB97C \uD074\uB9AD\uD558\uBA74
+      \uC2A4\uD14C\uC774\uC9C0 \uC815\uBCF4\uB97C \uD655\uC778\uD560 \uC218 \uC788\uB2E4\n\uC2A4\uD14C\uC774\uC9C0
+      2\uB97C \uD074\uB9AD\uD558\uB77C"
     <TargetIds>k__BackingField:
     - '@stage2'
     <CardHero>k__BackingField: {fileID: 0}
@@ -946,8 +963,79 @@ MonoBehaviour:
     <CellPos>k__BackingField: {x: 0, y: 0}
     <ShowCell>k__BackingField: 0
     <Trigger>k__BackingField: 0
+    <Advance>k__BackingField: 10
+    <AdvanceId>k__BackingField: 2
+    <LockInput>k__BackingField: 1
+    <RevealIds>k__BackingField: []
+    <HideIdsOnComplete>k__BackingField: []
+    <GrantCardOnStart>k__BackingField: 0
+    <ShowGhost>k__BackingField: 0
+    <ResumeOnStart>k__BackingField: 0
+    <ResumeOnComplete>k__BackingField: 0
+  - <Id>k__BackingField: stagein_02
+    <Screen>k__BackingField: 2
+    <Message>k__BackingField: "\uD31D\uC5C5\uC5D0\uC11C \uC601\uC6C5\uB300\uC7A5
+      \uCCB4\uB825, \uC801 \uAE43\uBC1C \uCCB4\uB825,\n\uB4F1\uC7A5 \uBAAC\uC2A4\uD130,
+      \uBCC4 \uC870\uAC74\uC744 \uBBF8\uB9AC \uD655\uC778\uD560 \uC218 \uC788\uB2E4"
+    <TargetIds>k__BackingField:
+    - stage_captain_hp
+    - stage_flag_hp
+    - stage_monsters
+    - stage_star_1
+    - stage_star_2
+    - stage_star_3
+    <CardHero>k__BackingField: {fileID: 0}
+    <HeroTarget>k__BackingField: {fileID: 0}
+    <CellPos>k__BackingField: {x: 0, y: 0}
+    <ShowCell>k__BackingField: 0
+    <Trigger>k__BackingField: 0
     <Advance>k__BackingField: 0
     <AdvanceId>k__BackingField: 
+    <LockInput>k__BackingField: 1
+    <RevealIds>k__BackingField: []
+    <HideIdsOnComplete>k__BackingField: []
+    <GrantCardOnStart>k__BackingField: 0
+    <ShowGhost>k__BackingField: 0
+    <ResumeOnStart>k__BackingField: 0
+    <ResumeOnComplete>k__BackingField: 0
+  - <Id>k__BackingField: stagein_03
+    <Screen>k__BackingField: 2
+    <Message>k__BackingField: "\uAE30\uBCF8 \uC81C\uACF5 \uC601\uC6C5\uC740 \uC2A4\uD14C\uC774\uC9C0\uAC00
+      \uC815\uD574 \uC8FC\uC5B4 \uBE84 \uC218 \uC5C6\uB2E4\n\uBCF4\uC720 \uC601\uC6C5
+      \uC911 \uB9E4\uBCF5\uC790\uB97C \uC120\uD0DD\uD558\uB77C"
+    <TargetIds>k__BackingField:
+    - stage_base_cards
+    - stage_hero_1004
+    <CardHero>k__BackingField: {fileID: 0}
+    <HeroTarget>k__BackingField: {fileID: 0}
+    <CellPos>k__BackingField: {x: 0, y: 0}
+    <ShowCell>k__BackingField: 0
+    <Trigger>k__BackingField: 0
+    <Advance>k__BackingField: 6
+    <AdvanceId>k__BackingField: stage_hero_1004
+    <LockInput>k__BackingField: 1
+    <RevealIds>k__BackingField: []
+    <HideIdsOnComplete>k__BackingField: []
+    <GrantCardOnStart>k__BackingField: 0
+    <ShowGhost>k__BackingField: 0
+    <ResumeOnStart>k__BackingField: 0
+    <ResumeOnComplete>k__BackingField: 0
+  - <Id>k__BackingField: stagein_04
+    <Screen>k__BackingField: 2
+    <Message>k__BackingField: "\uC120\uD0DD \uC2AC\uB86F\uC744 \uBAA8\uB450 \uCC44\uC6B0\uBA74
+      \uC9C4\uC785 \uBC84\uD2BC\uC774 \uD65C\uC131\uD654\uB41C\uB2E4\n\uB0A8\uC740
+      \uC2AC\uB86F\uC744 \uCC44\uC6B0\uACE0 \uC9C4\uC785\uD558\uB77C"
+    <TargetIds>k__BackingField:
+    - stage_owned_cards
+    - stage_slots
+    - stage_enter
+    <CardHero>k__BackingField: {fileID: 0}
+    <HeroTarget>k__BackingField: {fileID: 0}
+    <CellPos>k__BackingField: {x: 0, y: 0}
+    <ShowCell>k__BackingField: 0
+    <Trigger>k__BackingField: 0
+    <Advance>k__BackingField: 6
+    <AdvanceId>k__BackingField: stage_enter
     <LockInput>k__BackingField: 1
     <RevealIds>k__BackingField: []
     <HideIdsOnComplete>k__BackingField: []

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 //튜토리얼 화면 층: 안내 상자(위쪽 가운데), 스포트라이트, 고스트 시연
@@ -29,8 +30,10 @@ public class TutorialOverlayUI : Singleton<TutorialOverlayUI>   //GAMEMASTER 하
     [SerializeField] private float ghostMoveDuration = 0.9f;
     [SerializeField] private float ghostAlpha = 0.6f;
 
-    private readonly List<Rect> targetRects = new();
+    private readonly List<Rect> interactiveRects = new();   //눌러야 하는 대상 (테두리 빛 적용)
+    private readonly List<Rect> plainRects = new();         //설명용 대상 (어둡게만 뚫고 테두리 없음)
     private TutorialStepData currentStep;
+    private Rect? battlefieldRectCache;   //판 전체 사각형 (단계마다 한 번 계산)
     private float dimAmount;
     private Sequence ghostSequence;
     private Coroutine ghostRoutine;
@@ -90,18 +93,30 @@ public class TutorialOverlayUI : Singleton<TutorialOverlayUI>   //GAMEMASTER 하
         float targetDim = active && guided && currentStep != null ? 1f : 0f;
         dimAmount = Mathf.MoveTowards(dimAmount, targetDim, dimFadeSpeed * Time.unscaledDeltaTime);
 
-        targetRects.Clear();
+        interactiveRects.Clear();
+        plainRects.Clear();
         if (guided && currentStep != null)
-            CollectTargetRects(currentStep, targetRects);
+            CollectTargetRects(currentStep, interactiveRects, plainRects);
 
         float pulse = 0.5f + 0.5f * Mathf.Sin(Time.unscaledTime * pulseSpeed);
-        spotlight.Apply(targetRects, dimAmount, pulse);
+        spotlight.Apply(interactiveRects, plainRects, GetMessageBoxRect(), dimAmount, pulse);
+    }
+
+    //안내 상자의 화면 사각형 (숨겨진 상태면 빈 사각형) — 이 영역 안에는 테두리 빛을 그리지 않음
+    private Rect GetMessageBoxRect()
+    {
+        if (messageBox.alpha <= 0.01f) return Rect.zero;
+
+        Vector2 size = GetScreenSize((RectTransform)messageBox.transform);
+        Vector3 center = messageBox.transform.TransformPoint(((RectTransform)messageBox.transform).rect.center);
+        return new Rect(center.x - size.x * 0.5f, center.y - size.y * 0.5f, size.x, size.y);
     }
 
     //Events
     private void OnStepStarted(TutorialStepData step)
     {
         currentStep = step;
+        battlefieldRectCache = null;
         messageText.SetText(step.Message);
         nextButton.gameObject.SetActive(step.Advance == TutorialAdvance.NextButton);
         messageBox.blocksRaycasts = true;
@@ -144,7 +159,8 @@ public class TutorialOverlayUI : Singleton<TutorialOverlayUI>   //GAMEMASTER 하
     }
 
     //Target rects (화면 좌표)
-    private void CollectTargetRects(TutorialStepData step, List<Rect> results)
+    //interactive: 눌러야 하는 대상(버튼·카드·행동 칸 등, 테두리 빛), plain: 설명용 대상(판·체력·유닛 등, 테두리 없음)
+    private void CollectTargetRects(TutorialStepData step, List<Rect> interactive, List<Rect> plain)
     {
         if (step.TargetIds != null)
         {
@@ -154,7 +170,7 @@ public class TutorialOverlayUI : Singleton<TutorialOverlayUI>   //GAMEMASTER 하
                 {
                     foreach (Token token in TutorialSystem.Instance.ContextTokens)
                     {
-                        if (token != null && TryGetTokenRect(token, out Rect tokenRect)) results.Add(Pad(tokenRect));
+                        if (token != null && TryGetTokenRect(token, out Rect tokenRect)) plain.Add(Pad(tokenRect));
                     }
                 }
                 else if (id.StartsWith(StageTargetPrefix))
@@ -164,15 +180,15 @@ public class TutorialOverlayUI : Singleton<TutorialOverlayUI>   //GAMEMASTER 하
                         && StageSelectSystem.Instance != null
                         && StageSelectSystem.Instance.TryGetStructureView(stageNumber, out StructureView structure)
                         && TryGetBoundsRect(structure.ModelBounds, out Rect structureRect))
-                        results.Add(Pad(structureRect));
+                        (step.Advance == TutorialAdvance.StageClick ? interactive : plain).Add(Pad(structureRect));   //클릭해야 하는 스테이지만 테두리
                 }
                 else if (id == BattlefieldTargetId)
                 {
-                    if (TryGetBattlefieldRect(out Rect battlefield)) results.Add(Pad(battlefield));
+                    if (TryGetBattlefieldRect(out Rect battlefield)) plain.Add(Pad(battlefield));
                 }
                 else if (TutorialTarget.TryGet(id, out TutorialTarget target) && TryGetTransformRect(target.transform, out Rect rect))
                 {
-                    results.Add(Pad(rect));
+                    (IsInteractive(target.transform) ? interactive : plain).Add(Pad(rect));
                 }
             }
         }
@@ -180,7 +196,8 @@ public class TutorialOverlayUI : Singleton<TutorialOverlayUI>   //GAMEMASTER 하
         if (step.CardHero != null)
         {
             CardView cardView = FindCardView(step.CardHero);
-            if (cardView != null && TryGetTransformRect(cardView.transform, out Rect cardRect)) results.Add(Pad(cardRect));
+            if (cardView != null && TryGetTransformRect(cardView.transform, out Rect cardRect))
+                (step.Advance == TutorialAdvance.PlaceCard ? interactive : plain).Add(Pad(cardRect));
         }
 
         if (step.HeroTarget != null && TokenSystem.Instance != null)
@@ -188,13 +205,23 @@ public class TutorialOverlayUI : Singleton<TutorialOverlayUI>   //GAMEMASTER 하
             foreach (HeroView heroView in TokenSystem.Instance.HeroViews)
             {
                 if (heroView != null && heroView.Hero.Data == step.HeroTarget && TryGetTokenRect(heroView, out Rect heroRect))
-                    results.Add(Pad(heroRect));
+                    plain.Add(Pad(heroRect));
             }
         }
 
         bool actionCell = step.Advance == TutorialAdvance.PlaceCard || step.Advance == TutorialAdvance.UseDagger;
         if ((actionCell || step.ShowCell) && TryGetCellRect(step.CellPos, out Rect cellRect))
-            results.Add(Pad(cellRect));
+            (actionCell ? interactive : plain).Add(Pad(cellRect));
+    }
+
+    //대상 자신에게 클릭·드래그를 받는 컴포넌트(Button, CardView, UseSkillUI 등)가 있으면 눌러야 하는 대상 (자식은 보지 않음: 트리처럼 자식에 버튼이 있는 설명용 영역 제외)
+    private static bool IsInteractive(Transform target)
+    {
+        foreach (MonoBehaviour behaviour in target.GetComponents<MonoBehaviour>())
+        {
+            if (behaviour is IPointerClickHandler || behaviour is IBeginDragHandler) return true;
+        }
+        return false;
     }
 
     private Rect Pad(Rect rect)
@@ -304,35 +331,31 @@ public class TutorialOverlayUI : Singleton<TutorialOverlayUI>   //GAMEMASTER 하
         return true;
     }
 
-    //판 전체: 모든 칸의 바깥 모서리 + 용병대장 + 적 깃발을 감싸는 사각형 (입력 영역 UI 크기와 무관하게 실제 화면에 보이는 판 기준)
+    //판 전체: 판 월드(IsoWorld) 아래에 보이는 모든 렌더러(칸·옆면 발판·용병대장/깃발 자리·유닛)를 감싸는 사각형 — 칸만 계산하면 보이는 판보다 작아짐
+    //렌더러가 800여 개라 단계가 시작될 때 한 번만 계산해 둠 (판은 단계 동안 움직이지 않음)
     private bool TryGetBattlefieldRect(out Rect rect)
     {
         rect = default;
+        if (battlefieldRectCache.HasValue)
+        {
+            rect = battlefieldRectCache.Value;
+            return true;
+        }
         if (TokenSystem.Instance == null || TokenSystem.Instance.IsoWorld == null || Camera.main == null) return false;
 
-        IsoTools.IsoWorld world = TokenSystem.Instance.IsoWorld;
-        int width = TokenSystem.Instance.gridWidth;
-        int height = TokenSystem.Instance.gridHeight;
-        Vector2 first = IsoCornerToScreen(world, 0, 0);
-        float xMin = first.x, xMax = first.x, yMin = first.y, yMax = first.y;
-        foreach (Vector2Int corner in new[] { new Vector2Int(width, 0), new Vector2Int(0, height), new Vector2Int(width, height) })
+        bool found = false;
+        Bounds bounds = default;
+        foreach (Renderer renderer in TokenSystem.Instance.IsoWorld.GetComponentsInChildren<Renderer>())
         {
-            Vector2 screen = IsoCornerToScreen(world, corner.x, corner.y);
-            xMin = Mathf.Min(xMin, screen.x);
-            xMax = Mathf.Max(xMax, screen.x);
-            yMin = Mathf.Min(yMin, screen.y);
-            yMax = Mathf.Max(yMax, screen.y);
-        }
-        rect = Rect.MinMaxRect(xMin, yMin, xMax, yMax);
+            if (!renderer.enabled) continue;
 
-        foreach (Token core in new Token[] { HeroSystem.Instance.HeroCaptain, EnemySystem.Instance.EnemyFlag })
-        {
-            if (core == null || !TryGetTokenRect(core, out Rect coreRect)) continue;
-            rect.xMin = Mathf.Min(rect.xMin, coreRect.xMin);
-            rect.yMin = Mathf.Min(rect.yMin, coreRect.yMin);
-            rect.xMax = Mathf.Max(rect.xMax, coreRect.xMax);
-            rect.yMax = Mathf.Max(rect.yMax, coreRect.yMax);
+            if (!found) bounds = renderer.bounds;
+            else bounds.Encapsulate(renderer.bounds);
+            found = true;
         }
+        if (!found || !TryGetBoundsRect(bounds, out rect)) return false;
+
+        battlefieldRectCache = rect;
         return true;
     }
 

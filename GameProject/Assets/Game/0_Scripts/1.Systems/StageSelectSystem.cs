@@ -58,7 +58,8 @@ public class StageSelectSystem : Singleton<StageSelectSystem>
 
     private void Update()
     {
-        if (TutorialSystem.IsGuided)   //튜토리얼 안내 중에는 월드 호버·클릭·드래그 전체 차단 (스포트라이트 구멍으로 스테이지가 눌리는 것 방지)
+        //튜토리얼 안내 중에는 월드 호버·클릭·드래그 전체 차단 (스포트라이트 구멍으로 스테이지가 눌리는 것 방지). 단, 스테이지를 클릭하는 단계는 아래에서 목표 스테이지만 허용
+        if (TutorialSystem.IsGuided && !TutorialSystem.IsStageClickStep)
         {
             UpdateHover(null);
             return;
@@ -72,7 +73,9 @@ public class StageSelectSystem : Singleton<StageSelectSystem>
 
         Vector3 mouseWorld = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         bool isClick = StageCameraSystem.Instance.UpdateDrag();
-        UpdateHover(StageCameraSystem.Instance.IsDragging ? null : FindMouseOverStructure(mouseWorld));
+        StructureView mouseOver = StageCameraSystem.Instance.IsDragging ? null : FindMouseOverStructure(mouseWorld);
+        if (mouseOver != null && !TutorialSystem.AllowsStageInput(mouseOver.StageNumber)) mouseOver = null;   //튜토리얼: 목표가 아닌 스테이지는 호버·클릭 무시
+        UpdateHover(mouseOver);
 
         if (!isClick) return;
 
@@ -81,7 +84,10 @@ public class StageSelectSystem : Singleton<StageSelectSystem>
 
         //전투 구조물은 정보 팝업에서 영웅 카드를 고른 뒤 진입, 비전투 구조물(주점 등)은 바로 진입
         if (selectable.Data.StageData != null)
+        {
             stageInfoPopup.Open(selectable.Data, selection => EnterStructure(selectable, selection));
+            TutorialSystem.NotifyStagePopupOpened(selectable.StageNumber);   //튜토리얼: 팝업이 열렸음을 알림
+        }
         else
             EnterStructure(selectable, new List<Hero>());
     }

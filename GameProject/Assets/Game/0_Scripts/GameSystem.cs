@@ -164,6 +164,10 @@ public class GameSystem : Singleton<GameSystem>
     public int GetSelectSlotCount(StageData stage)
         => Mathf.Max(0, stage.DeckSize - (stage.BaseHeroes?.Length ?? 0)) + GetGrowthBonus(GrowthNodeType.DECK_SLOT);
 
+    //실제로 채워야 하는 슬롯 수 = 선택 슬롯 수와 선택 가능한 보유 카드 수 중 작은 쪽 (보유가 모자라 진입이 막히는 것 방지)
+    public int GetEffectiveSlotCount(StageData stage)
+        => Mathf.Min(GetSelectSlotCount(stage), Deck.Count(hero => CanSelect(stage, hero)));
+
     //기본 제공 카드와 같은 영웅은 중복 선택 불가
     public bool CanSelect(StageData stage, Hero hero)
         => stage.BaseHeroes == null || !stage.BaseHeroes.Contains(hero.Data);

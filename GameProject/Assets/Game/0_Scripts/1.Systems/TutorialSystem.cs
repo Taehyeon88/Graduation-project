@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class TutorialSystem : Singleton<TutorialSystem>   //GAMEMASTER 하위에서 씬을 넘나듦
 {
+    private const string StartSceneName = "StartScene";   //시작 화면 씬 (SettingUI와 같은 이름)
+
     [SerializeField] private TutorialSequenceData sequence;
 
     public static event Action<TutorialStepData> StepStarted;           //단계 시작 (안내 상자·스포트라이트 표시용)
@@ -25,6 +28,7 @@ public class TutorialSystem : Singleton<TutorialSystem>   //GAMEMASTER 하위에
     private bool isSettingOpen;      //설정창이 열려 멈춘 상태
     private bool isGranting;         //튜토리얼이 카드를 지급하는 중 (카드 뽑기 버튼 입력과 구분)
     private Button clickButton;      //UIClick 단계에서 클릭을 감시 중인 버튼
+    private bool startOnSceneEntered;   //개발용: 다음 씬 진입 때 대기 중인 단계를 트리거와 무관하게 시작
 
     private void OnEnable()
     {
@@ -32,6 +36,7 @@ public class TutorialSystem : Singleton<TutorialSystem>   //GAMEMASTER 하위에
 
         GrowthNodeSystem.Purchased += OnNodePurchased;
         PromotionSystem.PromotionCompleted += OnPromotionCompleted;
+        SceneManager.sceneLoaded += OnSceneLoaded;
         ActionSystem.SubscribeReaction<TurnGA>(TurnGAPreReaction, ReactionTiming.PRE);
         ActionSystem.SubscribeReaction<TurnGA>(TurnGAPostReaction, ReactionTiming.POST);
         ActionSystem.SubscribeReaction<AutoBattleTurnGA>(AutoBattleTurnGAPreReaction, ReactionTiming.PRE);
@@ -52,6 +57,7 @@ public class TutorialSystem : Singleton<TutorialSystem>   //GAMEMASTER 하위에
 
         GrowthNodeSystem.Purchased -= OnNodePurchased;
         PromotionSystem.PromotionCompleted -= OnPromotionCompleted;
+        SceneManager.sceneLoaded -= OnSceneLoaded;
         UnbindClick();
         ActionSystem.UnsubscribeReaction<TurnGA>(TurnGAPreReaction, ReactionTiming.PRE);
         ActionSystem.UnsubscribeReaction<TurnGA>(TurnGAPostReaction, ReactionTiming.POST);
@@ -108,6 +114,20 @@ public class TutorialSystem : Singleton<TutorialSystem>   //GAMEMASTER 하위에
 
     public static bool AllowsDraw() => !IsGuided || (Instance.CurrentStep != null && Instance.CurrentStep.Advance == TutorialAdvance.DrawCard);
 
+    //스테이지 선택 씬: 지금이 "스테이지를 클릭하는" 단계인가 (이 단계에서만 월드 입력을 일부 허용)
+    public static bool IsStageClickStep => IsGuided && Instance.CurrentStep != null && Instance.CurrentStep.Advance == TutorialAdvance.StageClick;
+
+    //스테이지 번호의 월드 입력(호버·클릭) 허용 여부: 안내 중이 아니면 허용, 안내 중에는 StageClick 단계의 목표 스테이지만
+    public static bool AllowsStageInput(int stageNumber)
+        => !IsGuided || (IsStageClickStep && Instance.CurrentStep.AdvanceId == stageNumber.ToString());
+
+    //스테이지 정보 팝업이 열렸음을 알림 — StageClick 단계의 목표 스테이지면 단계 완료
+    public static void NotifyStagePopupOpened(int stageNumber)
+    {
+        if (Instance != null && Instance.IsActive && IsStageClickStep && Instance.CurrentStep.AdvanceId == stageNumber.ToString())
+            Instance.CompleteStep();
+    }
+
     //target이 null이면 "지금 단도를 쓸 수 있는 단계인가"만 판정 (드래그 시작용)
     public static bool AllowsDagger(Token target)
     {
@@ -157,6 +177,36 @@ public class TutorialSystem : Singleton<TutorialSystem>   //GAMEMASTER 하위에
         }
         return false;
     }
+
+    //개발용(스테이지 런처): 지정한 ID의 단계부터 이어서 시작 (다음 씬 진입 때 시작). 앞 단계들이 공개한 UI는 이미 공개된 상태로 맞춤
+    public static bool DebugResumeAtStep(string stepId)
+    {
+        if (Instance == null || Instance.sequence == null || Instance.sequence.Steps == null) return false;
+
+        TutorialStepData[] steps = Instance.sequence.Steps;
+        int index = Array.FindIndex(steps, s => s.Id == stepId);
+        if (index < 0) return false;
+
+        Instance.UnbindClick();
+        Instance.IsActive = true;
+        Instance.CurrentStep = null;
+        Instance.revealedIds.Clear();
+        Instance.contextTokens.Clear();
+        for (int i = 0; i < index; i++)
+        {
+            if (steps[i].RevealIds != null)
+                foreach (string id in steps[i].RevealIds) Instance.revealedIds.Add(id);
+            if (steps[i].HideIdsOnComplete != null)
+                foreach (string id in steps[i].HideIdsOnComplete) Instance.revealedIds.Remove(id);
+        }
+        Instance.isFlowPaused = false;
+        Instance.isSettingOpen = false;
+        Instance.stepIndex = index;
+        Instance.isWaitingTrigger = true;
+        Instance.startOnSceneEntered = true;
+        TutorialTarget.RefreshAll();
+        return true;
+    }
 #endif
 
     //화면 씬(스테이지 선택 등)에 진입했음을 알림 — 씬 오브젝트가 모두 준비된 뒤 호출
@@ -165,8 +215,12 @@ public class TutorialSystem : Singleton<TutorialSystem>   //GAMEMASTER 하위에
         if (Instance == null || !Instance.IsActive || !Instance.isWaitingTrigger) return;
 
         TutorialStepData next = Instance.sequence.Steps[Instance.stepIndex];
-        if (next.Trigger == TutorialTrigger.SceneEntered && next.Screen == screen)
+        bool resume = Instance.startOnSceneEntered;   //개발용: 중간 단계부터 이어서 시작할 때는 씬에 들어오는 즉시 그 단계를 시작
+        if (resume || (next.Trigger == TutorialTrigger.SceneEntered && next.Screen == screen))
+        {
+            Instance.startOnSceneEntered = false;
             Instance.StartStep(next);
+        }
     }
 
     public static void NotifySettingOpen(bool open)
@@ -231,6 +285,7 @@ public class TutorialSystem : Singleton<TutorialSystem>   //GAMEMASTER 하위에
     private void End()
     {
         UnbindClick();
+        startOnSceneEntered = false;
         IsActive = false;
         CurrentStep = null;
         isWaitingTrigger = false;
@@ -334,6 +389,13 @@ public class TutorialSystem : Singleton<TutorialSystem>   //GAMEMASTER 하위에
     }
 
     private void OnAdvanceButtonClicked() => TryAdvance(TutorialAdvance.UIClick);
+
+    //시작 화면으로 돌아오면(설정창의 시작 화면 이동 등) 튜토리얼을 종료 — 남겨 두면 어두운 층이 시작 화면 버튼을 막음. 새 게임이 진행 데이터를 지우므로 튜토리얼도 처음부터 다시 시작
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == StartSceneName && IsActive)
+            End();
+    }
 
     private void OnNodePurchased(GrowthNodeData node)
     {

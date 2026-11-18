@@ -34,5 +34,6 @@
 | 11 | [11_stage_progress.md](feature-spec/11_stage_progress.md) | **(명세 확정, 미구현)** 스테이지 진행·스테이지 선택 시스템(B안) — 해금·클리어·재도전, 별 3조건·휘장, 정보 팝업·영웅 카드 선택(기본+선택 5~8장), 선택 씬 아이콘 3상태 |
 | 12 | [12_enemy_placement_ai.md](feature-spec/12_enemy_placement_ai.md) | **(뼈대, 미구현)** 적 AI 배치 — "순서는 디자이너, 위치는 AI", 역할 프로필·칸 점수·난이도·히트맵 디버그 |
 | 13 | [13_growth.md](feature-spec/13_growth.md) | **(뼈대, 미구현)** 성장 — 영웅 승급(휘장)·공용 트리(별)·키워드 연계·교체형 소문 |
+| 14 | [14_tutorial.md](feature-spec/14_tutorial.md) | 튜토리얼 시스템 (**구현됨, 48단계**) — `TutorialSystem` 단계 SO 실행·스포트라이트·입력 잠금·UI 공개, 전투 시나리오 고정(덱·치명타·주사위), 결과·공용 트리·승급·스테이지 진입 단계, 기존 코드 변경 목록, 스테이지 런처 숏컷, 기획서와의 차이 |
 
 > 구현 작업 목록(T-xx)은 [task-list.md](task-list.md). 기획 원본은 Claude Docs — [game-design.md](game-design.md) 헤더 참고.

@@ -1385,6 +1385,7 @@ GameObject:
   - component: {fileID: 108789870}
   - component: {fileID: 108789872}
   - component: {fileID: 108789871}
+  - component: {fileID: 108789873}
   m_Layer: 5
   m_Name: FlagHealth
   m_TagString: Untagged
@@ -1511,6 +1512,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 108789869}
   m_CullTransparentMesh: 1
+--- !u!114 &108789873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 108789869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19afb39bcf6904ab5337dd2b44bfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  id: stage_flag_hp
+  hideUntilRevealed: 0
 --- !u!1 &116259027
 GameObject:
   m_ObjectHideFlags: 0
@@ -2933,6 +2948,7 @@ GameObject:
   - component: {fileID: 176059651}
   - component: {fileID: 176059650}
   - component: {fileID: 176059649}
+  - component: {fileID: 176059652}
   m_Layer: 5
   m_Name: EnterButton
   m_TagString: Untagged
@@ -3042,6 +3058,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 176059647}
   m_CullTransparentMesh: 1
+--- !u!114 &176059652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 176059647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19afb39bcf6904ab5337dd2b44bfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  id: stage_enter
+  hideUntilRevealed: 0
 --- !u!4 &190496219 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7103438690453880248, guid: 103064fcbe8bb1548a9771ecd9746c11, type: 3}
@@ -10468,6 +10498,7 @@ GameObject:
   m_Component:
   - component: {fileID: 777427087}
   - component: {fileID: 777427088}
+  - component: {fileID: 777427089}
   m_Layer: 5
   m_Name: MonsterContent
   m_TagString: Untagged
@@ -10521,6 +10552,20 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &777427089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 777427086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19afb39bcf6904ab5337dd2b44bfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  id: stage_monsters
+  hideUntilRevealed: 0
 --- !u!4 &797936999 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8241385529586602247, guid: 216766530c0c7c14ba95d2686381b37c, type: 3}
@@ -11125,6 +11170,7 @@ GameObject:
   - component: {fileID: 848764041}
   - component: {fileID: 848764043}
   - component: {fileID: 848764042}
+  - component: {fileID: 848764044}
   m_Layer: 5
   m_Name: StarText2
   m_TagString: Untagged
@@ -11251,6 +11297,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 848764040}
   m_CullTransparentMesh: 1
+--- !u!114 &848764044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 848764040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19afb39bcf6904ab5337dd2b44bfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  id: stage_star_2
+  hideUntilRevealed: 0
 --- !u!1001 &851934523
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19785,6 +19845,7 @@ GameObject:
   - component: {fileID: 1387221809}
   - component: {fileID: 1387221811}
   - component: {fileID: 1387221810}
+  - component: {fileID: 1387221812}
   m_Layer: 5
   m_Name: StarText3
   m_TagString: Untagged
@@ -19911,6 +19972,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1387221808}
   m_CullTransparentMesh: 1
+--- !u!114 &1387221812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1387221808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19afb39bcf6904ab5337dd2b44bfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  id: stage_star_3
+  hideUntilRevealed: 0
 --- !u!1001 &1395941102
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -21932,6 +22007,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1591692779}
   - component: {fileID: 1591692780}
+  - component: {fileID: 1591692781}
   m_Layer: 5
   m_Name: BaseCardContent
   m_TagString: Untagged
@@ -21984,6 +22060,20 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &1591692781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1591692778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19afb39bcf6904ab5337dd2b44bfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  id: stage_base_cards
+  hideUntilRevealed: 0
 --- !u!1 &1608071225
 GameObject:
   m_ObjectHideFlags: 0
@@ -21995,6 +22085,7 @@ GameObject:
   - component: {fileID: 1608071226}
   - component: {fileID: 1608071228}
   - component: {fileID: 1608071227}
+  - component: {fileID: 1608071229}
   m_Layer: 5
   m_Name: SlotText
   m_TagString: Untagged
@@ -22121,6 +22212,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1608071225}
   m_CullTransparentMesh: 1
+--- !u!114 &1608071229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1608071225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19afb39bcf6904ab5337dd2b44bfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  id: stage_slots
+  hideUntilRevealed: 0
 --- !u!1001 &1610682086
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24383,6 +24488,7 @@ GameObject:
   - component: {fileID: 1758633938}
   - component: {fileID: 1758633940}
   - component: {fileID: 1758633939}
+  - component: {fileID: 1758633941}
   m_Layer: 5
   m_Name: CaptainHealth
   m_TagString: Untagged
@@ -24509,6 +24615,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1758633937}
   m_CullTransparentMesh: 1
+--- !u!114 &1758633941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1758633937}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19afb39bcf6904ab5337dd2b44bfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  id: stage_captain_hp
+  hideUntilRevealed: 0
 --- !u!1001 &1766237764
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25106,6 +25226,7 @@ GameObject:
   - component: {fileID: 1836581036}
   - component: {fileID: 1836581038}
   - component: {fileID: 1836581037}
+  - component: {fileID: 1836581039}
   m_Layer: 5
   m_Name: StarText1
   m_TagString: Untagged
@@ -25232,6 +25353,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1836581035}
   m_CullTransparentMesh: 1
+--- !u!114 &1836581039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1836581035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19afb39bcf6904ab5337dd2b44bfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  id: stage_star_1
+  hideUntilRevealed: 0
 --- !u!1001 &1844958692
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -27419,6 +27554,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2041263787}
   - component: {fileID: 2041263788}
+  - component: {fileID: 2041263789}
   m_Layer: 5
   m_Name: OwnedCardContent
   m_TagString: Untagged
@@ -27469,6 +27605,20 @@ MonoBehaviour:
   m_Spacing: {x: 12, y: 12}
   m_Constraint: 1
   m_ConstraintCount: 6
+--- !u!114 &2041263789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2041263786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19afb39bcf6904ab5337dd2b44bfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  id: stage_owned_cards
+  hideUntilRevealed: 0
 --- !u!4 &2078162119 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7135897438596925868, guid: 9851229e58487e4449f6fa918f90a7d1, type: 3}

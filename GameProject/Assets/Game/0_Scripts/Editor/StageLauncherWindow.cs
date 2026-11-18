@@ -16,6 +16,7 @@ public class StageLauncherWindow : EditorWindow
     private const int TutorialStructureId = 100;   //튜토리얼 전투 구조물 ID
     private const string PendingStructureKey = "StageLauncher.PendingStructure";   //Play 진입 후 실행할 구조물 에셋 경로
     private const string PendingGrowthTutorialKey = "StageLauncher.PendingGrowthTutorial";   //Play 진입 후 '튜토리얼 클리어 후 시작'으로 실행할지
+    private const string SkipGrowthKey = "StageLauncher.SkipGrowth";   //위 옵션에서 성장 파트(공용 트리·승급)도 끝낸 상태로 시작할지
     private const string RestoreStartSceneKey = "StageLauncher.RestoreStartScene";
     private const string PrevStartScenePathKey = "StageLauncher.PrevStartScenePath";
 
@@ -89,7 +90,9 @@ public class StageLauncherWindow : EditorWindow
 
                 //튜토리얼 전투는 성장 파트(결과 이후)만 바로 테스트하는 시작 옵션도 제공
                 if (data.ID == TutorialStructureId && GUILayout.Button("   └ 튜토리얼 클리어 후 스테이지 선택에서 시작 (진행 상태 초기화)"))
-                    LaunchGrowthTutorial(data);
+                    LaunchGrowthTutorial(data, false);
+                if (data.ID == TutorialStructureId && GUILayout.Button("   └ 성장 튜토리얼 종료 후 스테이지 진입 단계에서 시작 (C1 구매·매복자 승급 완료, 진행 상태 초기화)"))
+                    LaunchGrowthTutorial(data, true);
             }
         }
     }
@@ -97,6 +100,7 @@ public class StageLauncherWindow : EditorWindow
     private static void Launch(StructureData data)
     {
         SessionState.EraseBool(PendingGrowthTutorialKey);   //이전에 취소된 '튜토리얼 클리어 후 시작' 요청이 남아 있지 않게
+        SessionState.EraseBool(SkipGrowthKey);
         if (Application.isPlaying)
             LaunchInPlay(data);
         else
@@ -104,9 +108,11 @@ public class StageLauncherWindow : EditorWindow
     }
 
     //튜토리얼 전투를 클리어한 상태(별 3 · 휘장 1, 스테이지 2 해금)로 만들고 스테이지 선택 씬에서 튜토리얼 성장 파트를 시작
-    private static void LaunchGrowthTutorial(StructureData data)
+    //skipGrowth: 공용 트리 C1 구매·매복자 승급까지 끝낸 상태로 시작해 파트 3(스테이지 진입)부터 진행
+    private static void LaunchGrowthTutorial(StructureData data, bool skipGrowth)
     {
         SessionState.SetBool(PendingGrowthTutorialKey, true);
+        SessionState.SetBool(SkipGrowthKey, skipGrowth);
         if (Application.isPlaying)
             LaunchGrowthTutorialInPlay(data);
         else
@@ -116,6 +122,8 @@ public class StageLauncherWindow : EditorWindow
     private static void LaunchGrowthTutorialInPlay(StructureData data)
     {
         SessionState.EraseBool(PendingGrowthTutorialKey);
+        bool skipGrowth = SessionState.GetBool(SkipGrowthKey, false);
+        SessionState.EraseBool(SkipGrowthKey);
 
         GameSystem game = GameSystem.Instance;
         game.InitializeGameData();   //새 진행 상태 (튜토리얼 상태도 함께 초기화됨)
@@ -125,10 +133,37 @@ public class StageLauncherWindow : EditorWindow
         System.Reflection.MethodInfo recordClear = typeof(GameSystem).GetMethod("RecordClear", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
         recordClear.Invoke(game, new object[] { new[] { true, true, true } });
 
-        if (!TutorialSystem.DebugResumeAfterBattle())
+        if (skipGrowth)
+        {
+            ApplyGrowthDone(game);
+            if (!TutorialSystem.DebugResumeAtStep("stagein_01"))
+                Debug.LogWarning("StageLauncher: TutorialSystem을 찾지 못했거나 stagein_01 단계가 없습니다.");
+        }
+        else if (!TutorialSystem.DebugResumeAfterBattle())
             Debug.LogWarning("StageLauncher: TutorialSystem을 찾지 못했거나 SceneEntered 단계가 없습니다.");
 
         SceneManager.LoadScene("StageScene");   //진입 시 StageSelectSystem.Start가 튜토리얼 단계를 시작
+    }
+
+    //성장 튜토리얼을 끝낸 상태: 공용 트리 C1 1레벨 구매, 매복자 승급 1단계(첫 선택지, 휘장 1 소모)
+    private static void ApplyGrowthDone(GameSystem game)
+    {
+        foreach (string guid in AssetDatabase.FindAssets("t:GrowthNodeData"))
+        {
+            GrowthNodeData node = AssetDatabase.LoadAssetAtPath<GrowthNodeData>(AssetDatabase.GUIDToAssetPath(guid));
+            if (node != null && node.Code == "C1")
+            {
+                game.AddNodeLevel(node);
+                break;
+            }
+        }
+
+        Hero ambusher = game.Deck.Find(h => h.Data.Id == 1004);
+        if (ambusher == null) return;
+
+        List<PromotionOption> options = game.GetPromotion(ambusher.Data).GetOptions();
+        if (options.Count > 0 && game.TrySpendInsignias(1))
+            game.GetPromotion(ambusher.Data).Apply(options[0], 1);
     }
 
     //플레이 중: StageSelectSystem.Update와 같은 호출 (구조물 진입 → 씬 이동). 해금 제약은 무시, 영웅 카드는 자동 선택
@@ -174,6 +209,7 @@ public class StageLauncherWindow : EditorWindow
             EditorApplication.update -= WaitAndLaunch;
             SessionState.EraseString(PendingStructureKey);
             SessionState.EraseBool(PendingGrowthTutorialKey);
+            SessionState.EraseBool(SkipGrowthKey);
             RestoreStartScene();
         }
     }

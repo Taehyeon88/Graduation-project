@@ -31,6 +31,7 @@ public enum TutorialAdvance
     TargetAppears,  //AdvanceId 대상이 활성화됨 (팝업이 열림 등)
     NodePurchased,  //AdvanceId 코드(예: C1)의 공용 트리 노드 구매
     PromotionDone,  //영웅 승급 확정
+    StageClick,     //스테이지 선택 씬에서 AdvanceId 번호의 스테이지를 클릭해 정보 팝업이 열림 (그 스테이지의 월드 입력만 허용)
 }
 
 [System.Serializable]
