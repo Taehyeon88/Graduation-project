@@ -84,9 +84,26 @@ public class CardSystem : Singleton<CardSystem>
         List<Hero> pool = heroes != null ? new List<Hero>(heroes) : null;
         if (pool != null && pool.Count > 0)
         {
-            //Shuffle은 입력 리스트를 비우므로 복사본 사용 (GameSystem.Deck은 보존)
-            foreach (var hero in pool.Shuffle())
-                drawPile.Add(new Card(hero));
+            TutorialBattleData tutorial = GameSystem.Instance.TutorialBattle;
+            if (tutorial != null && !FreePlacement)
+            {
+                //튜토리얼: 섞지 않고 지정 순서대로 쌓음 (지정에 없는 영웅은 뒤에 그대로)
+                foreach (var data in tutorial.DrawOrder)
+                {
+                    int index = pool.FindIndex(h => h.Data == data);
+                    if (index < 0) continue;
+                    drawPile.Add(new Card(pool[index]));
+                    pool.RemoveAt(index);
+                }
+                foreach (var hero in pool)
+                    drawPile.Add(new Card(hero));
+            }
+            else
+            {
+                //Shuffle은 입력 리스트를 비우므로 복사본 사용 (GameSystem.Deck은 보존)
+                foreach (var hero in pool.Shuffle())
+                    drawPile.Add(new Card(hero));
+            }
         }
 
         PilesReset?.Invoke();
@@ -95,7 +112,7 @@ public class CardSystem : Singleton<CardSystem>
     //AP 없이 카드를 배치하는 씬(주점) 여부
     public bool FreePlacement { get; set; }
 
-    public bool CanPlay(Card card) => FreePlacement || APSystem.Instance.HasEnoughAP(GetPlayCost(card));
+    public bool CanPlay(Card card) => TutorialSystem.AllowsCard(card) && (FreePlacement || APSystem.Instance.HasEnoughAP(GetPlayCost(card)));
 
     //실제 배치 AP — 절약 횟수가 남았으면 −1 (최소 1, 이미 1 이하면 할인하지 않음). 카드에 표시하는 비용은 원래 값
     private int GetPlayCost(Card card)
@@ -199,6 +216,13 @@ public class CardSystem : Singleton<CardSystem>
             {
                 if (placeablePoses.Contains(pos) && (!isDragMode || Interactions.Instance.IsMouseInGridRange))
                 {
+                    if (!TutorialSystem.AllowsPlacement(currentSelectedCard.Card, pos))
+                    {
+                        TutorialSystem.NotifyWrongAction();   //튜토리얼: 지정 칸이 아니면 취소하고 시연을 다시 재생
+                        SoundSystem.Instance.PlaySound(22);
+                        break;
+                    }
+
                     PlayCardGA playCardGA = new(currentSelectedCard.Card, pos);
                     reservedCards.Enqueue(playCardGA);
                     break;
@@ -386,7 +410,9 @@ public class CardSystem : Singleton<CardSystem>
         speedBoostsLeft = game.GetGrowthBonus(GrowthNodeType.PLACED_HERO_SPEED);
 
         int drawAmount = startDrawAmount + game.GetGrowthBonus(GrowthNodeType.START_DRAW);   //공용 트리 준비된 손
-        if (CheatSystem.Instance != null && CheatSystem.Instance.IsCheatMode)
+        if (game.TutorialBattle != null)
+            drawAmount = game.TutorialBattle.StartDrawAmount;   //튜토리얼: 시나리오 고정 장수 (치트·공용 트리 무시)
+        else if (CheatSystem.Instance != null && CheatSystem.Instance.IsCheatMode)
             drawAmount = Mathf.Max(drawAmount, MoveCheatCardsToTop());   //고정 카드는 드로우 장수를 넘어도 전부 포함
 
         DrawCardsGA drawCardsGA = new(drawAmount);

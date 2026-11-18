@@ -287,6 +287,7 @@ GameObject:
   - component: {fileID: 7750431860279487535}
   - component: {fileID: 7033251297057739341}
   - component: {fileID: 7653647107466517315}
+  - component: {fileID: 1925908715364018026}
   m_Layer: 0
   m_Name: EnemyFlagView
   m_TagString: Untagged
@@ -340,6 +341,20 @@ MonoBehaviour:
   _position: {x: 5, y: 1.5, z: 1}
   _renderersMode: 0
   _cachedRenderers: 0
+--- !u!114 &1925908715364018026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6882668674762681255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19afb39bcf6904ab5337dd2b44bfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  id: enemy_flag
+  hideUntilRevealed: 0
 --- !u!1 &6943494262692191166
 GameObject:
   m_ObjectHideFlags: 0

@@ -28,6 +28,7 @@ public class PileofCardUI : MonoBehaviour
         ActionSystem.SubscribeReaction<DrawCardsGA>(PilesChangedReaction, ReactionTiming.POST);
         ActionSystem.SubscribeReaction<PlayCardGA>(PilesChangedReaction, ReactionTiming.POST);
         CardSystem.PilesReset += RefreshCount;
+        TutorialSystem.StepStarted += OnTutorialStepStarted;
 
         drawPileButton.onClick.AddListener(OnDrawPileButton);
         discardPileButton.onClick.AddListener(OnDiscardPileButton);
@@ -38,6 +39,7 @@ public class PileofCardUI : MonoBehaviour
         ActionSystem.UnsubscribeReaction<DrawCardsGA>(PilesChangedReaction, ReactionTiming.POST);
         ActionSystem.UnsubscribeReaction<PlayCardGA>(PilesChangedReaction, ReactionTiming.POST);
         CardSystem.PilesReset -= RefreshCount;
+        TutorialSystem.StepStarted -= OnTutorialStepStarted;
 
         drawPileButton.onClick.RemoveListener(OnDrawPileButton);
         discardPileButton.onClick.RemoveListener(OnDiscardPileButton);
@@ -53,6 +55,9 @@ public class PileofCardUI : MonoBehaviour
     }
 
     //Privates
+    //튜토리얼: 더미 창이 열린 채 다음 단계로 넘어가면 칸 입력이 막히고 닫기 버튼도 가려져 진행할 수 없으므로 단계마다 닫음
+    private void OnTutorialStepStarted(TutorialStepData step) => HidePile();
+
     private void OnDrawPileButton() => TogglePile(true);
     private void OnDiscardPileButton() => TogglePile(false);
 

@@ -24,6 +24,8 @@ public class TurnEndUI : MonoBehaviour
 
     private void TurnEnd()
     {
+        if (!TutorialSystem.AllowsTurnEnd()) return;
+
         //플레이어 턴 종료 및 자동 전투 턴 시작
         AutoBattleTurnGA turnGA = new();
         ActionSystem.Instance.Perform(turnGA);

@@ -9,6 +9,7 @@ public class GrowthNodeSystem : Singleton<GrowthNodeSystem>   //스테이지 선
     [SerializeField] private GrowthNodeData[] nodes;   //트리 전체 노드 (본부 제외)
 
     public event System.Action Changed;   //구매·초기화 후 (UI 갱신용)
+    public static event System.Action<GrowthNodeData> Purchased;   //노드 1레벨 구매 직후 (튜토리얼 감지용, 씬을 넘나드는 구독자를 위해 정적)
 
     public IReadOnlyList<GrowthNodeData> Nodes => nodes;
 
@@ -49,6 +50,7 @@ public class GrowthNodeSystem : Singleton<GrowthNodeSystem>   //스테이지 선
 
         Game.AddNodeLevel(node);
         Changed?.Invoke();
+        Purchased?.Invoke(node);
         return true;
     }
 

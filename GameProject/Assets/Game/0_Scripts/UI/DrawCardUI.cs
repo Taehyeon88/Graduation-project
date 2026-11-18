@@ -35,6 +35,7 @@ public class DrawCardUI : MonoBehaviour
     {
         //플레이어 턴에 AP가 있고 뽑을 카드가 남아 있을 때만 (카드를 못 뽑으면 AP도 쓰지 않음)
         if (TurnSystem.Instance.CurrentTurn != TurnType.Player) return;
+        if (!TutorialSystem.AllowsDraw()) return;
         bool isFree = freeDrawsLeft > 0;
         if (!isFree && !APSystem.Instance.HasEnoughAP(drawAPCost)) return;
         if (CardSystem.Instance.DrawPileCount <= 0) return;

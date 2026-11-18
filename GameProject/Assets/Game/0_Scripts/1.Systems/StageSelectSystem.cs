@@ -49,10 +49,21 @@ public class StageSelectSystem : Singleton<StageSelectSystem>
             StageCameraSystem.Instance.SetGridRange(structureCache[1].WorldCenter, structureCache[structureCache.Count].WorldCenter);
         }
         StageCameraSystem.Instance.FocusOnStart(previous, GetFrontierStructure());
+
+        TutorialSystem.NotifySceneEntered(TutorialScreen.StageSelect);   //구조물·UI가 모두 준비된 뒤 튜토리얼 단계 시작
     }
+
+    //스테이지 번호의 구조물 (없으면 false) — 튜토리얼 스포트라이트 대상 조회용
+    public bool TryGetStructureView(int stageNumber, out StructureView view) => structureCache.TryGetValue(stageNumber, out view);
 
     private void Update()
     {
+        if (TutorialSystem.IsGuided)   //튜토리얼 안내 중에는 월드 호버·클릭·드래그 전체 차단 (스포트라이트 구멍으로 스테이지가 눌리는 것 방지)
+        {
+            UpdateHover(null);
+            return;
+        }
+
         if (isMoving || stageInfoPopup.IsOpen || promotionUI.IsOpen || growthNodeUI.IsOpen)   //이동 중이거나 정보 팝업·승급·공용 트리 화면이 열려 있으면 월드 입력 잠금
         {
             UpdateHover(null);
@@ -66,7 +77,7 @@ public class StageSelectSystem : Singleton<StageSelectSystem>
         if (!isClick) return;
 
         StructureView selectable = hoveredStructure;
-        if (selectable == null || !IsUnlocked(selectable.StageNumber)) return;
+        if (selectable == null || !IsUnlocked(selectable.StageNumber) || IsReplayLocked(selectable)) return;
 
         //전투 구조물은 정보 팝업에서 영웅 카드를 고른 뒤 진입, 비전투 구조물(주점 등)은 바로 진입
         if (selectable.Data.StageData != null)
@@ -121,9 +132,15 @@ public class StageSelectSystem : Singleton<StageSelectSystem>
     {
         foreach (StructureView view in structureCache.Values)
         {
-            view.SetState(IsUnlocked(view.StageNumber), GameSystem.Instance.GetProgress(view.Data));
+            view.SetState(IsUnlocked(view.StageNumber), GameSystem.Instance.GetProgress(view.Data), IsReplayLocked(view));
         }
     }
+
+    //클리어한 튜토리얼 스테이지는 다시 들어갈 수 없음
+    private bool IsReplayLocked(StructureView view)
+        => view.Data.StageData != null
+        && view.Data.StageData.TutorialBattle != null
+        && GameSystem.Instance.GetProgress(view.Data).IsCleared;
 
     private bool IsUnlocked(int stageNumber)
     {

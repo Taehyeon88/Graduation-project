@@ -62,6 +62,7 @@ public class MoveSystem : Singleton<MoveSystem>
     //Player
     public void PlayPlayerMoveMode(HeroView heroView)
     {
+        if (GameSystem.Instance.TutorialBattle != null) return;   //튜토리얼: 수동 이동은 가르치지 않음
         if (Interactions.Instance.IsCardTargetMode) return;   //카드 타겟 모드 중, 이동 모드 진입 불가
         if (placedThisRound.Contains(heroView)) return;       //배치된 라운드에는 이동 불가
         if (IsAtRoundStart(heroView) && !APSystem.Instance.HasEnoughAP()) return;   //시작 위치에서 떠나려면 AP 필요 (이미 떠난 영웅은 AP 없이 이동 가능)

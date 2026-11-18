@@ -1203,6 +1203,7 @@ GameObject:
   - component: {fileID: 1801285065229790258}
   - component: {fileID: 1900187502718154807}
   - component: {fileID: 3540726448249440411}
+  - component: {fileID: 3093841705226885303}
   m_Layer: 0
   m_Name: HeroCaptainView
   m_TagString: Untagged
@@ -1260,6 +1261,20 @@ MonoBehaviour:
   _position: {x: -1, y: 1.5, z: 1}
   _renderersMode: 0
   _cachedRenderers: 0
+--- !u!114 &3093841705226885303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8388313453499549970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19afb39bcf6904ab5337dd2b44bfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  id: captain
+  hideUntilRevealed: 0
 --- !u!1 &8913177954049397246
 GameObject:
   m_ObjectHideFlags: 0

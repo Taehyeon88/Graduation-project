@@ -84,9 +84,19 @@ public class HeroSystem : Singleton<HeroSystem>
         foreach (var hero in HeroViews)
         {
             if (hero == null || hero.Hero == null) continue;
-            if (Random.Range(0, PercentMax) >= hero.Hero.Critical + criticalBonus) continue;
+            if (!RollCritical(hero, criticalBonus)) continue;
 
             ActionSystem.Instance.AddReaction(new AddStatusEffectGA(StatusEffectType.CRITICAL, 1, new() { hero }, hero));
         }
+    }
+
+    //치명타 판정. 튜토리얼의 지정 라운드에는 지정 영웅만 100%, 나머지는 0%로 고정
+    private bool RollCritical(HeroView hero, int criticalBonus)
+    {
+        TutorialBattleData tutorial = GameSystem.Instance.TutorialBattle;
+        if (tutorial != null && TurnSystem.Instance.CurrentTurn_Number == tutorial.CriticalRound)
+            return System.Array.IndexOf(tutorial.CriticalHeroes, hero.Hero.Data) >= 0;
+
+        return Random.Range(0, PercentMax) < hero.Hero.Critical + criticalBonus;
     }
 }

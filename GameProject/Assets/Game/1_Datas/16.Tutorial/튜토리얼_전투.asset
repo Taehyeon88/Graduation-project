@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1c37eeecd60d614ab5cab3e379bdd40, type: 3}
+  m_Name: "\uD29C\uD1A0\uB9AC\uC5BC_\uC804\uD22C"
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialBattleData
+  <DrawOrder>k__BackingField:
+  - {fileID: 11400000, guid: f44363c53c3c72744ab2b0e123b19f81, type: 2}
+  - {fileID: 11400000, guid: 25e21709632fae3468acc2dac4f97b40, type: 2}
+  - {fileID: 11400000, guid: fef437ba6a9e88849aeb323c20009fbb, type: 2}
+  - {fileID: 11400000, guid: 5858be7c737f637468e5136ab9ac75c8, type: 2}
+  - {fileID: 11400000, guid: c0097ad377d776c44ae42b4f58dba69f, type: 2}
+  <StartDrawAmount>k__BackingField: 1
+  <CriticalRound>k__BackingField: 1
+  <CriticalHeroes>k__BackingField:
+  - {fileID: 11400000, guid: f44363c53c3c72744ab2b0e123b19f81, type: 2}
+  <SameSpeedRound>k__BackingField: 1
+  <SameSpeedWinner>k__BackingField: {fileID: 11400000, guid: c91b92b77b2874441be017b8e4ac91d6, type: 2}

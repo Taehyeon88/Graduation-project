@@ -21,6 +21,7 @@ public class StructureView : MonoBehaviour
     public int StageNumber { get; private set; }   //스테이지 번호 (캐싱 키)
     public Vector3 IsoPosition => isoObject.position;   //노드의 Iso 위치 (영웅 이동 목표)
     public Vector3 WorldCenter => model.bounds.center;   //스프라이트 월드 중심 (카메라 포커스 목표)
+    public Bounds ModelBounds => model.bounds;           //스프라이트 월드 영역 (튜토리얼 스포트라이트 구멍용)
 
     private bool isHovered;
 
@@ -39,10 +40,12 @@ public class StructureView : MonoBehaviour
     }
 
     //잠김: 어둡게 + 자물쇠 / 선택 가능: 빈 별 3개 / 클리어: 획득한 별만 채움
-    public void SetState(bool unlocked, StageProgress progress)
+    //replayLocked: 해금됐지만 다시 들어갈 수 없음 (클리어한 튜토리얼 스테이지) — 별은 보이되 어둡게 + 자물쇠
+    public void SetState(bool unlocked, StageProgress progress, bool replayLocked = false)
     {
-        model.color = unlocked ? selectableColor : lockedColor;
-        lockIcon.enabled = !unlocked;
+        bool selectable = unlocked && !replayLocked;
+        model.color = selectable ? selectableColor : lockedColor;
+        lockIcon.enabled = !selectable;
 
         bool showStars = unlocked && Data.StageData != null;
         for (int i = 0; i < starIcons.Length; i++)

@@ -25,13 +25,14 @@ public class PlayerSkillSystem : Singleton<PlayerSkillSystem>
             && !ActionSystem.Instance.IsPerforming
             && !usedThisTurn
             && RemainingUses > 0
+            && TutorialSystem.AllowsDagger(null)
             && APSystem.Instance.HasEnoughAP(APCost);
     }
 
     //대상이 유효할 때만 AP·횟수를 소모하고 스킬 실행
     public bool TryUse(Token target)
     {
-        if (!CanUse() || !skillData.Skill.IsValidTarget(target)) return false;
+        if (!CanUse() || !skillData.Skill.IsValidTarget(target) || !TutorialSystem.AllowsDagger(target)) return false;
 
         GameAction skillAction = skillData.Skill.CreateAction(target);
         skillAction.PreReactions.Add((new SpendAPGA(APCost), null));

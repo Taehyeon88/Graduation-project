@@ -18,6 +18,9 @@ public class StageData : ScriptableObject
     [field: SerializeField] public HeroData[] BaseHeroes { get; private set; }         //기본 제공 영웅 카드 (고정, 제외 불가)
     [field: SerializeField] public int InsigniaReward { get; private set; } = 1;       //첫 클리어 휘장 수량 (지급량은 기획 보류 — 임시값)
 
+    [Header("튜토리얼 (비우면 일반 스테이지)")]
+    [field: SerializeField] public TutorialBattleData TutorialBattle { get; private set; }
+
     [Header("별 조건 (★1 승리는 고정)")]
     [field: SerializeField] public int CaptainHealthStarThreshold { get; private set; } = 10;   //★2: 용병대장 체력 N 이상 남기고 승리
     [field: SerializeReference, SR] public StarCondition SpecialStarCondition { get; private set; }   //★3: 스테이지 특수 조건

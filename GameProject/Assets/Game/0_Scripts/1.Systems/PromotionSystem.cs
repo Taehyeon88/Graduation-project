@@ -10,6 +10,7 @@ public class PromotionSystem : Singleton<PromotionSystem>   //스테이지 선�
     [SerializeField] private int healthPerLevel = 1;        //승급마다 얻는 체력 (기획서 제안값)
 
     public event System.Action<HeroData> Promoted;   //승급이 끝났을 때 (UI 갱신용)
+    public static event System.Action<HeroData> PromotionCompleted;   //승급 확정 직후 (튜토리얼 감지용, 씬을 넘나드는 구독자를 위해 정적)
 
     private GameSystem Game => GameSystem.Instance;
 
@@ -49,6 +50,7 @@ public class PromotionSystem : Singleton<PromotionSystem>   //스테이지 선�
 
         Game.GetPromotion(heroData).Apply(option, healthPerLevel);
         Promoted?.Invoke(heroData);
+        PromotionCompleted?.Invoke(heroData);
         return true;
     }
 

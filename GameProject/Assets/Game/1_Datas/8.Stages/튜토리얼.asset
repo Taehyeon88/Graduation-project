@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e590785f16a7254fac52abcb776de1d, type: 3}
+  m_Name: "\uD29C\uD1A0\uB9AC\uC5BC"
+  m_EditorClassIdentifier: Assembly-CSharp::StageData
+  <waveData>k__BackingField: {fileID: 11400000, guid: f71ec4cb75572124da4351bb0f9a6eeb, type: 2}
+  <NeutralPositions>k__BackingField: []
+  <ObstacleSpawns>k__BackingField: []
+  <TerrainSpawns>k__BackingField: []
+  <EnemyCoreHealth>k__BackingField: 8
+  <StageBGMId>k__BackingField: 5002
+  <HeroCaptainHealth>k__BackingField: 20
+  <DeckSize>k__BackingField: 5
+  <BaseHeroes>k__BackingField:
+  - {fileID: 11400000, guid: f44363c53c3c72744ab2b0e123b19f81, type: 2}
+  - {fileID: 11400000, guid: 25e21709632fae3468acc2dac4f97b40, type: 2}
+  - {fileID: 11400000, guid: fef437ba6a9e88849aeb323c20009fbb, type: 2}
+  - {fileID: 11400000, guid: 5858be7c737f637468e5136ab9ac75c8, type: 2}
+  - {fileID: 11400000, guid: c0097ad377d776c44ae42b4f58dba69f, type: 2}
+  <InsigniaReward>k__BackingField: 1
+  <TutorialBattle>k__BackingField: {fileID: 11400000, guid: ee6c8ea52968e4f44bced00cb3c34204, type: 2}
+  <CaptainHealthStarThreshold>k__BackingField: 10
+  <SpecialStarCondition>k__BackingField:
+    rid: 8294627027544178981
+  references:
+    version: 2
+    RefIds:
+    - rid: 8294627027544178981
+      type: {class: BaseHeroesOnlyStarCondition, ns: , asm: Assembly-CSharp}
+      data: 

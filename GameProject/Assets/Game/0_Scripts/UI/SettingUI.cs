@@ -43,6 +43,7 @@ public class SettingUI : Singleton<SettingUI>   //GAMEMASTER 하위에서 씬을
         panel.gameObject.SetActive(active);
         mainMenuButton.gameObject.SetActive(active && showMainMenu);
         if (active) mainMenuButton.interactable = true;
+        TutorialSystem.NotifySettingOpen(active);   //튜토리얼 중이면 열린 동안 전투 진행 정지
     }
 
     //HUD Setting 아이콘의 onClick에 연결. StartScene에서는 메인 화면 이동 버튼을 숨김

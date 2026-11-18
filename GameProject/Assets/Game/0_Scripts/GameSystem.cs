@@ -23,6 +23,7 @@ public class GameSystem : Singleton<GameSystem>
     public StructureData CurrentStructure { get; private set; }   //스테이지 선택 씬에서 고른 구조물
     public StageData CurrentStageData => CurrentStructure.StageData;
     public StageProgress CurrentProgress => GetProgress(CurrentStructure);
+    public TutorialBattleData TutorialBattle => CurrentStructure != null ? CurrentStageData.TutorialBattle : null;   //튜토리얼 전투 시나리오 (일반 스테이지는 null)
 
     public int Stars { get; private set; }       //획득한 별 총량 (공용 트리 재화)
     public int Insignias { get; private set; }   //획득한 휘장 총량 (영웅 승급 재화)
@@ -242,6 +243,7 @@ public class GameSystem : Singleton<GameSystem>
         nodeLevels.Clear();
         Stars = 0;
         Insignias = 0;
+        TutorialSystem.ResetProgress();   //진행 데이터가 초기화되면 튜토리얼도 처음부터 (도중 이탈 후 새 게임 시 숨김 UI 잔존 방지)
     }
 
     //Privates

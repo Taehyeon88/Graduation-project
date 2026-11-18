@@ -119,6 +119,7 @@ public class PromotionUI : MonoBehaviour
             button.GetComponentInChildren<TMP_Text>(true).SetText($"{heroData.Name}  승급 {Promotion.GetLevel(heroData)}/{PromotionSystem.MaxLevel}");
             button.image.color = heroData == selectedHero ? heroSelectedColor : heroNormalColor;
             button.onClick.AddListener(() => SelectHero(heroData));
+            button.gameObject.AddComponent<TutorialTarget>().Configure($"hero_{heroData.Id}", false);   //튜토리얼이 특정 영웅 버튼을 지목할 수 있게 (목록이 재생성되므로 생성 때마다 부여)
         }
     }
 

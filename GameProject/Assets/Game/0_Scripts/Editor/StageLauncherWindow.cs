@@ -9,11 +9,13 @@ using UnityEngine.SceneManagement;
 [InitializeOnLoad]
 public class StageLauncherWindow : EditorWindow
 {
-    private static readonly int[] LaunchableIds = { 1, 2, 7 };   //실행 가능한 구조물 ID (일반 전투, 주점, 정예 전투)
+    private static readonly int[] LaunchableIds = { 1, 2, 7, 100 };   //실행 가능한 구조물 ID (일반 전투, 주점, 정예 전투, 튜토리얼 전투)
 
     private const string BattleSceneName = "GameDemoScene";
     private const string StageScenePath = "Assets/Game/2_Scenes/StageScene.unity";
+    private const int TutorialStructureId = 100;   //튜토리얼 전투 구조물 ID
     private const string PendingStructureKey = "StageLauncher.PendingStructure";   //Play 진입 후 실행할 구조물 에셋 경로
+    private const string PendingGrowthTutorialKey = "StageLauncher.PendingGrowthTutorial";   //Play 진입 후 '튜토리얼 클리어 후 시작'으로 실행할지
     private const string RestoreStartSceneKey = "StageLauncher.RestoreStartScene";
     private const string PrevStartScenePathKey = "StageLauncher.PrevStartScenePath";
 
@@ -84,16 +86,49 @@ public class StageLauncherWindow : EditorWindow
             {
                 if (GUILayout.Button($"{data.name} ({data.SceneName})"))
                     Launch(data);
+
+                //튜토리얼 전투는 성장 파트(결과 이후)만 바로 테스트하는 시작 옵션도 제공
+                if (data.ID == TutorialStructureId && GUILayout.Button("   └ 튜토리얼 클리어 후 스테이지 선택에서 시작 (진행 상태 초기화)"))
+                    LaunchGrowthTutorial(data);
             }
         }
     }
 
     private static void Launch(StructureData data)
     {
+        SessionState.EraseBool(PendingGrowthTutorialKey);   //이전에 취소된 '튜토리얼 클리어 후 시작' 요청이 남아 있지 않게
         if (Application.isPlaying)
             LaunchInPlay(data);
         else
             LaunchFromEditor(data);
+    }
+
+    //튜토리얼 전투를 클리어한 상태(별 3 · 휘장 1, 스테이지 2 해금)로 만들고 스테이지 선택 씬에서 튜토리얼 성장 파트를 시작
+    private static void LaunchGrowthTutorial(StructureData data)
+    {
+        SessionState.SetBool(PendingGrowthTutorialKey, true);
+        if (Application.isPlaying)
+            LaunchGrowthTutorialInPlay(data);
+        else
+            LaunchFromEditor(data);
+    }
+
+    private static void LaunchGrowthTutorialInPlay(StructureData data)
+    {
+        SessionState.EraseBool(PendingGrowthTutorialKey);
+
+        GameSystem game = GameSystem.Instance;
+        game.InitializeGameData();   //새 진행 상태 (튜토리얼 상태도 함께 초기화됨)
+        game.EnterStage(data, 1, new List<Hero>());
+
+        //승리 처리와 같은 기록: 클리어, 별 3개, 휘장 (GameSystem.RecordClear는 private이라 리플렉션으로 호출)
+        System.Reflection.MethodInfo recordClear = typeof(GameSystem).GetMethod("RecordClear", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+        recordClear.Invoke(game, new object[] { new[] { true, true, true } });
+
+        if (!TutorialSystem.DebugResumeAfterBattle())
+            Debug.LogWarning("StageLauncher: TutorialSystem을 찾지 못했거나 SceneEntered 단계가 없습니다.");
+
+        SceneManager.LoadScene("StageScene");   //진입 시 StageSelectSystem.Start가 튜토리얼 단계를 시작
     }
 
     //플레이 중: StageSelectSystem.Update와 같은 호출 (구조물 진입 → 씬 이동). 해금 제약은 무시, 영웅 카드는 자동 선택
@@ -138,6 +173,7 @@ public class StageLauncherWindow : EditorWindow
         {
             EditorApplication.update -= WaitAndLaunch;
             SessionState.EraseString(PendingStructureKey);
+            SessionState.EraseBool(PendingGrowthTutorialKey);
             RestoreStartScene();
         }
     }
@@ -159,7 +195,10 @@ public class StageLauncherWindow : EditorWindow
             return;
         }
 
-        LaunchInPlay(data);
+        if (SessionState.GetBool(PendingGrowthTutorialKey, false))
+            LaunchGrowthTutorialInPlay(data);
+        else
+            LaunchInPlay(data);
     }
 
     private static void RestoreStartScene()

@@ -524,6 +524,7 @@ GameObject:
   - component: {fileID: 40357791}
   - component: {fileID: 40357790}
   - component: {fileID: 40357789}
+  - component: {fileID: 40357792}
   m_Layer: 5
   m_Name: CloseButton
   m_TagString: Untagged
@@ -633,6 +634,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 40357787}
   m_CullTransparentMesh: 1
+--- !u!114 &40357792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 40357787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19afb39bcf6904ab5337dd2b44bfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  id: promotion_close
+  hideUntilRevealed: 0
 --- !u!4 &40378520 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7135897438596925868, guid: 9851229e58487e4449f6fa918f90a7d1, type: 3}
@@ -650,6 +665,7 @@ GameObject:
   - component: {fileID: 54489354}
   - component: {fileID: 54489353}
   - component: {fileID: 54489352}
+  - component: {fileID: 54489355}
   m_Layer: 5
   m_Name: PromoteButton
   m_TagString: Untagged
@@ -759,6 +775,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 54489350}
   m_CullTransparentMesh: 1
+--- !u!114 &54489355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 54489350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19afb39bcf6904ab5337dd2b44bfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  id: promotion_promote
+  hideUntilRevealed: 0
 --- !u!1001 &64756727
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6909,6 +6939,7 @@ GameObject:
   - component: {fileID: 473299540}
   - component: {fileID: 473299542}
   - component: {fileID: 473299541}
+  - component: {fileID: 473299543}
   m_Layer: 5
   m_Name: StarsText
   m_TagString: Untagged
@@ -7035,6 +7066,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 473299539}
   m_CullTransparentMesh: 1
+--- !u!114 &473299543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 473299539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19afb39bcf6904ab5337dd2b44bfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  id: growth_stars
+  hideUntilRevealed: 0
 --- !u!1 &479982130
 GameObject:
   m_ObjectHideFlags: 0
@@ -9543,6 +9588,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StageSelectSystem
   stageStructures:
+  - {fileID: 11400000, guid: 9b79a77adc48c5249b238b82b89b6917, type: 2}
   - {fileID: 11400000, guid: 230902f467adfbf41bd1a068ebcaaf4a, type: 2}
   - {fileID: 11400000, guid: 1d2b6db82b9872b4e997cd5d06b83cf7, type: 2}
   - {fileID: 11400000, guid: 7f3efdd681fe5de48b0173429bf63cdc, type: 2}
@@ -12497,6 +12543,7 @@ GameObject:
   - component: {fileID: 941101971}
   - component: {fileID: 941101970}
   - component: {fileID: 941101969}
+  - component: {fileID: 941101972}
   m_Layer: 5
   m_Name: OpenButton
   m_TagString: Untagged
@@ -12606,6 +12653,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 941101967}
   m_CullTransparentMesh: 1
+--- !u!114 &941101972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 941101967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19afb39bcf6904ab5337dd2b44bfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  id: growth_open
+  hideUntilRevealed: 1
 --- !u!4 &947410020 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7135897438596925868, guid: 9851229e58487e4449f6fa918f90a7d1, type: 3}
@@ -12887,6 +12948,7 @@ GameObject:
   - component: {fileID: 953014034}
   - component: {fileID: 953014033}
   - component: {fileID: 953014032}
+  - component: {fileID: 953014035}
   m_Layer: 5
   m_Name: OpenButton
   m_TagString: Untagged
@@ -12996,6 +13058,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 953014030}
   m_CullTransparentMesh: 1
+--- !u!114 &953014035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 953014030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19afb39bcf6904ab5337dd2b44bfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  id: promotion_open
+  hideUntilRevealed: 1
 --- !u!4 &959779300 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7135897438596925868, guid: 9851229e58487e4449f6fa918f90a7d1, type: 3}
@@ -13730,6 +13806,7 @@ GameObject:
   - component: {fileID: 1018008395}
   - component: {fileID: 1018008397}
   - component: {fileID: 1018008396}
+  - component: {fileID: 1018008398}
   m_Layer: 5
   m_Name: ConfirmPanel
   m_TagString: Untagged
@@ -13795,6 +13872,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1018008394}
   m_CullTransparentMesh: 1
+--- !u!114 &1018008398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1018008394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19afb39bcf6904ab5337dd2b44bfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  id: promotion_confirm_panel
+  hideUntilRevealed: 0
 --- !u!1 &1028288094
 GameObject:
   m_ObjectHideFlags: 0
@@ -13944,6 +14035,7 @@ GameObject:
   - component: {fileID: 1030453070}
   - component: {fileID: 1030453069}
   - component: {fileID: 1030453068}
+  - component: {fileID: 1030453071}
   m_Layer: 5
   m_Name: ResetButton
   m_TagString: Untagged
@@ -14053,6 +14145,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1030453066}
   m_CullTransparentMesh: 1
+--- !u!114 &1030453071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1030453066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19afb39bcf6904ab5337dd2b44bfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  id: growth_reset
+  hideUntilRevealed: 0
 --- !u!1 &1031234692
 GameObject:
   m_ObjectHideFlags: 0
@@ -16832,6 +16938,7 @@ GameObject:
   - component: {fileID: 1212731110}
   - component: {fileID: 1212731109}
   - component: {fileID: 1212731108}
+  - component: {fileID: 1212731112}
   m_Layer: 5
   m_Name: Node_C2
   m_TagString: Untagged
@@ -16957,6 +17064,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1212731106}
   m_CullTransparentMesh: 1
+--- !u!114 &1212731112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1212731106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19afb39bcf6904ab5337dd2b44bfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  id: growth_node_c2
+  hideUntilRevealed: 0
 --- !u!1 &1220379760
 GameObject:
   m_ObjectHideFlags: 0
@@ -17269,6 +17390,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2240141007554459806, guid: 3ae40ca683237ae4e9b2e30f31a96f5f, type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
+      objectReference: {fileID: 0}
     - target: {fileID: 4064224828321672812, guid: 3ae40ca683237ae4e9b2e30f31a96f5f, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -17284,6 +17409,14 @@ PrefabInstance:
     - target: {fileID: 4064224828321672812, guid: 3ae40ca683237ae4e9b2e30f31a96f5f, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4333478156548511393, guid: 3ae40ca683237ae4e9b2e30f31a96f5f, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4278190080
+      objectReference: {fileID: 0}
+    - target: {fileID: 4333478156548511393, guid: 3ae40ca683237ae4e9b2e30f31a96f5f, type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
       objectReference: {fileID: 0}
     - target: {fileID: 4367785178963071875, guid: 3ae40ca683237ae4e9b2e30f31a96f5f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -17368,6 +17501,10 @@ PrefabInstance:
     - target: {fileID: 5514433643840193904, guid: 3ae40ca683237ae4e9b2e30f31a96f5f, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5659902591034555209, guid: 3ae40ca683237ae4e9b2e30f31a96f5f, type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 7168405164695483634, guid: 3ae40ca683237ae4e9b2e30f31a96f5f, type: 3}
       propertyPath: m_Name
@@ -18448,6 +18585,7 @@ GameObject:
   - component: {fileID: 1338120234}
   - component: {fileID: 1338120233}
   - component: {fileID: 1338120232}
+  - component: {fileID: 1338120236}
   m_Layer: 5
   m_Name: Node_C1
   m_TagString: Untagged
@@ -18573,6 +18711,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1338120230}
   m_CullTransparentMesh: 1
+--- !u!114 &1338120236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1338120230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19afb39bcf6904ab5337dd2b44bfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  id: growth_node_c1
+  hideUntilRevealed: 0
 --- !u!4 &1344618421 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7135897438596925868, guid: 9851229e58487e4449f6fa918f90a7d1, type: 3}
@@ -19919,6 +20071,7 @@ GameObject:
   - component: {fileID: 1414569521}
   - component: {fileID: 1414569520}
   - component: {fileID: 1414569519}
+  - component: {fileID: 1414569522}
   m_Layer: 5
   m_Name: ConfirmButton
   m_TagString: Untagged
@@ -20028,6 +20181,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1414569517}
   m_CullTransparentMesh: 1
+--- !u!114 &1414569522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1414569517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19afb39bcf6904ab5337dd2b44bfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  id: promotion_confirm_button
+  hideUntilRevealed: 0
 --- !u!4 &1414729774 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8241385529586602247, guid: 216766530c0c7c14ba95d2686381b37c, type: 3}
@@ -21397,6 +21564,7 @@ GameObject:
   - component: {fileID: 1529792518}
   - component: {fileID: 1529792517}
   - component: {fileID: 1529792516}
+  - component: {fileID: 1529792519}
   m_Layer: 5
   m_Name: ConfirmButton
   m_TagString: Untagged
@@ -21506,6 +21674,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1529792514}
   m_CullTransparentMesh: 1
+--- !u!114 &1529792519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1529792514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19afb39bcf6904ab5337dd2b44bfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  id: growth_reset_confirm
+  hideUntilRevealed: 0
 --- !u!1 &1531676995
 GameObject:
   m_ObjectHideFlags: 0
@@ -21673,6 +21855,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1562687928}
   - component: {fileID: 1562687929}
+  - component: {fileID: 1562687930}
   m_Layer: 5
   m_Name: OptionContent
   m_TagString: Untagged
@@ -21725,6 +21908,20 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &1562687930
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1562687927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19afb39bcf6904ab5337dd2b44bfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  id: promotion_options
+  hideUntilRevealed: 0
 --- !u!1 &1591692778
 GameObject:
   m_ObjectHideFlags: 0
@@ -24051,6 +24248,7 @@ GameObject:
   - component: {fileID: 1757096443}
   - component: {fileID: 1757096442}
   - component: {fileID: 1757096441}
+  - component: {fileID: 1757096444}
   m_Layer: 5
   m_Name: CloseButton
   m_TagString: Untagged
@@ -24160,6 +24358,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1757096439}
   m_CullTransparentMesh: 1
+--- !u!114 &1757096444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1757096439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19afb39bcf6904ab5337dd2b44bfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  id: growth_close
+  hideUntilRevealed: 0
 --- !u!1 &1758633937
 GameObject:
   m_ObjectHideFlags: 0
@@ -24427,6 +24639,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1775765675}
+  - component: {fileID: 1775765676}
   m_Layer: 5
   m_Name: Tree
   m_TagString: Untagged
@@ -24482,6 +24695,20 @@ RectTransform:
   m_AnchoredPosition: {x: -230, y: -20}
   m_SizeDelta: {x: 1240, y: 760}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1775765676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1775765674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19afb39bcf6904ab5337dd2b44bfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  id: growth_tree
+  hideUntilRevealed: 0
 --- !u!1 &1779056828
 GameObject:
   m_ObjectHideFlags: 0
@@ -26940,6 +27167,7 @@ GameObject:
   - component: {fileID: 2026593597}
   - component: {fileID: 2026593596}
   - component: {fileID: 2026593595}
+  - component: {fileID: 2026593598}
   m_Layer: 5
   m_Name: HeroListContent
   m_TagString: Untagged
@@ -27030,6 +27258,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2026593593}
   m_CullTransparentMesh: 1
+--- !u!114 &2026593598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2026593593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19afb39bcf6904ab5337dd2b44bfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  id: promotion_hero_list
+  hideUntilRevealed: 0
 --- !u!1 &2036103492
 GameObject:
   m_ObjectHideFlags: 0
@@ -27253,6 +27495,7 @@ GameObject:
   - component: {fileID: 2088763838}
   - component: {fileID: 2088763840}
   - component: {fileID: 2088763839}
+  - component: {fileID: 2088763841}
   m_Layer: 5
   m_Name: InsigniaText
   m_TagString: Untagged
@@ -27379,6 +27622,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2088763837}
   m_CullTransparentMesh: 1
+--- !u!114 &2088763841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2088763837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa19afb39bcf6904ab5337dd2b44bfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  id: promotion_insignia
+  hideUntilRevealed: 0
 --- !u!1 &2095194501
 GameObject:
   m_ObjectHideFlags: 0
